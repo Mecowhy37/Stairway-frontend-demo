@@ -1,0 +1,39 @@
+@use "./colors" as *;
+
+$dark-map: (
+    //swap widget
+    --swap-bg: $dark-green-1,
+    --swap-main-btn-bg: $light-pink,
+    --swap-main-btn-color: $dark-green-1,
+    --swap-windows: $dark-green-2,
+
+    // else
+    --bg-gradient-light: linear-gradient(180deg, $light-orange-1 0%, $light-pink 53%, $light-pink 100%),
+    --bg-gradient-dark:
+        linear-gradient(180deg, $dark-green-1 0%, $dark-green-2 23%, $dark-green-3 53%, $dark-green-4 100%),
+    --main-color: $light-pink,
+    --inset-shadow: ($dark-green-2-op 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.2) 0px 18px 36px -18px inset),
+    --nav-actions-bg: $dark-green-2
+);
+
+$light-map: (
+    //swap widget
+    --swap-bg: $white,
+    --swap-main-btn-bg: $green,
+    --swap-main-btn-color: $white,
+    --swap-windows: $light-green,
+
+    // else
+    --bg-gradient-light: linear-gradient(180deg, $light-orange-1 0%, $light-pink 53%, $light-pink 100%),
+    --bg-gradient-dark:
+        linear-gradient(180deg, $dark-green-1 0%, $dark-green-2 23%, $dark-green-3 53%, $dark-green-4 100%),
+    --main-color: $dark-green-5,
+    --nav-actions-bg: $light-orange-2,
+    --inset-shadow: none
+);
+
+@mixin spread-map($map: ()) {
+    @each $key, $value in $map {
+        #{$key}: $value;
+    }
+}

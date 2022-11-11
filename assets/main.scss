@@ -1,0 +1,13 @@
+@use "./theme.scss" as *;
+
+@mixin themes {
+    --transition: 0.3s;
+
+    .light {
+        @include spread-map($light-map);
+    }
+
+    .dark {
+        @include spread-map($dark-map);
+    }
+}

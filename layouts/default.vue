@@ -1,0 +1,104 @@
+<script>
+import { useStepStore } from "~/stores/step"
+import { mapStores } from "pinia"
+
+export default {
+    computed: {
+        ...mapStores(useStepStore),
+    },
+    created() {
+        this.stepStore.factoryAddress = this.$config.public.devFactoryAddress
+    },
+    async mounted() {
+        await this.stepStore.initialize()
+        window.ethereum.on("accountsChanged", () => {
+            console.log("accounts changed")
+            this.stepStore.initialize()
+        })
+    },
+}
+</script>
+
+<template>
+    <div id="base" :class="[stepStore.isDark ? themes.dark : themes.light]">
+        <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div>
+        <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div>
+        <Nav />
+        <slot />
+        <WalletModal />
+    </div>
+</template>
+
+<style lang="scss" module="themes">
+@use "assets/main.scss" as *;
+
+:root {
+    @include themes;
+}
+</style>
+
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+html {
+    font-size: 62.5%;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: var(--main-color);
+    transition: color var(--transition);
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
+    user-select: none;
+}
+
+#base {
+    display: grid;
+    height: 100vh;
+    position: relative;
+}
+body {
+    font-size: 1.6rem;
+}
+
+.main {
+    padding-top: 50px;
+}
+
+.inset {
+    box-shadow: var(--inset-shadow);
+    transition: box-shadow var(--transition);
+}
+.centerize {
+    grid-row: 1;
+    grid-column: 1;
+    place-self: center;
+}
+
+.bg-gradient {
+    grid-row: 1;
+    grid-column: 1;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    transition: opacity var(--transition);
+    &--light {
+        opacity: 1;
+        background: var(--bg-gradient-light);
+    }
+    &--dark {
+        opacity: 1;
+        background: var(--bg-gradient-dark);
+    }
+    &.hide {
+        opacity: 0;
+    }
+}
+
+/* darkcontrast: #1c3b30 */
+/* deep dark 18%: #18302b */
+/* 53%: #192625 */
+/* pink: #ffd1d1 */
+</style>
