@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import { useStepStore } from "~/stores/step"
+import { mapStores } from "pinia"
+
 export default {
     head() {
         return {
@@ -22,6 +25,19 @@ export default {
         return {
             were: "here",
         }
+    },
+    computed: {
+        ...mapStores(useStepStore),
+    },
+    async mounted() {
+        await this.stepStore.initialize()
+        window.ethereum.on("accountsChanged", () => {
+            console.log("accounts changed")
+            this.stepStore.initialize()
+        })
+    },
+    created() {
+        this.stepStore.factoryAddress = this.$config.public.devFactoryAddress
     },
 }
 </script>

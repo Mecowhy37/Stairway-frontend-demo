@@ -1,8 +1,8 @@
 import { defineStore } from "pinia"
 import { ethers } from "ethers"
-import * as Factory from "../../contracts/core/build/contracts/IGapswapV2Factory.json"
-import * as Token from "../../contracts/core/build/contracts/ERC20.json"
-import * as Pair from "../../contracts/core/build/contracts/GapswapV2Pair.json"
+import * as Factory from "../contractABIs/GapswapV2Factory.json"
+import * as Token from "../contractABIs/ERC20.json"
+import * as Pair from "../contractABIs/GapswapV2Pair.json"
 
 const FactoryABI = Factory.abi
 const PoolABI = Pair.abi
@@ -76,12 +76,6 @@ export const useStepStore = defineStore("step", {
     getters: {
         isConnectingText() {
             return this.connecting ? "Connecting . . ." : "Connect Wallet"
-        },
-        async getPairAddress() {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const factoryContract = new ethers.Contract(this.factoryAddress, FactoryABI, provider)
-            const pair0 = await factoryContract.allPairs(0)
-            return pair0
         },
     },
 })

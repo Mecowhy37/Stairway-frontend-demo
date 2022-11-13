@@ -6,16 +6,6 @@ export default {
     computed: {
         ...mapStores(useStepStore),
     },
-    created() {
-        this.stepStore.factoryAddress = this.$config.public.devFactoryAddress
-    },
-    async mounted() {
-        await this.stepStore.initialize()
-        window.ethereum.on("accountsChanged", () => {
-            console.log("accounts changed")
-            this.stepStore.initialize()
-        })
-    },
 }
 </script>
 

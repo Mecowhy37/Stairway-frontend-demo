@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     ],
   runtimeConfig: {
     public: {
-      devFactoryAddress: "0x8Bdc903568E2696767A1FaA26Ae9a1F242338859",
+      devFactoryAddress: "",
     }
   }
 })
