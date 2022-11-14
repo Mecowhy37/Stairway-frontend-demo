@@ -4,7 +4,7 @@
             <!-- <div v-if="showPrice" class="prices">price here </div> -->
             <div class="amount-wrap">
                 <div class="amount amount__input" :class="[isHigherStyle[0], isMountedStyle]">
-                    <label for="amount_1" @click="setToken(0)" :class="{ token0: isToken0 === 0 }">{{
+                    <label for="amount_1" @click="setToken(0)" :class="{ token0: token0Style[0] }">{{
                         switchedTokens[0] !== null ? switchedTokens[0].symbol : "select token"
                     }}</label>
                     <input
@@ -12,13 +12,14 @@
                         id="amount_1"
                         name="amount_1"
                         placeholder="0.00"
-                        @input="setLastChanged(0)"
+                        @input="setLastChangedToken(0)"
                         v-model="sellAmount"
                     />
-                    <div class="switch" @click="switchOrder">switch</div>
+                    <div class="floater floater__switch" @click="switchOrder">switch</div>
+                    <div class="floater floater__price" :class="{ 'show-price': showPrice }">{{ price }}</div>
                 </div>
                 <div class="amount amount__input" :class="[isHigherStyle[1], isMountedStyle]">
-                    <label for="amount_1" @click="setToken(1)" :class="{ token0: isToken0 === 1 }">{{
+                    <label for="amount_1" @click="setToken(1)" :class="{ token0: token0Style[1] }">{{
                         switchedTokens[1] !== null ? switchedTokens[1].symbol : "select token"
                     }}</label>
                     <input
@@ -26,7 +27,7 @@
                         name="amount_1"
                         id="amount_1"
                         placeholder="0.00"
-                        @input="setLastChanged(1)"
+                        @input="setLastChangedToken(1)"
                         v-model="buyAmount"
                     />
                 </div>
@@ -57,6 +58,8 @@ import * as Token from "../contractABIs/ERC20.json"
 import * as Factory from "../contractABIs/GapswapV2Factory.json"
 import * as Tokens from "../contants/tokens.json"
 
+const unhandled = "0x0000000000000000000000000000000000000000"
+
 const FactoryABI = Factory.abi
 const PoolABI = Pair.abi
 const TokenABI = Token.abi
@@ -67,23 +70,16 @@ export default {
         return {
             TokenA: null,
             TokenB: null,
-            bidAsk: null,
-            isToken0: null,
+            bidAsk: [],
+            token0Index: null,
             buyAmount: null,
-            sellAmount: 28000,
+            sellAmount: 1,
             tokenToSellIndex: 0,
-            lastChangedToken: 1,
-            defaultTokenASymbol: "USD",
-            defaultTokenBSymbol: "BTC",
-            showPrice: true,
-            price: null,
+            lastChangedToken: 0,
+            defaultTokenASymbol: "BTC",
+            defaultTokenBSymbol: "USD",
+            showPrice: false,
             noSlippage: false,
-            tokens: [
-                { name: "TK1 (usd)", amount: "", isToken0: false },
-                { name: "TK2 (btc)", amount: "0.01", isToken0: true },
-            ],
-            bid: null,
-            ask: null,
             alreadyMounted: false,
         }
     },
@@ -99,36 +95,45 @@ export default {
         // },
         async ABTokens() {
             if (!this.ABTokens.every((el) => el !== null)) {
-                this.isToken0 = null
                 console.log("one of the tokens is null")
+
+                this.bidAsk = []
+                this.showPrice = false
+                this.token0Index = null
                 return
             }
 
-            try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum)
-                const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
+            // try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
 
-                //find a pool
-                const pairAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
-
-                const pool = new ethers.Contract(pairAddress, PoolABI, provider)
-
-                //get bidAsk and maybe depth
-                const bidAsk = await pool.getBidAsk()
-                console.log(bidAsk)
-
-                //find which is token0
-                const token0 = await pool.token0()
-                console.log("token0", token0)
-                this.isToken0 = this.switchedTokens.findIndex((el) => el.address === token0)
-                console.log(this.isToken0)
-            } catch (err) {
-                console.log(err)
+            //find a pool
+            const pairAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
+            if (pairAddress === unhandled) {
+                console.log("pair doesnt exist - check /constats/tokens.json")
+                //notify
+                return
             }
+
+            const pool = new ethers.Contract(pairAddress, PoolABI, provider)
+
+            //get bidAsk and maybe depth
+            const bidAsk = await pool.getBidAsk()
+            this.bidAsk[0] = ethers.utils.formatEther(bidAsk._bid)
+            this.bidAsk[1] = ethers.utils.formatEther(bidAsk._ask)
+            this.showPrice = true
+
+            //find which is token0
+            const token0 = await pool.token0()
+            console.log("token0", token0)
+
+            this.token0Index = this.ABTokens.findIndex((el) => el.address === token0)
+            // } catch (err) {
+            //     console.log(err)
+            // }
         },
     },
     methods: {
-        async getBidAsk() {},
         toggleSlippage() {
             this.noSlippage = !this.noSlippage
         },
@@ -138,9 +143,9 @@ export default {
             this.buyAmount = shuffle[1]
             this.lastChangedToken = this.lastChangedToken === 0 ? 1 : 0
             this.tokenToSellIndex = this.tokenToSellIndex === 0 ? 1 : 0
-            if (this.ABTokens.every((el) => el !== null)) {
-                this.isToken0 = this.isToken0 === 0 ? 1 : 0
-            }
+        },
+        setLastChangedToken(index) {
+            this.lastChangedToken = index
         },
         getToken(symb) {
             return TokenList.find((el) => el.symbol === symb)
@@ -161,104 +166,6 @@ export default {
                 )
             }
         },
-        // async getNewPrice() {
-        //     const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-        //     const pairAddress = await this.stepStore.getPairAddress
-        //     const poolContract = new ethers.Contract(pairAddress, PoolABI, provider)
-
-        //     const bidAsk = await poolContract.getBidAsk()
-
-        //     const reserve = await poolContract.getReserves()
-        //     console.log("reserve", reserve)
-
-        //     this.showPrice = true
-        //     this.bid = ethers.utils.formatEther(bidAsk._bid)
-        //     this.ask = ethers.utils.formatEther(bidAsk._ask)
-
-        //     this.calculatePrice()
-        //     this.calculateAmount()
-        // },
-
-        // calculatePrice() {
-        //     if (this.tokens[0].isToken0) {
-        //         this.price = 1 / this.bid
-        //     } else {
-        //         this.price = this.ask
-        //     }
-        // },
-        // calculateAmount() {
-        //     let desiredInput = this.tokens[this.lastChangedToken]
-        //     let expectedOutput = this.tokens.find((el) => el !== desiredInput)
-
-        //     if (desiredInput.amount === "") {
-        //         expectedOutput.amount = ""
-        //         this.showPrice = false
-        //         return
-        //     }
-
-        //     if (this.tokens[0].name === this.tokens[this.lastChangedToken].name) {
-        //         if (this.tokens[0].isToken0) {
-        //             expectedOutput.amount = desiredInput.amount * this.bid
-        //         } else {
-        //             expectedOutput.amount = desiredInput.amount / this.ask
-        //         }
-        //     } else {
-        //         if (this.tokens[0].isToken0) {
-        //             expectedOutput.amount = desiredInput.amount / this.bid
-        //         } else {
-        //             expectedOutput.amount = desiredInput.amount * this.ask
-        //         }
-        //     }
-        // },
-        // async swap() {
-
-        //     try {
-        //         const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-        //         //contract can recevie either just provider for read-only or signer or read-write
-        //         // https://docs.ethers.io/v5/single-page/#/v5/api/contract/example/-%23-example-erc-20-contract--connecting-to-a-contract--erc20contract
-        //         const poolAddress = await this.stepStore.getPairAddress
-        //         const poolContract = new ethers.Contract(poolAddress, PoolABI, provider.getSigner())
-        //         const tk1add = await poolContract.token0()
-        //         const tk2add = await poolContract.token1()
-        //         const token0Contract = new ethers.Contract(tk1add, TokenABI, provider.getSigner())
-        //         const token1Contract = new ethers.Contract(tk2add, TokenABI, provider.getSigner())
-
-        //         const token0 = this.tokens.find((el) => el.isToken0)
-
-        //         const bidAsk = await poolContract.getBidAsk()
-        //         const amount = ethers.utils.parseEther(token0.amount.toString())
-        //         const poolAction = this.tokens[0].isToken0 ? "TokenA0" : "TokenB0"
-        //         let price = this.tokens[0].isToken0 ? bidAsk._bid : bidAsk._ask
-
-        //         console.log("bid: ", ethers.utils.formatEther(bidAsk._bid))
-        //         console.log("ask: ", ethers.utils.formatEther(bidAsk._ask))
-
-        //         // const to = await poolContract.getReserves()
-        //         // console.log(ethers.utils.formatEther(to[0]))
-        //         // console.log(ethers.utils.formatEther(to[1]))
-
-        //         const approveAmount = ethers.utils.parseEther((token0.amount * 10000000000000).toString())
-        //         const approvalResponse = await token0Contract.approve(poolAddress, approveAmount)
-        //         const approvalResponse1 = await token1Contract.approve(poolAddress, approveAmount)
-
-        //         console.log("poolAction: ", poolAction)
-        //         console.log("amount: ", ethers.utils.formatEther(amount))
-        //         console.log("price: ", ethers.utils.formatEther(price))
-
-        //         const buy = await poolContract[poolAction](amount, price)
-        //         console.log("success:", buy)
-        //         this.tokens[0].amount = ""
-        //         this.tokens[1].amount = ""
-        //         this.tokens.sort((a, b) => (a.isToken0 ? -1 : 1))
-
-        //         // const immutables = await getPoolImmutables(poolContract)
-        //         // const state = await getPoolState(poolContract)
-        //     } catch (err) {
-        //         console.log(err)
-        //     }
-        // },
     },
     computed: {
         ...mapStores(useStepStore),
@@ -270,6 +177,17 @@ export default {
         },
         ABTokens() {
             return [this.TokenA, this.TokenB]
+        },
+        token0() {
+            return this.ABTokens[this.token0Index]
+        },
+        price() {
+            if (this.showPrice) {
+                const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : 1 / Number(this.bidAsk[1])
+                return `1 ${this.switchedTokens[0].symbol} = ${price} ${this.switchedTokens[1].symbol}`
+            } else {
+                return ""
+            }
         },
         switchedTokens: {
             get() {
@@ -286,9 +204,23 @@ export default {
                 }
             },
         },
+        tokensNotNull() {
+            return this.ABTokens.every((el) => el !== null)
+        },
+        tokenToSell() {
+            return this.switchedTokens[0]
+        },
         isHigherStyle() {
             const list = ["higher", null]
             return !Boolean(this.tokenToSellIndex) ? list : list.reverse()
+        },
+        token0Style() {
+            const list = ["token0", null]
+            if (this.tokensNotNull) {
+                return this.switchedTokens[0] === this.token0 ? list : list.reverse()
+            } else {
+                return [null, null]
+            }
         },
         isMountedStyle() {
             return !this.alreadyMounted ? "" : "transitions"
@@ -351,18 +283,30 @@ $secodary: #ffd5c9;
                     &.transitions {
                         transition: height var(--transition);
                     }
-                    .switch {
+                    .floater {
                         position: absolute;
                         z-index: 2;
                         background-color: var(--swap-windows);
                         border: var(--swap-bg) 0.5rem solid;
                         transition: all var(--transition);
-                        border-radius: 1.5rem 0 0 1.5rem;
                         padding: 0.7rem 1rem;
                         cursor: pointer;
-                        transform: translateY(-50%);
                         top: calc(100% + 0.3rem);
-                        right: calc(0% - 0.4rem);
+
+                        &__switch {
+                            transform: translateY(-50%);
+                            border-radius: 1.5rem 0 0 1.5rem;
+                            right: calc(0% - 0.4rem);
+                        }
+                        &__price {
+                            border-radius: 0 1.5rem 1.5rem 0;
+                            left: calc(0% - 0.4rem);
+                            transform: translateY(-50%) scale(0);
+                            transform-origin: left center;
+                            &.show-price {
+                                transform: translateY(-50%) scale(1);
+                            }
+                        }
                     }
                     &.higher {
                         height: 10rem;

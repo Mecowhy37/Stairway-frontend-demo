@@ -75,7 +75,7 @@ export const useStepStore = defineStore("step", {
     },
     getters: {
         isConnectingText() {
-            return this.connecting ? "Connecting . . ." : "Connect Wallet"
+            return this.connecting ? "connecting . . ." : "connect wallet"
         },
     },
 })
