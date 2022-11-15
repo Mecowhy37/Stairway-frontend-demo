@@ -1,50 +1,47 @@
 <template>
-    <div>
-        <div class="widget">
-            <!-- <div v-if="showPrice" class="prices">price here </div> -->
-            <div class="amount-wrap">
-                <div class="amount amount__input" :class="[isHigherStyle[0], isMountedStyle]">
-                    <label for="amount_1" @click="setToken(0)" :class="{ token0: token0Style[0] }">{{
-                        switchedTokens[0] !== null ? switchedTokens[0].symbol : "select token"
-                    }}</label>
-                    <input
-                        type="number"
-                        id="amount_1"
-                        name="amount_1"
-                        placeholder="0.00"
-                        @input="setLastChangedToken(0)"
-                        v-model="sellAmount"
-                    />
-                    <div class="floater floater__switch" @click="switchOrder">switch</div>
-                    <div class="floater floater__price" :class="{ 'show-price': showPrice }">{{ price }}</div>
-                </div>
-                <div class="amount amount__input" :class="[isHigherStyle[1], isMountedStyle]">
-                    <label for="amount_1" @click="setToken(1)" :class="{ token0: token0Style[1] }">{{
-                        switchedTokens[1] !== null ? switchedTokens[1].symbol : "select token"
-                    }}</label>
-                    <input
-                        type="number"
-                        name="amount_1"
-                        id="amount_1"
-                        placeholder="0.00"
-                        @input="setLastChangedToken(1)"
-                        v-model="buyAmount"
-                    />
-                </div>
-                <div v-if="stepStore.activeWallet === null" @click="stepStore.connectToMetamask" class="connect">
-                    <h3>{{ stepStore.isConnectingText }}</h3>
-                </div>
-                <div v-else @click="swap()" class="connect">
-                    <h3>swap</h3>
-                </div>
+    <div class="widget">
+        <div class="amount-wrap">
+            <div class="amount amount__input" :class="[token0Style[0], isMountedStyle]">
+                <label for="amount_1" @click="setToken(0)">{{
+                    switchedTokens[0] !== null ? switchedTokens[0].symbol : "select token"
+                }}</label>
+                <input
+                    type="number"
+                    id="amount_1"
+                    name="amount_1"
+                    placeholder="0.00"
+                    @input="setTokenAmount($event.target.value, 0)"
+                    :value="amountInputs[0]"
+                />
+                <div class="floater floater__switch" @click="switchOrder">switch</div>
+                <div class="floater floater__price" :class="{ 'show-price': showPrice }">{{ price }}</div>
             </div>
-            <!-- <div class="slippage">
+            <div class="amount amount__input" :class="[token0Style[1], isMountedStyle]">
+                <label for="amount_1" @click="setToken(1)">{{
+                    switchedTokens[1] !== null ? switchedTokens[1].symbol : "select token"
+                }}</label>
+                <input
+                    type="number"
+                    name="amount_1"
+                    id="amount_1"
+                    placeholder="0.00"
+                    @input="setTokenAmount($event.target.value, 1)"
+                    :value="amountInputs[1]"
+                />
+            </div>
+            <div v-if="stepStore.activeWallet === null" @click="stepStore.connectToMetamask" class="connect">
+                <h3>{{ stepStore.isConnectingText }}</h3>
+            </div>
+            <div v-else @click="swap()" class="connect">
+                <h3>swap</h3>
+            </div>
+        </div>
+        <!-- <div class="slippage">
                 <div class="checkbox inset" @click="toggleSlippage">
                     <div v-show="noSlippage">✓</div>
                 </div>
                 <label for="slippage">No slippage - set price</label>
             </div> -->
-        </div>
     </div>
 </template>
 
@@ -73,7 +70,7 @@ export default {
             bidAsk: [],
             token0Index: null,
             buyAmount: null,
-            sellAmount: 1,
+            sellAmount: null,
             tokenToSellIndex: 0,
             lastChangedToken: 0,
             defaultTokenASymbol: "BTC",
@@ -144,11 +141,12 @@ export default {
             this.lastChangedToken = this.lastChangedToken === 0 ? 1 : 0
             this.tokenToSellIndex = this.tokenToSellIndex === 0 ? 1 : 0
         },
-        setLastChangedToken(index) {
-            this.lastChangedToken = index
-        },
         getToken(symb) {
             return TokenList.find((el) => el.symbol === symb)
+        },
+        setTokenAmount(value, inputIndex) {
+            this.lastChangedToken = inputIndex
+            this.amountInputs = this.amountInputs.map((el, i) => (inputIndex === i ? value : el))
         },
         setToken(index) {
             // -> triggers ABTokens() watcher
@@ -169,17 +167,39 @@ export default {
     },
     computed: {
         ...mapStores(useStepStore),
-        isConnectingStyle() {
-            return this.connecting ? "connecting" : ""
-        },
-        cssa() {
-            this.stepStore.isDark ? `--dark-primary` : `--light-primary`
-        },
         ABTokens() {
             return [this.TokenA, this.TokenB]
         },
         token0() {
             return this.ABTokens[this.token0Index]
+        },
+        tokensNotNull() {
+            return this.ABTokens.every((el) => el !== null)
+        },
+        tokenToSell() {
+            return this.switchedTokens[0]
+        },
+        amountInputs: {
+            get() {
+                if (this.lastChangedToken === 0) {
+                    if (this.tokenToSell === this.token0) {
+                        this.buyAmount = this.sellAmount * this.bidAsk[0]
+                    } else {
+                        this.buyAmount = this.sellAmount / this.bidAsk[1]
+                    }
+                } else {
+                    if (this.tokenToSell === this.token0) {
+                        this.sellAmount = this.buyAmount / this.bidAsk[0]
+                    } else {
+                        this.sellAmount = this.buyAmount * this.bidAsk[1]
+                    }
+                }
+                return [this.sellAmount || null, this.buyAmount || null]
+            },
+            set(newValue) {
+                this.sellAmount = newValue[0]
+                this.buyAmount = newValue[1]
+            },
         },
         price() {
             if (this.showPrice) {
@@ -204,15 +224,8 @@ export default {
                 }
             },
         },
-        tokensNotNull() {
-            return this.ABTokens.every((el) => el !== null)
-        },
-        tokenToSell() {
-            return this.switchedTokens[0]
-        },
-        isHigherStyle() {
-            const list = ["higher", null]
-            return !Boolean(this.tokenToSellIndex) ? list : list.reverse()
+        isConnectingStyle() {
+            return this.connecting ? "connecting" : ""
         },
         token0Style() {
             const list = ["token0", null]
@@ -292,14 +305,15 @@ $secodary: #ffd5c9;
                         padding: 0.7rem 1rem;
                         cursor: pointer;
                         top: calc(100% + 0.3rem);
+                        font-size: 1.35rem;
 
                         &__switch {
                             transform: translateY(-50%);
-                            border-radius: 1.5rem 0 0 1.5rem;
+                            border-radius: 1.3rem 0 0 1.3rem;
                             right: calc(0% - 0.4rem);
                         }
                         &__price {
-                            border-radius: 0 1.5rem 1.5rem 0;
+                            border-radius: 0 1.3rem 1.3rem 0;
                             left: calc(0% - 0.4rem);
                             transform: translateY(-50%) scale(0);
                             transform-origin: left center;
@@ -308,12 +322,15 @@ $secodary: #ffd5c9;
                             }
                         }
                     }
-                    &.higher {
+                    &.token0 {
                         height: 10rem;
+                        label {
+                            font-weight: bold;
+                        }
                     }
 
                     &:nth-of-type(2) {
-                        margin-top: 0.6rem;
+                        margin-top: 0.5rem;
                     }
 
                     label {
@@ -323,9 +340,6 @@ $secodary: #ffd5c9;
                         margin-left: 1.2rem;
                         cursor: pointer;
                         padding: 0.5rem;
-                        &.token0 {
-                            font-weight: bold;
-                        }
                     }
 
                     input {

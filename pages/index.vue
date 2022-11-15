@@ -42,4 +42,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.centerize {
+    grid-row: 1;
+    grid-column: 1;
+    place-self: center;
+}
+</style>

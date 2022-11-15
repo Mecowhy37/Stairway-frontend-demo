@@ -13,7 +13,7 @@ export default {
     <div id="base" :class="[stepStore.isDark ? themes.dark : themes.light]">
         <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div>
         <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div>
-        <Nav />
+        <!-- <Nav /> -->
         <slot />
         <WalletModal />
     </div>
@@ -60,11 +60,6 @@ body {
 .inset {
     box-shadow: var(--inset-shadow);
     transition: box-shadow var(--transition);
-}
-.centerize {
-    grid-row: 1;
-    grid-column: 1;
-    place-self: center;
 }
 
 .bg-gradient {
