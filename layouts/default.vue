@@ -1,3 +1,13 @@
+<template>
+    <div id="base" :class="[stepStore.isDark ? themes.dark : themes.light]">
+        <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div>
+        <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div>
+        <Nav />
+        <slot />
+        <WalletModal />
+    </div>
+</template>
+
 <script>
 import { useStepStore } from "~/stores/step"
 import { mapStores } from "pinia"
@@ -8,16 +18,6 @@ export default {
     },
 }
 </script>
-
-<template>
-    <div id="base" :class="[stepStore.isDark ? themes.dark : themes.light]">
-        <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div>
-        <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div>
-        <!-- <Nav /> -->
-        <slot />
-        <WalletModal />
-    </div>
-</template>
 
 <style lang="scss" module="themes">
 @use "assets/main.scss" as *;

@@ -179,10 +179,10 @@ export default {
         },
         amountInputs: {
             get() {
-                const Round = (amt) => {
+                function Round(amt) {
                     let amount = Number(amt)
                     amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-                    return amount === "NaN" ? "" : String(parseFloat(amount))
+                    return amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
                 }
                 if (
                     (this.lastChangedToken === 0 && String(this.sellAmount).length === 0) ||
