@@ -69,8 +69,8 @@ export default {
             TokenB: null,
             bidAsk: [],
             token0Index: null,
-            buyAmount: null,
-            sellAmount: null,
+            buyAmount: "",
+            sellAmount: "",
             tokenToSellIndex: 0,
             lastChangedToken: 0,
             defaultTokenASymbol: "BTC",
@@ -92,8 +92,7 @@ export default {
         // },
         async ABTokens() {
             if (!this.ABTokens.every((el) => el !== null)) {
-                console.log("one of the tokens is null")
-
+                // one of the tokens is null
                 this.bidAsk = []
                 this.showPrice = false
                 this.token0Index = null
@@ -118,13 +117,14 @@ export default {
             const bidAsk = await pool.getBidAsk()
             this.bidAsk[0] = ethers.utils.formatEther(bidAsk._bid)
             this.bidAsk[1] = ethers.utils.formatEther(bidAsk._ask)
-            this.showPrice = true
 
             //find which is token0
             const token0 = await pool.token0()
             console.log("token0", token0)
 
             this.token0Index = this.ABTokens.findIndex((el) => el.address === token0)
+
+            this.showPrice = true
             // } catch (err) {
             //     console.log(err)
             // }
@@ -181,20 +181,31 @@ export default {
         },
         amountInputs: {
             get() {
+                const Round = (amt) => {
+                    let amount = Number(amt)
+                    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+                    return amount === "NaN" ? "" : String(parseFloat(amount))
+                }
+                if (
+                    (this.lastChangedToken === 0 && String(this.sellAmount).length === 0) ||
+                    (this.lastChangedToken === 1 && String(this.buyAmount).length === 0)
+                ) {
+                    return ["", ""]
+                }
                 if (this.lastChangedToken === 0) {
                     if (this.tokenToSell === this.token0) {
-                        this.buyAmount = this.sellAmount * this.bidAsk[0]
+                        this.buyAmount = Round(this.sellAmount * this.bidAsk[0])
                     } else {
-                        this.buyAmount = this.sellAmount / this.bidAsk[1]
+                        this.buyAmount = Round(this.sellAmount / this.bidAsk[1])
                     }
                 } else {
                     if (this.tokenToSell === this.token0) {
-                        this.sellAmount = this.buyAmount / this.bidAsk[0]
+                        this.sellAmount = Round(this.buyAmount / this.bidAsk[0])
                     } else {
-                        this.sellAmount = this.buyAmount * this.bidAsk[1]
+                        this.sellAmount = Round(this.buyAmount * this.bidAsk[1])
                     }
                 }
-                return [this.sellAmount || null, this.buyAmount || null]
+                return [this.sellAmount || "", this.buyAmount || ""]
             },
             set(newValue) {
                 this.sellAmount = newValue[0]
@@ -203,7 +214,8 @@ export default {
         },
         price() {
             if (this.showPrice) {
-                const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : 1 / Number(this.bidAsk[1])
+                let price = this.tokenToSell === this.token0 ? this.bidAsk[0] : 1 / Number(this.bidAsk[1])
+                price = Number(price) > 1 ? Number(price).toFixed(2) : Number(price).toPrecision(2)
                 return `1 ${this.switchedTokens[0].symbol} = ${price} ${this.switchedTokens[1].symbol}`
             } else {
                 return ""
@@ -325,7 +337,7 @@ $secodary: #ffd5c9;
                     &.token0 {
                         height: 10rem;
                         label {
-                            font-weight: bold;
+                            /* font-weight: bold; */
                         }
                     }
 
