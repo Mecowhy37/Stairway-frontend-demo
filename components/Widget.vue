@@ -239,7 +239,7 @@ export default {
         },
         token0Style() {
             const list = ["token0", null]
-            if (this.tokensNotNull) {
+            if (this.token0Index !== null) {
                 return this.switchedTokens[0] === this.token0 ? list : list.reverse()
             } else {
                 return [null, null]
