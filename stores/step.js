@@ -29,6 +29,7 @@ export const useStepStore = defineStore("step", {
             // console.log(provider)
 
             const account = await eth.request({ method: "eth_accounts" })
+            console.log(account)
             if (account.length !== 0) {
                 this.activeWallet = account[0]
             } else {

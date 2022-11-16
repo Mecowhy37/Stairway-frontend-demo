@@ -120,8 +120,6 @@ export default {
 
             //find which is token0
             const token0 = await pool.token0()
-            console.log("token0", token0)
-
             this.token0Index = this.ABTokens.findIndex((el) => el.address === token0)
 
             this.showPrice = true
@@ -252,10 +250,11 @@ export default {
         },
     },
     mounted() {
+        this.alreadyMounted = true
+    },
+    created() {
         this.TokenA = this.getToken(this.defaultTokenASymbol)
         // this.TokenB = this.getToken(this.defaultTokenBSymbol)
-        // this.getNewPrice()
-        this.alreadyMounted = true
     },
 }
 </script>
