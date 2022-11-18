@@ -1,10 +1,11 @@
 <template>
     <div class="widget">
-        <div class="amount-wrap">
+        <div class="wrap">
             <div class="amount amount__input" :class="[token0Style[0], isMountedStyle]">
-                <label for="amount_1" @click="setToken(0)">{{
-                    switchedTokens[0] !== null ? switchedTokens[0].symbol : "select token"
-                }}</label>
+                <label for="amount_1" @click="setToken(0)"
+                    >{{ switchedTokens[0] !== null ? switchedTokens[0].symbol : "select token" }} <br />
+                    <p v-if="switchedBalance[0] !== null">balance: {{ switchedBalance[0] }}</p></label
+                >
                 <input
                     type="number"
                     id="amount_1"
@@ -17,9 +18,10 @@
                 <div class="floater floater__price" :class="{ 'show-price': showPrice }">{{ price }}</div>
             </div>
             <div class="amount amount__input" :class="[token0Style[1], isMountedStyle]">
-                <label for="amount_1" @click="setToken(1)">{{
-                    switchedTokens[1] !== null ? switchedTokens[1].symbol : "select token"
-                }}</label>
+                <label for="amount_1" @click="setToken(1)"
+                    >{{ switchedTokens[1] !== null ? switchedTokens[1].symbol : "select token" }}<br />
+                    <p v-if="switchedBalance[1] !== null">balance: {{ switchedBalance[1] }}</p></label
+                >
                 <input
                     type="number"
                     name="amount_1"
@@ -47,90 +49,87 @@
 
 <script>
 import { useStepStore } from "~/stores/step"
+import { useTempStore } from "~/stores/temp"
 import { mapStores } from "pinia"
 import { ethers } from "ethers"
 
-import * as Pair from "../contractABIs/GapswapV2Pair.json"
-import * as Token from "../contractABIs/ERC20.json"
-import * as Factory from "../contractABIs/GapswapV2Factory.json"
-import * as Tokens from "../contants/tokens.json"
+import { getToken } from "~/helpers/index"
+
+import * as Factory from "../ABIs/factoryAbi.json"
+const FactoryABI = Factory.default
+
+import * as Pool from "../ABIs/poolAbi.json"
+const PoolABI = Pool.default
+
+import * as Token from "../ABIs/tokenAbi.json"
+const TokenABI = Token.default
+
+import * as Tokens from "../constants/tokenAddresses.json"
+const TokenList = Tokens.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
-
-const FactoryABI = Factory.abi
-const PoolABI = Pair.abi
-const TokenABI = Token.abi
-const TokenList = Tokens.list
 
 export default {
     data() {
         return {
             TokenA: null,
             TokenB: null,
+            balanceA: null,
+            balanceB: null,
             bidAsk: [],
             token0Index: null,
             buyAmount: "",
             sellAmount: "",
             tokenToSellIndex: 0,
             lastChangedToken: 0,
-            defaultTokenASymbol: "BTC",
-            defaultTokenBSymbol: "USD",
+            defaultTokenASymbol: "MyBTC",
+            defaultTokenBSymbol: "MyUSD",
             showPrice: false,
             noSlippage: false,
             alreadyMounted: false,
         }
     },
     watch: {
-        // tokens: {
-        //     handler: async function (newValue, oldValue) {
-        //         if (newValue[0].amount + newValue[1].amount === "") {
-        //             this.showPrice = false
-        //         }
-        //         this.getNewPrice()
-        //     },
-        //     deep: true,
-        // },
         async ABTokens() {
+            this.getBalances()
             if (!this.ABTokens.every((el) => el !== null)) {
                 // one of the tokens is null
                 this.bidAsk = []
+                this.tempStore.poolAddress = null
                 this.showPrice = false
                 this.token0Index = null
                 return
             }
 
-            // try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
-
-            //find a pool
-            const pairAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
-            if (pairAddress === unhandled) {
-                console.log("pair doesnt exist - check /constats/tokens.json")
-                //notify
-                return
+            try {
+                this.setupPool()
+            } catch (err) {
+                console.log(err)
             }
-
-            const pool = new ethers.Contract(pairAddress, PoolABI, provider)
-
-            //get bidAsk and maybe depth
-            const bidAsk = await pool.getBidAsk()
-            this.bidAsk[0] = ethers.utils.formatEther(bidAsk._bid)
-            this.bidAsk[1] = ethers.utils.formatEther(bidAsk._ask)
-
-            //find which is token0
-            const token0 = await pool.token0()
-            this.token0Index = this.ABTokens.findIndex((el) => el.address === token0)
-
-            this.showPrice = true
-            // } catch (err) {
-            //     console.log(err)
-            // }
+        },
+        activeWalletCallback() {
+            this.getBalances()
         },
     },
     methods: {
-        toggleSlippage() {
-            this.noSlippage = !this.noSlippage
+        async getBalances() {
+            if (this.stepStore.activeWallet) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                if (this.TokenA) {
+                    const tkA = new ethers.Contract(this.TokenA.address, TokenABI, provider)
+                    const balA = await tkA.balanceOf(this.stepStore.activeWallet)
+                    this.balanceA = ethers.utils.formatEther(balA)
+                } else {
+                    this.balanceA = null
+                }
+                if (this.TokenB) {
+                    const tkB = new ethers.Contract(this.TokenB.address, TokenABI, provider)
+                    const balB = await tkB.balanceOf(this.stepStore.activeWallet)
+                    this.balanceB = ethers.utils.formatEther(balB)
+                } else {
+                    this.balanceB = null
+                }
+            }
         },
         switchOrder() {
             const shuffle = [this.sellAmount, this.buyAmount].reverse()
@@ -138,9 +137,6 @@ export default {
             this.buyAmount = shuffle[1]
             this.lastChangedToken = this.lastChangedToken === 0 ? 1 : 0
             this.tokenToSellIndex = this.tokenToSellIndex === 0 ? 1 : 0
-        },
-        getToken(symb) {
-            return TokenList.find((el) => el.symbol === symb)
         },
         setTokenAmount(value, inputIndex) {
             this.lastChangedToken = inputIndex
@@ -150,7 +146,7 @@ export default {
             // -> triggers ABTokens() watcher
             // opening modal and choosing token
             // do validation
-            const toSet = this.getToken(this.defaultTokenBSymbol)
+            const toSet = getToken(this.defaultTokenBSymbol)
 
             if (this.switchedTokens[index] === null) {
                 this.switchedTokens = this.switchedTokens.map((el) =>
@@ -162,9 +158,80 @@ export default {
                 )
             }
         },
+        async swap() {
+            try {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
+
+                //find a pool
+                const poolAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
+
+                const poolContract = new ethers.Contract(poolAddress, PoolABI, provider.getSigner())
+
+                const sellToken = new ethers.Contract(this.tokenToSell.address, TokenABI, provider.getSigner())
+
+                const approveAmount = ethers.utils.parseEther(this.sellAmount)
+                const approvalResponse = await sellToken.approve(this.tempStore.poolAddress, approveAmount)
+
+                // const allow = await sellToken.allowance(this.stepStore.activeWallet, this.tempStore.poolAddress)
+                // console.log("allowance", ethers.utils.formatEther(allow._hex))
+
+                const poolAction = this.tokenToSell === this.token0 ? "sellToken0" : "buyToken0"
+
+                const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : this.bidAsk[1]
+                const formatedPrice = ethers.utils.parseEther(price)
+
+                const token0Amount = this.tokenToSell === this.token0 ? this.sellAmount : this.buyAmount
+                const formatedToken0Amount = ethers.utils.parseEther(token0Amount)
+
+                console.log(" - swap - pool action: ", poolAction)
+                console.log(" - swap - amount: ", token0Amount)
+                console.log(" - swap - price - : ", price)
+
+                const tx = await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
+                    console.log(" -  SUCCESSFUL SWAP -")
+                    console.log(res)
+
+                    this.setupPool()
+                    this.amountA = ""
+                    this.amountB = ""
+                })
+            } catch (err) {
+                console.log(" - swap - could swap")
+                console.log(err)
+            }
+        },
+        async setupPool() {
+            console.log(" - swap - SETUP POOL CALLED - ")
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
+
+            //find a pool
+            const poolAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
+
+            if (poolAddress === unhandled) {
+                console.log("swap - pair doesnt exist - ")
+                this.tempStore.poolAddress = null
+                return
+            }
+            this.tempStore.poolAddress = poolAddress
+
+            const pool = new ethers.Contract(poolAddress, PoolABI, provider)
+
+            //get bidAsk and maybe depth
+            const bidAsk = await pool.getBidAsk()
+            this.bidAsk[0] = ethers.utils.formatEther(bidAsk._bid)
+            this.bidAsk[1] = ethers.utils.formatEther(bidAsk._ask)
+
+            //find which is token0
+            const token0 = await pool.token0()
+            this.token0Index = this.ABTokens.findIndex((el) => el.address === token0)
+
+            this.showPrice = true
+        },
     },
     computed: {
-        ...mapStores(useStepStore),
+        ...mapStores(useStepStore, useTempStore),
         ABTokens() {
             return [this.TokenA, this.TokenB]
         },
@@ -205,6 +272,7 @@ export default {
                 }
                 return [this.sellAmount || "", this.buyAmount || ""]
             },
+            //unneccessary, can be moved where amountInputs are st
             set(newValue) {
                 this.sellAmount = newValue[0]
                 this.buyAmount = newValue[1]
@@ -234,6 +302,12 @@ export default {
                 }
             },
         },
+        switchedBalance: {
+            get() {
+                const list = [this.balanceA, this.balanceB]
+                return !Boolean(this.tokenToSellIndex) ? list : list.reverse()
+            },
+        },
         isConnectingStyle() {
             return this.connecting ? "connecting" : ""
         },
@@ -248,13 +322,17 @@ export default {
         isMountedStyle() {
             return !this.alreadyMounted ? "" : "transitions"
         },
+        activeWalletCallback() {
+            // watch callback when wallet changes
+            return this.stepStore.activeWallet
+        },
     },
     mounted() {
         this.alreadyMounted = true
     },
     created() {
-        this.TokenA = this.getToken(this.defaultTokenASymbol)
-        // this.TokenB = this.getToken(this.defaultTokenBSymbol)
+        this.TokenA = getToken(this.defaultTokenASymbol)
+        this.TokenB = getToken(this.defaultTokenBSymbol)
     },
 }
 </script>
@@ -270,15 +348,12 @@ $secodary: #ffd5c9;
     background-color: var(--swap-bg);
     transition: background-color var(--transition);
     width: 500px;
-    border-radius: 16px;
+    border-radius: var(--outer-wdg-radius);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
     /* box-shadow: rgba(0, 0, 0, 0.05) 0px 13px 35px -5px, rgba(0, 0, 0, 0.15) 0px 8px 22px -8px; */
     /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
     padding: 0.6rem;
     padding-top: 6rem;
-    display: flex;
-    flex-direction: column;
-
     h2 {
         font-size: 2.6rem;
         text-align: center;
@@ -286,12 +361,13 @@ $secodary: #ffd5c9;
     h3 {
         font-size: 2rem;
     }
-
     label {
         font-size: 2rem;
     }
 
-    .amount-wrap {
+    .wrap {
+        display: flex;
+        flex-direction: column;
         > div {
             &.amount {
                 /* display: flex; */
@@ -351,6 +427,9 @@ $secodary: #ffd5c9;
                         margin-left: 1.2rem;
                         cursor: pointer;
                         padding: 0.5rem;
+                        p {
+                            font-size: 1.4rem;
+                        }
                     }
 
                     input {

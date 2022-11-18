@@ -1,16 +1,12 @@
 import { defineStore } from "pinia"
 import { ethers } from "ethers"
-import * as Factory from "../contractABIs/GapswapV2Factory.json"
-import * as Token from "../contractABIs/ERC20.json"
-import * as Pair from "../contractABIs/GapswapV2Pair.json"
-
-const FactoryABI = Factory.abi
-const PoolABI = Pair.abi
-const TokenABI = Token.abi
+// import * as FactoryABI from "../ABIs/factoryAbi.json"
+// import * as Token from "../ABIs/tokenAbi.json"
 
 export const useStepStore = defineStore("step", {
     state: () => {
         return {
+            chainId: 31337,
             activeWallet: null,
             connecting: false,
             isDark: false,
@@ -21,15 +17,15 @@ export const useStepStore = defineStore("step", {
         async initialize() {
             const eth = window.ethereum
             if (!eth) {
-                console.log("Please install MetaMask extension to your browser")
+                // console.log("Please install MetaMask extension to your browser")
             }
 
             const provider = new ethers.providers.Web3Provider(window.ethereum)
-            console.log("MetaMask is installed!")
+            // console.log("MetaMask is installed!")
             // console.log(provider)
 
             const account = await eth.request({ method: "eth_accounts" })
-            console.log(account)
+            // console.log(account)
             if (account.length !== 0) {
                 this.activeWallet = account[0]
             } else {
@@ -43,10 +39,10 @@ export const useStepStore = defineStore("step", {
             try {
                 const gotAccount = await provider.send("eth_requestAccounts", [])
 
-                console.log("successfuly connected wallet")
+                // console.log("successfuly connected wallet")
                 this.activeWallet = gotAccount[0]
             } catch (err) {
-                console.log("failed to connect wallet")
+                // console.log("failed to connect wallet")
                 console.log(err)
             } finally {
                 this.toggleConnecting()
@@ -55,21 +51,21 @@ export const useStepStore = defineStore("step", {
         toggleConnecting() {
             this.connecting = !this.connecting
         },
-        async getBalance(wallet) {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const poolAdd = await this.getPairAddress
-            const poolContract = new ethers.Contract(poolAdd, PoolABI, provider)
-            const tk1add = await poolContract.token0()
-            const tk2add = await poolContract.token1()
-            console.log("tk1add: ", tk1add, "\ntk2add: ", tk2add)
-            const token0Contract = new ethers.Contract(tk1add, TokenABI, provider)
-            const token1Contract = new ethers.Contract(tk2add, TokenABI, provider)
+        // async getBalance(wallet) {
+        //     const provider = new ethers.providers.Web3Provider(window.ethereum)
+        //     const poolAdd = await this.getpoolAddress
+        //     const poolContract = new ethers.Contract(poolAdd, PoolABI, provider)
+        //     const tk1add = await poolContract.token0()
+        //     const tk2add = await poolContract.token1()
+        //     console.log("tk1add: ", tk1add, "\ntk2add: ", tk2add)
+        //     const token0Contract = new ethers.Contract(tk1add, TokenABI, provider)
+        //     const token1Contract = new ethers.Contract(tk2add, TokenABI, provider)
 
-            const bal0 = await token0Contract.balanceOf(wallet)
-            const bal1 = await token1Contract.balanceOf(wallet)
+        //     const bal0 = await token0Contract.balanceOf(wallet)
+        //     const bal1 = await token1Contract.balanceOf(wallet)
 
-            console.log("TK1 (usd): ", ethers.utils.formatEther(bal0), "\nTK2 (btc): ", ethers.utils.formatEther(bal1))
-        },
+        //     console.log("TK1 (usd): ", ethers.utils.formatEther(bal0), "\nTK2 (btc): ", ethers.utils.formatEther(bal1))
+        // },
         switch() {
             this.tokens.reverse()
         },

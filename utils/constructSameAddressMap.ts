@@ -1,4 +1,4 @@
-import { SupportedChainId } from '../contants/chains'
+import { SupportedChainId } from '../contantsOLD/chains'
 
 const DEFAULT_NETWORKS = [
   SupportedChainId.TESTNET,

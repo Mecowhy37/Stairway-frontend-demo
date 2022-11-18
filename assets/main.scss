@@ -2,6 +2,7 @@
 
 @mixin themes {
     --transition: 0.3s;
+    --outer-wdg-radius: 1.6rem;
 
     .light {
         @include spread-map($light-map);
