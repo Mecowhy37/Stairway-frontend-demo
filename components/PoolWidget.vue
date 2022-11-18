@@ -103,19 +103,19 @@ export default {
             } catch (err) {
                 console.log("- pool - couldnt approve amounts - ")
             }
-            try {
-                const token0 = await poolContract.token0()
-                console.log("tokne0-", token0)
-                const AB = [this.TokenA.address, this.TokenB.address]
-                const index = AB.indexOf((el) => el === token0)
-                const ordered = index === 0 ? [amountA, amountB] : [amountB, amountA]
-                // console.log("ordered", ...ordered)
-                const added = await poolContract.addLiquidity(...ordered)
-                console.log(added)
-            } catch (err) {
-                console.log("- pool - couldnt add liquid - ")
-                console.log(err)
-            }
+            // try {
+            const token0 = await poolContract.token0()
+            console.log("tokne0-", token0)
+            const AB = [this.TokenA.address, this.TokenB.address]
+            const index = AB.indexOf((el) => el === token0)
+            const ordered = index === 0 ? [amountA, amountB] : [amountB, amountA]
+            // console.log("ordered", ...ordered)
+            const added = await poolContract.addLiquidity(...ordered)
+            console.log(added)
+            // } catch (err) {
+            //     console.log("- pool - couldnt add liquid - ")
+            //     console.log(err)
+            // }
         },
     },
     computed: {
