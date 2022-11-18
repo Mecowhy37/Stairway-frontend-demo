@@ -61,29 +61,19 @@ export default {
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider.getSigner())
             try {
-                console.log("stepsize", this.stepSize)
                 await factory
                     .createPair(this.TokenA.address, this.TokenB.address, unhandled, this.stepSize)
                     .then(async (created) => {
-                        console.log(" - successfully created pool - ", created)
-                        const poolAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
-                        console.log("new pool address", poolAddress)
-                        // setTimeout(() => {
-                        //     // sometimes response from node is delayed
-                        //     this.$emit("poolCreation")
-                        // }, 5000)
-
-                        // this needs websocket node connection
-                        // const txHash = created.hash
-                        // provider.on("pending", (txHash) => {
-                        //     if (txHash) {
-                        //         this.$emit("poolCreation")
-                        //     }
-                        // })
+                        console.log(" - pool - successfully created pool - ")
+                        console.log(created)
+                        await factory.getPair(this.TokenA.address, this.TokenB.address).then((res) => {
+                            console.log(" - pool - is pool address here yet?")
+                            console.log(res)
+                        })
                     })
             } catch (err) {
+                console.log(" - pool - couldnt create pool - ")
                 console.log(err)
-                console.log(" - couldnt create pool - ")
             }
         },
         async addLiquidity() {
@@ -97,25 +87,24 @@ export default {
             const amountA = ethers.utils.parseEther(this.amountA.toString())
             const amountB = ethers.utils.parseEther(this.amountB.toString())
             try {
-                console.log("pool address", this.tempStore.poolAddress)
                 await tkA.approve(this.tempStore.poolAddress, amountA)
                 await tkB.approve(this.tempStore.poolAddress, amountB)
             } catch (err) {
                 console.log("- pool - couldnt approve amounts - ")
             }
-            // try {
-            const token0 = await poolContract.token0()
-            console.log("tokne0-", token0)
-            const AB = [this.TokenA.address, this.TokenB.address]
-            const index = AB.indexOf((el) => el === token0)
-            const ordered = index === 0 ? [amountA, amountB] : [amountB, amountA]
-            // console.log("ordered", ...ordered)
-            const added = await poolContract.addLiquidity(...ordered)
-            console.log(added)
-            // } catch (err) {
-            //     console.log("- pool - couldnt add liquid - ")
-            //     console.log(err)
-            // }
+            try {
+                const token0 = await poolContract.token0()
+                const AB = [this.TokenA.address, this.TokenB.address]
+                const index = AB.indexOf((el) => el === token0)
+                const ordered = index === 0 ? [amountA, amountB] : [amountB, amountA]
+
+                await poolContract.addLiquidity(...ordered).then((res) => {
+                    console.log(res)
+                })
+            } catch (err) {
+                console.log("- pool - couldnt add liquid - ")
+                console.log(err)
+            }
         },
     },
     computed: {

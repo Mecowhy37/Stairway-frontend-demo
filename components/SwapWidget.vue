@@ -178,6 +178,8 @@ export default {
 
                 const poolAction = this.tokenToSell === this.token0 ? "sellToken0" : "buyToken0"
 
+                //for 1x token0 how much token0 do you get
+                // const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : String(1 / Number(this.bidAsk[1]))
                 const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : this.bidAsk[1]
                 const formatedPrice = ethers.utils.parseEther(price)
 
@@ -187,9 +189,9 @@ export default {
                 console.log(" - swap - pool action: ", poolAction)
                 console.log(" - swap - amount: ", token0Amount)
                 console.log(" - swap - price - : ", price)
-
-                const tx = await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
-                    console.log(" -  SUCCESSFUL SWAP -")
+                // return
+                await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
+                    console.log(" - swap -  SUCCESSFUL SWAP -")
                     console.log(res)
 
                     this.setupPool()
@@ -211,7 +213,7 @@ export default {
             const poolAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
 
             if (poolAddress === unhandled) {
-                console.log("swap - pair doesnt exist - ")
+                console.log(" - swap - ? pair doesnt exist ? - ")
                 this.tempStore.poolAddress = null
                 return
             }
@@ -439,7 +441,8 @@ $secodary: #ffd5c9;
                         background: transparent;
                         border: none;
                         outline: none;
-                        text-align: center;
+                        text-align: right;
+                        padding-right: 1rem;
                         font-weight: 400;
                         font-size: 4rem;
 
