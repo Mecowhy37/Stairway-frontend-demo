@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { useStepStore } from "~/stores/step"
+import { useStepStore } from "~~/stores/step"
 import { mapStores } from "pinia"
 
 import * as Factory from "../constants/factoryAddress.json"

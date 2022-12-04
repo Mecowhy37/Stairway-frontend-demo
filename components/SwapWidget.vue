@@ -10,7 +10,7 @@
                     type="number"
                     id="amount_1"
                     name="amount_1"
-                    placeholder="0.00"
+                    placeholder="0"
                     @input="setTokenAmount($event.target.value, 0)"
                     :value="amountInputs[0]"
                 />
@@ -26,7 +26,7 @@
                     type="number"
                     name="amount_1"
                     id="amount_1"
-                    placeholder="0.00"
+                    placeholder="0"
                     @input="setTokenAmount($event.target.value, 1)"
                     :value="amountInputs[1]"
                 />
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { useStepStore } from "~/stores/step"
+import { useStepStore } from "~~/stores/step"
 import { useTempStore } from "~/stores/temp"
 import { mapStores } from "pinia"
 import { ethers } from "ethers"
@@ -101,11 +101,11 @@ export default {
                 return
             }
 
-            try {
-                this.setupPool()
-            } catch (err) {
-                console.log(err)
-            }
+            // try {
+            //     this.setupPool()
+            // } catch (err) {
+            //     console.log(err)
+            // }
         },
         activeWalletCallback() {
             this.getBalances()
@@ -316,11 +316,12 @@ export default {
         },
         token0Style() {
             const list = ["token0", null]
-            if (this.token0Index !== null) {
-                return this.switchedTokens[0] === this.token0 ? list : list.reverse()
-            } else {
-                return [null, null]
-            }
+            // if (this.token0Index !== null) {
+            //     return this.switchedTokens[0] === this.token0 ? list : list.reverse()
+            // } else {
+            //     return [null, null]
+            // }
+            return this.tokenToSellIndex === 0 ? list : list.reverse()
         },
         isMountedStyle() {
             return !this.alreadyMounted ? "" : "transitions"
@@ -384,18 +385,21 @@ $secodary: #ffd5c9;
                     border-radius: 14px;
                     position: relative;
                     &.transitions {
-                        transition: all var(--transition);
+                        &,
+                        * {
+                            transition-property: all;
+                            transition-duration: var(--transition);
+                        }
                     }
                     .floater {
                         position: absolute;
-                        z-index: 2;
+                        top: calc(100% + 0.3rem);
+                        padding: 0.7rem 1rem;
+                        font-size: 1.35rem;
+                        cursor: pointer;
                         background-color: var(--swap-windows);
                         border: var(--swap-bg) 0.5rem solid;
-                        transition: all var(--transition);
-                        padding: 0.7rem 1rem;
-                        cursor: pointer;
-                        top: calc(100% + 0.3rem);
-                        font-size: 1.35rem;
+                        z-index: 2;
 
                         &__switch {
                             transform: translateY(-50%);
@@ -414,9 +418,6 @@ $secodary: #ffd5c9;
                     }
                     &.token0 {
                         height: 10rem;
-                        label {
-                            /* font-weight: bold; */
-                        }
                     }
 
                     &:nth-of-type(2) {
@@ -463,18 +464,20 @@ $secodary: #ffd5c9;
                     }
                 }
             }
+
             &.connect {
+                --height: 6rem;
                 background-color: var(--swap-main-btn-bg);
                 transition: background-color var(--transition);
-                height: 6rem;
-                display: flex;
-                margin-top: 0.6rem;
-                flex-direction: column;
-                place-content: center;
-                border-radius: 12px;
+                height: var(--height);
                 text-align: center;
+                margin-top: 0.6rem;
+                border-radius: 12px;
                 cursor: pointer;
-                & > * {
+                h3 {
+                    line-height: var(--height);
+                    display: inline-block;
+                    height: 100%;
                     color: var(--swap-main-btn-color);
                     transition: color var(--transition);
                 }

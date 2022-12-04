@@ -1,31 +1,22 @@
 <template>
     <div id="base" :class="[stepStore.isDark ? themes.dark : themes.light]">
-        <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div>
-        <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div>
+        <!-- <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div> -->
+        <!-- <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div> -->
+        <div class="bg-gradient bg-gradient--dark" :class="{ hide: !stepStore.isDark }"></div>
+        <div class="bg-gradient bg-gradient--light" :class="{ hide: stepStore.isDark }"></div>
         <Nav />
         <slot />
         <WalletModal />
     </div>
 </template>
 
-<script>
-import { useStepStore } from "~/stores/step"
-import { mapStores } from "pinia"
+<script setup>
+import { useStepStore } from "~~/stores/step"
 
-export default {
-    computed: {
-        ...mapStores(useStepStore),
-    },
-}
+const stepStore = useStepStore()
 </script>
 
-<style lang="scss" module="themes">
-@use "assets/main.scss" as *;
-
-:root {
-    @include themes;
-}
-</style>
+<style lang="scss" module="themes" src="assets/main.scss"></style>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");

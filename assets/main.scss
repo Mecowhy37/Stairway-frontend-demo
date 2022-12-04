@@ -1,6 +1,6 @@
 @use "./theme.scss" as *;
 
-@mixin themes {
+:root {
     --transition: 0.3s;
     --outer-wdg-radius: 1.6rem;
 

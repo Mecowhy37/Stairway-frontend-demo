@@ -10,20 +10,19 @@
             <!-- <div class="navigation__underline"></div> -->
         </nav>
         <div class="nav-actions">
-            <div class="nav-actions__btn inset">TestNet</div>
             <div class="nav-actions__btn inset">Connect wallet</div>
-            <div class="nav-actions__btn inset" @click="() => (stepStore.isDark = !stepStore.isDark)">. . .</div>
+            <div class="nav-actions__btn inset" @click="revertTheme">. . .</div>
         </div>
     </header>
 </template>
 
-<script>
-import { useStepStore } from "~/stores/step"
-import { mapStores } from "pinia"
-export default {
-    computed: {
-        ...mapStores(useStepStore),
-    },
+<script setup>
+import { useStepStore } from "~~/stores/step"
+
+const stepStore = useStepStore()
+
+function revertTheme() {
+    stepStore.isDark = !stepStore.isDark
 }
 </script>
 
@@ -94,6 +93,10 @@ export default {
             background-color: var(--nav-actions-bg);
             transition: background-color var(--transition);
             border-radius: 8px;
+
+            &.ref {
+                transform: scale(1.5);
+            }
 
             &:first-of-type {
                 padding-right: 5rem;

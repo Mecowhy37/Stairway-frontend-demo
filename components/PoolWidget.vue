@@ -26,7 +26,7 @@
 <script>
 import { ethers } from "ethers"
 
-import { useStepStore } from "~/stores/step"
+import { useStepStore } from "~~/stores/step"
 import { useTempStore } from "~/stores/temp"
 import { mapStores } from "pinia"
 
@@ -203,17 +203,16 @@ export default {
                 margin: auto 0;
 
                 .pool {
+                    --height: 6rem;
                     flex-grow: 1;
                     background-color: var(--swap-main-btn-bg);
                     transition: background-color var(--transition);
-                    height: 6rem;
-                    display: flex;
-                    flex-direction: column;
-                    place-content: center;
+                    height: var(--height);
                     border-radius: 12px;
                     text-align: center;
                     cursor: pointer;
-                    & > * {
+                    h3 {
+                        line-height: var(--height);
                         color: var(--swap-main-btn-color);
                         transition: color var(--transition);
                     }
