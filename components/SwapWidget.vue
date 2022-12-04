@@ -15,7 +15,7 @@
                     :value="amountInputs[0]"
                 />
                 <div class="floater floater__switch" @click="switchOrder">switch</div>
-                <div class="floater floater__price" :class="{ 'show-price': showPrice }">{{ price }}</div>
+                <div class="floater floater__rate" :class="{ 'show-rate': showRate }">{{ rate }}</div>
             </div>
             <div class="amount amount__input" :class="[token0Style[1], isMountedStyle]">
                 <label for="amount_1" @click="setToken(1)"
@@ -84,7 +84,7 @@ export default {
             lastChangedToken: 0,
             defaultTokenASymbol: "MyBTC",
             defaultTokenBSymbol: "MyUSD",
-            showPrice: false,
+            showRate: false,
             noSlippage: false,
             alreadyMounted: false,
         }
@@ -96,7 +96,7 @@ export default {
                 // one of the tokens is null
                 this.bidAsk = []
                 this.tempStore.poolAddress = null
-                this.showPrice = false
+                this.showRate = false
                 this.token0Index = null
                 return
             }
@@ -230,7 +230,7 @@ export default {
             const token0 = await pool.token0()
             this.token0Index = this.ABTokens.findIndex((el) => el.address === token0)
 
-            this.showPrice = true
+            this.showRate = true
         },
     },
     computed: {
@@ -281,11 +281,11 @@ export default {
                 this.buyAmount = newValue[1]
             },
         },
-        price() {
-            if (this.showPrice) {
-                let price = this.tokenToSell === this.token0 ? this.bidAsk[0] : 1 / Number(this.bidAsk[1])
-                price = Number(price) > 1 ? Number(price).toFixed(2) : Number(price).toPrecision(2)
-                return `1 ${this.switchedTokens[0].symbol} = ${price} ${this.switchedTokens[1].symbol}`
+        rate() {
+            if (this.showRate) {
+                let rate = this.tokenToSell === this.token0 ? this.bidAsk[0] : 1 / Number(this.bidAsk[1])
+                rate = Number(rate) > 1 ? Number(rate).toFixed(2) : Number(rate).toPrecision(2)
+                return `1 ${this.switchedTokens[0].symbol} = ${rate} ${this.switchedTokens[1].symbol}`
             } else {
                 return ""
             }
@@ -406,12 +406,12 @@ $secodary: #ffd5c9;
                             border-radius: 1.3rem 0 0 1.3rem;
                             right: calc(0% - 0.4rem);
                         }
-                        &__price {
+                        &__rate {
                             border-radius: 0 1.3rem 1.3rem 0;
                             left: calc(0% - 0.4rem);
                             transform: translateY(-50%) scale(0);
                             transform-origin: left center;
-                            &.show-price {
+                            &.show-rate {
                                 transform: translateY(-50%) scale(1);
                             }
                         }
