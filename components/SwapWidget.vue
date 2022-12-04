@@ -374,7 +374,7 @@ $secodary: #ffd5c9;
         > div {
             &.amount {
                 /* display: flex; */
-                background: var(--swap-windows);
+                background-color: var(--swap-windows);
                 transition: background-color var(--transition);
 
                 &__input {
@@ -384,7 +384,7 @@ $secodary: #ffd5c9;
                     border-radius: 14px;
                     position: relative;
                     &.transitions {
-                        transition: height var(--transition);
+                        transition: all var(--transition);
                     }
                     .floater {
                         position: absolute;

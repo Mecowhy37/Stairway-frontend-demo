@@ -144,7 +144,7 @@ export default {
         > div {
             &.amount {
                 /* display: flex; */
-                background: var(--swap-windows);
+                background-color: var(--swap-windows);
                 transition: background-color var(--transition);
 
                 &__input {
