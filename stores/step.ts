@@ -1,6 +1,8 @@
+import type { Ref } from 'vue'
 import { defineStore } from "pinia"
 import { ethers } from "ethers"
-import type { Ref } from 'vue'
+import { init, useOnboard } from '@web3-onboard/vue'
+import injectedModule from '@web3-onboard/injected-wallets'
 // import * as FactoryABI from "../ABIs/factoryAbi.json"
 // import * as Token from "../ABIs/tokenAbi.json"
 
@@ -12,48 +14,72 @@ declare global {
   }
 }
 
-export const useStepStore = defineStore("step", () => {
+// type AppState = {
+//     wallets: WalletState[]
+//     chains: Chain[]
+//     accountCenter: AccountCenter
+//     walletModules: WalletModule[]
+//     locale: Locale
+//     notify: Notify
+//     notifications: Notification[]
+//   }
+
+export const useStepStore = defineStore("step", ():any => {
+    
     const isDark: Ref<boolean> = ref(false)
     const chainId: Ref<number | null> = ref(31337)
     const factoryAddress: Ref<string | null> = ref(null)
     const activeWallet: Ref<string | null> = ref(null)
     const connectingWallet: Ref<boolean> = ref(false)
-    const isConnectingText = computed(():string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
+    const isConnectingText = computed(():string => connectingWallet.value ? "connecting . . ." : "connect wallet")
 
-    async function initialize() {
-        const eth = window.ethereum
-        if (!eth) {
-            // console.log("Please install MetaMask extension to your browser")
-        }
+    const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
+    const injected = injectedModule()
+    const onboard = init({
+        wallets: [injected],
+        chains: [
+          {
+            id: '0x1',
+            token: 'ETH',
+            label: 'Ethereum Mainnet',
+            rpcUrl: MAINNET_RPC_URL
+          }
+        ],
+    })
+    const { wallets, connectWallet, disconnectConnectedWallet, connectedWallet } = useOnboard()
+    onboard.state.actions.updateAccountCenter({
+        enabled: false
+    })
 
-        // const provider = new ethers.providers.Web3Provider(window.ethereum)
-        // console.log("MetaMask is installed!")
-        // console.log(provider)
+    
+    // const state = onboard.state.select()
+    // const {unsubscribe} = state.subscribe(update =>
+    //     console.log('state update: ', update)
+    // )
 
-        const account = await eth.request({ method: "eth_accounts" })
-        activeWallet.value = account.length !== 0 ? account[0] : null
+    // remember to unsubscribe when updates are no longer needed
+    // unsubscribe()
+
+    function tryWallet() {
+        console.log(wallets.value)
+        console.log(connectedWallet.value)
     }
 
-    async function connectToMetamask() {
-        toggleConnecting()
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
+    // async function initialize() {
+    //     const eth = window.ethereum
+    //     if (!eth) {
+    //         // console.log("Please install MetaMask extension to your browser")
+    //     }
 
-        try {
-            const gotAccount = await provider.send("eth_requestAccounts", [])
+    //     // const provider = new ethers.providers.Web3Provider(window.ethereum)
+    //     // console.log("MetaMask is installed!")
+    //     // console.log(provider)
 
-            // console.log("successfuly connected wallet")
-            activeWallet.value = gotAccount[0]
-        } catch (err) {
-            // console.log("failed to connect wallet")
-            console.log(err)
-        } finally {
-            toggleConnecting()
-        }
-    }
+    //     const account = await eth.request({ method: "eth_accounts" })
+    //     activeWallet.value = account.length !== 0 ? account[0] : null
+    // }
 
-    function toggleConnecting() {
-        connectingWallet.value = !connectingWallet.value
-    }
+  
 
     return {
         chainId,
@@ -62,9 +88,10 @@ export const useStepStore = defineStore("step", () => {
         activeWallet,
         connectingWallet,
         isConnectingText,
-        initialize,
-        connectToMetamask,
-        toggleConnecting,
+        tryWallet,
+        connectedWallet,
+        connectWallet,
+        disconnectConnectedWallet
     }
 })
 

@@ -1,35 +1,21 @@
 <template>
     <div class="widget">
         <div class="wrap">
-            <div class="amount amount__input" :class="[token0Style[0], isMountedStyle]">
-                <label for="amount_1" @click="setToken(0)"
-                    >{{ switchedTokens[0] !== null ? switchedTokens[0].symbol : "select token" }} <br />
-                    <p v-if="switchedBalance[0] !== null">balance: {{ switchedBalance[0] }}</p></label
+            <div v-for="(i, x) in new Array(2)" class="amount amount__input" :class="[token0Style[x], isMountedStyle]">
+                <label for="amount_1" @click="setToken(x)"
+                    >{{ switchedTokens[x] !== null ? switchedTokens[x].symbol : "select token" }} <br />
+                    <p v-if="switchedBalance[x] !== null">balance: {{ switchedBalance[x] }}</p></label
                 >
                 <input
                     type="number"
-                    id="amount_1"
-                    name="amount_1"
+                    :id="'amount_' + x + 1"
+                    :name="'amount_' + x + 1"
                     placeholder="0"
-                    @input="setTokenAmount($event.target.value, 0)"
-                    :value="amountInputs[0]"
+                    @input="setTokenAmount($event.target.value, x)"
+                    :value="amountInputs[x]"
                 />
-                <div class="floater floater__switch" @click="switchOrder">switch</div>
-                <div class="floater floater__rate" :class="{ 'show-rate': showRate }">{{ rate }}</div>
-            </div>
-            <div class="amount amount__input" :class="[token0Style[1], isMountedStyle]">
-                <label for="amount_1" @click="setToken(1)"
-                    >{{ switchedTokens[1] !== null ? switchedTokens[1].symbol : "select token" }}<br />
-                    <p v-if="switchedBalance[1] !== null">balance: {{ switchedBalance[1] }}</p></label
-                >
-                <input
-                    type="number"
-                    name="amount_1"
-                    id="amount_1"
-                    placeholder="0"
-                    @input="setTokenAmount($event.target.value, 1)"
-                    :value="amountInputs[1]"
-                />
+                <div v-if="x === 0" class="floater floater__switch" @click="switchOrder">switch</div>
+                <div v-if="x === 0" class="floater floater__rate" :class="{ 'show-rate': showRate }">{{ rate }}</div>
             </div>
             <div v-if="stepStore.activeWallet === null" @click="stepStore.connectToMetamask" class="connect">
                 <h3>{{ stepStore.isConnectingText }}</h3>

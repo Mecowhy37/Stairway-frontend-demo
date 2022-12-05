@@ -10,14 +10,15 @@
             <!-- <div class="navigation__underline"></div> -->
         </nav>
         <div class="nav-actions">
-            <div class="nav-actions__btn inset">Connect wallet</div>
+            <div class="nav-actions__btn inset" @click="stepStore.connectWallet()">Connect wallet</div>
+            <div class="nav-actions__btn inset" @click="stepStore.tryWallet()">try wallet</div>
             <div class="nav-actions__btn inset" @click="revertTheme">. . .</div>
         </div>
     </header>
 </template>
 
 <script setup>
-import { useStepStore } from "~~/stores/step"
+import { useStepStore } from "~/stores/step"
 
 const stepStore = useStepStore()
 
