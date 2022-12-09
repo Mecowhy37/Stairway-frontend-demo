@@ -17,7 +17,7 @@
                 <div v-if="x === 0" class="floater floater__switch" @click="switchOrder">switch</div>
                 <div v-if="x === 0" class="floater floater__rate" :class="{ 'show-rate': showRate }">{{ rate }}</div>
             </div>
-            <div v-if="stepStore.activeWallet === null" @click="stepStore.connectToMetamask" class="connect">
+            <div v-if="stepStore.activeWallet === null" @click="stepStore.connectWalletAction" class="connect">
                 <h3>{{ stepStore.isConnectingText }}</h3>
             </div>
             <div v-else @click="swap()" class="connect">
@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import { useStepStore } from "~~/stores/step"
-import { useTempStore } from "~/stores/temp"
+import { useStepStore } from "@/stores/step"
+import { useTempStore } from "@/stores/temp"
 import { mapStores } from "pinia"
 import { ethers } from "ethers"
 

@@ -51,20 +51,38 @@ export const useStepStore = defineStore("step", ():any => {
         enabled: false
     })
 
+    const getConnectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null )
+    const getTruncatedWalletAddress = computed(() => {
+      if (getConnectedAccount.value !== null) {
+        const toTruncate = getConnectedAccount.value.split("")
+        const start = toTruncate.splice(0,5).join("")
+        const end = toTruncate.splice(-4).join("")
+        return start+"..."+end
+      } else {
+        return null
+      }
+    })
+
+    function connectWalletAction() {
+      connectingWallet.value = true
+      connectWallet().then(() => {
+          connectingWallet.value = false
+      })
+  }
     
-    // const state = onboard.state.select()
-    // const {unsubscribe} = state.subscribe(update =>
-    //     console.log('state update: ', update)
-    // )
-
-    // remember to unsubscribe when updates are no longer needed
-    // unsubscribe()
-
     function tryWallet() {
-        console.log(wallets.value)
-        console.log(connectedWallet.value)
+      console.log(wallets.value)
+      console.log(connectedWallet.value)
     }
-
+    
+      // const state = onboard.state.select()
+      // const {unsubscribe} = state.subscribe(update =>
+      //     console.log('state update: ', update)
+      // )
+  
+      // remember to unsubscribe when updates are no longer needed
+      // unsubscribe()
+      
     // async function initialize() {
     //     const eth = window.ethereum
     //     if (!eth) {
@@ -83,15 +101,19 @@ export const useStepStore = defineStore("step", ():any => {
 
     return {
         chainId,
-        isDark,
         factoryAddress,
-        activeWallet,
-        connectingWallet,
+        isDark,
+
         isConnectingText,
-        tryWallet,
+        activeWallet,
+        connectWalletAction,
         connectedWallet,
-        connectWallet,
-        disconnectConnectedWallet
+        connectingWallet,
+        disconnectConnectedWallet,
+        getConnectedAccount,
+        getTruncatedWalletAddress,
+
+        tryWallet,
     }
 })
 

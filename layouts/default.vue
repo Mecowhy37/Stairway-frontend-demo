@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { useStepStore } from "~~/stores/step"
+import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
 </script>
@@ -35,13 +35,23 @@ html {
     user-select: none;
 }
 
+body {
+    font-size: 1.6rem;
+}
 #base {
     display: grid;
     height: 100vh;
     position: relative;
 }
-body {
-    font-size: 1.6rem;
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.centerize {
+    grid-row: 1;
+    grid-column: 1;
+    place-self: center;
 }
 
 .main {

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { useStepStore } from "~~/stores/step"
+import { useStepStore } from "@/stores/step"
 import { mapStores } from "pinia"
 
 import * as Factory from "../constants/factoryAddress.json"
@@ -58,15 +58,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.row {
-    display: flex;
-    flex-direction: row;
-}
-
-.centerize {
-    grid-row: 1;
-    grid-column: 1;
-    place-self: center;
-}
-</style>
+<style lang="scss"></style>

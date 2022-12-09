@@ -3,9 +3,13 @@
         <!-- <h1>Charts</h1> -->
         <div class="display">
             <div>
-                <p><b>wallet address</b>{{ stepStore.connectedWallet?.accounts[0]?.address || empty }}</p>
+                <p><b>wallet address</b>{{ stepStore.getConnectedAccount || empty }}</p>
             </div>
-            <button v-if="stepStore.connectedWallet === null" @click="connectWallet" class="btn btn--primary">
+            <button
+                v-if="stepStore.connectedWallet === null"
+                @click="stepStore.connectWalletAction"
+                class="btn btn--primary"
+            >
                 <h3>
                     {{ stepStore.isConnectingText }}
                 </h3>
@@ -23,16 +27,9 @@
 </template>
 
 <script setup>
-import { useStepStore } from "~/stores/step"
+import { useStepStore } from "@/stores/step"
 const stepStore = useStepStore()
 const empty = "ᕙ(⇀‸↼‶)ᕗ"
-
-function connectWallet() {
-    stepStore.connectingWallet = true
-    stepStore.connectWallet().then(() => {
-        stepStore.connectingWallet = false
-    })
-}
 </script>
 
 <style lang="scss" scoped>

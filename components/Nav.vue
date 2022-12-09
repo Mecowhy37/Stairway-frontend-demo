@@ -2,23 +2,25 @@
     <header class="navbar">
         <p class="navbar__logo">StepSwap</p>
         <nav class="navigation">
-            <NuxtLink to="/" class="navigation__link"> Swap </NuxtLink>
-            <NuxtLink to="/pool" class="navigation__link"> Pool </NuxtLink>
-            <NuxtLink to="/vote" class="navigation__link"> Vote </NuxtLink>
-            <NuxtLink to="/charts" class="navigation__link"> Charts </NuxtLink>
+            <NuxtLink to="/" class="navigation__link">swap</NuxtLink>
+            <NuxtLink to="/pool" class="navigation__link">pool</NuxtLink>
+            <NuxtLink to="/vote" class="navigation__link">vote</NuxtLink>
+            <NuxtLink to="/charts" class="navigation__link">charts</NuxtLink>
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->
         </nav>
         <div class="nav-actions">
-            <div class="nav-actions__btn inset" @click="stepStore.connectWallet()">Connect wallet</div>
-            <div class="nav-actions__btn inset" @click="stepStore.tryWallet()">try wallet</div>
-            <div class="nav-actions__btn inset" @click="revertTheme">. . .</div>
+            <Btn class="nav-actions__btn inset" @click="revertTheme">. . .</Btn>
+            <Btn class="nav-actions__btn inset" @click="stepStore.tryWallet()">network</Btn>
+            <Btn class="nav-actions__btn inset" @click="stepStore.connectWalletAction()">
+                {{ stepStore.getTruncatedWalletAddress || stepStore.isConnectingText }}
+            </Btn>
         </div>
     </header>
 </template>
 
 <script setup>
-import { useStepStore } from "~/stores/step"
+import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
 
@@ -53,12 +55,12 @@ function revertTheme() {
                 opacity: 0;
                 bottom: 0;
                 left: 50%;
-                height: 4px;
+                height: 2px;
+                border-radius: 1px;
                 width: calc(100% - 3.2rem);
                 background-color: var(--main-color);
                 transition: background-color var(--transition);
-                border-radius: 2px;
-                transform: translate(-50%, 100%);
+                transform: translateX(-50%);
                 transition: opacity ease-in-out 0.1s;
             }
 
@@ -70,18 +72,6 @@ function revertTheme() {
                 opacity: 1;
             }
         }
-
-        &__underline {
-            position: absolute;
-            height: 4px;
-            border-radius: 2px;
-            width: 57px;
-            background-color: var(--main-color);
-            transition: background-color var(--transition);
-            bottom: 0%;
-            margin-left: 0.8rem;
-            transform: translateY(100%);
-        }
     }
 
     .nav-actions {
@@ -90,22 +80,11 @@ function revertTheme() {
         margin-left: auto;
 
         &__btn {
-            padding: 1.2rem 1.9rem;
+            padding: 0.8rem 1.9rem;
             background-color: var(--nav-actions-bg);
             transition: background-color var(--transition);
             border-radius: 8px;
-
-            &.ref {
-                transform: scale(1.5);
-            }
-
-            &:first-of-type {
-                padding-right: 5rem;
-            }
-
-            &:last-of-type {
-                vertical-align: center;
-            }
+            border: 1px solid var(--swap-main-btn-bg);
         }
     }
 }

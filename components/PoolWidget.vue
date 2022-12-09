@@ -26,8 +26,8 @@
 <script>
 import { ethers } from "ethers"
 
-import { useStepStore } from "~~/stores/step"
-import { useTempStore } from "~/stores/temp"
+import { useStepStore } from "@/stores/step"
+import { useTempStore } from "@/stores/temp"
 import { mapStores } from "pinia"
 
 import { getToken } from "~/helpers/index"
