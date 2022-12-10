@@ -10,10 +10,12 @@
             <!-- <div class="navigation__underline"></div> -->
         </nav>
         <div class="nav-actions">
-            <Btn class="nav-actions__btn inset" @click="revertTheme">. . .</Btn>
-            <Btn class="nav-actions__btn inset" @click="stepStore.tryWallet()">network</Btn>
-            <Btn class="nav-actions__btn inset" @click="stepStore.connectWalletAction()">
-                {{ stepStore.getTruncatedWalletAddress || stepStore.isConnectingText }}
+            <Btn secondary thin compact @click="revertTheme">. . .</Btn>
+            <Btn secondary thin compact @click="stepStore.tryWallet()">network</Btn>
+            <Btn secondary thin compact>
+                <span @click="stepStore.connectWalletAction()">
+                    {{ stepStore.getTruncatedWalletAddress || "connect" }}
+                </span>
             </Btn>
         </div>
     </header>

@@ -18,7 +18,7 @@
                 <div v-if="x === 0" class="floater floater__rate" :class="{ 'show-rate': showRate }">{{ rate }}</div>
             </div>
             <div v-if="stepStore.activeWallet === null" @click="stepStore.connectWalletAction" class="connect">
-                <h3>{{ stepStore.isConnectingText }}</h3>
+                <h3>connect</h3>
             </div>
             <div v-else @click="swap()" class="connect">
                 <h3>swap</h3>

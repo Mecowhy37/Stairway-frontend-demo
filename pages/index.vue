@@ -5,23 +5,8 @@
             <div>
                 <p><b>wallet address</b>{{ stepStore.getConnectedAccount || empty }}</p>
             </div>
-            <button
-                v-if="stepStore.connectedWallet === null"
-                @click="stepStore.connectWalletAction"
-                class="btn btn--primary"
-            >
-                <h3>
-                    {{ stepStore.isConnectingText }}
-                </h3>
-            </button>
-            <template v-else>
-                <button class="btn btn--secondary" @click="stepStore.disconnectConnectedWallet">
-                    <h3>disconnect</h3>
-                </button>
-                <button class="btn btn--primary">
-                    <h3>swap</h3>
-                </button>
-            </template>
+            <Btn v-if="stepStore.connectedWallet === null" wide @click="stepStore.connectWalletAction"> connect </Btn>
+            <Btn v-else secondary thin wide @click="stepStore.disconnectConnectedWallet">disconnect</Btn>
         </div>
     </div>
 </template>
@@ -55,34 +40,6 @@ const empty = "ᕙ(⇀‸↼‶)ᕗ"
     }
     h3 {
         font-size: 2rem;
-    }
-    .btn {
-        margin-top: 1rem;
-
-        width: 100%;
-        border-radius: 12px;
-        text-align: center;
-        padding: 1.3rem 0;
-        border: none;
-        transition-property: background-color, border;
-        transition-duration: var(--transition);
-        cursor: pointer;
-        h3 {
-            transition: color var(--transition);
-        }
-        &--primary {
-            background-color: var(--swap-main-btn-bg);
-            h3 {
-                color: var(--swap-main-btn-color);
-            }
-        }
-        &--secondary {
-            background-color: transparent;
-            border: 2px solid var(--swap-main-btn-bg);
-            h3 {
-                color: var(--swap-main-btn-bg);
-            }
-        }
     }
 }
 </style>
