@@ -5,7 +5,7 @@
             <div>
                 <p><b>wallet address</b>{{ stepStore.getConnectedAccount || empty }}</p>
             </div>
-            <Btn v-if="stepStore.connectedWallet === null" wide @click="stepStore.connectWalletAction"> connect </Btn>
+            <Btn v-if="stepStore.connectedWallet === null" wide @click="stepStore.connectWallet()"> connect </Btn>
             <Btn v-else secondary thin wide @click="stepStore.disconnectConnectedWallet">disconnect</Btn>
         </div>
     </div>

@@ -12,11 +12,7 @@
         <div class="nav-actions">
             <Btn secondary thin compact @click="revertTheme">. . .</Btn>
             <Btn secondary thin compact @click="stepStore.tryWallet()">network</Btn>
-            <Btn secondary thin compact>
-                <span @click="stepStore.connectWalletAction()">
-                    {{ stepStore.getTruncatedWalletAddress || "connect" }}
-                </span>
-            </Btn>
+            <Dropdown></Dropdown>
         </div>
     </header>
 </template>

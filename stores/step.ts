@@ -106,6 +106,7 @@ export const useStepStore = defineStore("step", ():any => {
 
         isConnectingText,
         activeWallet,
+        connectWallet,
         connectWalletAction,
         connectedWallet,
         connectingWallet,

@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Ref } from "vue"
 import { useSlots } from "vue"
 import { useStepStore } from "@/stores/step"
 
@@ -36,7 +35,7 @@ const levelFontSizing = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .btn {
     position: relative;
     padding: 0.8rem 1.9rem;
