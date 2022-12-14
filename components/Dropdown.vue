@@ -23,9 +23,11 @@
 
 <script setup>
 import { useStepStore } from "@/stores/step"
+import { useSlots } from "vue"
 import { onClickOutside } from "@vueuse/core"
 
 const stepStore = useStepStore()
+const slots = useSlots()
 
 const toActivate = ref(null)
 const openner = ref(null)
@@ -53,6 +55,7 @@ onClickOutside(toActivate, (event) => {
             gap: 1rem;
         }
         .dd-activator {
+            height: 100%;
             h3 {
                 pointer-events: none;
             }
