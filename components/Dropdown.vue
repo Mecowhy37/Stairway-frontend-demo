@@ -1,33 +1,17 @@
 <template>
-    <div class="dropdown-wrapper">
-        <div class="activators">
-            <button class="btn btn--secondary thin">
-                <div @click="toggleDropdown()" ref="openner" class="dd-activator">
-                    <slot name="dd-activator">
-                        <h3>{{ isDropdownActive ? "close" : "open" }}</h3>
-                    </slot>
-                </div>
-                <slot name="option-activator">
-                    <h3 v-if="stepStore.connectedWallet === null" @click="stepStore.connectWallet()">connect</h3>
-                    <h3 v-else @click="toggleDropdown">{{ stepStore.getTruncatedWalletAddress }}</h3>
-                </slot>
-            </button>
+    <div class="dropdown">
+        <div class="dropdown--activator" ref="openner" @click="toggleDropdown()">
+            <slot name="dropdown-activator" :on="isDropdownActive"> </slot>
         </div>
-        <div v-show="isDropdownActive" class="dropdown" ref="toActivate">
-            <Btn compact wide @click="stepStore.disconnectConnectedWallet()">
-                <span>disconnect</span>
-            </Btn>
+
+        <div v-show="isDropdownActive" class="dropdown--box" ref="toActivate">
+            <slot name="dropdown"></slot>
         </div>
     </div>
 </template>
 
 <script setup>
-import { useStepStore } from "@/stores/step"
-import { useSlots } from "vue"
 import { onClickOutside } from "@vueuse/core"
-
-const stepStore = useStepStore()
-const slots = useSlots()
 
 const toActivate = ref(null)
 const openner = ref(null)
@@ -38,7 +22,7 @@ function toggleDropdown() {
 onClickOutside(toActivate, (event) => {
     if (isDropdownActive.value === true) {
         toggleDropdown()
-        if (openner.value === event.target) {
+        if (openner.value === event.target.parentNode) {
             event.stopPropagation()
         }
     }
@@ -46,22 +30,9 @@ onClickOutside(toActivate, (event) => {
 </script>
 
 <style scoped lang="scss">
-.dropdown-wrapper {
+.dropdown {
     position: relative;
-    .activators {
-        button {
-            display: flex;
-            flex-direction: row-reverse;
-            gap: 1rem;
-        }
-        .dd-activator {
-            height: 100%;
-            h3 {
-                pointer-events: none;
-            }
-        }
-    }
-    .dropdown {
+    &--box {
         position: absolute;
         right: 0%;
         margin-top: 1.6rem;

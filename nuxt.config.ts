@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   modules: [
       "@pinia/nuxt",
   ],
+  build: {
+    transpile: ['mdi-vue']
+  },
 })
     
     

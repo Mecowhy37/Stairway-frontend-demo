@@ -11,8 +11,33 @@
         </nav>
         <div class="nav-actions">
             <Btn secondary thin compact @click="revertTheme">. . .</Btn>
-            <Btn secondary thin compact @click="stepStore.tryWallet()">network</Btn>
-            <Dropdown> </Dropdown>
+            <Dropdown>
+                <template #dropdown-activator="{ on }">
+                    <Btn secondary thin outline>
+                        Etheruem
+                        <template #icon>
+                            <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown>
+                    <span>networks</span>
+                </template>
+            </Dropdown>
+            <Dropdown>
+                <template #dropdown-activator="{ on }">
+                    <Btn secondary thin outline>
+                        <template #icon>
+                            <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown>
+                    <Btn compact wide @click="stepStore.disconnectConnectedWallet()">
+                        <span>disconnect</span>
+                    </Btn>
+                </template>
+            </Dropdown>
         </div>
     </header>
 </template>

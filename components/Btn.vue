@@ -5,9 +5,12 @@
         :class="[levelStyling, { thin: props.secondary && props.thin, compact: props.compact, wide: props.wide }]"
     >
         <!-- <slot name="default"></slot> -->
-        <component is="h3">
+        <component is="h3" :class="{ wicon: slots.icon && slots.default }">
             <slot name="default"></slot>
         </component>
+        <div v-if="slots.icon" class="icon">
+            <slot name="icon"></slot>
+        </div>
     </button>
 </template>
 
@@ -38,17 +41,24 @@ const levelFontSizing = computed(() => {
 <style lang="scss">
 .btn {
     position: relative;
-    padding: 0.8rem 1.9rem;
-    &.compact {
-        padding: 0.5rem 1.9rem;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--swap-main-btn-bg);
     background-color: var(--nav-actions-bg);
     transition-property: background-color, color;
     transition-duration: var(--transition);
-    border-radius: 8px;
-    border: 1px solid var(--swap-main-btn-bg);
+    padding: 0.8rem 1.9rem;
+    .wicon {
+        margin-right: 0.5rem;
+    }
+    &.compact {
+        padding: 0.5rem 1.9rem;
+    }
     > * {
         transition: color var(--transition);
+        pointer-events: none;
     }
     &--primary {
         background-color: var(--swap-main-btn-bg);
