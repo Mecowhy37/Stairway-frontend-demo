@@ -335,7 +335,7 @@ $primary: #b1d6f6;
 $secodary: #ffd5c9;
 
 .widget {
-    background-color: var(--swap-bg);
+    background-color: var(--widget-bg);
     transition: background-color var(--transition);
     width: 500px;
     border-radius: var(--outer-wdg-radius);
@@ -384,7 +384,7 @@ $secodary: #ffd5c9;
                         font-size: 1.35rem;
                         cursor: pointer;
                         background-color: var(--swap-windows);
-                        border: var(--swap-bg) 0.5rem solid;
+                        border: var(--widget-bg) 0.5rem solid;
                         z-index: 2;
 
                         &__switch {
@@ -453,7 +453,7 @@ $secodary: #ffd5c9;
 
             &.connect {
                 --height: 6rem;
-                background-color: var(--swap-main-btn-bg);
+                background-color: var(--primary-btn-bg);
                 transition: background-color var(--transition);
                 height: var(--height);
                 text-align: center;
@@ -464,7 +464,7 @@ $secodary: #ffd5c9;
                     line-height: var(--height);
                     display: inline-block;
                     height: 100%;
-                    color: var(--swap-main-btn-color);
+                    color: var(--primary-btn-color);
                     transition: color var(--transition);
                 }
 

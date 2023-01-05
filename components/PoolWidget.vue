@@ -120,7 +120,7 @@ export default {
 <style lang="scss" scoped>
 .widget {
     margin-top: 2rem;
-    background-color: var(--swap-bg);
+    background-color: var(--widget-bg);
     transition: background-color var(--transition);
     width: 500px;
     height: 400px;
@@ -205,7 +205,7 @@ export default {
                 .pool {
                     --height: 6rem;
                     flex-grow: 1;
-                    background-color: var(--swap-main-btn-bg);
+                    background-color: var(--primary-btn-bg);
                     transition: background-color var(--transition);
                     height: var(--height);
                     border-radius: 12px;
@@ -213,7 +213,7 @@ export default {
                     cursor: pointer;
                     h3 {
                         line-height: var(--height);
-                        color: var(--swap-main-btn-color);
+                        color: var(--primary-btn-color);
                         transition: color var(--transition);
                     }
 

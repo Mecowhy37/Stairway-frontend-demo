@@ -1,22 +1,24 @@
 <template>
     <header class="navbar">
-        <p class="navbar__logo">StepSwap</p>
+        <h3 class="navbar__logo">StepSwap</h3>
         <nav class="navigation">
-            <NuxtLink to="/" class="navigation__link">swap</NuxtLink>
-            <NuxtLink to="/pool" class="navigation__link">pool</NuxtLink>
-            <NuxtLink to="/vote" class="navigation__link">vote</NuxtLink>
-            <NuxtLink to="/charts" class="navigation__link">charts</NuxtLink>
+            <NuxtLink to="/" class="navigation__link"><h3>swap</h3></NuxtLink>
+            <NuxtLink to="/pool" class="navigation__link"><h3>pool</h3></NuxtLink>
+            <NuxtLink to="/vote" class="navigation__link"><h3>vote</h3></NuxtLink>
+            <NuxtLink to="/charts" class="navigation__link"><h3>charts</h3></NuxtLink>
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->
         </nav>
         <div class="nav-actions">
-            <Btn secondary thin compact @click="revertTheme">. . .</Btn>
+            <Btn plain @click="revertTheme">. . .</Btn>
             <Dropdown>
                 <template #dropdown-activator="{ on }">
-                    <Btn secondary thin outline>
+                    <Btn plain>
                         Etheruem
                         <template #icon>
-                            <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
+                            <h3>
+                                <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
+                            </h3>
                         </template>
                     </Btn>
                 </template>
@@ -24,20 +26,26 @@
                     <span>networks</span>
                 </template>
             </Dropdown>
-            <Dropdown>
-                <template #dropdown-activator="{ on }">
-                    <Btn secondary thin outline>
-                        <template #icon>
-                            <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
-                        </template>
-                    </Btn>
-                </template>
-                <template #dropdown>
-                    <Btn compact wide @click="stepStore.disconnectConnectedWallet()">
-                        <span>disconnect</span>
-                    </Btn>
-                </template>
-            </Dropdown>
+            <span class="cta-dropdown">
+                <Btn>connect</Btn>
+                <!-- <div>|</div> -->
+                <Dropdown>
+                    <template #dropdown-activator="{ on }">
+                        <Btn>
+                            <template #icon>
+                                <h3>
+                                    <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
+                                </h3>
+                            </template>
+                        </Btn>
+                    </template>
+                    <template #dropdown>
+                        <Btn compact wide @click="stepStore.disconnectConnectedWallet()">
+                            <span>disconnect</span>
+                        </Btn>
+                    </template>
+                </Dropdown>
+            </span>
         </div>
     </header>
 </template>
@@ -59,8 +67,6 @@ function revertTheme() {
     align-items: center;
     width: 100%;
     padding: 1.6rem 2.1rem;
-    font-size: 2.2rem;
-
     .navigation {
         display: flex;
         position: relative;
@@ -68,7 +74,7 @@ function revertTheme() {
 
         &__link {
             position: relative;
-            padding: 0.5rem 1.6rem;
+            padding: 0.5rem 1.2rem;
             text-decoration: none;
             box-sizing: content-box !important;
 
@@ -79,6 +85,7 @@ function revertTheme() {
                 bottom: 0;
                 left: 50%;
                 height: 2px;
+                padding: 0 0.3rem;
                 border-radius: 1px;
                 width: calc(100% - 3.2rem);
                 background-color: var(--main-color);
@@ -102,12 +109,9 @@ function revertTheme() {
         gap: 1.6rem;
         margin-left: auto;
 
-        &__btn {
-            padding: 0.8rem 1.9rem;
-            background-color: var(--nav-actions-bg);
-            transition: background-color var(--transition);
-            border-radius: 8px;
-            border: 1px solid var(--swap-main-btn-bg);
+        .cta-dropdown {
+            display: flex;
+            background-color: hotpink;
         }
     }
 }

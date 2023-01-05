@@ -113,7 +113,7 @@ export default {
 .display {
     min-width: 540px;
     height: 100%;
-    background-color: var(--swap-bg);
+    background-color: var(--widget-bg);
     transition: background-color var(--transition);
     border-radius: var(--outer-wdg-radius);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
@@ -132,7 +132,7 @@ export default {
     }
     .btn {
         flex-grow: 1;
-        background-color: var(--swap-main-btn-bg);
+        background-color: var(--primary-btn-bg);
         transition: background-color var(--transition);
         height: 6rem;
         display: flex;
@@ -142,7 +142,7 @@ export default {
         text-align: center;
         cursor: pointer;
         & > * {
-            color: var(--swap-main-btn-color);
+            color: var(--primary-btn-color);
             transition: color var(--transition);
         }
     }

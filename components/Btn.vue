@@ -1,17 +1,25 @@
 <template>
-    <!-- <button>{{ $slots.default }}</button> -->
     <button
         class="btn"
-        :class="[levelStyling, { thin: props.secondary && props.thin, compact: props.compact, wide: props.wide }]"
+        :class="[
+            {
+                'btn--secondary': props.secondary,
+                'btn--wide': props.wide,
+                'btn--transparent': props.transparent,
+                'btn--plain': props.plain,
+                thin: props.secondary && props.thin,
+            },
+        ]"
     >
         <!-- <slot name="default"></slot> -->
-        <component is="h3" :class="{ wicon: slots.icon && slots.default }">
+        <component is="h3" class="default-slot" :class="{ wicon: slots.icon && slots.default }">
             <slot name="default"></slot>
         </component>
-        <div v-if="slots.icon" class="icon">
+        <div v-if="slots.icon">
             <slot name="icon"></slot>
         </div>
     </button>
+    <!-- <button>{{ $slots.default }}</button> -->
 </template>
 
 <script setup lang="ts">
@@ -23,19 +31,19 @@ const stepStore = useStepStore()
 interface Props {
     secondary?: boolean
     wide?: boolean
-    compact?: boolean
     thin?: boolean
+    transparent?: boolean
+    plain?: boolean
 }
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+    secondary: false,
+    wide: false,
+    thin: false,
+    transparent: false,
+    plain: false,
+})
 const emits = defineEmits([])
 const slots = useSlots()
-
-const levelStyling = computed(() => {
-    return "btn" + (props.secondary !== true ? "--primary" : "--secondary")
-})
-const levelFontSizing = computed(() => {
-    return
-})
 </script>
 
 <style lang="scss">
@@ -45,38 +53,38 @@ const levelFontSizing = computed(() => {
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    border: 1px solid var(--swap-main-btn-bg);
-    background-color: var(--nav-actions-bg);
+    border: none;
+    background-color: var(--primary-btn-bg);
     transition-property: background-color, color;
     transition-duration: var(--transition);
     padding: 0.8rem 1.9rem;
-    .wicon {
-        margin-right: 0.5rem;
-    }
-    &.compact {
-        padding: 0.5rem 1.9rem;
-    }
-    > * {
-        transition: color var(--transition);
+    white-space: nowrap;
+    * {
+        color: var(--primary-btn-color);
         pointer-events: none;
     }
-    &--primary {
-        background-color: var(--swap-main-btn-bg);
-        & > * {
-            color: var(--swap-main-btn-color);
+    .default-slot {
+        &.wicon {
+            margin-right: 0.5rem;
+        }
+    }
+    &--plain {
+        background-color: var(--nav-actions-bg);
+        * {
+            color: var(--main-color);
         }
     }
     &--secondary {
         background-color: transparent;
-        border: 2px solid var(--swap-main-btn-bg);
-        /* & > * {
-            color: var(--swap-main-btn-bg);
-        } */
+        border: 2px solid var(--primary-btn-bg);
+        * {
+            color: var(--primary-btn-bg);
+        }
         &.thin {
-            border: 1px solid var(--swap-main-btn-bg);
+            border: 1px solid var(--primary-btn-bg);
         }
     }
-    &.wide {
+    &--wide {
         width: 100%;
     }
 }

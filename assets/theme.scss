@@ -1,11 +1,10 @@
 @use "./colors" as *;
 
 $dark-map: (
-    //swap widget
-    --swap-bg: $dark-green-1,
-    // --swap-bg: $light-pink,
-    --swap-main-btn-bg: $light-pink,
-    --swap-main-btn-color: $dark-green-1,
+    // widget
+    --widget-bg: $dark-green-1,
+    --primary-btn-bg: $light-pink,
+    --primary-btn-color: $dark-green-1,
     --swap-windows: $dark-green-2,
 
     // else
@@ -18,10 +17,10 @@ $dark-map: (
 );
 
 $light-map: (
-    //swap widget
-    --swap-bg: $white,
-    --swap-main-btn-bg: $green,
-    --swap-main-btn-color: $white,
+    //widget
+    --widget-bg: $white,
+    --primary-btn-bg: $green,
+    --primary-btn-color: $white,
     --swap-windows: $light-green,
 
     // else

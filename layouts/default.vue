@@ -25,10 +25,10 @@ html {
 }
 
 * {
+    color: var(--main-color);
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    color: var(--main-color);
     transition: color var(--transition);
     font-family: "Quicksand", sans-serif;
     font-weight: 500;
@@ -85,9 +85,4 @@ h3 {
         opacity: 0;
     }
 }
-
-/* darkcontrast: #1c3b30 */
-/* deep dark 18%: #18302b */
-/* 53%: #192625 */
-/* pink: #ffd1d1 */
 </style>

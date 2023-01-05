@@ -30,11 +30,6 @@ export default {
             ],
         }
     },
-    data() {
-        return {
-            were: "here",
-        }
-    },
     methods: {
         refreshAll() {
             this.$refs["swap"].setupPool()
