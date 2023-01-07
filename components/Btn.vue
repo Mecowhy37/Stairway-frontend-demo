@@ -1,18 +1,20 @@
 <template>
     <button
         class="btn"
+        ref="btn"
         :class="[
             {
                 'btn--secondary': props.secondary,
                 'btn--wide': props.wide,
                 'btn--transparent': props.transparent,
                 'btn--plain': props.plain,
+                'btn--pill': props.pill,
                 thin: props.secondary && props.thin,
             },
         ]"
     >
         <!-- <slot name="default"></slot> -->
-        <component is="h3" class="default-slot" :class="{ wicon: slots.icon && slots.default }">
+        <component is="h3" id="default-slot" :class="{ wicon: slots.icon && slots.default }">
             <slot name="default"></slot>
         </component>
         <div v-if="slots.icon">
@@ -34,19 +36,22 @@ interface Props {
     thin?: boolean
     transparent?: boolean
     plain?: boolean
+    pill?: boolean
 }
-const props = withDefaults(defineProps<Props>(), {
-    secondary: false,
-    wide: false,
-    thin: false,
-    transparent: false,
-    plain: false,
-})
+const props = withDefaults(defineProps<Props>(), {})
 const emits = defineEmits([])
 const slots = useSlots()
+
+const btn = ref(null)
+const btnHeight = ref("")
+onMounted(() => {
+    const btnEl = btn.value
+    btnHeight.value = btnEl.offsetHeight + "px"
+})
 </script>
 
 <style lang="scss">
+$vert-padd: 0.8rem;
 .btn {
     position: relative;
     display: flex;
@@ -57,13 +62,13 @@ const slots = useSlots()
     background-color: var(--primary-btn-bg);
     transition-property: background-color, color;
     transition-duration: var(--transition);
-    padding: 0.8rem 1.9rem;
+    padding: $vert-padd 1.5rem;
     white-space: nowrap;
     * {
         color: var(--primary-btn-color);
         pointer-events: none;
     }
-    .default-slot {
+    #default-slot {
         &.wicon {
             margin-right: 0.5rem;
         }
@@ -84,8 +89,14 @@ const slots = useSlots()
             border: 1px solid var(--primary-btn-bg);
         }
     }
+    &--transparent {
+        background-color: transparent;
+    }
     &--wide {
         width: 100%;
+    }
+    &--pill {
+        border-radius: calc(v-bind(btnHeight) / 2);
     }
 }
 </style>

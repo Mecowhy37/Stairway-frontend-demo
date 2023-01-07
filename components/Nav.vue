@@ -26,12 +26,12 @@
                     <span>networks</span>
                 </template>
             </Dropdown>
-            <span class="cta-dropdown">
-                <Btn>connect</Btn>
-                <!-- <div>|</div> -->
+            <span v-if="!stepStore.connectedWallet" class="cta-dropdown">
+                <Btn transparent @click="stepStore.connectWallet()">connect </Btn>
+                <div class="divider"></div>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
-                        <Btn>
+                        <Btn transparent class="reduce-p" ref="ctaDropDown">
                             <template #icon>
                                 <h3>
                                     <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
@@ -40,12 +40,29 @@
                         </Btn>
                     </template>
                     <template #dropdown>
-                        <Btn compact wide @click="stepStore.disconnectConnectedWallet()">
-                            <span>disconnect</span>
+                        <Btn compact wide>
+                            <span>some actions</span>
                         </Btn>
                     </template>
                 </Dropdown>
             </span>
+            <Dropdown v-else>
+                <template #dropdown-activator="{ on }">
+                    <Btn pill plain class="">
+                        {{ stepStore.getTruncatedWalletAddress }}
+                        <template #icon>
+                            <h3>
+                                <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
+                            </h3>
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown>
+                    <Btn compact wide @click="stepStore.disconnectConnectedWallet()">
+                        <span>disconnect</span>
+                    </Btn>
+                </template>
+            </Dropdown>
         </div>
     </header>
 </template>
@@ -58,6 +75,13 @@ const stepStore = useStepStore()
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
 }
+
+const ctaDropDown = ref(null)
+const ctaDropDownHeight = ref("")
+onMounted(() => {
+    const ctaDropDownEl = ctaDropDown.value
+    ctaDropDownHeight.value = ctaDropDownEl.offsetHeight + "px"
+})
 </script>
 
 <style lang="scss" scoped>
@@ -89,9 +113,8 @@ function revertTheme() {
                 border-radius: 1px;
                 width: calc(100% - 3.2rem);
                 background-color: var(--main-color);
-                transition: background-color var(--transition);
+                transition: opacity ease-in-out 0.15s, background-color var(--transition);
                 transform: translateX(-50%);
-                transition: opacity ease-in-out 0.1s;
             }
 
             &:hover::before {
@@ -111,7 +134,19 @@ function revertTheme() {
 
         .cta-dropdown {
             display: flex;
+            align-items: center;
             background-color: hotpink;
+            border-radius: calc(v-bind(ctaDropDownHeight) / 2);
+            .divider {
+                height: 70%;
+                width: 1px;
+                background-color: rgba(255, 255, 255, 0.7);
+                margin-left: -0.5rem;
+                margin-right: -1.2rem;
+            }
+            .reduce-p {
+                padding-right: 1.2rem;
+            }
         }
     }
 }

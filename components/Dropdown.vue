@@ -44,9 +44,10 @@ onClickOutside(toActivate, (event) => {
         margin-top: 1.6rem;
         width: 250px;
         padding: 1rem;
-        background-color: transparent;
         border-radius: 8px;
-        border: 1px solid var(--primary-btn-bg);
+        background-color: var(--nav-actions-bg);
+        /* background-color: transparent; */
+        /* border: 1px solid var(--primary-btn-bg); */
     }
 }
 </style>
