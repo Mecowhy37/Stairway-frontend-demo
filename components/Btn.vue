@@ -48,6 +48,9 @@ onMounted(() => {
     const btnEl = btn.value
     btnHeight.value = btnEl.offsetHeight + "px"
 })
+defineExpose({
+    btnHeight,
+})
 </script>
 
 <style lang="scss">

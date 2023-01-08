@@ -27,11 +27,11 @@
                 </template>
             </Dropdown>
             <span v-if="!stepStore.connectedWallet" class="cta-dropdown">
-                <Btn transparent @click="stepStore.connectWallet()">connect </Btn>
+                <Btn transparent @click="stepStore.connectWallet()" ref="ctaDropDown">connect</Btn>
                 <div class="divider"></div>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
-                        <Btn transparent class="reduce-p" ref="ctaDropDown">
+                        <Btn transparent class="reduce-p">
                             <template #icon>
                                 <h3>
                                     <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
@@ -75,12 +75,10 @@ const stepStore = useStepStore()
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
 }
-
 const ctaDropDown = ref(null)
 const ctaDropDownHeight = ref("")
 onMounted(() => {
-    const ctaDropDownEl = ctaDropDown.value
-    ctaDropDownHeight.value = ctaDropDownEl.offsetHeight + "px"
+    ctaDropDownHeight.value = ctaDropDown.value.btnHeight
 })
 </script>
 
@@ -134,10 +132,10 @@ onMounted(() => {
 
         .cta-dropdown {
             display: flex;
-            align-items: center;
             background-color: hotpink;
             border-radius: calc(v-bind(ctaDropDownHeight) / 2);
             .divider {
+                align-self: center;
                 height: 70%;
                 width: 1px;
                 background-color: rgba(255, 255, 255, 0.7);
