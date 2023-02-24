@@ -41,14 +41,14 @@ import { ethers } from "ethers"
 
 import { getToken } from "~/helpers/index"
 
-import * as Factory from "../ABIs/factoryAbi.json"
-const FactoryABI = Factory.default
+// import * as Factory from "../ABIs/factoryAbi.json"
+// const FactoryABI = Factory.default
 
-import * as Pool from "../ABIs/poolAbi.json"
-const PoolABI = Pool.default
+// import * as Pool from "../ABIs/poolAbi.json"
+// const PoolABI = Pool.default
 
-import * as Token from "../ABIs/tokenAbi.json"
-const TokenABI = Token.default
+// import * as Token from "../ABIs/tokenAbi.json"
+// const TokenABI = Token.default
 
 import * as Tokens from "../constants/tokenAddresses.json"
 const TokenList = Tokens.default

@@ -3,6 +3,7 @@ import { defineStore } from "pinia"
 import { ethers } from "ethers"
 import { init, useOnboard } from '@web3-onboard/vue'
 import injectedModule from '@web3-onboard/injected-wallets'
+import { tryOnBeforeMount } from '@vueuse/core'
 // import * as FactoryABI from "../ABIs/factoryAbi.json"
 // import * as Token from "../ABIs/tokenAbi.json"
 
@@ -45,10 +46,18 @@ export const useStepStore = defineStore("step", ():any => {
             rpcUrl: MAINNET_RPC_URL
           }
         ],
+        accountCenter: {
+            desktop: {
+              enabled: false,
+            },
+            mobile: {
+              enabled: false,
+            }
+        }
     })
-    const { wallets, connectWallet, disconnectConnectedWallet, connectedWallet } = useOnboard()
+    const { wallets, connectWallet, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
     onboard.state.actions.updateAccountCenter({
-        enabled: false
+        enabled: true
     })
 
     const getConnectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null )
@@ -70,9 +79,16 @@ export const useStepStore = defineStore("step", ():any => {
       })
   }
     
-    function tryWallet() {
+    async function tryWallet() {
       console.log(wallets.value)
-      console.log(connectedWallet.value)
+      // let eth 
+      // let account
+      // if (window.ethereum) {
+      //   eth = window.ethereum;
+      //   account = await eth.request({ method: "eth_accounts" })
+      //   console.log(connectedWallet.value)
+      //   console.log(account)
+      // }
     }
     
       // const state = onboard.state.select()
@@ -86,13 +102,14 @@ export const useStepStore = defineStore("step", ():any => {
     // async function initialize() {
     //     const eth = window.ethereum
     //     if (!eth) {
-    //         // console.log("Please install MetaMask extension to your browser")
+    //       console.log("Please install MetaMask extension to your browser")
     //     }
-
-    //     // const provider = new ethers.providers.Web3Provider(window.ethereum)
+        
+    //     const provider = new ethers.providers.Web3Provider(window.ethereum)
     //     // console.log("MetaMask is installed!")
-    //     // console.log(provider)
-
+    //     console.log(provider)
+        
+    //     const eth = window.ethereum
     //     const account = await eth.request({ method: "eth_accounts" })
     //     activeWallet.value = account.length !== 0 ? account[0] : null
     // }
@@ -111,9 +128,10 @@ export const useStepStore = defineStore("step", ():any => {
         connectedWallet,
         connectingWallet,
         disconnectConnectedWallet,
+        alreadyConnectedWallets,
+
         getConnectedAccount,
         getTruncatedWalletAddress,
-
         tryWallet,
     }
 })

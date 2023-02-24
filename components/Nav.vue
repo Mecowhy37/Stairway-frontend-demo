@@ -11,6 +11,7 @@
         </nav>
         <div class="nav-actions">
             <Btn plain @click="revertTheme">. . .</Btn>
+            <Btn plain @click="stepStore.tryWallet()">! ! !</Btn>
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn plain>
@@ -83,11 +84,12 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+$nav-height: 75px;
 .navbar {
     position: absolute;
     display: flex;
-    align-items: center;
     width: 100%;
+    height: $nav-height;
     padding: 1.6rem 2.1rem;
     .navigation {
         display: flex;
@@ -133,7 +135,7 @@ onMounted(() => {
         .cta-dropdown {
             display: flex;
             background-color: hotpink;
-            border-radius: calc(v-bind(ctaDropDownHeight) / 2);
+            border-radius: calc($nav-height - 3.2rem);
             .divider {
                 align-self: center;
                 height: 70%;

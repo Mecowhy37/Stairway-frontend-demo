@@ -7,17 +7,17 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "nuxt": "^3.0.0",
-    "sass": "^1.55.0",
     "@mdi/js": "^7.1.96",
-    "mdi-vue": "^3.0.13"
+    "mdi-vue": "^3.0.13",
+    "nuxt": "^3.0.0",
+    "sass": "^1.55.0"
   },
   "dependencies": {
     "@nuxtjs/style-resources": "^1.2.1",
     "@pinia/nuxt": "^0.3.1",
     "@vueuse/core": "^9.6.0",
     "@web3-onboard/injected-wallets": "^2.4.0",
-    "@web3-onboard/vue": "^2.3.1",
+    "@web3-onboard/vue": "^2.5.4",
     "ethers": "^5.7.0"
   }
 }
