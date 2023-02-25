@@ -3,7 +3,7 @@ import { defineStore } from "pinia"
 import { ethers } from "ethers"
 import { init, useOnboard } from '@web3-onboard/vue'
 import injectedModule from '@web3-onboard/injected-wallets'
-import { tryOnBeforeMount } from '@vueuse/core'
+// import { tryOnBeforeMount } from '@vueuse/core'
 // import * as FactoryABI from "../ABIs/factoryAbi.json"
 // import * as Token from "../ABIs/tokenAbi.json"
 

@@ -77,7 +77,7 @@ $vert-padd: 0.8rem;
         }
     }
     &--plain {
-        background-color: var(--nav-actions-bg);
+        background-color: var(--flat-bg);
         * {
             color: var(--main-color);
         }
@@ -100,6 +100,10 @@ $vert-padd: 0.8rem;
     }
     &--pill {
         border-radius: calc(v-bind(btnHeight) / 2);
+        border: 1px solid transparent;
+        &:hover {
+            border: 1px solid var(--flat-outline);
+        }
     }
 }
 </style>
