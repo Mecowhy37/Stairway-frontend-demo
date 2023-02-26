@@ -6,9 +6,6 @@ export default defineNuxtConfig({
   build: {
     transpile: ['mdi-vue']
   },
-  alias: {
-    pinia: "/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs"
-  },
 })
     
     
