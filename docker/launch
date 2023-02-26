@@ -1,0 +1,4 @@
+set -e
+NAME=stepswap-frontend
+docker build . -t $NAME
+docker run -p 3000:3000 --network stepswap --rm -it -v $PWD/..:/mnt -w /mnt --name $NAME $NAME $@ 
