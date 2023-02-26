@@ -2,6 +2,7 @@ node_modules/
 build/
 ABIs/*
 constants/*
+yarn.lock
 
 
 # Swap

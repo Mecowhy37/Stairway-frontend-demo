@@ -21,6 +21,10 @@ const stepStore = useStepStore()
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
 
+html {
+    font-size: 62.5%;
+}
+
 * {
     color: var(--main-color);
     box-sizing: border-box;
@@ -31,9 +35,7 @@ const stepStore = useStepStore()
     font-weight: 500;
     user-select: none;
 }
-html {
-    font-size: 62.5%;
-}
+
 body {
     font-size: 1.6rem;
 }
