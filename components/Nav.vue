@@ -106,7 +106,7 @@ $nav-height: 75px;
                 content: "";
                 position: absolute;
                 opacity: 0;
-                bottom: 0;
+                bottom: 15%;
                 left: 50%;
                 height: 2px;
                 padding: 0 0.3rem;
