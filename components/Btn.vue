@@ -71,6 +71,10 @@ $vert-padd: 0.8rem;
         color: var(--primary-btn-color);
         pointer-events: none;
     }
+    border: 1px solid transparent;
+    &:hover {
+        border: 1px solid;
+    }
     #default-slot {
         &.wicon {
             margin-right: 0.5rem;
@@ -80,6 +84,9 @@ $vert-padd: 0.8rem;
         background-color: var(--flat-bg);
         * {
             color: var(--main-color);
+        }
+        &:hover {
+            border-color: var(--flat-outline);
         }
     }
     &--secondary {
@@ -100,10 +107,9 @@ $vert-padd: 0.8rem;
     }
     &--pill {
         border-radius: calc(v-bind(btnHeight) / 2);
-        border: 1px solid transparent;
-        &:hover {
-            border: 1px solid var(--flat-outline);
-        }
     }
+}
+.cta-dropdown button {
+    border: none !important;
 }
 </style>

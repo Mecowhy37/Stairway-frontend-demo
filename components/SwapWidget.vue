@@ -360,16 +360,16 @@ $secodary: #ffd5c9;
         flex-direction: column;
         > div {
             &.amount {
-                /* display: flex; */
                 background-color: var(--swap-windows);
                 transition: background-color var(--transition);
 
                 &__input {
+                    display: flex;
+                    align-items: center;
                     position: relative;
                     width: 100%;
                     height: 8rem;
                     border-radius: 14px;
-                    position: relative;
                     &.transitions {
                         &,
                         * {
@@ -388,9 +388,12 @@ $secodary: #ffd5c9;
                         z-index: 2;
 
                         &__switch {
-                            transform: translateY(-50%);
-                            border-radius: 1.3rem 0 0 1.3rem;
-                            right: calc(0% - 0.4rem);
+                            /* transform: translateY(-50%); */
+                            /* border-radius: 1.3rem 0 0 1.3rem; */
+                            /* right: calc(0% - 0.4rem); */
+                            transform: translate(50%, -50%);
+                            right: calc(50% - 0.4rem);
+                            border-radius: 1.3rem;
                         }
                         &__rate {
                             border-radius: 0 1.3rem 1.3rem 0;
@@ -400,25 +403,6 @@ $secodary: #ffd5c9;
                             &.show-rate {
                                 transform: translateY(-50%) scale(1);
                             }
-                        }
-                    }
-                    &.token0 {
-                        height: 10rem;
-                    }
-
-                    &:nth-of-type(2) {
-                        margin-top: 0.5rem;
-                    }
-
-                    label {
-                        position: absolute;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        margin-left: 1.2rem;
-                        cursor: pointer;
-                        padding: 0.5rem;
-                        p {
-                            font-size: 1.4rem;
                         }
                     }
 
@@ -447,6 +431,21 @@ $secodary: #ffd5c9;
                         &[type="number"] {
                             -moz-appearance: textfield;
                         }
+                    }
+                    label {
+                        flex-shrink: 0;
+                        margin: 0 1.2rem;
+                        cursor: pointer;
+                        p {
+                            font-size: 1.4rem;
+                        }
+                    }
+                    &.token0 {
+                        height: 10rem;
+                    }
+
+                    &:nth-of-type(2) {
+                        margin-top: 0.5rem;
                     }
                 }
             }
