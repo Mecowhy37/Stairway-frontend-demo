@@ -128,37 +128,43 @@ const ctaDropDownHeight = ref("")
 onMounted(() => {
     ctaDropDownHeight.value = ctaDropDown.value.btnHeight
 })
+
+// const ctaDropDownHeight = ref(ctaDropDown.value.btnHeight)
 </script>
 
 <style lang="scss" scoped>
-$nav-height: 75px;
+/* $nav-height: 75px; */
 .navbar {
     position: absolute;
     display: flex;
+    align-items: center;
     width: 100%;
-    height: $nav-height;
-    padding: 1.6rem 2.1rem;
+    /* height: $nav-height; */
+    padding: 1rem 1.6rem;
     .navigation {
         display: flex;
+        align-items: center;
         position: relative;
         margin-left: 8%;
 
         &__link {
             position: relative;
-            padding: 0.5rem 1.2rem;
+            padding: 0 0.8rem;
             text-decoration: none;
             box-sizing: content-box !important;
-
+            display: flex;
+            justify-content: center;
+            align-items: center;
             &::before {
                 content: "";
                 position: absolute;
                 opacity: 0;
-                bottom: 15%;
+                bottom: -17%;
                 left: 50%;
                 height: 2px;
-                padding: 0 0.3rem;
+                /* padding: 0 5%; */
                 border-radius: 1px;
-                width: calc(100% - 3.2rem);
+                width: calc(100% - 1.6rem);
                 background-color: var(--main-color);
                 transition: opacity ease-in-out 0.15s, background-color var(--transition);
                 transform: translateX(-50%);
@@ -176,20 +182,21 @@ $nav-height: 75px;
 
     .nav-actions {
         display: flex;
-        gap: 1.6rem;
+        gap: 0.8rem;
         margin-left: auto;
 
         .cta-dropdown {
             display: flex;
             background-color: hotpink;
-            border-radius: calc($nav-height - 3.2rem);
+            /* border-radius: calc($nav-height - 3.2rem); */
+            border-radius: calc(v-bind(ctaDropDownHeight) / 2);
             .divider {
                 align-self: center;
                 height: 70%;
                 width: 1px;
                 background-color: rgba(255, 255, 255, 0.7);
-                margin-left: -0.5rem;
-                margin-right: -1.2rem;
+                /* margin-left: -0.5rem; */
+                /* margin-right: -1.2rem; */
             }
             .reduce-p {
                 padding-right: 1.2rem;

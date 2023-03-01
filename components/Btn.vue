@@ -58,7 +58,8 @@ defineExpose({
 </script>
 
 <style lang="scss">
-$vert-padd: 0.8rem;
+$vert-padd: 0.4rem;
+$horiz-padd: 1rem;
 .btn {
     position: relative;
     display: flex;
@@ -69,7 +70,7 @@ $vert-padd: 0.8rem;
     background-color: var(--primary-btn-bg);
     transition-property: background-color, color;
     transition-duration: var(--transition);
-    padding: $vert-padd 1.5rem;
+    padding: $vert-padd $horiz-padd;
     white-space: nowrap;
     * {
         color: var(--primary-btn-color);

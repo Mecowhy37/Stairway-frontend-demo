@@ -9,9 +9,13 @@
                 <label
                     for="amount_1"
                     @click="setToken(x)"
-                    >{{ switchedTokens[x] !== null ? switchedTokens[x].symbol : "select token" }} <br />
-                    <p v-if="switchedBalance[x] !== null">balance: {{ switchedBalance[x] }}</p></label
                 >
+                    <h3>
+                        {{ switchedTokens[x] !== null ? switchedTokens[x].symbol : "select token" }}
+                    </h3>
+                    <!-- <br /> -->
+                    <!-- <p v-if="switchedBalance[x] !== null">balance: {{ switchedBalance[x] }}</p> -->
+                </label>
                 <input
                     type="number"
                     :id="'amount_' + x + 1"
@@ -370,17 +374,6 @@ $secodary: #ffd5c9;
     /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
     padding: 0.6rem;
     padding-top: 6rem;
-    h2 {
-        font-size: 2.6rem;
-        text-align: center;
-    }
-    h3 {
-        font-size: 2rem;
-    }
-    label {
-        font-size: 2rem;
-    }
-
     .wrap {
         display: flex;
         flex-direction: column;
