@@ -118,18 +118,13 @@
 <script setup>
 import { useStepStore } from "@/stores/step"
 
+import { useElementBounding } from "@vueuse/core"
+
 const stepStore = useStepStore()
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
 }
-const ctaDropDown = ref(null)
-const ctaDropDownHeight = ref("")
-onMounted(() => {
-    ctaDropDownHeight.value = ctaDropDown.value.btnHeight
-})
-
-// const ctaDropDownHeight = ref(ctaDropDown.value.btnHeight)
 </script>
 
 <style lang="scss" scoped>
@@ -188,8 +183,7 @@ onMounted(() => {
         .cta-dropdown {
             display: flex;
             background-color: hotpink;
-            /* border-radius: calc($nav-height - 3.2rem); */
-            border-radius: calc(v-bind(ctaDropDownHeight) / 2);
+            border-radius: 9999px;
             .divider {
                 align-self: center;
                 height: 70%;

@@ -45,16 +45,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {})
 const emits = defineEmits([])
 const slots = useSlots()
-
-const btn = ref(null)
-const btnHeight = ref("")
-onMounted(() => {
-    const btnEl = btn.value
-    btnHeight.value = btnEl.offsetHeight + "px"
-})
-defineExpose({
-    btnHeight,
-})
 </script>
 
 <style lang="scss">
@@ -111,7 +101,7 @@ $horiz-padd: 1rem;
         width: 100%;
     }
     &--pill {
-        border-radius: calc(v-bind(btnHeight) / 2);
+        border-radius: 9999px;
     }
 }
 .cta-dropdown button {
