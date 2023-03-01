@@ -5,7 +5,10 @@
             <PoolWidget />
         </div>
         <div>
-            <TempDisplay ref="display" @refresh="refreshAll()" />
+            <TempDisplay
+                ref="display"
+                @refresh="refreshAll()"
+            />
         </div>
     </div>
 </template>

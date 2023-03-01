@@ -1,10 +1,21 @@
 <template>
     <div class="dropdown">
-        <div class="dropdown__activator" ref="openner" @click="toggleDropdown()">
-            <slot name="dropdown-activator" :on="isDropdownActive"></slot>
+        <div
+            class="dropdown__activator"
+            ref="openner"
+            @click="toggleDropdown()"
+        >
+            <slot
+                name="dropdown-activator"
+                :on="isDropdownActive"
+            ></slot>
         </div>
 
-        <div v-show="isDropdownActive" class="dropdown__box" ref="toActivate">
+        <div
+            v-show="isDropdownActive"
+            class="dropdown__box"
+            ref="toActivate"
+        >
             <slot name="dropdown"></slot>
         </div>
     </div>

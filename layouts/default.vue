@@ -1,9 +1,18 @@
 <template>
-    <div id="base" :class="[stepStore.isDark ? themes.dark : themes.light]">
+    <div
+        id="base"
+        :class="[stepStore.isDark ? themes.dark : themes.light]"
+    >
         <!-- <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div> -->
         <!-- <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div> -->
-        <div class="bg-gradient bg-gradient--dark" :class="{ hide: !stepStore.isDark }"></div>
-        <div class="bg-gradient bg-gradient--light" :class="{ hide: stepStore.isDark }"></div>
+        <div
+            class="bg-gradient bg-gradient--dark"
+            :class="{ hide: !stepStore.isDark }"
+        ></div>
+        <div
+            class="bg-gradient bg-gradient--light"
+            :class="{ hide: stepStore.isDark }"
+        ></div>
         <Nav />
         <slot />
         <WalletModal />

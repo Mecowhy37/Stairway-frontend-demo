@@ -1,8 +1,14 @@
 <template>
     <div class="widget">
         <div class="wrap">
-            <div v-for="(i, x) in new Array(2)" class="amount amount__input" :class="[token0Style[x], isMountedStyle]">
-                <label for="amount_1" @click="setToken(x)"
+            <div
+                v-for="(i, x) in new Array(2)"
+                class="amount amount__input"
+                :class="[token0Style[x], isMountedStyle]"
+            >
+                <label
+                    for="amount_1"
+                    @click="setToken(x)"
                     >{{ switchedTokens[x] !== null ? switchedTokens[x].symbol : "select token" }} <br />
                     <p v-if="switchedBalance[x] !== null">balance: {{ switchedBalance[x] }}</p></label
                 >
@@ -14,13 +20,33 @@
                     @input="setTokenAmount($event.target.value, x)"
                     :value="amountInputs[x]"
                 />
-                <div v-if="x === 0" class="floater floater__switch" @click="switchOrder">switch</div>
-                <div v-if="x === 0" class="floater floater__rate" :class="{ 'show-rate': showRate }">{{ rate }}</div>
+                <div
+                    v-if="x === 0"
+                    class="floater floater__switch"
+                    @click="switchOrder"
+                >
+                    switch
+                </div>
+                <div
+                    v-if="x === 0"
+                    class="floater floater__rate"
+                    :class="{ 'show-rate': showRate }"
+                >
+                    {{ rate }}
+                </div>
             </div>
-            <div v-if="stepStore.activeWallet === null" @click="stepStore.connectWalletAction" class="connect">
+            <div
+                v-if="stepStore.activeWallet === null"
+                @click="stepStore.connectWalletAction"
+                class="connect"
+            >
                 <h3>connect</h3>
             </div>
-            <div v-else @click="swap()" class="connect">
+            <div
+                v-else
+                @click="swap()"
+                class="connect"
+            >
                 <h3>swap</h3>
             </div>
         </div>

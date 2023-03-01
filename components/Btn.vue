@@ -14,7 +14,11 @@
         ]"
     >
         <!-- <slot name="default"></slot> -->
-        <component is="h3" id="default-slot" :class="{ wicon: slots.icon && slots.default }">
+        <component
+            is="h3"
+            id="default-slot"
+            :class="{ wicon: slots.icon && slots.default }"
+        >
             <slot name="default"></slot>
         </component>
         <div v-if="slots.icon">

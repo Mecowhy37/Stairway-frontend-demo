@@ -19,7 +19,10 @@
             <p><b>bid limit</b>{{ limit[0] || empty }}</p>
             <p><b>ask limit</b>{{ limit[1] || empty }}</p>
         </div>
-        <div class="btn" @click="callRefresh()">
+        <div
+            class="btn"
+            @click="callRefresh()"
+        >
             <h3>refresh</h3>
         </div>
     </div>

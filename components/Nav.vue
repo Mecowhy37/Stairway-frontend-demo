@@ -2,16 +2,41 @@
     <header class="navbar">
         <h3 class="navbar__logo">StepSwap</h3>
         <nav class="navigation">
-            <NuxtLink to="/" class="navigation__link"><h3>swap</h3></NuxtLink>
-            <NuxtLink to="/pool" class="navigation__link"><h3>pool</h3></NuxtLink>
-            <NuxtLink to="/vote" class="navigation__link"><h3>vote</h3></NuxtLink>
-            <NuxtLink to="/charts" class="navigation__link"><h3>charts</h3></NuxtLink>
+            <NuxtLink
+                to="/"
+                class="navigation__link"
+                ><h3>swap</h3></NuxtLink
+            >
+            <NuxtLink
+                to="/pool"
+                class="navigation__link"
+                ><h3>pool</h3></NuxtLink
+            >
+            <NuxtLink
+                to="/vote"
+                class="navigation__link"
+                ><h3>vote</h3></NuxtLink
+            >
+            <NuxtLink
+                to="/charts"
+                class="navigation__link"
+                ><h3>charts</h3></NuxtLink
+            >
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->
         </nav>
         <div class="nav-actions">
-            <Btn plain @click="revertTheme">. . .</Btn>
-            <Btn plain @click="stepStore.tryWallet()">! ! !</Btn>
+            <Btn
+                plain
+                @click="revertTheme"
+                >. . .</Btn
+            >
+            <Btn
+                plain
+                @click="stepStore.tryWallet()"
+            >
+                ! ! !
+            </Btn>
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn plain>
@@ -27,12 +52,23 @@
                     <span>networks</span>
                 </template>
             </Dropdown>
-            <span v-if="!stepStore.connectedWallet" class="cta-dropdown">
-                <Btn transparent @click="stepStore.connectWallet()" ref="ctaDropDown">connect</Btn>
+            <span
+                v-if="!stepStore.connectedWallet"
+                class="cta-dropdown"
+            >
+                <Btn
+                    transparent
+                    @click="stepStore.connectWallet()"
+                    ref="ctaDropDown"
+                    >connect</Btn
+                >
                 <div class="divider"></div>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
-                        <Btn transparent class="reduce-p">
+                        <Btn
+                            transparent
+                            class="reduce-p"
+                        >
                             <template #icon>
                                 <h3>
                                     <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
@@ -41,7 +77,10 @@
                         </Btn>
                     </template>
                     <template #dropdown>
-                        <Btn compact wide>
+                        <Btn
+                            compact
+                            wide
+                        >
                             <span>some actions</span>
                         </Btn>
                     </template>
@@ -49,7 +88,11 @@
             </span>
             <Dropdown v-else>
                 <template #dropdown-activator="{ on }">
-                    <Btn pill plain class="">
+                    <Btn
+                        pill
+                        plain
+                        class=""
+                    >
                         {{ stepStore.getTruncatedWalletAddress }}
                         <template #icon>
                             <h3>
@@ -59,7 +102,11 @@
                     </Btn>
                 </template>
                 <template #dropdown>
-                    <Btn compact wide @click="stepStore.disconnectConnectedWallet()">
+                    <Btn
+                        compact
+                        wide
+                        @click="stepStore.disconnectConnectedWallet()"
+                    >
                         <span>disconnect</span>
                     </Btn>
                 </template>

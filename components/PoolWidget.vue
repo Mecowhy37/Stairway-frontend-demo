@@ -3,19 +3,40 @@
         <div class="wrap">
             <div class="amount amount__input">
                 <label for="amount_1">{{ TokenA !== null ? TokenA.symbol : "select token" }}</label>
-                <input type="number" id="amount_1" name="amount_1" placeholder="0.00" v-model="amountA" />
+                <input
+                    type="number"
+                    id="amount_1"
+                    name="amount_1"
+                    placeholder="0.00"
+                    v-model="amountA"
+                />
             </div>
             <div class="add"><h1>+</h1></div>
             <div class="amount amount__input">
                 <label for="amount_1">{{ TokenB !== null ? TokenB.symbol : "select token" }}</label>
-                <input type="number" id="amount_1" name="amount_1" placeholder="0.00" v-model="amountB" />
+                <input
+                    type="number"
+                    id="amount_1"
+                    name="amount_1"
+                    placeholder="0.00"
+                    v-model="amountB"
+                />
             </div>
-            <input type="nuber" v-model="stepSize" />
+            <input
+                type="nuber"
+                v-model="stepSize"
+            />
             <div class="buttons">
-                <div class="pool" @click="createPair()">
+                <div
+                    class="pool"
+                    @click="createPair()"
+                >
                     <h3>create pair</h3>
                 </div>
-                <div class="pool" @click="addLiquidity()">
+                <div
+                    class="pool"
+                    @click="addLiquidity()"
+                >
                     <h3>add liquidity</h3>
                 </div>
             </div>

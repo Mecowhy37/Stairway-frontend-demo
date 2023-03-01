@@ -10,7 +10,8 @@
     "@mdi/js": "^7.1.96",
     "mdi-vue": "^3.0.13",
     "nuxt": "^3.0.0",
-    "sass": "^1.55.0"
+    "sass": "^1.55.0",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "@nuxtjs/style-resources": "^1.2.1",
