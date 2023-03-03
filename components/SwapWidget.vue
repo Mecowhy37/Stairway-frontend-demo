@@ -29,7 +29,7 @@
                     class="floater floater__switch"
                     @click="switchOrder"
                 >
-                    switch
+                    <h4>switch</h4>
                 </div>
                 <div
                     v-if="x === 0"
@@ -372,8 +372,10 @@ $secodary: #ffd5c9;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
     /* box-shadow: rgba(0, 0, 0, 0.05) 0px 13px 35px -5px, rgba(0, 0, 0, 0.15) 0px 8px 22px -8px; */
     /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
-    padding: 0.6rem;
-    padding-top: 6rem;
+    /* padding: 0.6rem; */
+    /* padding-top: 6rem; */
+    padding: 0.5rem;
+    padding-top: 4rem;
     .wrap {
         display: flex;
         flex-direction: column;
@@ -387,8 +389,8 @@ $secodary: #ffd5c9;
                     align-items: center;
                     position: relative;
                     width: 100%;
-                    height: 8rem;
-                    border-radius: 14px;
+                    height: 6rem;
+                    border-radius: var(--inner-wdg-radius);
                     &.transitions {
                         &,
                         * {
@@ -399,11 +401,10 @@ $secodary: #ffd5c9;
                     .floater {
                         position: absolute;
                         top: calc(100% + 0.3rem);
-                        padding: 0.7rem 1rem;
-                        font-size: 1.35rem;
+                        padding: 0.5rem 0.8rem;
                         cursor: pointer;
                         background-color: var(--swap-windows);
-                        border: var(--widget-bg) 0.5rem solid;
+                        border: var(--widget-bg) 0.38rem solid;
                         z-index: 2;
 
                         &__switch {
@@ -411,8 +412,8 @@ $secodary: #ffd5c9;
                             /* border-radius: 1.3rem 0 0 1.3rem; */
                             /* right: calc(0% - 0.4rem); */
                             transform: translate(50%, -50%);
-                            right: calc(50% - 0.4rem);
-                            border-radius: 1.3rem;
+                            right: 50%;
+                            border-radius: var(--inner-wdg-radius);
                         }
                         &__rate {
                             border-radius: 0 1.3rem 1.3rem 0;
@@ -434,7 +435,7 @@ $secodary: #ffd5c9;
                         text-align: right;
                         padding-right: 1rem;
                         font-weight: 400;
-                        font-size: 4rem;
+                        font-size: 3rem;
 
                         &::placeholder {
                             opacity: 0.8;
@@ -460,7 +461,7 @@ $secodary: #ffd5c9;
                         }
                     }
                     &.token0 {
-                        height: 10rem;
+                        height: 8rem;
                     }
 
                     &:nth-of-type(2) {
@@ -470,13 +471,13 @@ $secodary: #ffd5c9;
             }
 
             &.connect {
-                --height: 6rem;
+                --height: 4rem;
                 background-color: var(--primary-btn-bg);
                 transition: background-color var(--transition);
                 height: var(--height);
                 text-align: center;
-                margin-top: 0.6rem;
-                border-radius: 12px;
+                margin-top: 0.5rem;
+                border-radius: var(--inner-wdg-radius);
                 cursor: pointer;
                 h3 {
                     line-height: var(--height);

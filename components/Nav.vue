@@ -65,10 +65,7 @@
                 <div class="divider"></div>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
-                        <Btn
-                            transparent
-                            class="reduce-p"
-                        >
+                        <Btn transparent>
                             <template #icon>
                                 <h3>
                                     <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
@@ -117,8 +114,6 @@
 
 <script setup>
 import { useStepStore } from "@/stores/step"
-
-import { useElementBounding } from "@vueuse/core"
 
 const stepStore = useStepStore()
 
@@ -191,9 +186,6 @@ function revertTheme() {
                 background-color: rgba(255, 255, 255, 0.7);
                 /* margin-left: -0.5rem; */
                 /* margin-right: -1.2rem; */
-            }
-            .reduce-p {
-                padding-right: 1.2rem;
             }
         }
     }

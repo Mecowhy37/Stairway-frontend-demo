@@ -104,7 +104,15 @@ $horiz-padd: 1rem;
         border-radius: 9999px;
     }
 }
-.cta-dropdown button {
-    border: none !important;
+.cta-dropdown {
+    button {
+        border: none !important;
+    }
+    & > :first-child {
+        padding-right: 13px !important;
+    }
+    & > :last-child button {
+        padding-left: 10px !important;
+    }
 }
 </style>

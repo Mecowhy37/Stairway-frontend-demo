@@ -42,7 +42,7 @@ const stepStore = useStepStore()
 }
 html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
-    /* font-size: calc(14px + (16 - 14) * ((100vw - 300px) / (1600 - 300))); */
+    font-size: calc(14px + (16 - 14) * ((100vw - 300px) / (1600 - 300)));
 }
 body #base {
     display: grid;
