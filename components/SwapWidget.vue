@@ -389,7 +389,7 @@ $secodary: #ffd5c9;
                     align-items: center;
                     position: relative;
                     width: 100%;
-                    height: 6rem;
+                    height: 5.5rem;
                     border-radius: var(--inner-wdg-radius);
                     &.transitions {
                         &,
@@ -401,10 +401,10 @@ $secodary: #ffd5c9;
                     .floater {
                         position: absolute;
                         top: calc(100% + 0.3rem);
-                        padding: 0.5rem 0.8rem;
+                        padding: 0.35rem 0.65rem;
                         cursor: pointer;
                         background-color: var(--swap-windows);
-                        border: var(--widget-bg) 0.38rem solid;
+                        border: var(--widget-bg) 0.4rem solid;
                         z-index: 2;
 
                         &__switch {
@@ -413,7 +413,7 @@ $secodary: #ffd5c9;
                             /* right: calc(0% - 0.4rem); */
                             transform: translate(50%, -50%);
                             right: 50%;
-                            border-radius: var(--inner-wdg-radius);
+                            border-radius: calc(var(--inner-wdg-radius) * 0.8);
                         }
                         &__rate {
                             border-radius: 0 1.3rem 1.3rem 0;
@@ -435,7 +435,7 @@ $secodary: #ffd5c9;
                         text-align: right;
                         padding-right: 1rem;
                         font-weight: 400;
-                        font-size: 3rem;
+                        font-size: 2.5rem;
 
                         &::placeholder {
                             opacity: 0.8;
@@ -461,7 +461,7 @@ $secodary: #ffd5c9;
                         }
                     }
                     &.token0 {
-                        height: 8rem;
+                        height: 7rem;
                     }
 
                     &:nth-of-type(2) {
@@ -471,7 +471,7 @@ $secodary: #ffd5c9;
             }
 
             &.connect {
-                --height: 4rem;
+                --height: 3.5rem;
                 background-color: var(--primary-btn-bg);
                 transition: background-color var(--transition);
                 height: var(--height);

@@ -15,7 +15,7 @@
         ></div>
         <Nav />
         <slot />
-        <WalletModal />
+        <SelectTokenModal />
     </div>
 </template>
 
@@ -23,6 +23,11 @@
 import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
+const { data } = await useFetch(() => "https://gateway.ipfs.io/ipns/tokens.uniswap.org")
+// const { data } = await useFetch(() => "https://tokens.coingecko.com/uniswap/all.json")
+
+stepStore.tokenList = data?.value?.tokens
+console.log(stepStore.tokenList.length)
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>
