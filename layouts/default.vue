@@ -19,15 +19,28 @@
     </div>
 </template>
 
-<script setup>
+<script>
 import { useStepStore } from "@/stores/step"
+import { mapStores } from "pinia"
 
-const stepStore = useStepStore()
-const { data } = await useFetch(() => "https://gateway.ipfs.io/ipns/tokens.uniswap.org")
-// const { data } = await useFetch(() => "https://tokens.coingecko.com/uniswap/all.json")
-
-stepStore.tokenList = data?.value?.tokens
-console.log(stepStore.tokenList.length)
+export default {
+    data() {
+        return {}
+    },
+    computed: {
+        ...mapStores(useStepStore),
+    },
+    async serverPrefetch() {
+        const stepStore = useStepStore(this.$pinia)
+        const { data } = await useFetch(() => "https://gateway.ipfs.io/ipns/tokens.uniswap.org")
+        stepStore.$patch({
+            isDark: true,
+            tokenList: data.value.tokens,
+        })
+        // stepStore.isDark = true
+        // stepStore.tokenList = data.value.tokens
+    },
+}
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>

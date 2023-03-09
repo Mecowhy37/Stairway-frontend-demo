@@ -33,9 +33,8 @@ export const useStepStore = defineStore("step", (): any => {
     const connectingWallet: Ref<boolean> = ref(false)
     const isConnectingText = computed((): string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
 
-    const tokenList = reactive([])
-    // const fetchTokenList = () => useFetch('https://tokens.coingecko.com/uniswap/all.json');
-    
+    // const tokenList = reactive([])
+    const tokenList = ref([])
 
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const injected = injectedModule()
@@ -132,6 +131,7 @@ export const useStepStore = defineStore("step", (): any => {
         alreadyConnectedWallets,
 
         tokenList,
+        // fetchTokenList,
 
         getConnectedAccount,
         getTruncatedWalletAddress,

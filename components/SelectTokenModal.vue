@@ -3,6 +3,7 @@
         <div class="modal__window">
             <div class="topbar">
                 <h3>Select a token</h3>
+                <!-- {{ filteredList.length }} -->
                 <h3><mdicon name="close" /></h3>
             </div>
             <div class="token-list">
@@ -14,12 +15,26 @@
     </div>
 </template>
 
-<script setup>
+<script>
 import { useStepStore } from "@/stores/step"
+import { mapStores } from "pinia"
 
-const stepStore = useStepStore()
-const filteredList = stepStore.tokenList.filter((el) => el.chainId === 1)
-console.log("filteredList", filteredList.length)
+export default {
+    data() {
+        return {
+            isModalOpen: true,
+        }
+    },
+    computed: {
+        ...mapStores(useStepStore),
+        filteredList() {
+            return this.stepStore.tokenList.filter((el) => el.chainId === 1)
+        },
+    },
+    created() {
+        console.log(this.stepStore.tokenList.length)
+    },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -30,7 +45,8 @@ console.log("filteredList", filteredList.length)
         height: 100%;
         display: grid;
         pointer-events: none;
-        /* background-color: rgba(0, 0, 0, 0.4); */
+        background-color: rgba(0, 0, 0, 0.15);
+        z-index: 3;
     }
 
     &__window {
