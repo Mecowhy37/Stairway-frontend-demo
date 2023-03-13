@@ -35,6 +35,21 @@ export const useStepStore = defineStore("step", (): any => {
 
     // const tokenList = reactive([])
     const tokenList = ref([])
+    
+    const showTokenModal = ref(false)
+    function toggleTokenModal(event) {
+        showTokenModal.value = !showTokenModal.value
+        event.stopPropagation()
+    }
+
+    const swapTokenIndexToSelect: Ref<number> = ref(0)
+    function setSwapSelectTokenIndex(index: number) {
+        swapTokenIndexToSelect.value = index
+    }
+
+    function setSwapToken(add: number) {
+        console.log(add)
+    }
 
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const injected = injectedModule()
@@ -131,6 +146,11 @@ export const useStepStore = defineStore("step", (): any => {
         alreadyConnectedWallets,
 
         tokenList,
+        showTokenModal,
+        toggleTokenModal,
+        swapTokenIndexToSelect,
+        setSwapSelectTokenIndex,
+        setSwapToken,
         // fetchTokenList,
 
         getConnectedAccount,

@@ -8,11 +8,13 @@
             >
                 <label
                     for="amount_1"
-                    @click="setToken(x)"
+                    @click="openTokenSelectModal($event, x)"
                 >
-                    <h3>
-                        {{ switchedTokens[x] !== null ? switchedTokens[x].symbol : "select token" }}
+                    <!-- @click="setToken(x)" -->
+                    <h3 v-if="switchedTokens[x] !== null">
+                        {{ switchedTokens[x].symbol }}
                     </h3>
+                    <h3 v-else>select token</h3>
                     <!-- <br /> -->
                     <!-- <p v-if="switchedBalance[x] !== null">balance: {{ switchedBalance[x] }}</p> -->
                 </label>
@@ -157,6 +159,10 @@ export default {
         setTokenAmount(value, inputIndex) {
             this.lastChangedToken = inputIndex
             this.amountInputs = this.amountInputs.map((el, i) => (inputIndex === i ? value : el))
+        },
+        openTokenSelectModal(event, index) {
+            this.stepStore.toggleTokenModal(event)
+            this.stepStore.setSwapSelectTokenIndex(index)
         },
         setToken(index) {
             // -> triggers ABTokens() watcher

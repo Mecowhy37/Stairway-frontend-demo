@@ -30,16 +30,16 @@ export default {
     computed: {
         ...mapStores(useStepStore),
     },
-    async serverPrefetch() {
-        const stepStore = useStepStore(this.$pinia)
-        const { data } = await useFetch(() => "https://gateway.ipfs.io/ipns/tokens.uniswap.org")
-        stepStore.$patch({
-            isDark: true,
-            tokenList: data.value.tokens,
-        })
-        // stepStore.isDark = true
-        // stepStore.tokenList = data.value.tokens
-    },
+    // async serverPrefetch() {
+    //     const stepStore = useStepStore(this.$pinia)
+    //     const { data } = await useFetch(() => "https://gateway.ipfs.io/ipns/tokens.uniswap.org")
+    //     stepStore.tokenList = data.value.tokens
+    //     // stepStore.$patch({
+    //     //     isDark: true,
+    //     //     tokenList: data.value.tokens,
+    //     // })
+    //     // stepStore.isDark = true
+    // },
 }
 </script>
 
