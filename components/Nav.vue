@@ -49,12 +49,15 @@
                     </Btn>
                 </template>
                 <template #dropdown>
-                    <span>networks</span>
+                    <div class="networks-dd">
+                        <h3>1</h3>
+                        <h3>3</h3>
+                    </div>
                 </template>
             </Dropdown>
             <span
                 v-if="!stepStore.connectedWallet"
-                class="cta-dropdown"
+                class="cta-dd"
             >
                 <Btn
                     transparent
@@ -175,7 +178,7 @@ function revertTheme() {
         gap: 0.8rem;
         margin-left: auto;
 
-        .cta-dropdown {
+        .cta-dd {
             display: flex;
             background-color: hotpink;
             border-radius: 9999px;
@@ -187,6 +190,12 @@ function revertTheme() {
                 /* margin-left: -0.5rem; */
                 /* margin-right: -1.2rem; */
             }
+        }
+        .networks-dd {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12%;
+            justify-content: space-evenly;
         }
     }
 }

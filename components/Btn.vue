@@ -104,7 +104,7 @@ $horiz-padd: 1rem;
         border-radius: 9999px;
     }
 }
-.cta-dropdown {
+.cta-dd {
     button {
         border: none !important;
     }

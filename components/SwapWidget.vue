@@ -10,7 +10,6 @@
                     for="amount_1"
                     @click="openTokenSelectModal($event, x)"
                 >
-                    <!-- @click="setToken(x)" -->
                     <h3 v-if="switchedTokens[x] !== null">
                         {{ switchedTokens[x].symbol }}
                     </h3>
@@ -54,7 +53,14 @@
                 class="connect"
             >
                 <h3>swap</h3>
+                {{ x }}
             </div>
+            <Teleport to="#base">
+                <SelectTokenModal
+                    ref="tokenModal"
+                    @tokenSelected="setToken($event)"
+                ></SelectTokenModal>
+            </Teleport>
         </div>
         <!-- <div class="slippage">
                 <div class="checkbox inset" @click="toggleSlippage">
@@ -82,9 +88,6 @@ import { getToken } from "~/helpers/index"
 // import * as Token from "../ABIs/tokenAbi.json"
 // const TokenABI = Token.default
 
-import * as Tokens from "../constants/tokenAddresses.json"
-const TokenList = Tokens.default
-
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 export default {
@@ -100,8 +103,8 @@ export default {
             sellAmount: "",
             tokenToSellIndex: 0,
             lastChangedToken: 0,
-            defaultTokenASymbol: "MyBTC",
-            defaultTokenBSymbol: "MyUSD",
+            defaultTokenASymbol: "WBTC",
+            selectTokenIndex: 0,
             showRate: false,
             noSlippage: false,
             alreadyMounted: false,
@@ -161,24 +164,30 @@ export default {
             this.amountInputs = this.amountInputs.map((el, i) => (inputIndex === i ? value : el))
         },
         openTokenSelectModal(event, index) {
-            this.stepStore.toggleTokenModal(event)
-            this.stepStore.setSwapSelectTokenIndex(index)
+            this.$refs.tokenModal.toggleTokenModal(event)
+            this.setSelectTokenIndex(index)
         },
-        setToken(index) {
+        setSelectTokenIndex(index) {
+            this.selectTokenIndex = index
+        },
+        setToken(token) {
             // -> triggers ABTokens() watcher
             // opening modal and choosing token
             // do validation
-            const toSet = getToken(this.defaultTokenBSymbol)
+            // const toSet = getToken(this.defaultTokenBSymbol)
 
-            if (this.switchedTokens[index] === null) {
-                this.switchedTokens = this.switchedTokens.map((el) =>
-                    this.switchedTokens.indexOf(el) === index ? toSet : el
-                )
-            } else {
-                this.switchedTokens = this.switchedTokens.map((el) =>
-                    this.switchedTokens.indexOf(el) === index && el.symbol !== this.defaultTokenASymbol ? null : el
-                )
-            }
+            // if (this.switchedTokens[index] === null) {
+
+            this.switchedTokens = this.switchedTokens.map((el) =>
+                this.switchedTokens.indexOf(el) === this.selectTokenIndex ? token : el
+            )
+
+            // }
+            //  else {
+            //     this.switchedTokens = this.switchedTokens.map((el) =>
+            //         this.switchedTokens.indexOf(el) === index && el.symbol !== this.defaultTokenASymbol ? null : el
+            //     )
+            // }
         },
         async swap() {
             try {
@@ -358,7 +367,6 @@ export default {
     },
     created() {
         this.TokenA = getToken(this.defaultTokenASymbol)
-        this.TokenB = getToken(this.defaultTokenBSymbol)
     },
 }
 </script>

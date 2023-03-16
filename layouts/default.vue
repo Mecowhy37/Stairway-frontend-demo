@@ -15,7 +15,6 @@
         ></div>
         <Nav />
         <slot />
-        <SelectTokenModal />
     </div>
 </template>
 

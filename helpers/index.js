@@ -1,4 +1,4 @@
-import * as Tokens from "../constants/tokenAddresses.json"
+import * as Tokens from "../constants/tokenList.json"
 const TokenList = Tokens.default
 
 export function getToken(symb) {

@@ -1,23 +1,26 @@
 <template>
     <div
-        v-show="stepStore.showTokenModal"
-        @click="stepStore.toggleTokenModal"
+        v-if="showTokenModal"
+        @click="toggleTokenModal"
         class="modal__overlay"
     >
         <div class="modal__window">
             <div class="topbar">
                 <h3>Select a token</h3>
                 <h3
-                    @click="stepStore.toggleTokenModal"
+                    @click="toggleTokenModal"
                     class="topbar__close"
                 >
                     <mdicon name="close" />
                 </h3>
             </div>
-            <div class="token-list">
+            <div
+                class="token-list"
+                ref="tokenListRef"
+            >
                 <p
-                    v-for="(token, index) in stepStore.tokenList"
-                    @click="stepStore.setSwapToken(token.address)"
+                    v-for="(token, index) in filteredTokenList"
+                    @click="setToken(token)"
                 >
                     {{ token.name }}
                 </p>
@@ -27,51 +30,37 @@
 </template>
 
 <script setup>
+import tokenList from "../constants/tokenList.json"
+
 import { useStepStore } from "@/stores/step"
 const stepStore = useStepStore()
 
-const { data } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
-stepStore.tokenList = data.value.tokens
+const emit = defineEmits(["tokenSelected"])
 
-// onBeforeMount(() => {
-//     console.log(this.initialState)
-// })
-// export default {
-//     data() {
-//         return {
-//             isModalOpen: true,
-//             tokenList: [],
-//         }
-//     },
-//     computed: {
-//         ...mapStores(useStepStore),
-//         filteredList() {
-//             // return this.stepStore.tokenList.filter((el) => el.chainId === 1)
-//             return this.tokenList.filter((el) => el.chainId === 1)
-//         },
-//     },
-//     async serverPrefetch() {
-//         // const stepStore = useStepStore(this.$pinia)
-//         const { data } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
-//         this.tokenList = data.value.tokens
-//         // stepStore.$patch({
-//         //     isDark: true,
-//         //     tokenList: data.value.tokens,
-//         // })
-//         // stepStore.isDark = true
-//     },
-//     // async mounted() {
-//     //     if (this.tokenList.length === 0) {
-//     //         const { data } = await useFetch(() => "https://gateway.ipfs.io/ipns/tokens.uniswap.org")
-//     //         this.tokenList = data.value.tokens
-//     //     }
-//     // },
-//     // methods: {
-//     //     fetchItems() {
+// const tokenList = ref([])
+// const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
+// tokenList.value = data.value?.tokens
 
-//     //     }
-//     // }
-// }
+const filteredTokenList = computed(() => tokenList.filter((el) => el.chainId === 1))
+
+const showTokenModal = ref(false)
+function toggleTokenModal(event) {
+    showTokenModal.value = !showTokenModal.value
+    event.stopPropagation()
+}
+
+const tokenListRef = ref()
+onUpdated(() => {
+    tokenListRef.scrollTop = 0
+})
+
+function setToken(token) {
+    emit("tokenSelected", token)
+}
+
+defineExpose({
+    toggleTokenModal,
+})
 </script>
 
 <style lang="scss" scoped>
