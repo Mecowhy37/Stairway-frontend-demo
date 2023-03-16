@@ -58,6 +58,7 @@
             <Teleport to="#base">
                 <SelectTokenModal
                     ref="tokenModal"
+                    :switched-tokens="switchedTokens"
                     @tokenSelected="setToken($event)"
                 ></SelectTokenModal>
             </Teleport>
@@ -171,23 +172,9 @@ export default {
             this.selectTokenIndex = index
         },
         setToken(token) {
-            // -> triggers ABTokens() watcher
-            // opening modal and choosing token
-            // do validation
-            // const toSet = getToken(this.defaultTokenBSymbol)
-
-            // if (this.switchedTokens[index] === null) {
-
             this.switchedTokens = this.switchedTokens.map((el) =>
                 this.switchedTokens.indexOf(el) === this.selectTokenIndex ? token : el
             )
-
-            // }
-            //  else {
-            //     this.switchedTokens = this.switchedTokens.map((el) =>
-            //         this.switchedTokens.indexOf(el) === index && el.symbol !== this.defaultTokenASymbol ? null : el
-            //     )
-            // }
         },
         async swap() {
             try {

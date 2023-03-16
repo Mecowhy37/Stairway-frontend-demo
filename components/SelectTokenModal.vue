@@ -30,18 +30,23 @@
 </template>
 
 <script setup>
+import { toRaw } from "vue"
 import tokenList from "../constants/tokenList.json"
 
 import { useStepStore } from "@/stores/step"
 const stepStore = useStepStore()
 
 const emit = defineEmits(["tokenSelected"])
+const props = defineProps({
+    switchedTokens: Array,
+})
 
 // const tokenList = ref([])
 // const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
 // tokenList.value = data.value?.tokens
 
-const filteredTokenList = computed(() => tokenList.filter((el) => el.chainId === 1))
+const switchedTokensRaw = computed(() => props.switchedTokens.map((el) => toRaw(el)))
+const filteredTokenList = computed(() => tokenList.filter((el) => !switchedTokensRaw.value.includes(el)))
 
 const showTokenModal = ref(false)
 function toggleTokenModal(event) {
