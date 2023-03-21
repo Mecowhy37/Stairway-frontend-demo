@@ -2,7 +2,9 @@
     <div class="widget">
         <div class="wrap">
             <div class="amount amount__input">
-                <label for="amount_1">{{ TokenA !== null ? TokenA.symbol : "select token" }}</label>
+                <label for="amount_1">
+                    <h3>{{ TokenA !== null ? TokenA.symbol : "select token" }}</h3>
+                </label>
                 <input
                     type="number"
                     id="amount_1"
@@ -13,7 +15,9 @@
             </div>
             <div class="add"><h1>+</h1></div>
             <div class="amount amount__input">
-                <label for="amount_1">{{ TokenB !== null ? TokenB.symbol : "select token" }}</label>
+                <label for="amount_1">
+                    <h3>{{ TokenB !== null ? TokenB.symbol : "select token" }}</h3>
+                </label>
                 <input
                     type="number"
                     id="amount_1"
@@ -27,18 +31,22 @@
                 v-model="stepSize"
             />
             <div class="buttons">
-                <div
+                <Btn
                     class="pool"
                     @click="createPair()"
+                    wide
+                    bulky
                 >
                     <h3>create pair</h3>
-                </div>
-                <div
+                </Btn>
+                <Btn
                     class="pool"
                     @click="addLiquidity()"
+                    wide
+                    bulky
                 >
                     <h3>add liquidity</h3>
-                </div>
+                </Btn>
             </div>
         </div>
     </div>
@@ -71,8 +79,8 @@ export default {
             TokenB: null,
             amountA: 1,
             amountB: 30000,
-            defaultTokenASymbol: "MyBTC",
-            defaultTokenBSymbol: "MyUSD",
+            defaultTokenASymbol: "WBTC",
+            defaultTokenBSymbol: "1INCH",
             stepSize: null,
         }
     },
@@ -147,17 +155,7 @@ export default {
     height: 400px;
     border-radius: var(--outer-wdg-radius);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
-    padding: 0.6rem;
-    h2 {
-        font-size: 2.6rem;
-        text-align: center;
-    }
-    h3 {
-        font-size: 2rem;
-    }
-    label {
-        font-size: 2rem;
-    }
+    padding: 0.5rem;
     .wrap {
         height: 100%;
         display: flex;
@@ -171,8 +169,8 @@ export default {
                 &__input {
                     position: relative;
                     width: 100%;
-                    height: 12rem;
-                    border-radius: 14px;
+                    height: 7rem;
+                    border-radius: var(--inner-wdg-radius);
                     position: relative;
                     &.transitions {
                         transition: height var(--transition);
@@ -195,7 +193,7 @@ export default {
                         outline: none;
                         text-align: center;
                         font-weight: 400;
-                        font-size: 4rem;
+                        font-size: 2.5rem;
 
                         &::placeholder {
                             opacity: 0.8;
@@ -223,9 +221,8 @@ export default {
                 gap: 1rem;
                 margin: auto 0;
 
-                .pool {
+                /* .pool {
                     --height: 6rem;
-                    flex-grow: 1;
                     background-color: var(--primary-btn-bg);
                     transition: background-color var(--transition);
                     height: var(--height);
@@ -239,9 +236,9 @@ export default {
                     }
 
                     &.connecting {
-                        /* box-shadow: 0 0 2px 3px hotpink inset; */
+                        box-shadow: 0 0 2px 3px hotpink inset;
                     }
-                }
+                } */
             }
         }
     }

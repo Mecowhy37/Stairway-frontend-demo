@@ -5,11 +5,12 @@
         :class="[
             {
                 'btn--secondary': props.secondary,
-                'btn--wide': props.wide,
-                'btn--transparent': props.transparent,
+                'btn--secondary--thin': props.secondary && props.thin,
                 'btn--plain': props.plain,
+                'btn--transparent': props.transparent,
+                'btn--wide': props.wide,
+                'btn--bulky': props.bulky,
                 'btn--pill': props.pill,
-                thin: props.secondary && props.thin,
             },
         ]"
     >
@@ -34,15 +35,15 @@ import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
 
-interface Props {
-    secondary?: boolean
-    wide?: boolean
-    thin?: boolean
-    transparent?: boolean
-    plain?: boolean
-    pill?: boolean
-}
-const props = withDefaults(defineProps<Props>(), {})
+const props = defineProps({
+    secondary: Boolean,
+    thin: Boolean,
+    wide: Boolean,
+    bulky: Boolean,
+    transparent: Boolean,
+    plain: Boolean,
+    pill: Boolean,
+})
 const emits = defineEmits([])
 const slots = useSlots()
 </script>
@@ -56,19 +57,19 @@ $horiz-padd: 1rem;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    border: none;
+    border: 1px solid transparent;
     background-color: var(--primary-btn-bg);
     transition-property: background-color, color;
     transition-duration: var(--transition);
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
+    cursor: pointer;
     * {
         color: var(--primary-btn-color);
         pointer-events: none;
     }
-    border: 1px solid transparent;
     &:hover {
-        border: 1px solid;
+        border: 1px solid transparent;
     }
     #default-slot {
         &.wicon {
@@ -81,7 +82,7 @@ $horiz-padd: 1rem;
             color: var(--main-color);
         }
         &:hover {
-            border-color: var(--flat-outline);
+            border: 1px solid var(--flat-outline) !important;
         }
     }
     &--secondary {
@@ -90,7 +91,7 @@ $horiz-padd: 1rem;
         * {
             color: var(--primary-btn-bg);
         }
-        &.thin {
+        &--thin {
             border: 1px solid var(--primary-btn-bg);
         }
     }
@@ -103,15 +104,23 @@ $horiz-padd: 1rem;
     &--pill {
         border-radius: 9999px;
     }
+    &--bulky {
+        $height: 3.5rem;
+        height: $height;
+        border-radius: var(--inner-wdg-radius);
+        /* #default-slot {
+            line-height: $height;
+        } */
+    }
 }
 .cta-dd {
-    button {
+    /* > button {
         border: none !important;
-    }
-    & > :first-child {
+    } */
+    > :first-child {
         padding-right: 13px !important;
     }
-    & > :last-child button {
+    > :last-child button {
         padding-left: 10px !important;
     }
 }

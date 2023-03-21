@@ -53,16 +53,15 @@
                 class="connect"
             >
                 <h3>swap</h3>
-                {{ x }}
             </div>
-            <Teleport to="#base">
-                <SelectTokenModal
-                    ref="tokenModal"
-                    :switched-tokens="switchedTokens"
-                    @tokenSelected="setToken($event)"
-                ></SelectTokenModal>
-            </Teleport>
         </div>
+        <Teleport to="#modal-wrap">
+            <SelectTokenModal
+                ref="tokenModal"
+                :switched-tokens="switchedTokens"
+                @tokenSelected="setToken($event)"
+            ></SelectTokenModal>
+        </Teleport>
         <!-- <div class="slippage">
                 <div class="checkbox inset" @click="toggleSlippage">
                     <div v-show="noSlippage">✓</div>
@@ -104,7 +103,7 @@ export default {
             sellAmount: "",
             tokenToSellIndex: 0,
             lastChangedToken: 0,
-            defaultTokenASymbol: "WBTC",
+            defaultTokenASymbol: "1INCH",
             selectTokenIndex: 0,
             showRate: false,
             noSlippage: false,

@@ -45,7 +45,7 @@ const props = defineProps({
 // const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
 // tokenList.value = data.value?.tokens
 
-const switchedTokensRaw = computed(() => props.switchedTokens.map((el) => toRaw(el)))
+const switchedTokensRaw = computed(() => props.switchedTokens.map((el) => (el === null ? null : toRaw(el))))
 const filteredTokenList = computed(() => tokenList.filter((el) => !switchedTokensRaw.value.includes(el)))
 
 const showTokenModal = ref(false)
@@ -53,11 +53,13 @@ function toggleTokenModal(event) {
     showTokenModal.value = !showTokenModal.value
     event.stopPropagation()
 }
+// watch(showTokenModal, (isOpen, newIsOpen) => {
+//     if (newIsOpen === false) {
+//         tokenListRef.scrollTop = 0
+//     }
+// })
 
 const tokenListRef = ref()
-onUpdated(() => {
-    tokenListRef.scrollTop = 0
-})
 
 function setToken(token) {
     emit("tokenSelected", token)

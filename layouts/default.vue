@@ -3,18 +3,16 @@
         id="base"
         :class="[stepStore.isDark ? themes.dark : themes.light]"
     >
-        <!-- <div class="bg-gradient bg-gradient--dark" :class="[stepStore.isDark ? '' : 'hide']"></div> -->
-        <!-- <div class="bg-gradient bg-gradient--light" :class="[stepStore.isDark ? 'hide' : '']"></div> -->
+        <div class="bg-gradient bg-gradient--light"></div>
         <div
             class="bg-gradient bg-gradient--dark"
             :class="{ hide: !stepStore.isDark }"
         ></div>
-        <div
-            class="bg-gradient bg-gradient--light"
-            :class="{ hide: stepStore.isDark }"
-        ></div>
         <Nav />
-        <slot />
+        <div id="slot-wrap">
+            <slot />
+        </div>
+        <div id="modal-wrap"></div>
     </div>
 </template>
 
@@ -59,12 +57,16 @@ export default {
 }
 html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
-    font-size: calc(14px + (16 - 14) * ((100vw - 300px) / (1600 - 300)));
+    font-size: calc(15px + (15 - 15) * ((100vw - 300px) / (1600 - 300)));
 }
 body #base {
     display: grid;
     height: 100vh;
     position: relative;
+}
+#slot-wrap,
+#modal-wrap {
+    display: contents;
 }
 h2 {
     font-size: 2.6rem;
@@ -98,14 +100,13 @@ h3 {
     grid-column: 1;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: -2;
     transition: opacity var(--transition);
+    opacity: 1;
     &--light {
-        opacity: 1;
         background: var(--bg-gradient-light);
     }
     &--dark {
-        opacity: 1;
         background: var(--bg-gradient-dark);
     }
     &.hide {

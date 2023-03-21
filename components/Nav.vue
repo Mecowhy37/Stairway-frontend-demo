@@ -78,9 +78,11 @@
                     </template>
                     <template #dropdown>
                         <Btn
-                            compact
-                            wide
+                            secondary
+                            thin
                         >
+                            <!-- compact
+                        wide -->
                             <span>some actions</span>
                         </Btn>
                     </template>
