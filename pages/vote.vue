@@ -46,12 +46,10 @@ const empty = "ᕙ(⇀‸↼‶)ᕗ"
         }
     }
     b {
-        font-size: 1.7rem;
         font-weight: bolder;
         margin-right: 1rem;
     }
     h3 {
-        font-size: 2rem;
     }
 }
 </style>

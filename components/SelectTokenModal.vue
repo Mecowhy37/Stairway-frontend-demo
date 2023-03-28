@@ -1,8 +1,8 @@
 <template>
     <div
-        v-if="showTokenModal"
-        @click="toggleTokenModal"
-        class="modal__overlay"
+        v-show="showTokenModal"
+        class="modal modal__overlay"
+        @click.self="toggleTokenModal"
     >
         <div class="modal__window">
             <div class="topbar">
@@ -19,11 +19,12 @@
                 ref="tokenListRef"
             >
                 <p
-                    v-for="(token, index) in filteredTokenList"
+                    v-for="token in filteredTokenList"
                     @click="setToken(token)"
                 >
                     {{ token.name }}
                 </p>
+                <p @click="setToken(null)">deselect</p>
             </div>
         </div>
     </div>
@@ -41,27 +42,29 @@ const props = defineProps({
     switchedTokens: Array,
 })
 
-// const tokenList = ref([])
 // const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
 // tokenList.value = data.value?.tokens
 
 const switchedTokensRaw = computed(() => props.switchedTokens.map((el) => (el === null ? null : toRaw(el))))
-const filteredTokenList = computed(() => tokenList.filter((el) => !switchedTokensRaw.value.includes(el)))
+const filteredTokenList = computed(
+    // () => tokenList.filter((el) => !switchedTokensRaw.value.includes(el))
+    () => tokenList.filter((el) => el.chainId === 31337 && !switchedTokensRaw.value.includes(el))
+)
 
 const showTokenModal = ref(false)
-function toggleTokenModal(event) {
+function toggleTokenModal() {
     showTokenModal.value = !showTokenModal.value
-    event.stopPropagation()
 }
-// watch(showTokenModal, (isOpen, newIsOpen) => {
-//     if (newIsOpen === false) {
-//         tokenListRef.scrollTop = 0
-//     }
-// })
 
 const tokenListRef = ref()
+watch(showTokenModal, (isOpen, newIsOpen) => {
+    if (newIsOpen === true) {
+        tokenListRef.value.scrollTop = 0
+    }
+})
 
 function setToken(token) {
+    toggleTokenModal()
     emit("tokenSelected", token)
 }
 
@@ -72,11 +75,13 @@ defineExpose({
 
 <style lang="scss" scoped>
 .modal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: grid;
     &__overlay {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: grid;
+        grid-row: 1/1;
+        grid-column: 1/1;
         background-color: rgba(0, 0, 0, 0.15);
         z-index: 3;
     }

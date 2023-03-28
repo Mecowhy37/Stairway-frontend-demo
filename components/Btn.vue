@@ -14,7 +14,6 @@
             },
         ]"
     >
-        <!-- <slot name="default"></slot> -->
         <component
             is="h3"
             id="default-slot"
@@ -26,7 +25,6 @@
             <slot name="icon"></slot>
         </div>
     </button>
-    <!-- <button>{{ $slots.default }}</button> -->
 </template>
 
 <script setup lang="ts">
@@ -108,9 +106,6 @@ $horiz-padd: 1rem;
         $height: 3.5rem;
         height: $height;
         border-radius: var(--inner-wdg-radius);
-        /* #default-slot {
-            line-height: $height;
-        } */
     }
 }
 .cta-dd {

@@ -1,73 +1,85 @@
 <template>
     <div class="widget">
-        <div class="wrap">
-            <div
-                v-for="(i, x) in new Array(2)"
-                class="amount amount__input"
-                :class="[token0Style[x], isMountedStyle]"
+        <div
+            v-for="(i, x) in new Array(2)"
+            class="window"
+            :class="[token0Style[x], isMountedStyle]"
+        >
+            <label
+                :for="'amount_' + x + 1"
+                @click="openTokenSelectModal($event, x)"
             >
-                <label
-                    for="amount_1"
-                    @click="openTokenSelectModal($event, x)"
+                <h3
+                    v-if="switchedTokens[x] !== null"
+                    class="bolder"
                 >
-                    <h3 v-if="switchedTokens[x] !== null">
-                        {{ switchedTokens[x].symbol }}
-                    </h3>
-                    <h3 v-else>select token</h3>
-                    <!-- <br /> -->
-                    <!-- <p v-if="switchedBalance[x] !== null">balance: {{ switchedBalance[x] }}</p> -->
-                </label>
-                <input
-                    type="number"
-                    :id="'amount_' + x + 1"
-                    :name="'amount_' + x + 1"
-                    placeholder="0"
-                    @input="setTokenAmount($event.target.value, x)"
-                    :value="amountInputs[x]"
-                />
-                <div
-                    v-if="x === 0"
-                    class="floater floater__switch"
-                    @click="switchOrder"
+                    {{ switchedTokens[x].symbol }}
+                </h3>
+                <h3
+                    v-else
+                    class="bolder"
                 >
-                    <h4>switch</h4>
-                </div>
-                <div
-                    v-if="x === 0"
-                    class="floater floater__rate"
-                    :class="{ 'show-rate': showRate }"
-                >
-                    {{ rate }}
-                </div>
+                    select token
+                </h3>
+                <p v-if="switchedBalances[x] !== null">balance: {{ switchedBalances[x] }}</p>
+            </label>
+            <input
+                type="number"
+                :id="'amount_' + x + 1"
+                :name="'amount_' + x + 1"
+                placeholder="0"
+                @input="setTokenAmount($event.target.value, x)"
+                :value="amountInputs[x]"
+            />
+            <div
+                v-if="x === 0"
+                class="floater floater__switch"
+                @click="switchOrder"
+            >
+                <h4>switch</h4>
             </div>
             <div
-                v-if="stepStore.activeWallet === null"
-                @click="stepStore.connectWalletAction"
-                class="connect"
+                v-if="x === 0"
+                class="floater floater__rate"
+                :class="{ 'show-rate': showRate }"
             >
-                <h3>connect</h3>
-            </div>
-            <div
-                v-else
-                @click="swap()"
-                class="connect"
-            >
-                <h3>swap</h3>
+                {{ rate }}
             </div>
         </div>
-        <Teleport to="#modal-wrap">
-            <SelectTokenModal
-                ref="tokenModal"
-                :switched-tokens="switchedTokens"
-                @tokenSelected="setToken($event)"
-            ></SelectTokenModal>
-        </Teleport>
+        <Btn
+            v-if="!stepStore.connectedWallet"
+            @click="stepStore.connectWalletAction"
+            wide
+            bulky
+        >
+            connect
+        </Btn>
+        <Btn
+            v-else
+            @click="swap()"
+            wide
+            bulky
+        >
+            swap
+        </Btn>
         <!-- <div class="slippage">
-                <div class="checkbox inset" @click="toggleSlippage">
-                    <div v-show="noSlippage">✓</div>
-                </div>
-                <label for="slippage">No slippage - set price</label>
-            </div> -->
+            <div
+            class="checkbox inset"
+            @click="toggleSlippage"
+            >
+            <div v-show="noSlippage">✓</div>
+        </div>
+        <label for="slippage">No slippage - set price</label> 3226855 17.15 strzegomska 36 centrum medyczne
+    </div> -->
+        <ClientOnly>
+            <Teleport to="#modal-wrap">
+                <SelectTokenModal
+                    ref="tokenModal"
+                    :switched-tokens="switchedTokens"
+                    @tokenSelected="setToken($event)"
+                ></SelectTokenModal>
+            </Teleport>
+        </ClientOnly>
     </div>
 </template>
 
@@ -85,8 +97,8 @@ import { getToken } from "~/helpers/index"
 // import * as Pool from "../ABIs/poolAbi.json"
 // const PoolABI = Pool.default
 
-// import * as Token from "../ABIs/tokenAbi.json"
-// const TokenABI = Token.default
+import * as Token from "../ABIs/ERC20.json"
+const TokenABI = Token.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 
@@ -103,7 +115,6 @@ export default {
             sellAmount: "",
             tokenToSellIndex: 0,
             lastChangedToken: 0,
-            defaultTokenASymbol: "1INCH",
             selectTokenIndex: 0,
             showRate: false,
             noSlippage: false,
@@ -111,7 +122,7 @@ export default {
         }
     },
     watch: {
-        async ABTokens() {
+        ABTokens() {
             this.getBalances()
             if (!this.ABTokens.every((el) => el !== null)) {
                 // one of the tokens is null
@@ -134,19 +145,20 @@ export default {
     },
     methods: {
         async getBalances() {
-            if (this.stepStore.activeWallet) {
-                const provider = new ethers.providers.Web3Provider(window.ethereum)
+            if (this.stepStore.connectedWallet) {
+                console.log("getting balance")
+                const provider = new ethers.BrowserProvider(this.stepStore.connectedWallet.provider)
                 if (this.TokenA) {
                     const tkA = new ethers.Contract(this.TokenA.address, TokenABI, provider)
-                    const balA = await tkA.balanceOf(this.stepStore.activeWallet)
-                    this.balanceA = ethers.utils.formatEther(balA)
+                    const balA = await tkA.balanceOf(this.stepStore.getConnectedAccount)
+                    this.balanceA = ethers.formatUnits(balA, this.TokenA.decimals)
                 } else {
                     this.balanceA = null
                 }
                 if (this.TokenB) {
-                    const tkB = new ethers.Contract(this.TokenB.address, TokenABI, provider)
-                    const balB = await tkB.balanceOf(this.stepStore.activeWallet)
-                    this.balanceB = ethers.utils.formatEther(balB)
+                    const tkA = new ethers.Contract(this.TokenB.address, TokenABI, provider)
+                    const balB = await tkA.balanceOf(this.stepStore.getConnectedAccount)
+                    this.balanceB = ethers.formatUnits(balB, this.TokenB.decimals)
                 } else {
                     this.balanceB = null
                 }
@@ -171,9 +183,7 @@ export default {
             this.selectTokenIndex = index
         },
         setToken(token) {
-            this.switchedTokens = this.switchedTokens.map((el) =>
-                this.switchedTokens.indexOf(el) === this.selectTokenIndex ? token : el
-            )
+            this.switchedTokens = this.switchedTokens.map((el, index) => (index === this.selectTokenIndex ? token : el))
         },
         async swap() {
             try {
@@ -322,11 +332,9 @@ export default {
                 }
             },
         },
-        switchedBalance: {
-            get() {
-                const list = [this.balanceA, this.balanceB]
-                return !Boolean(this.tokenToSellIndex) ? list : list.reverse()
-            },
+        switchedBalances() {
+            const list = [this.balanceA, this.balanceB]
+            return this.tokenToSellIndex === 0 ? list : list.reverse()
         },
         isConnectingStyle() {
             return this.connecting ? "connecting" : ""
@@ -345,14 +353,15 @@ export default {
         },
         activeWalletCallback() {
             // watch callback when wallet changes
-            return this.stepStore.activeWallet
+            return this.stepStore.connectedWallet
         },
     },
     mounted() {
         this.alreadyMounted = true
     },
     created() {
-        this.TokenA = getToken(this.defaultTokenASymbol)
+        this.TokenA = getToken("fUSD")
+        // this.TokenB = getToken("fBTC")
     },
 }
 </script>
@@ -370,158 +379,126 @@ $secodary: #ffd5c9;
     width: 500px;
     border-radius: var(--outer-wdg-radius);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
+    padding: 0.5rem;
+    padding-top: 3rem;
     /* box-shadow: rgba(0, 0, 0, 0.05) 0px 13px 35px -5px, rgba(0, 0, 0, 0.15) 0px 8px 22px -8px; */
     /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
     /* padding: 0.6rem; */
     /* padding-top: 6rem; */
-    padding: 0.5rem;
-    padding-top: 4rem;
-    .wrap {
-        display: flex;
-        flex-direction: column;
-        > div {
-            &.amount {
-                background-color: var(--swap-windows);
-                transition: background-color var(--transition);
 
-                &__input {
-                    display: flex;
-                    align-items: center;
-                    position: relative;
-                    width: 100%;
-                    height: 5.5rem;
-                    border-radius: var(--inner-wdg-radius);
-                    &.transitions {
-                        &,
-                        * {
-                            transition-property: all;
-                            transition-duration: var(--transition);
-                        }
-                    }
-                    .floater {
-                        position: absolute;
-                        top: calc(100% + 0.3rem);
-                        padding: 0.35rem 0.65rem;
-                        cursor: pointer;
-                        background-color: var(--swap-windows);
-                        border: var(--widget-bg) 0.4rem solid;
-                        z-index: 2;
-
-                        &__switch {
-                            /* transform: translateY(-50%); */
-                            /* border-radius: 1.3rem 0 0 1.3rem; */
-                            /* right: calc(0% - 0.4rem); */
-                            transform: translate(50%, -50%);
-                            right: 50%;
-                            border-radius: calc(var(--inner-wdg-radius) * 0.8);
-                        }
-                        &__rate {
-                            border-radius: 0 1.3rem 1.3rem 0;
-                            left: calc(0% - 0.4rem);
-                            transform: translateY(-50%) scale(0);
-                            transform-origin: left center;
-                            &.show-rate {
-                                transform: translateY(-50%) scale(1);
-                            }
-                        }
-                    }
-
-                    input {
-                        width: 100%;
-                        height: 100%;
-                        background: transparent;
-                        border: none;
-                        outline: none;
-                        text-align: right;
-                        padding-right: 1rem;
-                        font-weight: 400;
-                        font-size: 2.5rem;
-
-                        &::placeholder {
-                            opacity: 0.8;
-                        }
-
-                        // hiding browser default arrows
-                        &::-webkit-outer-spin-button,
-                        &::-webkit-inner-spin-button {
-                            -webkit-appearance: none;
-                            margin: 0;
-                        }
-
-                        &[type="number"] {
-                            -moz-appearance: textfield;
-                        }
-                    }
-                    label {
-                        flex-shrink: 0;
-                        margin: 0 1.2rem;
-                        cursor: pointer;
-                        p {
-                            font-size: 1.4rem;
-                        }
-                    }
-                    &.token0 {
-                        height: 7rem;
-                    }
-
-                    &:nth-of-type(2) {
-                        margin-top: 0.5rem;
-                    }
-                }
-            }
-
-            &.connect {
-                --height: 3.5rem;
-                background-color: var(--primary-btn-bg);
-                transition: background-color var(--transition);
-                height: var(--height);
-                text-align: center;
-                margin-top: 0.5rem;
-                border-radius: var(--inner-wdg-radius);
-                cursor: pointer;
-                h3 {
-                    line-height: var(--height);
-                    display: inline-block;
-                    height: 100%;
-                    color: var(--primary-btn-color);
-                    transition: color var(--transition);
-                }
-
-                &.connecting {
-                    /* box-shadow: 0 0 2px 3px hotpink inset; */
-                }
-            }
-        }
-    }
-
-    .prices {
-        /* margin-top: 1.6rem; */
-        margin-bottom: 0.8rem;
-    }
-
-    .slippage {
-        margin: 1.6rem 0;
+    .window {
+        background-color: var(--swap-windows);
+        transition: background-color var(--transition);
         display: flex;
         align-items: center;
-
-        label {
-            margin-left: 1.2rem;
+        position: relative;
+        width: 100%;
+        height: 6.5rem;
+        &.token0 {
+            height: 8rem;
+        }
+        border-radius: var(--inner-wdg-radius);
+        &.transitions {
+            &,
+            * {
+                transition-property: all;
+                transition-duration: var(--transition);
+            }
         }
 
-        .checkbox {
-            background: #18302b;
-            width: 4rem;
-            aspect-ratio: 1/1;
-            flex-grow: 0;
-            border-radius: 10px;
+        label {
+            position: relative;
+            flex-shrink: 0;
+            margin: 0 1.2rem;
             cursor: pointer;
-            display: table;
-            text-align: center;
+            p {
+                position: absolute;
+                white-space: nowrap;
+                bottom: -90%;
+            }
+        }
+        input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            text-align: right;
+            padding-right: 1rem;
+            font-weight: 400;
+            font-size: 2.5rem;
 
-            div {
-                font-size: 2.2rem;
-                display: table-cell;
-                vertical-align: middle;
+            &::placeholder {
+                opacity: 0.8;
+            }
+            // hiding browser default arrows
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            &[type="number"] {
+                -moz-appearance: textfield;
+            }
+        }
+
+        &:nth-of-type(2) {
+            margin-top: 0.5rem;
+        }
+        & + button {
+            margin-top: 0.5rem;
+        }
+        .floater {
+            position: absolute;
+            top: calc(100% + 0.3rem);
+            padding: 0.35rem 0.65rem;
+            cursor: pointer;
+            background-color: var(--swap-windows);
+            border: var(--widget-bg) 0.4rem solid;
+            z-index: 2;
+
+            &__switch {
+                /* transform: translateY(-50%); */
+                /* border-radius: 1.3rem 0 0 1.3rem; */
+                /* right: calc(0% - 0.4rem); */
+                transform: translate(50%, -50%);
+                right: 50%;
+                border-radius: calc(var(--inner-wdg-radius) * 0.8);
+            }
+            &__rate {
+                border-radius: 0 1.3rem 1.3rem 0;
+                left: calc(0% - 0.4rem);
+                transform: translateY(-50%) scale(0);
+                transform-origin: left center;
+                &.show-rate {
+                    transform: translateY(-50%) scale(1);
+                }
+            }
+        }
+        .slippage {
+            margin: 1.6rem 0;
+            display: flex;
+            align-items: center;
+
+            label {
+                margin-left: 1.2rem;
+            }
+
+            .checkbox {
+                background: #18302b;
+                width: 4rem;
+                aspect-ratio: 1/1;
+                flex-grow: 0;
+                border-radius: 10px;
+                cursor: pointer;
+                display: table;
+                text-align: center;
+
+                div {
+                    font-size: 2.2rem;
+                    display: table-cell;
+                    vertical-align: middle;
+                }
             }
         }
     }

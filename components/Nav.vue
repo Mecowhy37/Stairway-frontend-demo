@@ -31,12 +31,6 @@
                 @click="revertTheme"
                 >. . .</Btn
             >
-            <Btn
-                plain
-                @click="stepStore.tryWallet()"
-            >
-                ! ! !
-            </Btn>
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn plain>

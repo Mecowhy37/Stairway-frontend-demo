@@ -34,6 +34,8 @@ export const useStepStore = defineStore("step", (): any => {
     const isConnectingText = computed((): string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
 
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
+    const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
+
     const injected = injectedModule()
     const onboard = init({
         wallets: [injected],
@@ -42,6 +44,12 @@ export const useStepStore = defineStore("step", (): any => {
                 id: "0x1",
                 token: "ETH",
                 label: "Ethereum Mainnet",
+                rpcUrl: MAINNET_RPC_URL,
+            },
+            {
+                id: "0x7a69",
+                token: "ETH",
+                label: "Local ANvil",
                 rpcUrl: MAINNET_RPC_URL,
             },
         ],
@@ -53,11 +61,11 @@ export const useStepStore = defineStore("step", (): any => {
                 enabled: false,
             },
         },
+        connect: {
+            autoConnectLastWallet: true,
+        },
     })
-    const { wallets, connectWallet, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
-    onboard.state.actions.updateAccountCenter({
-        enabled: true,
-    })
+    const { wallets, connectWallet, connectedChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
 
     const getConnectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null)
     const getTruncatedWalletAddress = computed(() => {
@@ -79,7 +87,9 @@ export const useStepStore = defineStore("step", (): any => {
     }
 
     async function tryWallet() {
-        console.log(wallets.value)
+        
+        console.log(connectedWallet.value?.accounts)
+
         // let eth
         // let account
         // if (window.ethereum) {
@@ -118,6 +128,7 @@ export const useStepStore = defineStore("step", (): any => {
         factoryAddress,
         isDark,
 
+        connectedChain,
         isConnectingText,
         activeWallet,
         connectWallet,

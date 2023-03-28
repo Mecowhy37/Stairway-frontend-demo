@@ -1,43 +1,39 @@
 <template>
     <div class="widget">
-        <div class="wrap">
-            <div class="amount amount__input">
-                <label for="amount_1">
-                    <h3>{{ TokenA !== null ? TokenA.symbol : "select token" }}</h3>
-                </label>
-                <input
-                    type="number"
-                    id="amount_1"
-                    name="amount_1"
-                    placeholder="0.00"
-                    v-model="amountA"
-                />
-            </div>
-            <div class="add"><h1>+</h1></div>
-            <div class="amount amount__input">
-                <label for="amount_1">
-                    <h3>{{ TokenB !== null ? TokenB.symbol : "select token" }}</h3>
-                </label>
-                <input
-                    type="number"
-                    id="amount_1"
-                    name="amount_1"
-                    placeholder="0.00"
-                    v-model="amountB"
-                />
-            </div>
+        <h3 class="bolder">deposit amounts</h3>
+        <div class="window">
+            <label for="amount_1">
+                <h3 class="bolder">token A</h3>
+                <p>balance: 12</p>
+            </label>
             <input
-                type="nuber"
-                v-model="stepSize"
+                type="number"
+                id="amount_1"
+                placeholder="0"
+                v-model="amountA"
             />
-            <div class="buttons">
+        </div>
+        <div id="add-symbol"><h1>+</h1></div>
+        <div class="window">
+            <label for="amount_2">
+                <h3 class="bolder">token B</h3>
+                <p>balance: 7</p>
+            </label>
+            <input
+                type="number"
+                id="amount_2"
+                placeholder="0"
+                v-model="amountB"
+            />
+        </div>
+        <!-- <div class="buttons">
                 <Btn
                     class="pool"
                     @click="createPair()"
                     wide
                     bulky
                 >
-                    <h3>create pair</h3>
+                    create pair
                 </Btn>
                 <Btn
                     class="pool"
@@ -45,10 +41,9 @@
                     wide
                     bulky
                 >
-                    <h3>add liquidity</h3>
+                    add liquidity
                 </Btn>
-            </div>
-        </div>
+            </div> -->
     </div>
 </template>
 
@@ -152,76 +147,74 @@ export default {
     background-color: var(--widget-bg);
     transition: background-color var(--transition);
     width: 500px;
-    height: 400px;
+    height: 500px;
     border-radius: var(--outer-wdg-radius);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
     padding: 0.5rem;
-    .wrap {
-        height: 100%;
+    .window {
+        background-color: var(--swap-windows);
+        transition: background-color var(--transition);
         display: flex;
-        flex-direction: column;
-        > div {
-            &.amount {
-                /* display: flex; */
-                background-color: var(--swap-windows);
-                transition: background-color var(--transition);
+        align-items: center;
+        position: relative;
+        width: 100%;
+        height: 6.5rem;
+        border-radius: var(--inner-wdg-radius);
 
-                &__input {
-                    position: relative;
-                    width: 100%;
-                    height: 7rem;
-                    border-radius: var(--inner-wdg-radius);
-                    position: relative;
-                    &.transitions {
-                        transition: height var(--transition);
-                    }
-
-                    label {
-                        position: absolute;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        margin-left: 1.2rem;
-                        cursor: pointer;
-                        padding: 0.5rem;
-                    }
-
-                    input {
-                        width: 100%;
-                        height: 100%;
-                        background: transparent;
-                        border: none;
-                        outline: none;
-                        text-align: center;
-                        font-weight: 400;
-                        font-size: 2.5rem;
-
-                        &::placeholder {
-                            opacity: 0.8;
-                        }
-
-                        // hiding browser default arrows
-                        &::-webkit-outer-spin-button,
-                        &::-webkit-inner-spin-button {
-                            -webkit-appearance: none;
-                            margin: 0;
-                        }
-
-                        &[type="number"] {
-                            -moz-appearance: textfield;
-                        }
-                    }
-                }
+        &.transitions {
+            &,
+            * {
+                transition-property: all;
+                transition-duration: var(--transition);
             }
-            &.add {
-                text-align: center;
-            }
-            &.buttons {
-                display: flex;
-                flex-direction: row;
-                gap: 1rem;
-                margin: auto 0;
+        }
 
-                /* .pool {
+        label {
+            position: relative;
+            flex-shrink: 0;
+            margin: 0 1.2rem;
+            cursor: pointer;
+            p {
+                position: absolute;
+                white-space: nowrap;
+                bottom: -90%;
+            }
+        }
+        input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            text-align: right;
+            padding-right: 1rem;
+            font-weight: 400;
+            font-size: 2.5rem;
+
+            &::placeholder {
+                opacity: 0.8;
+            }
+            // hiding browser default arrows
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            &[type="number"] {
+                -moz-appearance: textfield;
+            }
+        }
+    }
+    #add-symbol {
+        text-align: center;
+    }
+    &.buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        margin: auto 0;
+
+        /* .pool {
                     --height: 6rem;
                     background-color: var(--primary-btn-bg);
                     transition: background-color var(--transition);
@@ -239,8 +232,6 @@ export default {
                         box-shadow: 0 0 2px 3px hotpink inset;
                     }
                 } */
-            }
-        }
     }
 }
 </style>

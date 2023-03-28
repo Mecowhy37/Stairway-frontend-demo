@@ -9,35 +9,22 @@
             :class="{ hide: !stepStore.isDark }"
         ></div>
         <Nav />
-        <div id="slot-wrap">
+        <div
+            class="slot"
+            id="slot-wrap"
+        >
             <slot />
         </div>
-        <div id="modal-wrap"></div>
+        <div
+            class="slot"
+            id="modal-wrap"
+        ></div>
     </div>
 </template>
 
-<script>
+<script setup>
 import { useStepStore } from "@/stores/step"
-import { mapStores } from "pinia"
-
-export default {
-    data() {
-        return {}
-    },
-    computed: {
-        ...mapStores(useStepStore),
-    },
-    // async serverPrefetch() {
-    //     const stepStore = useStepStore(this.$pinia)
-    //     const { data } = await useFetch(() => "https://gateway.ipfs.io/ipns/tokens.uniswap.org")
-    //     stepStore.tokenList = data.value.tokens
-    //     // stepStore.$patch({
-    //     //     isDark: true,
-    //     //     tokenList: data.value.tokens,
-    //     // })
-    //     // stepStore.isDark = true
-    // },
-}
+const stepStore = useStepStore()
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>
@@ -64,8 +51,7 @@ body #base {
     height: 100vh;
     position: relative;
 }
-#slot-wrap,
-#modal-wrap {
+.slot {
     display: contents;
 }
 h2 {
@@ -73,6 +59,10 @@ h2 {
 }
 h3 {
     font-size: 1.25rem;
+}
+.bolder {
+    font-size: 1.4rem;
+    font-weight: bolder;
 }
 
 .row {
