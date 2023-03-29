@@ -1,6 +1,6 @@
 <template>
     <div
-        v-show="showTokenModal"
+        v-if="showTokenModal"
         class="modal modal__overlay"
         @click.self="toggleTokenModal"
     >
@@ -32,28 +32,34 @@
 
 <script setup>
 import { toRaw } from "vue"
-import tokenList from "../constants/tokenList.json"
 
-import { useStepStore } from "@/stores/step"
-const stepStore = useStepStore()
-
-const emit = defineEmits(["tokenSelected"])
-const props = defineProps({
-    switchedTokens: Array,
-})
+import allTokens from "../constants/tokenList.json"
+const tokenList = ref(allTokens)
 
 // const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
 // tokenList.value = data.value?.tokens
 
-const switchedTokensRaw = computed(() => props.switchedTokens.map((el) => (el === null ? null : toRaw(el))))
+const showTokenModal = ref(false)
+const callbackRef = ref()
+const ABTokens = ref([])
+function toggleTokenModal(tokens = false, callback = false) {
+    showTokenModal.value = !showTokenModal.value
+    if (typeof callback === "function") {
+        callbackRef.value = callback
+    }
+
+    if (Array.isArray(tokens)) {
+        ABTokens.value = tokens
+    }
+}
 const filteredTokenList = computed(
-    // () => tokenList.filter((el) => !switchedTokensRaw.value.includes(el))
-    () => tokenList.filter((el) => el.chainId === 31337 && !switchedTokensRaw.value.includes(el))
+    () => tokenList.value.filter((el) => el.chainId === 31337 && !ABTokens.value.includes(el))
+    // () => tokenList.value.filter((el) => el.chainId === 31337)
 )
 
-const showTokenModal = ref(false)
-function toggleTokenModal() {
-    showTokenModal.value = !showTokenModal.value
+function setToken(token) {
+    toggleTokenModal()
+    callbackRef.value.call(this, token)
 }
 
 const tokenListRef = ref()
@@ -62,11 +68,6 @@ watch(showTokenModal, (isOpen, newIsOpen) => {
         tokenListRef.value.scrollTop = 0
     }
 })
-
-function setToken(token) {
-    toggleTokenModal()
-    emit("tokenSelected", token)
-}
 
 defineExpose({
     toggleTokenModal,
@@ -87,16 +88,16 @@ defineExpose({
     }
 
     &__window {
-        width: 400px;
-        margin-right: 5%;
+        place-self: center;
+        width: 200px;
         max-height: 50%;
+        margin-top: 30%;
         background-color: white;
         border-radius: 12px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
         place-self: center;
-        transform: translateX(-110%);
         box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
 
         .topbar {

@@ -70,6 +70,7 @@ $horiz-padd: 1rem;
         border: 1px solid transparent;
     }
     #default-slot {
+        line-height: 100%;
         &.wicon {
             margin-right: 0.5rem;
         }

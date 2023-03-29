@@ -1,58 +1,80 @@
 <template>
     <div class="widget">
-        <h3 class="bolder">deposit amounts</h3>
-        <div class="window">
-            <label for="amount_1">
-                <h3 class="bolder">token A</h3>
-                <p>balance: 12</p>
-            </label>
-            <input
-                type="number"
-                id="amount_1"
-                placeholder="0"
-                v-model="amountA"
-            />
-        </div>
-        <div id="add-symbol"><h1>+</h1></div>
-        <div class="window">
-            <label for="amount_2">
-                <h3 class="bolder">token B</h3>
-                <p>balance: 7</p>
-            </label>
-            <input
-                type="number"
-                id="amount_2"
-                placeholder="0"
-                v-model="amountB"
-            />
-        </div>
-        <!-- <div class="buttons">
-                <Btn
-                    class="pool"
-                    @click="createPair()"
-                    wide
-                    bulky
+        <div
+            class="contents"
+            v-for="(i, x) in new Array(2)"
+        >
+            <div class="window">
+                <label
+                    for="amount_1"
+                    @click="openTokenSelectModal($event, x)"
                 >
-                    create pair
-                </Btn>
-                <Btn
-                    class="pool"
-                    @click="addLiquidity()"
-                    wide
-                    bulky
-                >
-                    add liquidity
-                </Btn>
-            </div> -->
+                    <h3
+                        class="bolder"
+                        v-if="ABTokens[x] !== null"
+                    >
+                        {{ ABTokens[x]?.symbol }}
+                    </h3>
+                    <h3
+                        class="bolder"
+                        v-else
+                    >
+                        select token
+                    </h3>
+                    <p v-if="balances[x] !== null">balance: {{ balances[x] }}</p>
+                </label>
+                <input
+                    type="number"
+                    id="amount_1"
+                    name="amount_1"
+                    placeholder="0"
+                    inputmode="decimal"
+                    pattern="^[0-9]*[.,]?[0-9]*$"
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocorrect="off"
+                    minlength="1"
+                    @input="setTokenAmount($event, x)"
+                    :value="ABAmounts[x]"
+                />
+            </div>
+            <div
+                v-if="x === 0"
+                id="add-symbol"
+            >
+                <h1 @click="callbacker">+ {{ state.tryout }}</h1>
+            </div>
+        </div>
+        <div class="buttons">
+            <!-- class="pool" -->
+            <Btn
+                @click="createPair()"
+                wide
+                bulky
+            >
+                create pair
+            </Btn>
+            <!-- class="pool" -->
+            <Btn
+                @click="addLiquidity()"
+                wide
+                bulky
+            >
+                add liquidity
+            </Btn>
+        </div>
     </div>
 </template>
 
-<script>
+<script setup>
+import { inject } from "vue"
+
 import { ethers } from "ethers"
 
 import { useStepStore } from "@/stores/step"
 import { useTempStore } from "@/stores/temp"
 import { mapStores } from "pinia"
+import { getCurrentInstance } from "vue"
 
 import { getToken } from "~/helpers/index"
 
@@ -64,81 +86,103 @@ import { getToken } from "~/helpers/index"
 
 // import * as Token from "../ABIs/tokenAbi.json"
 // const TokenABI = Token.default
-
 const unhandled = "0x0000000000000000000000000000000000000000"
+const stepStore = useStepStore()
+const state = reactive({
+    TokenA: getToken("fBTC"),
+    TokenB: getToken("fUSD"),
+    amountA: "1",
+    amountB: "30000",
+    balanceA: null,
+    balanceB: null,
+    selectTokenIndex: 0,
+})
 
-export default {
-    data() {
-        return {
-            TokenA: null,
-            TokenB: null,
-            amountA: 1,
-            amountB: 30000,
-            defaultTokenASymbol: "WBTC",
-            defaultTokenBSymbol: "1INCH",
-            stepSize: null,
-        }
-    },
-    methods: {
-        async createPair() {
-            //to do - organise contract instantiation not do do it every function
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider.getSigner())
-            try {
-                await factory
-                    .createPair(this.TokenA.address, this.TokenB.address, unhandled, this.stepSize)
-                    .then(async (created) => {
-                        console.log(" - pool - successfully created pool - ")
-                        console.log(created)
-                        await factory.getPair(this.TokenA.address, this.TokenB.address).then((res) => {
-                            console.log(" - pool - is pool address here yet?")
-                            console.log(res)
-                        })
-                    })
-            } catch (err) {
-                console.log(" - pool - couldnt create pool - ")
-                console.log(err)
-            }
-        },
-        async addLiquidity() {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const poolContract = new ethers.Contract(this.tempStore.poolAddress, PoolABI, provider.getSigner())
-            const tkA = new ethers.Contract(this.TokenA.address, TokenABI, provider.getSigner())
-            const tkB = new ethers.Contract(this.TokenB.address, TokenABI, provider.getSigner())
-            // const tkA = new ethers.Contract(this.TokenA.address, TokenABI, provider)
-            // const tkB = new ethers.Contract(this.TokenB.address, TokenABI, provider)
+// async function createPair() {
+//     //to do - organise contract instantiation not do do it every function
+//     const provider = new ethers.providers.Web3Provider(window.ethereum)
+//     const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider.getSigner())
+//     try {
+//         await factory
+//             .createPair(TokenA.address, this.TokenB, unhandled)
+//             .then(async (created) => {
+//                 console.log(" - pool - successfully created pool - ")
+//                 console.log(created)
+//                 await factory.getPair(TokenA.address, TokenB.address).then((res) => {
+//                     console.log(" - pool - is pool address here yet?")
+//                     console.log(res)
+//                 })
+//             })
+//     } catch (err) {
+//         console.log(" - pool - couldnt create pool - ")
+//         console.log(err)
+//     }
+// }
 
-            const amountA = ethers.utils.parseEther(this.amountA.toString())
-            const amountB = ethers.utils.parseEther(this.amountB.toString())
-            try {
-                await tkA.approve(this.tempStore.poolAddress, amountA)
-                await tkB.approve(this.tempStore.poolAddress, amountB)
-            } catch (err) {
-                console.log("- pool - couldnt approve amounts - ")
-            }
-            try {
-                const token0 = await poolContract.token0()
-                const AB = [this.TokenA.address, this.TokenB.address]
-                const index = AB.indexOf((el) => el === token0)
-                const ordered = index === 0 ? [amountA, amountB] : [amountB, amountA]
+// async function addLiquidity() {
+//     const provider = new ethers.providers.Web3Provider(window.ethereum)
+//     const poolContract = new ethers.Contract(this.tempStore.poolAddress, PoolABI, provider.getSigner())
+//     const tkA = new ethers.Contract(this.TokenA.address, TokenABI, provider.getSigner())
+//     const tkB = new ethers.Contract(this.TokenB.address, TokenABI, provider.getSigner())
+//     // const tkA = new ethers.Contract(this.TokenA.address, TokenABI, provider)
+//     // const tkB = new ethers.Contract(this.TokenB.address, TokenABI, provider)
 
-                await poolContract.addLiquidity(...ordered).then((res) => {
-                    console.log(res)
-                })
-            } catch (err) {
-                console.log("- pool - couldnt add liquid - ")
-                console.log(err)
-            }
-        },
-    },
-    computed: {
-        ...mapStores(useStepStore, useTempStore),
-    },
-    created() {
-        this.TokenA = getToken(this.defaultTokenASymbol)
-        this.TokenB = getToken(this.defaultTokenBSymbol)
-    },
+//     const amountA = ethers.utils.parseEther(this.amountA.toString())
+//     const amountB = ethers.utils.parseEther(this.amountB.toString())
+//     try {
+//         await tkA.approve(this.tempStore.poolAddress, amountA)
+//         await tkB.approve(this.tempStore.poolAddress, amountB)
+//     } catch (err) {
+//         console.log("- pool - couldnt approve amounts - ")
+//     }
+//     try {
+//         const token0 = await poolContract.token0()
+//         const AB = [this.TokenA.address, this.TokenB.address]
+//         const index = AB.indexOf((el) => el === token0)
+//         const ordered = index === 0 ? [amountA, amountB] : [amountB, amountA]
+
+//         await poolContract.addLiquidity(...ordered).then((res) => {
+//             console.log(res)
+//         })
+//     } catch (err) {
+//         console.log("- pool - couldnt add liquid - ")
+//         console.log(err)
+//     }
+// }
+const toggleTokenModal = inject("modal")
+function openTokenSelectModal(event, index) {
+    toggleTokenModal(ABTokens.value, setToken)
+    state.selectTokenIndex = index
 }
+
+function setToken(token) {
+    ABTokens.value = ABTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
+}
+function setTokenAmount(event, inputIndex) {
+    ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
+}
+
+const ABTokens = computed({
+    get() {
+        return [state.TokenA, state.TokenB]
+    },
+    set(newValue) {
+        state.TokenA = newValue[0]
+        state.TokenB = newValue[1]
+    },
+})
+const ABAmounts = computed({
+    get() {
+        return [state.amountA, state.amountB]
+    },
+    set(newValue) {
+        state.amountA = newValue[0]
+        state.amountB = newValue[1]
+    },
+})
+const balances = computed(() => {
+    return [state.balanceA, state.balanceB]
+})
 </script>
 
 <style lang="scss" scoped>
@@ -147,7 +191,6 @@ export default {
     background-color: var(--widget-bg);
     transition: background-color var(--transition);
     width: 500px;
-    height: 500px;
     border-radius: var(--outer-wdg-radius);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
     padding: 0.5rem;
@@ -173,6 +216,8 @@ export default {
             position: relative;
             flex-shrink: 0;
             margin: 0 1.2rem;
+            margin-bottom: 1.5rem;
+
             cursor: pointer;
             p {
                 position: absolute;
@@ -208,11 +253,11 @@ export default {
     #add-symbol {
         text-align: center;
     }
-    &.buttons {
+    .buttons {
         display: flex;
         flex-direction: row;
-        gap: 1rem;
-        margin: auto 0;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
 
         /* .pool {
                     --height: 6rem;

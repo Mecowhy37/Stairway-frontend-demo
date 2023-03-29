@@ -15,16 +15,29 @@
         >
             <slot />
         </div>
+
         <div
             class="slot"
             id="modal-wrap"
-        ></div>
+        >
+            <!-- <ClientOnly> -->
+            <SelectTokenModal ref="tokenModal"></SelectTokenModal>
+            <!-- </ClientOnly> -->
+        </div>
     </div>
 </template>
 
 <script setup>
+import { provide } from "vue"
 import { useStepStore } from "@/stores/step"
+
 const stepStore = useStepStore()
+
+const tokenModal = ref()
+function toggleTokenModal(...args) {
+    tokenModal.value.toggleTokenModal(...args)
+}
+provide("modal", toggleTokenModal)
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>
@@ -53,6 +66,11 @@ body #base {
 }
 .slot {
     display: contents;
+    &#modal-wrap {
+        > span {
+            display: none;
+        }
+    }
 }
 h2 {
     font-size: 2.6rem;
@@ -83,6 +101,10 @@ h3 {
 .inset {
     box-shadow: var(--inset-shadow);
     transition: box-shadow var(--transition);
+}
+
+.contents {
+    display: contents;
 }
 
 .bg-gradient {

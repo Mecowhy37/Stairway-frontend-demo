@@ -28,7 +28,13 @@
                 :id="'amount_' + x + 1"
                 :name="'amount_' + x + 1"
                 placeholder="0"
-                @input="setTokenAmount($event.target.value, x)"
+                inputmode="decimal"
+                pattern="^[0-9]*[.,]?[0-9]*$"
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                minlength="1"
+                @input="setTokenAmount($event, x)"
                 :value="amountInputs[x]"
             />
             <div
@@ -71,15 +77,6 @@
         </div>
         <label for="slippage">No slippage - set price</label> 3226855 17.15 strzegomska 36 centrum medyczne
     </div> -->
-        <ClientOnly>
-            <Teleport to="#modal-wrap">
-                <SelectTokenModal
-                    ref="tokenModal"
-                    :switched-tokens="switchedTokens"
-                    @tokenSelected="setToken($event)"
-                ></SelectTokenModal>
-            </Teleport>
-        </ClientOnly>
     </div>
 </template>
 
@@ -88,6 +85,7 @@ import { useStepStore } from "@/stores/step"
 import { useTempStore } from "@/stores/temp"
 import { mapStores } from "pinia"
 import { ethers } from "ethers"
+// import { toRaw } from "vue"
 
 import { getToken } from "~/helpers/index"
 
@@ -122,15 +120,22 @@ export default {
         }
     },
     watch: {
-        ABTokens() {
-            this.getBalances()
+        ABTokens(newValue, oldValue) {
+            const newToken = newValue.filter((el) => !oldValue.includes(el))
+            this.getBalance(newToken[0])
+
+            // for each null token - the balance
+            this.ABTokens.forEach((el, index) => {
+                if (!el) {
+                    if (index === 0) {
+                        this.balanceA = null
+                    } else {
+                        this.balanceB = null
+                    }
+                }
+            })
+            // if one token is null
             if (!this.ABTokens.every((el) => el !== null)) {
-                // one of the tokens is null
-                this.bidAsk = []
-                this.tempStore.poolAddress = null
-                this.showRate = false
-                this.token0Index = null
-                return
             }
 
             // try {
@@ -139,28 +144,33 @@ export default {
             //     console.log(err)
             // }
         },
-        activeWalletCallback() {
-            this.getBalances()
+        activeWalletCallback(newVal) {
+            if (!newVal) {
+                this.reset()
+                return
+            }
+            this.getBalance(null, true)
         },
     },
     methods: {
-        async getBalances() {
+        async getBalance(token, both = false) {
             if (this.stepStore.connectedWallet) {
-                console.log("getting balance")
-                const provider = new ethers.BrowserProvider(this.stepStore.connectedWallet.provider)
-                if (this.TokenA) {
-                    const tkA = new ethers.Contract(this.TokenA.address, TokenABI, provider)
-                    const balA = await tkA.balanceOf(this.stepStore.getConnectedAccount)
-                    this.balanceA = ethers.formatUnits(balA, this.TokenA.decimals)
-                } else {
-                    this.balanceA = null
+                if (both) {
+                    this.getBalance(this.TokenA)
+                    this.getBalance(this.TokenB)
+                    return
                 }
-                if (this.TokenB) {
-                    const tkA = new ethers.Contract(this.TokenB.address, TokenABI, provider)
-                    const balB = await tkA.balanceOf(this.stepStore.getConnectedAccount)
-                    this.balanceB = ethers.formatUnits(balB, this.TokenB.decimals)
+                if (!token) {
+                    return
+                }
+                const provider = new ethers.BrowserProvider(this.stepStore.connectedWallet.provider)
+                const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
+                const balance = await tokenContract.balanceOf(this.stepStore.getConnectedAccount)
+                const formatedBalance = ethers.formatUnits(balance, token.decimals)
+                if (this.ABTokens.indexOf(token) === 0) {
+                    this.balanceA = formatedBalance
                 } else {
-                    this.balanceB = null
+                    this.balanceB = formatedBalance
                 }
             }
         },
@@ -171,15 +181,12 @@ export default {
             this.lastChangedToken = this.lastChangedToken === 0 ? 1 : 0
             this.tokenToSellIndex = this.tokenToSellIndex === 0 ? 1 : 0
         },
-        setTokenAmount(value, inputIndex) {
+        setTokenAmount(event, inputIndex) {
             this.lastChangedToken = inputIndex
-            this.amountInputs = this.amountInputs.map((el, i) => (inputIndex === i ? value : el))
+            this.amountInputs = this.amountInputs.map((el, i) => (inputIndex === i ? event.target.value : el))
         },
         openTokenSelectModal(event, index) {
-            this.$refs.tokenModal.toggleTokenModal(event)
-            this.setSelectTokenIndex(index)
-        },
-        setSelectTokenIndex(index) {
+            this.modal(this.ABTokens, this.setToken)
             this.selectTokenIndex = index
         },
         setToken(token) {
@@ -232,7 +239,7 @@ export default {
         },
         async setupPool() {
             console.log(" - swap - SETUP POOL CALLED - ")
-            this.getBalances()
+            // this.getBalance()
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
 
@@ -259,9 +266,20 @@ export default {
 
             this.showRate = true
         },
+        reset() {
+            this.balanceA = null
+            this.balanceB = null
+            this.bidAsk = []
+            this.tempStore.poolAddress = null
+            this.showRate = false
+            this.token0Index = null
+        },
     },
     computed: {
         ...mapStores(useStepStore, useTempStore),
+        amountTest() {
+            return [this.sellAmount, this.buyAmount]
+        },
         ABTokens() {
             return [this.TokenA, this.TokenB]
         },
@@ -359,6 +377,7 @@ export default {
     mounted() {
         this.alreadyMounted = true
     },
+    inject: ["modal"],
     created() {
         this.TokenA = getToken("fUSD")
         // this.TokenB = getToken("fBTC")
@@ -410,6 +429,7 @@ $secodary: #ffd5c9;
             position: relative;
             flex-shrink: 0;
             margin: 0 1.2rem;
+            margin-bottom: 1.5rem;
             cursor: pointer;
             p {
                 position: absolute;
