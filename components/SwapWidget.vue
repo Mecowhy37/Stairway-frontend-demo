@@ -47,7 +47,7 @@
             <div
                 v-if="x === 0"
                 class="floater floater__rate"
-                :class="{ 'show-rate': showRate }"
+                :class="{ 'show-rate': state.showRate }"
             >
                 {{ rate }}
             </div>
@@ -80,309 +80,298 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
 import { useTempStore } from "@/stores/temp"
-import { mapStores } from "pinia"
 import { ethers } from "ethers"
-// import { toRaw } from "vue"
 
-import { getToken } from "~/helpers/index"
-
-// import * as Factory from "../ABIs/factoryAbi.json"
-// const FactoryABI = Factory.default
-
-// import * as Pool from "../ABIs/poolAbi.json"
-// const PoolABI = Pool.default
+import { getToken, useBalances } from "~/helpers/index"
 
 import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 
-export default {
-    data() {
-        return {
-            TokenA: null,
-            TokenB: null,
-            balanceA: null,
-            balanceB: null,
-            bidAsk: [],
-            token0Index: null,
-            buyAmount: "",
-            sellAmount: "",
-            tokenToSellIndex: 0,
-            lastChangedToken: 0,
-            selectTokenIndex: 0,
-            showRate: false,
-            noSlippage: false,
-            alreadyMounted: false,
+const stepStore = useStepStore()
+const tempStore = useTempStore()
+
+const { swapTokens } = storeToRefs(stepStore)
+
+const state = reactive({
+    TokenA: null,
+    TokenB: null,
+    balanceA: null,
+    balanceB: null,
+    bidAsk: [],
+    token0Index: null,
+    buyAmount: "",
+    sellAmount: "",
+    tokenToSellIndex: 0,
+    lastChangedToken: 0,
+    selectTokenIndex: 0,
+    showRate: false,
+    noSlippage: false,
+    alreadyMounted: false,
+})
+
+const ABTokens = computed(() => {
+    // return [swapTokens.value[0], swapTokens.value[1]]
+    return [swapTokens.value.A, swapTokens.value.B]
+    // return [state.TokenA, state.TokenB]
+})
+
+watch(ABTokens, (newValue, oldValue) => {
+    const newToken = newValue.filter((el) => !oldValue.includes(el))
+    getBalance(newToken[0])
+
+    // for each null token - the balance
+    ABTokens.value.forEach((el, index) => {
+        if (!el) {
+            if (index === 0) {
+                state.balanceA = null
+            } else {
+                state.balanceB = null
+            }
+        }
+    })
+    // if one token is null
+    if (!ABTokens.value.every((el) => el !== null)) {
+    }
+
+    // try {
+    //     this.setupPool()
+    // } catch (err) {
+    //     console.log(err)
+    // }
+})
+
+watch(
+    () => stepStore.connectedWallet,
+    (newVal) => {
+        if (!newVal) {
+            reset()
+            return
+        }
+        getBalance(null, true)
+    }
+)
+
+async function getBalance(token, both = false) {
+    if (stepStore.connectedWallet) {
+        if (both) {
+            getBalance(swapTokens.value.A)
+            getBalance(swapTokens.value.B)
+            return
+        }
+        if (!token) {
+            return
+        }
+
+        console.log("getting it")
+        const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+        const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
+        const balance = await tokenContract.balanceOf(stepStore.getConnectedAccount)
+        const formatedBalance = ethers.formatUnits(balance, token.decimals)
+        if (ABTokens.value.indexOf(token) === 0) {
+            state.balanceA = formatedBalance
+        } else {
+            state.balanceB = formatedBalance
+        }
+    }
+}
+function switchOrder() {
+    const shuffle = [state.sellAmount, state.buyAmount].reverse()
+    state.sellAmount = shuffle[0]
+    state.buyAmount = shuffle[1]
+    state.lastChangedToken = state.lastChangedToken === 0 ? 1 : 0
+    state.tokenToSellIndex = state.tokenToSellIndex === 0 ? 1 : 0
+}
+function setTokenAmount(event, inputIndex) {
+    state.lastChangedToken = inputIndex
+    amountInputs.value = amountInputs.value.map((el, i) => (inputIndex === i ? event.target.value : el))
+}
+
+const toggleTokenModal = inject("modal")
+function openTokenSelectModal(event, index) {
+    toggleTokenModal(ABTokens.value, setToken)
+    state.selectTokenIndex = index
+}
+
+function setToken(token) {
+    switchedTokens.value = switchedTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
+}
+async function swap() {
+    try {
+        const provider = new ethers.providers.Web3Provider(stepStore.connectedWallet.provider)
+        const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider)
+
+        //find a pool
+        const poolAddress = await factory.getPair(swapTokens.value[0].address, swapTokens.value[1].address)
+
+        const poolContract = new ethers.Contract(poolAddress, PoolABI, provider.getSigner())
+
+        const sellToken = new ethers.Contract(tokenToSell.value.address, TokenABI, provider.getSigner())
+
+        const approveAmount = ethers.utils.parseEther(state.sellAmount)
+
+        //??
+        const approvalResponse = await sellToken.approve(tempStore.poolAddress, approveAmount)
+
+        // const allow = await sellToken.allowance(this.stepStore.activeWallet, this.tempStore.poolAddress)
+        // console.log("allowance", ethers.utils.formatEther(allow._hex))
+
+        const poolAction = tokenToSell.value === token0.value ? "sellToken0" : "buyToken0"
+
+        //for 1x token0 how much token0 do you get
+        // const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : String(1 / Number(this.bidAsk[1]))
+        const price = tokenToSell.value === token0.value ? bidAsk.value[0] : bidAsk.value[1]
+        const formatedPrice = ethers.utils.parseEther(price)
+
+        const token0Amount = tokenToSell.value === token0.value ? sellAmount.value : buyAmount.value
+        const formatedToken0Amount = ethers.utils.parseEther(token0Amount)
+
+        console.log(" - swap - pool action: ", poolAction)
+        console.log(" - swap - amount: ", token0Amount)
+        console.log(" - swap - price - : ", price)
+        // return
+        await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
+            console.log(" - swap -  SUCCESSFUL SWAP -")
+            console.log(res)
+
+            setupPool()
+        })
+    } catch (err) {
+        console.log(" - swap - could swap")
+        console.log(err)
+    }
+}
+async function setupPool() {
+    console.log(" - swap - SETUP POOL CALLED - ")
+    // this.getBalance()
+    const provider = new ethers.providers.Web3Provider(stepSwap.connectedWallet.provider)
+    const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider)
+
+    //find a pool
+    const poolAddress = await factory.getPair(swapTokens.value[0].address, swapTokens.value[1].address)
+
+    if (poolAddress === unhandled) {
+        console.log(" - swap - ? pair doesnt exist ? - ")
+        tempStore.poolAddress = null
+        return
+    }
+    tempStore.poolAddress = poolAddress
+
+    const pool = new ethers.Contract(poolAddress, PoolABI, provider)
+
+    //get bidAsk and maybe depth
+    const bidAsk = await pool.getBidAsk()
+    bidAsk.value[0] = ethers.utils.formatEther(bidAsk._bid)
+    bidAsk.value[1] = ethers.utils.formatEther(bidAsk._ask)
+
+    //find which is token0
+    const token0 = await pool.token0()
+    state.token0Index = ABTokens.value.findIndex((el) => el.address === token0)
+
+    state.showRate = true
+}
+function reset() {
+    state.balanceA = null
+    state.balanceB = null
+    state.bidAsk = []
+    state.showRate = false
+    state.token0Index = null
+    tempStore.poolAddress = null
+}
+
+const token0 = computed(() => {
+    return ABTokens.value[state.token0Index]
+})
+const tokensNotNull = computed(() => {
+    return ABTokens.value.every((el) => el !== null)
+})
+const tokenToSell = computed(() => {
+    return switchedTokens.value[0]
+})
+
+const amountInputs = computed({
+    get() {
+        function Round(amt) {
+            let amount = Number(amt)
+            amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+            return amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
+        }
+        if (
+            (state.lastChangedToken === 0 && String(state.sellAmount).length === 0) ||
+            (state.lastChangedToken === 1 && String(state.buyAmount).length === 0)
+        ) {
+            return ["", ""]
+        }
+        if (state.lastChangedToken === 0) {
+            if (tokenToSell.value === token0.value) {
+                state.buyAmount = Round(state.sellAmount * state.bidAsk[0])
+            } else {
+                state.buyAmount = Round(state.sellAmount / state.bidAsk[1])
+            }
+        } else {
+            if (tokenToSell.value === token0.value) {
+                state.sellAmount = Round(state.buyAmount / state.bidAsk[0])
+            } else {
+                state.sellAmount = Round(state.buyAmount * state.bidAsk[1])
+            }
+        }
+        return [state.sellAmount || "", state.buyAmount || ""]
+    },
+    //unneccessary, can be moved where amountInputs are st
+    set(newValue) {
+        this.sellAmount = newValue[0]
+        this.buyAmount = newValue[1]
+    },
+})
+const rate = computed(() => {
+    if (state.showRate) {
+        let rate = tokenToSell.value === token0.value ? state.bidAsk[0] : 1 / Number(state.bidAsk[1])
+        rate = Number(rate) > 1 ? Number(rate).toFixed(2) : Number(rate).toPrecision(2)
+        return `1 ${switchedTokens.value[0].symbol} = ${rate} ${switchedTokens.value[1].symbol}`
+    } else {
+        return ""
+    }
+})
+const switchedTokens = computed({
+    get() {
+        const list = [swapTokens.value.A, swapTokens.value.B]
+        return !Boolean(state.tokenToSellIndex) ? list : list.reverse()
+    },
+    set(newValue) {
+        if (state.tokenToSellIndex === 0) {
+            swapTokens.value.A = newValue[0]
+            swapTokens.value.B = newValue[1]
+        } else {
+            swapTokens.value.A = newValue[1]
+            swapTokens.value.B = newValue[0]
         }
     },
-    watch: {
-        ABTokens(newValue, oldValue) {
-            const newToken = newValue.filter((el) => !oldValue.includes(el))
-            this.getBalance(newToken[0])
+})
+const switchedBalances = computed(() => {
+    const list = [state.balanceA, state.balanceB]
+    return state.tokenToSellIndex === 0 ? list : list.reverse()
+})
+const token0Style = computed(() => {
+    const list = ["token0", null]
+    // if (this.token0Index !== null) {
+    //     return this.switchedTokens[0] === this.token0 ? list : list.reverse()
+    // } else {
+    //     return [null, null]
+    // }
+    return state.tokenToSellIndex === 0 ? list : list.reverse()
+})
+const isMountedStyle = computed(() => {
+    return !state.alreadyMounted ? "" : "transitions"
+})
 
-            // for each null token - the balance
-            this.ABTokens.forEach((el, index) => {
-                if (!el) {
-                    if (index === 0) {
-                        this.balanceA = null
-                    } else {
-                        this.balanceB = null
-                    }
-                }
-            })
-            // if one token is null
-            if (!this.ABTokens.every((el) => el !== null)) {
-            }
-
-            // try {
-            //     this.setupPool()
-            // } catch (err) {
-            //     console.log(err)
-            // }
-        },
-        activeWalletCallback(newVal) {
-            if (!newVal) {
-                this.reset()
-                return
-            }
-            this.getBalance(null, true)
-        },
-    },
-    methods: {
-        async getBalance(token, both = false) {
-            if (this.stepStore.connectedWallet) {
-                if (both) {
-                    this.getBalance(this.TokenA)
-                    this.getBalance(this.TokenB)
-                    return
-                }
-                if (!token) {
-                    return
-                }
-                const provider = new ethers.BrowserProvider(this.stepStore.connectedWallet.provider)
-                const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
-                const balance = await tokenContract.balanceOf(this.stepStore.getConnectedAccount)
-                const formatedBalance = ethers.formatUnits(balance, token.decimals)
-                if (this.ABTokens.indexOf(token) === 0) {
-                    this.balanceA = formatedBalance
-                } else {
-                    this.balanceB = formatedBalance
-                }
-            }
-        },
-        switchOrder() {
-            const shuffle = [this.sellAmount, this.buyAmount].reverse()
-            this.sellAmount = shuffle[0]
-            this.buyAmount = shuffle[1]
-            this.lastChangedToken = this.lastChangedToken === 0 ? 1 : 0
-            this.tokenToSellIndex = this.tokenToSellIndex === 0 ? 1 : 0
-        },
-        setTokenAmount(event, inputIndex) {
-            this.lastChangedToken = inputIndex
-            this.amountInputs = this.amountInputs.map((el, i) => (inputIndex === i ? event.target.value : el))
-        },
-        openTokenSelectModal(event, index) {
-            this.modal(this.ABTokens, this.setToken)
-            this.selectTokenIndex = index
-        },
-        setToken(token) {
-            this.switchedTokens = this.switchedTokens.map((el, index) => (index === this.selectTokenIndex ? token : el))
-        },
-        async swap() {
-            try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum)
-                const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
-
-                //find a pool
-                const poolAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
-
-                const poolContract = new ethers.Contract(poolAddress, PoolABI, provider.getSigner())
-
-                const sellToken = new ethers.Contract(this.tokenToSell.address, TokenABI, provider.getSigner())
-
-                const approveAmount = ethers.utils.parseEther(this.sellAmount)
-                const approvalResponse = await sellToken.approve(this.tempStore.poolAddress, approveAmount)
-
-                // const allow = await sellToken.allowance(this.stepStore.activeWallet, this.tempStore.poolAddress)
-                // console.log("allowance", ethers.utils.formatEther(allow._hex))
-
-                const poolAction = this.tokenToSell === this.token0 ? "sellToken0" : "buyToken0"
-
-                //for 1x token0 how much token0 do you get
-                // const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : String(1 / Number(this.bidAsk[1]))
-                const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : this.bidAsk[1]
-                const formatedPrice = ethers.utils.parseEther(price)
-
-                const token0Amount = this.tokenToSell === this.token0 ? this.sellAmount : this.buyAmount
-                const formatedToken0Amount = ethers.utils.parseEther(token0Amount)
-
-                console.log(" - swap - pool action: ", poolAction)
-                console.log(" - swap - amount: ", token0Amount)
-                console.log(" - swap - price - : ", price)
-                // return
-                await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
-                    console.log(" - swap -  SUCCESSFUL SWAP -")
-                    console.log(res)
-
-                    this.setupPool()
-                    this.amountA = ""
-                    this.amountB = ""
-                })
-            } catch (err) {
-                console.log(" - swap - could swap")
-                console.log(err)
-            }
-        },
-        async setupPool() {
-            console.log(" - swap - SETUP POOL CALLED - ")
-            // this.getBalance()
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const factory = new ethers.Contract(this.stepStore.factoryAddress, FactoryABI, provider)
-
-            //find a pool
-            const poolAddress = await factory.getPair(this.TokenA.address, this.TokenB.address)
-
-            if (poolAddress === unhandled) {
-                console.log(" - swap - ? pair doesnt exist ? - ")
-                this.tempStore.poolAddress = null
-                return
-            }
-            this.tempStore.poolAddress = poolAddress
-
-            const pool = new ethers.Contract(poolAddress, PoolABI, provider)
-
-            //get bidAsk and maybe depth
-            const bidAsk = await pool.getBidAsk()
-            this.bidAsk[0] = ethers.utils.formatEther(bidAsk._bid)
-            this.bidAsk[1] = ethers.utils.formatEther(bidAsk._ask)
-
-            //find which is token0
-            const token0 = await pool.token0()
-            this.token0Index = this.ABTokens.findIndex((el) => el.address === token0)
-
-            this.showRate = true
-        },
-        reset() {
-            this.balanceA = null
-            this.balanceB = null
-            this.bidAsk = []
-            this.tempStore.poolAddress = null
-            this.showRate = false
-            this.token0Index = null
-        },
-    },
-    computed: {
-        ...mapStores(useStepStore, useTempStore),
-        amountTest() {
-            return [this.sellAmount, this.buyAmount]
-        },
-        ABTokens() {
-            return [this.TokenA, this.TokenB]
-        },
-        token0() {
-            return this.ABTokens[this.token0Index]
-        },
-        tokensNotNull() {
-            return this.ABTokens.every((el) => el !== null)
-        },
-        tokenToSell() {
-            return this.switchedTokens[0]
-        },
-        amountInputs: {
-            get() {
-                function Round(amt) {
-                    let amount = Number(amt)
-                    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-                    return amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
-                }
-                if (
-                    (this.lastChangedToken === 0 && String(this.sellAmount).length === 0) ||
-                    (this.lastChangedToken === 1 && String(this.buyAmount).length === 0)
-                ) {
-                    return ["", ""]
-                }
-                if (this.lastChangedToken === 0) {
-                    if (this.tokenToSell === this.token0) {
-                        this.buyAmount = Round(this.sellAmount * this.bidAsk[0])
-                    } else {
-                        this.buyAmount = Round(this.sellAmount / this.bidAsk[1])
-                    }
-                } else {
-                    if (this.tokenToSell === this.token0) {
-                        this.sellAmount = Round(this.buyAmount / this.bidAsk[0])
-                    } else {
-                        this.sellAmount = Round(this.buyAmount * this.bidAsk[1])
-                    }
-                }
-                return [this.sellAmount || "", this.buyAmount || ""]
-            },
-            //unneccessary, can be moved where amountInputs are st
-            set(newValue) {
-                this.sellAmount = newValue[0]
-                this.buyAmount = newValue[1]
-            },
-        },
-        rate() {
-            if (this.showRate) {
-                let rate = this.tokenToSell === this.token0 ? this.bidAsk[0] : 1 / Number(this.bidAsk[1])
-                rate = Number(rate) > 1 ? Number(rate).toFixed(2) : Number(rate).toPrecision(2)
-                return `1 ${this.switchedTokens[0].symbol} = ${rate} ${this.switchedTokens[1].symbol}`
-            } else {
-                return ""
-            }
-        },
-        switchedTokens: {
-            get() {
-                const list = [this.TokenA, this.TokenB]
-                return !Boolean(this.tokenToSellIndex) ? list : list.reverse()
-            },
-            set(newValue) {
-                if (this.tokenToSellIndex === 0) {
-                    this.TokenA = newValue[0]
-                    this.TokenB = newValue[1]
-                } else {
-                    this.TokenA = newValue[1]
-                    this.TokenB = newValue[0]
-                }
-            },
-        },
-        switchedBalances() {
-            const list = [this.balanceA, this.balanceB]
-            return this.tokenToSellIndex === 0 ? list : list.reverse()
-        },
-        isConnectingStyle() {
-            return this.connecting ? "connecting" : ""
-        },
-        token0Style() {
-            const list = ["token0", null]
-            // if (this.token0Index !== null) {
-            //     return this.switchedTokens[0] === this.token0 ? list : list.reverse()
-            // } else {
-            //     return [null, null]
-            // }
-            return this.tokenToSellIndex === 0 ? list : list.reverse()
-        },
-        isMountedStyle() {
-            return !this.alreadyMounted ? "" : "transitions"
-        },
-        activeWalletCallback() {
-            // watch callback when wallet changes
-            return this.stepStore.connectedWallet
-        },
-    },
-    mounted() {
-        this.alreadyMounted = true
-    },
-    inject: ["modal"],
-    created() {
-        this.TokenA = getToken("fUSD")
-        // this.TokenB = getToken("fBTC")
-    },
-}
+onMounted(() => {
+    state.alreadyMounted = true
+})
 </script>
 
 <style lang="scss" scoped>

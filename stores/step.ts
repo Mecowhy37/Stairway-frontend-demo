@@ -2,13 +2,12 @@ import type { Ref } from "vue"
 import { defineStore } from "pinia"
 import { ethers } from "ethers"
 import { init, useOnboard } from "@web3-onboard/vue"
-import injectedModule from "@web3-onboard/injected-wallets"
-// import { tryOnBeforeMount } from '@vueuse/core'
-// import * as FactoryABI from "../ABIs/factoryAbi.json"
-// import * as Token from "../ABIs/tokenAbi.json"
+import { getToken, useBalances, usePools } from "~/helpers/index"
 
-// temporary fix
-// import { MetaMaskInpageProvider } from "@metamask/providers";
+import * as Factory from "../ABIs/IFactory.json"
+const FactoryABI = Factory.default
+
+import injectedModule from "@web3-onboard/injected-wallets"
 declare global {
     interface Window {
         ethereum?: any
@@ -28,13 +27,14 @@ declare global {
 export const useStepStore = defineStore("step", (): any => {
     const isDark: Ref<boolean> = ref(false)
     const chainId: Ref<number | null> = ref(31337)
-    const factoryAddress: Ref<string | null> = ref(null)
     const activeWallet: Ref<string | null> = ref(null)
     const connectingWallet: Ref<boolean> = ref(false)
     const isConnectingText = computed((): string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
-
+    
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
+    const factoryAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+    const unhandled = "0x0000000000000000000000000000000000000000"
 
     const injected = injectedModule()
     const onboard = init({
@@ -66,6 +66,74 @@ export const useStepStore = defineStore("step", (): any => {
         },
     })
     const { wallets, connectWallet, connectedChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
+
+
+    const swapTokens = reactive({
+        A: getToken('fUSD'),
+        B: null
+    })
+    const poolTokens = reactive({
+        A: getToken('fBTC'),
+        B: getToken('fUSD'),
+        // B: null
+    })
+
+    const allTokens = computed(() => {
+        return [swapTokens.A, swapTokens.B, poolTokens.A, poolTokens.B]
+    })
+    const poolTokensCmp = computed(() => {
+        return [poolTokens.A, poolTokens.B]
+    })
+    const swapTokensCmp = computed(() => {
+        return [poolTokens.A, poolTokens.B]
+    })
+
+    const bothSwapTokensThere = computed(() => {
+        if (!swapTokensCmp.value.some(el => el === null)) {
+            return true
+        }
+        return false
+    })
+    const bothPoolTokensThere = computed(() => {
+        if (!poolTokensCmp.value.some(el => el === null)) {
+            return true
+        }
+        return false
+    })
+
+
+    const bothSwapTokenAddresses = computed(() => {
+        return bothSwapTokensThere.value ? swapTokensCmp.value.map(el => el.address) : null
+    })
+    const bothPoolTokenAddresses = computed(() => {
+        return bothPoolTokensThere.value ? poolTokensCmp.value.map(el => el.address) : null
+    })
+    
+
+
+    const { updateBalance } = useBalances()
+    const { getPool } = usePools()
+
+    watch(allTokens, (newValue, oldValue) => {
+        updateBalance(newValue, oldValue)
+    })
+
+    const poolAddress = ref(null)
+    watch(() => [bothPoolTokensThere.value, connectedWallet.value], async (newValue) => {
+        if (newValue[0] && newValue[1] !== null){
+            poolAddress.value = await getPool(...bothPoolTokenAddresses.value, connectedWallet.value.provider) 
+        }
+    })
+
+
+    // const swapAddress = ref(null)
+    // watch(swapTokensCmp, async (newValue) => {
+    //     if (bothSwapTokensThere && connectedWallet){
+    //         swapAddress.value = getPool(...bothSwapTokenAddresses.value, connectedWallet.value.provider)
+    //     }
+    // })
+
+
 
     const getConnectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null)
     const getTruncatedWalletAddress = computed(() => {
@@ -127,6 +195,14 @@ export const useStepStore = defineStore("step", (): any => {
         chainId,
         factoryAddress,
         isDark,
+        swapTokens,
+        poolTokens,
+        allTokens,
+
+        poolAddress,
+        poolTokensCmp,
+        bothPoolTokensThere,
+        bothPoolTokenAddresses,
 
         connectedChain,
         isConnectingText,

@@ -7,7 +7,7 @@
             <div class="window">
                 <label
                     for="amount_1"
-                    @click="openTokenSelectModal($event, x)"
+                    @click="openTokenSelectModal(x)"
                 >
                     <h3
                         class="bolder"
@@ -42,7 +42,7 @@
                 v-if="x === 0"
                 id="add-symbol"
             >
-                <h1 @click="callbacker">+ {{ state.tryout }}</h1>
+                <h1>+</h1>
             </div>
         </div>
         <div class="buttons">
@@ -51,14 +51,16 @@
                 @click="createPair()"
                 wide
                 bulky
+                :disabled="!canCreatePool"
             >
                 create pair
             </Btn>
             <!-- class="pool" -->
+            <!-- @click="addLiquidity()" -->
             <Btn
-                @click="addLiquidity()"
                 wide
                 bulky
+                :disabled="!canAddLiquidity"
             >
                 add liquidity
             </Btn>
@@ -71,12 +73,10 @@ import { inject } from "vue"
 
 import { ethers } from "ethers"
 
+import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
-import { useTempStore } from "@/stores/temp"
-import { mapStores } from "pinia"
-import { getCurrentInstance } from "vue"
 
-import { getToken } from "~/helpers/index"
+import { getToken, useBalances, usePools } from "~/helpers/index"
 
 // import * as Factory from "../ABIs/factoryAbi.json"
 // const FactoryABI = Factory.default
@@ -88,9 +88,11 @@ import { getToken } from "~/helpers/index"
 // const TokenABI = Token.default
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
+
+const { poolTokens } = storeToRefs(stepStore)
+const { getPool } = usePools()
+
 const state = reactive({
-    TokenA: getToken("fBTC"),
-    TokenB: getToken("fUSD"),
     amountA: "1",
     amountB: "30000",
     balanceA: null,
@@ -98,26 +100,27 @@ const state = reactive({
     selectTokenIndex: 0,
 })
 
-// async function createPair() {
-//     //to do - organise contract instantiation not do do it every function
-//     const provider = new ethers.providers.Web3Provider(window.ethereum)
-//     const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider.getSigner())
-//     try {
-//         await factory
-//             .createPair(TokenA.address, this.TokenB, unhandled)
-//             .then(async (created) => {
-//                 console.log(" - pool - successfully created pool - ")
-//                 console.log(created)
-//                 await factory.getPair(TokenA.address, TokenB.address).then((res) => {
-//                     console.log(" - pool - is pool address here yet?")
-//                     console.log(res)
-//                 })
-//             })
-//     } catch (err) {
-//         console.log(" - pool - couldnt create pool - ")
-//         console.log(err)
-//     }
-// }
+async function createPair() {
+    console.log("kreate")
+    //to do - organise contract instantiation not do do it every function
+    // const provider = new ethers.providers.Web3Provider(window.ethereum)
+    // const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider.getSigner())
+    // try {
+    //     await factory
+    //         .createPair(TokenA.address, this.TokenB, unhandled)
+    //         .then(async (created) => {
+    //             console.log(" - pool - successfully created pool - ")
+    //             console.log(created)
+    //             await factory.getPair(TokenA.address, TokenB.address).then((res) => {
+    //                 console.log(" - pool - is pool address here yet?")
+    //                 console.log(res)
+    //             })
+    //         })
+    // } catch (err) {
+    //     console.log(" - pool - couldnt create pool - ")
+    //     console.log(err)
+    // }
+}
 
 // async function addLiquidity() {
 //     const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -150,7 +153,7 @@ const state = reactive({
 //     }
 // }
 const toggleTokenModal = inject("modal")
-function openTokenSelectModal(event, index) {
+function openTokenSelectModal(index) {
     toggleTokenModal(ABTokens.value, setToken)
     state.selectTokenIndex = index
 }
@@ -164,11 +167,11 @@ function setTokenAmount(event, inputIndex) {
 
 const ABTokens = computed({
     get() {
-        return [state.TokenA, state.TokenB]
+        return [poolTokens.value.A, poolTokens.value.B]
     },
     set(newValue) {
-        state.TokenA = newValue[0]
-        state.TokenB = newValue[1]
+        poolTokens.value.A = newValue[0]
+        poolTokens.value.B = newValue[1]
     },
 })
 const ABAmounts = computed({
@@ -182,6 +185,12 @@ const ABAmounts = computed({
 })
 const balances = computed(() => {
     return [state.balanceA, state.balanceB]
+})
+const canCreatePool = computed(() => {
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && stepStore.poolAddress === null
+})
+const canAddLiquidity = computed(() => {
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && stepStore.poolAddress !== null
 })
 </script>
 

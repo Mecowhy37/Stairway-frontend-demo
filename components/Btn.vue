@@ -2,6 +2,7 @@
     <button
         class="btn"
         ref="btn"
+        :disabled="props.disabled"
         :class="[
             {
                 'btn--secondary': props.secondary,
@@ -41,9 +42,11 @@ const props = defineProps({
     transparent: Boolean,
     plain: Boolean,
     pill: Boolean,
+    disabled: Boolean,
 })
 const emits = defineEmits([])
 const slots = useSlots()
+const attrs = useAttrs()
 </script>
 
 <style lang="scss">
@@ -61,6 +64,9 @@ $horiz-padd: 1rem;
     transition-duration: var(--transition);
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
+    &:disabled {
+        opacity: 0.5;
+    }
     cursor: pointer;
     * {
         color: var(--primary-btn-color);

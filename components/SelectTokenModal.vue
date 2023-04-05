@@ -31,8 +31,6 @@
 </template>
 
 <script setup>
-import { toRaw } from "vue"
-
 import allTokens from "../constants/tokenList.json"
 const tokenList = ref(allTokens)
 
@@ -53,7 +51,11 @@ function toggleTokenModal(tokens = false, callback = false) {
     }
 }
 const filteredTokenList = computed(
-    () => tokenList.value.filter((el) => el.chainId === 31337 && !ABTokens.value.includes(el))
+    () =>
+        tokenList.value.filter(
+            (el) => el.chainId === 31337 && !ABTokens.value?.find((tkn) => tkn?.address === el.address)
+            // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
+        )
     // () => tokenList.value.filter((el) => el.chainId === 31337)
 )
 
