@@ -121,30 +121,37 @@ const ABTokens = computed(() => {
     // return [state.TokenA, state.TokenB]
 })
 
-watch(ABTokens, (newValue, oldValue) => {
-    const newToken = newValue.filter((el) => !oldValue.includes(el))
-    getBalance(newToken[0])
+watch(
+    ABTokens,
+    (newValue, oldValue) => {
+        // const newToken = newValue.filter((el) => oldValue ? oldValue.includes(el) : newVal)
+        getBalance(null, true)
+        // getBalance(newValue[0])
 
-    // for each null token - the balance
-    ABTokens.value.forEach((el, index) => {
-        if (!el) {
-            if (index === 0) {
-                state.balanceA = null
-            } else {
-                state.balanceB = null
+        // for each null token - the balance
+        ABTokens.value.forEach((el, index) => {
+            if (!el) {
+                if (index === 0) {
+                    state.balanceA = null
+                } else {
+                    state.balanceB = null
+                }
             }
+        })
+        // if one token is null
+        if (!ABTokens.value.every((el) => el !== null)) {
         }
-    })
-    // if one token is null
-    if (!ABTokens.value.every((el) => el !== null)) {
-    }
 
-    // try {
-    //     this.setupPool()
-    // } catch (err) {
-    //     console.log(err)
-    // }
-})
+        // try {
+        //     this.setupPool()
+        // } catch (err) {
+        //     console.log(err)
+        // }
+    },
+    {
+        immediate: true,
+    }
+)
 
 watch(
     () => stepStore.connectedWallet,

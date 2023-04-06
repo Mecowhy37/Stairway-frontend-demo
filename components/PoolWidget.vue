@@ -46,16 +46,16 @@
             </div>
         </div>
         <div class="buttons">
-            <!-- class="pool" -->
             <Btn
+                v-if="poolAddress === null"
                 @click="createPair()"
                 wide
                 bulky
+                :loading="waitingForPool"
                 :disabled="!canCreatePool"
             >
-                create pair
+                {{ waitingForPool ? "waiting for pool" : "create pair" }}
             </Btn>
-            <!-- class="pool" -->
             <!-- @click="addLiquidity()" -->
             <Btn
                 wide
@@ -78,19 +78,14 @@ import { useStepStore } from "@/stores/step"
 
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
-// import * as Factory from "../ABIs/factoryAbi.json"
-// const FactoryABI = Factory.default
+import * as Factory from "../ABIs/IFactory.json"
+const FactoryABI = Factory.default
 
-// import * as Pool from "../ABIs/poolAbi.json"
-// const PoolABI = Pool.default
-
-// import * as Token from "../ABIs/tokenAbi.json"
-// const TokenABI = Token.default
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
 const { poolTokens } = storeToRefs(stepStore)
-const { getPool } = usePools()
+const { poolAddress, waitingForPool, getPool, createPool, iterations } = usePools(stepStore.factoryAddress)
 
 const state = reactive({
     amountA: "1",
@@ -100,28 +95,47 @@ const state = reactive({
     selectTokenIndex: 0,
 })
 
-async function createPair() {
-    console.log("kreate")
-    //to do - organise contract instantiation not do do it every function
-    // const provider = new ethers.providers.Web3Provider(window.ethereum)
-    // const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider.getSigner())
-    // try {
-    //     await factory
-    //         .createPair(TokenA.address, this.TokenB, unhandled)
-    //         .then(async (created) => {
-    //             console.log(" - pool - successfully created pool - ")
-    //             console.log(created)
-    //             await factory.getPair(TokenA.address, TokenB.address).then((res) => {
-    //                 console.log(" - pool - is pool address here yet?")
-    //                 console.log(res)
-    //             })
-    //         })
-    // } catch (err) {
-    //     console.log(" - pool - couldnt create pool - ")
-    //     console.log(err)
-    // }
+function createPair() {
+    createPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
 }
 
+watch(
+    () => [stepStore.bothPoolTokensThere, stepStore.connectedWallet],
+    async (newValue) => {
+        if (newValue[0] && newValue[1]) {
+            await getPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+        } else {
+            poolAddress.value = null
+        }
+    }
+)
+
+async function getSigner() {
+    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+    const signer = await provider.getSigner()
+    const txDetails = {
+        to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        value: 100000000000000,
+    }
+
+    const sendTransaction = () => {
+        return signer.sendTransaction(txDetails).then((tx) => tx.hash)
+    }
+
+    // const gasPrice = () => provider.getGasPrice().then((res) => res.toString())
+
+    const estimateGas = () => {
+        return signer.estimateGas(txDetails).then((res) => res.toString())
+    }
+    const transactionHash = await stepStore.onboard.state.actions.preflightNotifications({
+        sendTransaction,
+        // gasPrice,
+        estimateGas,
+        // balance: balanceValue,
+        txDetails: txDetails,
+    })
+    console.log(transactionHash)
+}
 // async function addLiquidity() {
 //     const provider = new ethers.providers.Web3Provider(window.ethereum)
 //     const poolContract = new ethers.Contract(this.tempStore.poolAddress, PoolABI, provider.getSigner())
@@ -187,10 +201,10 @@ const balances = computed(() => {
     return [state.balanceA, state.balanceB]
 })
 const canCreatePool = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && stepStore.poolAddress === null
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && poolAddress.value === null
 })
 const canAddLiquidity = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && stepStore.poolAddress !== null
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && poolAddress.value !== null
 })
 </script>
 

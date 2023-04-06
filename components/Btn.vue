@@ -12,6 +12,7 @@
                 'btn--wide': props.wide,
                 'btn--bulky': props.bulky,
                 'btn--pill': props.pill,
+                'btn--unclickable': props.loading,
             },
         ]"
     >
@@ -23,8 +24,12 @@
             <slot name="default"></slot>
         </component>
         <div v-if="slots.icon">
-            <slot name="icon"></slot>
+            <slot name="icon"> </slot>
         </div>
+        <span
+            v-if="props.loading"
+            class="loader"
+        ></span>
     </button>
 </template>
 
@@ -43,6 +48,7 @@ const props = defineProps({
     plain: Boolean,
     pill: Boolean,
     disabled: Boolean,
+    loading: Boolean,
 })
 const emits = defineEmits([])
 const slots = useSlots()
@@ -114,7 +120,11 @@ $horiz-padd: 1rem;
         height: $height;
         border-radius: var(--inner-wdg-radius);
     }
+    &--unclickable {
+        pointer-events: none;
+    }
 }
+
 .cta-dd {
     /* > button {
         border: none !important;
@@ -124,6 +134,26 @@ $horiz-padd: 1rem;
     }
     > :last-child button {
         padding-left: 10px !important;
+    }
+}
+.loader {
+    margin-left: 0.5rem;
+    height: 25px;
+    aspect-ratio: 1/1;
+    border: 5px dotted #fff;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotation 2s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }
 </style>

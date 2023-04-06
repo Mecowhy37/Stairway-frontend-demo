@@ -50,7 +50,7 @@ export const useStepStore = defineStore("step", (): any => {
                 id: "0x7a69",
                 token: "ETH",
                 label: "Local ANvil",
-                rpcUrl: MAINNET_RPC_URL,
+                rpcUrl: LOCAL_ANVIL,
             },
         ],
         accountCenter: {
@@ -61,12 +61,44 @@ export const useStepStore = defineStore("step", (): any => {
                 enabled: false,
             },
         },
+        // apiKey: "df032d43-e68f-4e04-8fc8-a30d5ba8d157",
+        // notify: {
+        //     desktop: {
+        //       enabled: true,
+        //       transactionHandler: transaction => {
+        //         console.log('tx: ',{ transaction })
+        //         // if (transaction.eventCode === 'txPool') {
+        //           return {
+        //             type: 'success',
+        //             message: 'Your transaction from #1 DApp is in the mempool',
+        //           }
+        //         // }
+        //       },
+        //       position: 'bottomLeft'
+        //     },
+        //     mobile: {
+        //       enabled: true,
+        //       transactionHandler: transaction => {
+        //         console.log({ transaction })
+        //     //     if (transaction.eventCode === 'txPool') {
+        //     //       return {
+        //     //         type: 'success',
+        //     //         message: 'Your transaction from #1 DApp is in the mempool',
+        //     //       }
+        //     //     }
+        //       },
+        //       position: 'topRight'
+        //     }
+        //   },
         connect: {
             autoConnectLastWallet: true,
         },
     })
     const { wallets, connectWallet, connectedChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
-
+    // const walletsNotifs = onboard.state.select('notifications')
+    // const { unsubscribe } = walletsNotifs.subscribe((update) =>
+    //     console.log('transaction notifications: ', update)
+    // )
 
     const swapTokens = reactive({
         A: getToken('fUSD'),
@@ -112,17 +144,10 @@ export const useStepStore = defineStore("step", (): any => {
 
 
     const { updateBalance } = useBalances()
-    const { getPool } = usePools()
+    const { getPool } = usePools(factoryAddress)
 
     watch(allTokens, (newValue, oldValue) => {
         updateBalance(newValue, oldValue)
-    })
-
-    const poolAddress = ref(null)
-    watch(() => [bothPoolTokensThere.value, connectedWallet.value], async (newValue) => {
-        if (newValue[0] && newValue[1] !== null){
-            poolAddress.value = await getPool(...bothPoolTokenAddresses.value, connectedWallet.value.provider) 
-        }
     })
 
 
@@ -192,6 +217,8 @@ export const useStepStore = defineStore("step", (): any => {
     // }
 
     return {
+        onboard,
+
         chainId,
         factoryAddress,
         isDark,
@@ -199,7 +226,7 @@ export const useStepStore = defineStore("step", (): any => {
         poolTokens,
         allTokens,
 
-        poolAddress,
+        // poolAddress,
         poolTokensCmp,
         bothPoolTokensThere,
         bothPoolTokenAddresses,
