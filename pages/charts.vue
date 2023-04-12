@@ -17,8 +17,8 @@
 import { useStepStore } from "@/stores/step"
 import { mapStores } from "pinia"
 
-import * as Factory from "../constants/factoryAddress.json"
-const factoryAddresses = Factory.default
+import * as Router from "../ABIs/DEX.json"
+const Router = Router.default
 
 export default {
     head() {
@@ -51,7 +51,7 @@ export default {
     },
     created() {
         //setting global state, will be moved to state instance itself
-        this.stepStore.factoryAddress = factoryAddresses[this.stepStore.chainId]
+        this.stepStore.routerAddress = routerAddresses[this.stepStore.chainId]
     },
 }
 </script>

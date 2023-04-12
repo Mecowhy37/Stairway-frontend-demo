@@ -4,8 +4,8 @@ import { ethers } from "ethers"
 import { init, useOnboard } from "@web3-onboard/vue"
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
-import * as Factory from "../ABIs/IFactory.json"
-const FactoryABI = Factory.default
+import * as Router from "../ABIs/DEX.json"
+const RouterABI = Router.default
 
 import injectedModule from "@web3-onboard/injected-wallets"
 declare global {
@@ -33,7 +33,7 @@ export const useStepStore = defineStore("step", (): any => {
     
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
-    const factoryAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+    const routerAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
     const unhandled = "0x0000000000000000000000000000000000000000"
 
     const injected = injectedModule()
@@ -117,7 +117,7 @@ export const useStepStore = defineStore("step", (): any => {
         return [poolTokens.A, poolTokens.B]
     })
     const swapTokensCmp = computed(() => {
-        return [poolTokens.A, poolTokens.B]
+        return [swapTokens.A, swapTokens.B]
     })
 
     const bothSwapTokensThere = computed(() => {
@@ -144,7 +144,7 @@ export const useStepStore = defineStore("step", (): any => {
 
 
     const { updateBalance } = useBalances()
-    const { getPool } = usePools(factoryAddress)
+    const { getBidAsk } = usePools(routerAddress)
 
     watch(allTokens, (newValue, oldValue) => {
         updateBalance(newValue, oldValue)
@@ -154,7 +154,7 @@ export const useStepStore = defineStore("step", (): any => {
     // const swapAddress = ref(null)
     // watch(swapTokensCmp, async (newValue) => {
     //     if (bothSwapTokensThere && connectedWallet){
-    //         swapAddress.value = getPool(...bothSwapTokenAddresses.value, connectedWallet.value.provider)
+    //         swapAddress.value = getBidAsk(...bothSwapTokenAddresses.value, connectedWallet.value.provider)
     //     }
     // })
 
@@ -220,7 +220,7 @@ export const useStepStore = defineStore("step", (): any => {
         onboard,
 
         chainId,
-        factoryAddress,
+        routerAddress,
         isDark,
         swapTokens,
         poolTokens,
@@ -230,6 +230,9 @@ export const useStepStore = defineStore("step", (): any => {
         poolTokensCmp,
         bothPoolTokensThere,
         bothPoolTokenAddresses,
+
+        bothSwapTokensThere,
+        bothSwapTokenAddresses,
 
         connectedChain,
         isConnectingText,

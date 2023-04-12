@@ -78,6 +78,9 @@ h2 {
 h3 {
     font-size: 1.25rem;
 }
+p {
+    font-size: 1.1rem;
+}
 .bolder {
     font-size: 1.4rem;
     font-weight: bolder;

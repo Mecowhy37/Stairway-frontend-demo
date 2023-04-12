@@ -1,5 +1,10 @@
 <template>
     <div class="widget">
+        <!-- bid: {{ bidAskFormat !== null && bidAskFormat[0] }}
+        <br />
+        ask: {{ bidAskFormat !== null && bidAskFormat[1] }}
+        <br />
+        {{ avgPrice !== null && avgPrice }} -->
         <div
             v-for="(i, x) in new Array(2)"
             class="window"
@@ -65,6 +70,7 @@
             @click="swap()"
             wide
             bulky
+            :disabled="!stepStore.bothSwapTokensThere"
         >
             swap
         </Btn>
@@ -86,7 +92,7 @@ import { useStepStore } from "@/stores/step"
 import { useTempStore } from "@/stores/temp"
 import { ethers } from "ethers"
 
-import { getToken, useBalances } from "~/helpers/index"
+import { getToken, useBalances, usePools } from "~/helpers/index"
 
 import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
@@ -97,10 +103,9 @@ const stepStore = useStepStore()
 const tempStore = useTempStore()
 
 const { swapTokens } = storeToRefs(stepStore)
+const { bidAsk, getBidAsk, bidAskFormat, avgPrice } = usePools(stepStore.routerAddress)
 
 const state = reactive({
-    TokenA: null,
-    TokenB: null,
     balanceA: null,
     balanceB: null,
     bidAsk: [],
@@ -139,14 +144,25 @@ watch(
             }
         })
         // if one token is null
-        if (!ABTokens.value.every((el) => el !== null)) {
+        if (ABTokens.value.every((el) => el !== null) && state.tokenToSellIndex === 1) {
+            // switchedTokens.value = switchedTokens.value.reverse()
         }
+        // if (!ABTokens.value.every((el) => el !== null)) {
 
-        // try {
-        //     this.setupPool()
-        // } catch (err) {
-        //     console.log(err)
         // }
+    },
+    {
+        immediate: true,
+    }
+)
+watch(
+    () => [stepStore.bothSwapTokensThere, stepStore.connectedWallet],
+    async (newValue) => {
+        if (newValue[0] && newValue[1]) {
+            await getBidAsk(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
+        } else {
+            bidAsk.value = null
+        }
     },
     {
         immediate: true,
@@ -175,7 +191,7 @@ async function getBalance(token, both = false) {
             return
         }
 
-        console.log("getting it")
+        // console.log("getting it")
         const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
         const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
         const balance = await tokenContract.balanceOf(stepStore.getConnectedAccount)
@@ -211,7 +227,7 @@ function setToken(token) {
 async function swap() {
     try {
         const provider = new ethers.providers.Web3Provider(stepStore.connectedWallet.provider)
-        const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider)
+        const factory = new ethers.Contract(stepStore.routerAddress, FactoryABI, provider)
 
         //find a pool
         const poolAddress = await factory.getPair(swapTokens.value[0].address, swapTokens.value[1].address)
@@ -245,67 +261,30 @@ async function swap() {
         await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
             console.log(" - swap -  SUCCESSFUL SWAP -")
             console.log(res)
-
-            setupPool()
         })
     } catch (err) {
         console.log(" - swap - could swap")
         console.log(err)
     }
 }
-async function setupPool() {
-    console.log(" - swap - SETUP POOL CALLED - ")
-    // this.getBalance()
-    const provider = new ethers.providers.Web3Provider(stepSwap.connectedWallet.provider)
-    const factory = new ethers.Contract(stepStore.factoryAddress, FactoryABI, provider)
 
-    //find a pool
-    const poolAddress = await factory.getPair(swapTokens.value[0].address, swapTokens.value[1].address)
-
-    if (poolAddress === unhandled) {
-        console.log(" - swap - ? pair doesnt exist ? - ")
-        tempStore.poolAddress = null
-        return
-    }
-    tempStore.poolAddress = poolAddress
-
-    const pool = new ethers.Contract(poolAddress, PoolABI, provider)
-
-    //get bidAsk and maybe depth
-    const bidAsk = await pool.getBidAsk()
-    bidAsk.value[0] = ethers.utils.formatEther(bidAsk._bid)
-    bidAsk.value[1] = ethers.utils.formatEther(bidAsk._ask)
-
-    //find which is token0
-    const token0 = await pool.token0()
-    state.token0Index = ABTokens.value.findIndex((el) => el.address === token0)
-
-    state.showRate = true
-}
 function reset() {
     state.balanceA = null
     state.balanceB = null
-    state.bidAsk = []
+    bidAsk.value = []
     state.showRate = false
-    state.token0Index = null
     tempStore.poolAddress = null
 }
 
-const token0 = computed(() => {
-    return ABTokens.value[state.token0Index]
-})
 const tokensNotNull = computed(() => {
     return ABTokens.value.every((el) => el !== null)
-})
-const tokenToSell = computed(() => {
-    return switchedTokens.value[0]
 })
 
 const amountInputs = computed({
     get() {
         function Round(amt) {
             let amount = Number(amt)
-            amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+            amount = amount >= 1 ? amount.toFixed(3) : amount.toPrecision(3)
             return amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
         }
         if (
@@ -315,29 +294,29 @@ const amountInputs = computed({
             return ["", ""]
         }
         if (state.lastChangedToken === 0) {
-            if (tokenToSell.value === token0.value) {
-                state.buyAmount = Round(state.sellAmount * state.bidAsk[0])
+            if (switchedTokens.value[0] === ABTokens.value[0]) {
+                state.buyAmount = Round(state.sellAmount * bidAskFormat.value[0])
             } else {
-                state.buyAmount = Round(state.sellAmount / state.bidAsk[1])
+                state.buyAmount = Round(state.sellAmount / bidAskFormat.value[1])
             }
         } else {
-            if (tokenToSell.value === token0.value) {
-                state.sellAmount = Round(state.buyAmount / state.bidAsk[0])
+            if (switchedTokens.value[0] === ABTokens.value[0]) {
+                state.sellAmount = Round(state.buyAmount / bidAskFormat.value[0])
             } else {
-                state.sellAmount = Round(state.buyAmount * state.bidAsk[1])
+                state.sellAmount = Round(state.buyAmount * bidAskFormat.value[1])
             }
         }
         return [state.sellAmount || "", state.buyAmount || ""]
     },
     //unneccessary, can be moved where amountInputs are st
     set(newValue) {
-        this.sellAmount = newValue[0]
-        this.buyAmount = newValue[1]
+        state.sellAmount = newValue[0]
+        state.buyAmount = newValue[1]
     },
 })
 const rate = computed(() => {
     if (state.showRate) {
-        let rate = tokenToSell.value === token0.value ? state.bidAsk[0] : 1 / Number(state.bidAsk[1])
+        let rate = tokenToSell.value === token0.value ? bidAsk.value[0] : 1 / Number(bidAsk.value[1])
         rate = Number(rate) > 1 ? Number(rate).toFixed(2) : Number(rate).toPrecision(2)
         return `1 ${switchedTokens.value[0].symbol} = ${rate} ${switchedTokens.value[1].symbol}`
     } else {
@@ -354,6 +333,7 @@ const switchedTokens = computed({
             swapTokens.value.A = newValue[0]
             swapTokens.value.B = newValue[1]
         } else {
+            // state.tokenToSellIndex = 0
             swapTokens.value.A = newValue[1]
             swapTokens.value.B = newValue[0]
         }
@@ -364,13 +344,12 @@ const switchedBalances = computed(() => {
     return state.tokenToSellIndex === 0 ? list : list.reverse()
 })
 const token0Style = computed(() => {
-    const list = ["token0", null]
-    // if (this.token0Index !== null) {
-    //     return this.switchedTokens[0] === this.token0 ? list : list.reverse()
+    // const list = ["token0", null]
+    // if (stepStore.bothSwapTokensThere) {
+    //     return state.tokenToSellIndex === 0 ? list : list.reverse()
     // } else {
-    //     return [null, null]
+    return [null, null]
     // }
-    return state.tokenToSellIndex === 0 ? list : list.reverse()
 })
 const isMountedStyle = computed(() => {
     return !state.alreadyMounted ? "" : "transitions"
@@ -425,12 +404,10 @@ $secodary: #ffd5c9;
             position: relative;
             flex-shrink: 0;
             margin: 0 1.2rem;
-            margin-bottom: 1.5rem;
+            /* margin-bottom: 1.5rem; */
             cursor: pointer;
             p {
-                position: absolute;
                 white-space: nowrap;
-                bottom: -90%;
             }
         }
         input {
