@@ -107,8 +107,22 @@
                 <p @click="setRedeemProc(100)">100%</p>
             </div>
             <hr />
-            <p>pooled {{ ABTokens[0]?.symbol }}: {{ (thisReserve * state.redeemProcent) / 100 }}</p>
-            <p>pooled {{ ABTokens[1]?.symbol }}: {{ (thatReserve * state.redeemProcent) / 100 }}</p>
+            <p>
+                pooled {{ ABTokens[0]?.symbol }}:
+                {{
+                    ABTokens[0]?.address === baseTokenAddress
+                        ? (thisReserve * state.redeemProcent) / 100
+                        : (thatReserve * state.redeemProcent) / 100
+                }}
+            </p>
+            <p>
+                pooled {{ ABTokens[1]?.symbol }}:
+                {{
+                    ABTokens[1]?.address === baseTokenAddress
+                        ? (thisReserve * state.redeemProcent) / 100
+                        : (thatReserve * state.redeemProcent) / 100
+                }}
+            </p>
         </div>
         <Btn
             wide
