@@ -2,7 +2,7 @@
     <div class="centerize">
         <div class="display">
             <div>
-                <p><b>wallet address</b>{{ stepStore.getConnectedAccount || empty }}</p>
+                <p><b>wallet address</b>{{ stepStore.connectedAccount || empty }}</p>
             </div>
             <Btn
                 v-if="stepStore.connectedWallet === null"

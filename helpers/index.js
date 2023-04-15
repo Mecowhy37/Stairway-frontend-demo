@@ -1,5 +1,7 @@
 import { ref } from "vue"
 import { ethers } from "ethers"
+import { storeToRefs } from "pinia"
+import { useStepStore } from "@/stores/step"
 
 import * as Tokens from "../constants/tokenList.json"
 const TokenList = Tokens.default
@@ -23,13 +25,15 @@ export function getToken(symb) {
     return TokenList.find((el) => el.symbol === symb)
 }
 
-export function useBalances() {
+export function useBalances(providerArg) {
     // I will return object that contains
     //      {
     //          "address": balance
     //      }
 
     const balances = ref({})
+    const stepStore = useStepStore()
+    const { connectedAccount, connectedWallet } = storeToRefs(stepStore)
 
     function updateBalance(newVal, oldVal) {
         // console.log(
@@ -42,28 +46,33 @@ export function useBalances() {
         // )
     }
 
-    async function getBalance(provider) {
-        // const provider = new ethers.BrowserProvider(provider)
-        // const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
-        // const balance = await tokenContract.balanceOf(this.stepStore.getConnectedAccount)
-        // const formatedBalance = ethers.formatUnits(balance, token.decimals)
+    async function getBalance(token) {
+        const provider = new ethers.BrowserProvider(providerArg)
+        const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
+        const balance = await tokenContract.balanceOf(connectedAccount.value)
+        const formatedBalance = ethers.formatUnits(balance, token.decimals)
+        return formatedBalance
     }
 
-    return { updateBalance }
+    async function getTotalSupply(address) {
+        const provider = new ethers.BrowserProvider(providerArg)
+        const tokenContract = new ethers.Contract(address, TokenABI, provider)
+        const totalSupply = await tokenContract.totalSupply()
+        const formatedTotalSupply = ethers.formatEther(totalSupply)
+        return formatedTotalSupply
+    }
 
-    //     const balanceA = ref(null)
-    //     const balanceB = ref(null)
-    //     const loading = ref(false)
+    return { updateBalance, getBalance, getTotalSupply }
 }
-
-// export function usePools() {
-//     this function should store
-// }
 
 export function usePools(routerAddress) {
     const bidAsk = ref(null)
     const baseTokenAddress = ref(null)
     const poolRatio = ref(null)
+    const liquidityTokenBalance = ref(null)
+    const lpTotalSupply = ref(null)
+    const thisReserve = ref(null)
+    const thatReserve = ref(null)
 
     const interval = ref()
     const iterations = ref(0)
@@ -86,7 +95,8 @@ export function usePools(routerAddress) {
         await router
             .getBidAsk(addressA, addressB)
             .then((res) => {
-                console.log("found!", res)
+                // console.log("found!", res)
+                console.log("found!")
                 bidAsk.value = [res[0], res[1]]
                 getPoolInfo(addressA, addressB, providerArg)
                 return res
@@ -112,19 +122,24 @@ export function usePools(routerAddress) {
         const poolAddress = await factory.getPool(addressA, addressB)
         const pool = new ethers.Contract(poolAddress, PoolABI, provider)
 
-        const thisReserv = await pool.thisRegisteredBalance()
-        const thatReserv = await pool.thatRegisteredBalance()
+        const thisAmount = ethers.formatEther(await pool.thisRegisteredBalance())
+        const thatAmount = ethers.formatEther(await pool.thatRegisteredBalance())
 
-        console.log("this reserv: ", ethers.formatEther(thisReserv))
-        console.log("that reserv: ", ethers.formatEther(thatReserv))
+        thisReserve.value = Number(thisAmount)
+        thatReserve.value = Number(thatAmount)
 
-        const ratio = Number(thatReserv) / Number(thisReserv)
-        poolRatio.value = ratio
-        console.log("ratio:", ratio)
+        poolRatio.value = Number(thatAmount) / Number(thisAmount)
 
         const thisToken = await pool.thisToken()
         baseTokenAddress.value = thisToken
-        console.log("thisToken:", thisToken)
+
+        const lpToken = await pool.lpToken()
+        console.log("lpToken:", lpToken)
+
+        const { getBalance, getTotalSupply } = useBalances(providerArg)
+        liquidityTokenBalance.value = await getBalance({ address: lpToken, decimals: 18 })
+
+        lpTotalSupply.value = await getTotalSupply(lpToken)
     }
 
     async function addLiquidity(addressA, addressB, amountA, amountB, providerArg) {
@@ -136,14 +151,15 @@ export function usePools(routerAddress) {
         const parsedAmountA = ethers.parseEther(amountA)
         const parsedAmountB = ethers.parseEther(amountB)
 
-        const approve1 = await approveSpending(addressA, parsedAmountA, signer)
-        const approve2 = await approveSpending(addressB, parsedAmountB, signer)
-        Promise.all([approve1, approve2]).catch((err) => {
-            console.log(err)
-        })
+        const blockTimestamp = (await provider.getBlock("latest")).timestamp
+        const deadline = blockTimestamp + 360
+        // const approve1 =
+        await approveSpending(addressA, parsedAmountA, signer)
+        // const approve2 =
+        await approveSpending(addressB, parsedAmountB, signer)
 
         await router
-            .addLiquidity(addressA, addressB, parsedAmountA, parsedAmountB)
+            .addLiquidity(addressA, addressB, parsedAmountA, parsedAmountB, deadline)
             .then(async (res) => {
                 // console.log("res", res)
                 waitingForAdding.value = true
@@ -171,20 +187,32 @@ export function usePools(routerAddress) {
                 console.log(err)
                 return null
             })
+        // Promise.all([approve1, approve2, poolAction]).catch((err) => {
+        // Promise.all([poolAction]).catch((err) => {
+        //     console.log(err)
+        // })
     }
+
+    async function redeemLiquidity() {}
 
     async function approveSpending(tokenAddress, amount, signer) {
         const erc20 = new ethers.Contract(tokenAddress, TokenABI, signer)
         await erc20.approve(routerAddress, amount).then((res) => {
-            // console.log('approval: ', res)
+            console.log("it reslved the approval")
         })
     }
 
     return {
         bidAsk,
+        thisReserve,
+        thatReserve,
         baseTokenAddress,
         poolRatio,
+        getPoolInfo,
         getBidAsk,
+        lpTotalSupply,
+        liquidityTokenBalance,
+        redeemLiquidity,
         bidAskFormat,
         avgPrice,
         addLiquidity,

@@ -1,10 +1,10 @@
 <template>
-    <div class="widget">
+    <div class="widget white-box">
         <div
             class="contents"
             v-for="(i, x) in new Array(2)"
         >
-            <div class="window">
+            <div class="window green-box">
                 <label
                     for="amount_1"
                     @click="!waitingForAdding && openTokenSelectModal(x)"
@@ -67,7 +67,7 @@
                 :loading="waitingForAdding"
                 :disabled="!canCreatePool || !bothAmountsIn"
             >
-                {{ waitingForAdding ? "waiting for pool" : "create pair" }}
+                {{ waitingForAdding ? "waiting for pool" : "create pool" }}
             </Btn>
             <!-- @click="addLiquidity()" -->
             <Btn
@@ -80,7 +80,44 @@
             >
                 {{ waitingForAdding ? "waiting for pool" : "add liquidity" }}
             </Btn>
+            <Btn
+                wide
+                bulky
+                @click="getPoolInf()"
+            >
+                check pool
+            </Btn>
         </div>
+    </div>
+    <div class="redeem white-box">
+        <div class="info-box green-box green-box--padded">
+            <p>your pool share: {{ poolShare }}%</p>
+            <p>procent to redeem: {{ state.redeemProcent }}%</p>
+            <div class="inputs-flex">
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    v-model="state.redeemProcent"
+                />
+                <p @click="setRedeemProc(25)">25%</p>
+                <p @click="setRedeemProc(50)">50%</p>
+                <p @click="setRedeemProc(75)">75%</p>
+                <p @click="setRedeemProc(100)">100%</p>
+            </div>
+            <hr />
+            <p>pooled {{ ABTokens[0]?.symbol }}: {{ (thisReserve * state.redeemProcent) / 100 }}</p>
+            <p>pooled {{ ABTokens[1]?.symbol }}: {{ (thatReserve * state.redeemProcent) / 100 }}</p>
+        </div>
+        <Btn
+            wide
+            bulky
+            @click="getPoolInf()"
+            :disabled="liquidityTokenBalance === null || liquidityTokenBalance === '0.0'"
+        >
+            reedem liquidity
+        </Btn>
     </div>
 </template>
 
@@ -105,7 +142,12 @@ const {
     bidAsk,
     baseTokenAddress,
     poolRatio,
+    thisReserve,
+    thatReserve,
     getBidAsk,
+    getPoolInfo,
+    lpTotalSupply,
+    liquidityTokenBalance,
     waitingBidAsk,
     bidAskFormat,
     avgPrice,
@@ -120,6 +162,19 @@ const state = reactive({
     balanceB: null,
     selectTokenIndex: 0,
     lastChangedToken: 0,
+    redeemProcent: 50,
+})
+function getPoolInf() {
+    getPoolInfo(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+}
+
+function setRedeemProc(proc) {
+    state.redeemProcent = proc
+}
+const poolShare = computed(() => {
+    return liquidityTokenBalance && lpTotalSupply
+        ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
+        : null
 })
 
 function createPair() {
@@ -290,21 +345,14 @@ const canAddLiquidity = computed(() => {
 <style lang="scss" scoped>
 .widget {
     margin-top: 2rem;
-    background-color: var(--widget-bg);
-    transition: background-color var(--transition);
     width: 500px;
-    border-radius: var(--outer-wdg-radius);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
-    padding: 0.5rem;
+    transition: background-color var(--transition);
     .window {
-        background-color: var(--swap-windows);
-        transition: background-color var(--transition);
         display: flex;
         align-items: center;
         position: relative;
         width: 100%;
         height: 6.5rem;
-        border-radius: var(--inner-wdg-radius);
 
         &.transitions {
             &,
@@ -393,5 +441,45 @@ const canAddLiquidity = computed(() => {
                     }
                 } */
     }
+}
+.redeem {
+    margin-top: 2rem;
+    .info-box {
+        margin-bottom: 0.5rem;
+        & > * {
+            margin-bottom: 0.5rem;
+            &:last-child {
+                margin-bottom: 0rem;
+            }
+            p {
+                cursor: pointer;
+                &:hover {
+                    color: rgb(7, 255, 7);
+                }
+            }
+
+            &.inputs-flex {
+                display: flex;
+                justify-content: space-between;
+                input {
+                    width: 50%;
+                }
+            }
+        }
+    }
+}
+.green-box {
+    background-color: var(--swap-windows);
+    transition: background-color var(--transition);
+    border-radius: var(--inner-wdg-radius);
+    &--padded {
+        padding: 1rem;
+    }
+}
+.white-box {
+    background-color: var(--widget-bg);
+    border-radius: var(--outer-wdg-radius);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
+    padding: 0.5rem;
 }
 </style>

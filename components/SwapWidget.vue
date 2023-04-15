@@ -194,7 +194,7 @@ async function getBalance(token, both = false) {
         // console.log("getting it")
         const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
         const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
-        const balance = await tokenContract.balanceOf(stepStore.getConnectedAccount)
+        const balance = await tokenContract.balanceOf(stepStore.connectedAccount)
         const formatedBalance = ethers.formatUnits(balance, token.decimals)
         if (ABTokens.value.indexOf(token) === 0) {
             state.balanceA = formatedBalance

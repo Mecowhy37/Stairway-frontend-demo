@@ -160,10 +160,10 @@ export const useStepStore = defineStore("step", (): any => {
 
 
 
-    const getConnectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null)
+    const connectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null)
     const getTruncatedWalletAddress = computed(() => {
-        if (getConnectedAccount.value !== null) {
-            const toTruncate = getConnectedAccount.value.split("")
+        if (connectedAccount.value !== null) {
+            const toTruncate = connectedAccount.value.split("")
             const start = toTruncate.splice(0, 5).join("")
             const end = toTruncate.splice(-4).join("")
             return start + "..." + end
@@ -244,7 +244,7 @@ export const useStepStore = defineStore("step", (): any => {
         disconnectConnectedWallet,
         alreadyConnectedWallets,
 
-        getConnectedAccount,
+        connectedAccount,
         getTruncatedWalletAddress,
         tryWallet,
     }
