@@ -68,11 +68,12 @@ export function useBalances(providerArg) {
 export function usePools(routerAddress) {
     const bidAsk = ref(null)
     const baseTokenAddress = ref(null)
-    const poolRatio = ref(null)
-    const liquidityTokenBalance = ref(null)
-    const lpTotalSupply = ref(null)
     const thisReserve = ref(null)
     const thatReserve = ref(null)
+    const poolRatio = ref(null)
+    const lpTokenAddress = ref(null)
+    const liquidityTokenBalance = ref(null)
+    const lpTotalSupply = ref(null)
 
     const interval = ref()
     const iterations = ref(0)
@@ -81,11 +82,6 @@ export function usePools(routerAddress) {
 
     const bidAskFormat = computed(() => {
         return bidAsk.value !== null ? bidAsk.value.map((el) => ethers.formatEther(el)) : []
-    })
-    const avgPrice = computed(() => {
-        return bidAskFormat.value !== null
-            ? `${(Number(bidAskFormat.value[0]) + Number(bidAskFormat.value[1])) / 2}`
-            : null
     })
 
     async function getBidAsk(addressA, addressB, providerArg, continuous = false) {
@@ -102,11 +98,12 @@ export function usePools(routerAddress) {
                 return res
             })
             .catch((err) => {
+                console.log("err is here ", err)
+
+                resetPool()
+
                 if (err.reason === "DEX__PoolNotFound()") {
                     console.log("not found")
-                    bidAsk.value = null
-                    baseTokenAddress.value = null
-                    poolRatio.value = null
                     return null
                 }
             })
@@ -120,6 +117,7 @@ export function usePools(routerAddress) {
         const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
 
         const poolAddress = await factory.getPool(addressA, addressB)
+        // try {
         const pool = new ethers.Contract(poolAddress, PoolABI, provider)
 
         const thisAmount = ethers.formatEther(await pool.thisRegisteredBalance())
@@ -134,12 +132,16 @@ export function usePools(routerAddress) {
         baseTokenAddress.value = thisToken
 
         const lpToken = await pool.lpToken()
-        console.log("lpToken:", lpToken)
+        lpTokenAddress.value = lpToken
 
         const { getBalance, getTotalSupply } = useBalances(providerArg)
-        liquidityTokenBalance.value = await getBalance({ address: lpToken, decimals: 18 })
+        const bal = await getBalance({ address: lpToken, decimals: 18 })
+        liquidityTokenBalance.value = bal
 
         lpTotalSupply.value = await getTotalSupply(lpToken)
+        // } catch (err) {
+        //     throw new Error("poolInfo failed")
+        // }
     }
 
     async function addLiquidity(addressA, addressB, amountA, amountB, providerArg) {
@@ -153,10 +155,11 @@ export function usePools(routerAddress) {
 
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadline = blockTimestamp + 360
-        // const approve1 =
-        await approveSpending(addressA, parsedAmountA, signer)
-        // const approve2 =
-        await approveSpending(addressB, parsedAmountB, signer)
+        const approve1 = await approveSpending(addressA, parsedAmountA, signer)
+        const approve2 = await approveSpending(addressB, parsedAmountB, signer)
+        Promise.all([approve1, approve2]).catch((err) => {
+            console.log(err)
+        })
 
         await router
             .addLiquidity(addressA, addressB, parsedAmountA, parsedAmountB, deadline)
@@ -187,19 +190,53 @@ export function usePools(routerAddress) {
                 console.log(err)
                 return null
             })
-        // Promise.all([approve1, approve2, poolAction]).catch((err) => {
-        // Promise.all([poolAction]).catch((err) => {
-        //     console.log(err)
-        // })
+    }
+    function resetPool() {
+        bidAsk.value = null
+        baseTokenAddress.value = null
+        thisReserve.value = null
+        thatReserve.value = null
+        poolRatio.value = null
+        lpTokenAddress.value = null
+        liquidityTokenBalance.value = null
+        lpTotalSupply.value = null
     }
 
-    async function redeemLiquidity() {}
+    async function redeemLiquidity(redeemProcent, providerArg) {
+        // address, amount, deadline
+        // approve amount
+        console.log(lpTokenAddress.value, liquidityTokenBalance.value)
+        if (lpTokenAddress.value && liquidityTokenBalance.value) {
+            const provider = new ethers.BrowserProvider(providerArg)
+            const signer = await provider.getSigner()
+            const router = new ethers.Contract(routerAddress, RouterABI, signer)
+            const amount = ethers.parseEther(liquidityTokenBalance.value)
+            const amountFraction = `${(amount * BigInt(redeemProcent)) / BigInt(100)}`
+            const blockTimestamp = (await provider.getBlock("latest")).timestamp
+            const deadline = blockTimestamp + 360
+
+            try {
+                await approveSpending(lpTokenAddress.value, amountFraction, signer)
+                await router
+                    .redeemLiquidity(lpTokenAddress.value, amountFraction, deadline)
+                    .then((res) => {
+                        console.log(res)
+                    })
+                    .catch((err) => {
+                        console.error("redeem error: ", err)
+                    })
+            } catch (err) {
+                console.log("err i  her: ", err)
+            }
+            // Promise.all([approval, redeeming]).catch((err) => {
+            //     console.log(err)
+            // })
+        }
+    }
 
     async function approveSpending(tokenAddress, amount, signer) {
         const erc20 = new ethers.Contract(tokenAddress, TokenABI, signer)
-        await erc20.approve(routerAddress, amount).then((res) => {
-            console.log("it reslved the approval")
-        })
+        return await erc20.approve(routerAddress, amount)
     }
 
     return {
@@ -214,10 +251,11 @@ export function usePools(routerAddress) {
         liquidityTokenBalance,
         redeemLiquidity,
         bidAskFormat,
-        avgPrice,
         addLiquidity,
         waitingForAdding,
         approveSpending,
         iterations,
+        resetPool,
+        redeemLiquidity,
     }
 }

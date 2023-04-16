@@ -89,7 +89,10 @@
             </Btn>
         </div>
     </div>
-    <div class="redeem white-box">
+    <div
+        class="redeem white-box"
+        v-if="poolShare"
+    >
         <div class="info-box green-box green-box--padded">
             <p>your pool share: {{ poolShare }}%</p>
             <p>procent to redeem: {{ state.redeemProcent }}%</p>
@@ -127,8 +130,7 @@
         <Btn
             wide
             bulky
-            @click="getPoolInf()"
-            :disabled="liquidityTokenBalance === null || liquidityTokenBalance === '0.0'"
+            @click="redeemLiquidityCall()"
         >
             reedem liquidity
         </Btn>
@@ -164,9 +166,10 @@ const {
     liquidityTokenBalance,
     waitingBidAsk,
     bidAskFormat,
-    avgPrice,
     addLiquidity,
     waitingForAdding,
+    resetPool,
+    redeemLiquidity,
 } = usePools(stepStore.routerAddress)
 
 const state = reactive({
@@ -185,8 +188,11 @@ function getPoolInf() {
 function setRedeemProc(proc) {
     state.redeemProcent = proc
 }
+function redeemLiquidityCall() {
+    redeemLiquidity(state.redeemProcent, stepStore.connectedWallet.provider)
+}
 const poolShare = computed(() => {
-    return liquidityTokenBalance && lpTotalSupply
+    return liquidityTokenBalance.value && lpTotalSupply.value
         ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
         : null
 })
@@ -325,14 +331,17 @@ const ABAmounts = computed({
 watch(
     ABTokens,
     (newValue, oldValue) => {
+        if (oldValue?.every((el) => el !== null) && newValue.some((el) => el === null)) {
+            resetPool()
+        }
         newValue.forEach((el, index) => {
-            if (!el) {
-                if (index === 0) {
-                    state.amountA = null
-                } else {
-                    state.amountB = null
-                }
-            }
+            // if (!el) {
+            //     if (index === 0) {
+            //         state.amountA = null
+            //     } else {
+            //         state.amountB = null
+            //     }
+            // }
         })
     },
     {

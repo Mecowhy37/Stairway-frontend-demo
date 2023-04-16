@@ -134,7 +134,7 @@ watch(
         // getBalance(newValue[0])
 
         // for each null token - the balance
-        ABTokens.value.forEach((el, index) => {
+        newValue.forEach((el, index) => {
             if (!el) {
                 if (index === 0) {
                     state.balanceA = null
@@ -144,7 +144,7 @@ watch(
             }
         })
         // if one token is null
-        if (ABTokens.value.every((el) => el !== null) && state.tokenToSellIndex === 1) {
+        if (newValue.every((el) => el !== null) && state.tokenToSellIndex === 1) {
             // switchedTokens.value = switchedTokens.value.reverse()
         }
         // if (!ABTokens.value.every((el) => el !== null)) {
