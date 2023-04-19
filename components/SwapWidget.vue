@@ -1,10 +1,8 @@
 <template>
     <div class="widget">
-        <!-- bid: {{ bidAskFormat !== null && bidAskFormat[0] }}
-        <br />
-        ask: {{ bidAskFormat !== null && bidAskFormat[1] }}
-        <br />
-        {{ avgPrice !== null && avgPrice }} -->
+        {{ bidAskFormat[0] }}
+        {{ bidAskFormat[1] }}
+        <!-- {{ state.tokenToSellIndex }} -->
         <div
             v-for="(i, x) in new Array(2)"
             class="window"
@@ -70,8 +68,8 @@
             @click="swap()"
             wide
             bulky
-            :disabled="!stepStore.bothSwapTokensThere"
         >
+            <!-- :disabled="!stepStore.bothSwapTokensThere" -->
             swap
         </Btn>
         <!-- <div class="slippage">
@@ -97,13 +95,16 @@ import { getToken, useBalances, usePools } from "~/helpers/index"
 import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 
+import * as Router from "../ABIs/DEX.json"
+const RouterABI = Router.default
+
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 const tempStore = useTempStore()
 
 const { swapTokens } = storeToRefs(stepStore)
-const { bidAsk, getBidAsk, bidAskFormat, avgPrice } = usePools(stepStore.routerAddress)
+const { bidAsk, getBidAsk, bidAskFormat, baseTokenAddress, resetPool } = usePools(stepStore.routerAddress)
 
 const state = reactive({
     balanceA: null,
@@ -161,7 +162,7 @@ watch(
         if (newValue[0] && newValue[1]) {
             await getBidAsk(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
         } else {
-            bidAsk.value = null
+            resetPool()
         }
     },
     {
@@ -226,42 +227,33 @@ function setToken(token) {
 }
 async function swap() {
     try {
-        const provider = new ethers.providers.Web3Provider(stepStore.connectedWallet.provider)
-        const factory = new ethers.Contract(stepStore.routerAddress, FactoryABI, provider)
+        const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+        const router = new ethers.Contract(stepStore.routerAddress, RouterABI, provider)
 
-        //find a pool
-        const poolAddress = await factory.getPair(swapTokens.value[0].address, swapTokens.value[1].address)
+        const baseTokenIndex = switchedTokens.value.indexOf(
+            switchedTokens.value.find((el) => el.address === baseTokenAddress.value)
+        )
+        const qouteTokenAddress = ABTokens.value.find((el) => el.address !== baseTokenAddress.value).address
+        const poolAction = baseTokenIndex === 0 ? "sell" : "buy"
 
-        const poolContract = new ethers.Contract(poolAddress, PoolABI, provider.getSigner())
+        const price = switchedTokens.value[0] === ABTokens.value[0] ? bidAsk.value[0] : bidAsk.value[1]
+        // console.log("price:", price)
+        console.log("baseTokenIndex:", baseTokenIndex)
+        console.log("tokenToSellIndex", state.tokenToSellIndex)
+        // const sellToken = new ethers.Contract(switchedTokens.value[0], TokenABI, provider.getSigner())
+        // await sellToken.approve(stepStore.routerAddress, state.sellAmount)
 
-        const sellToken = new ethers.Contract(tokenToSell.value.address, TokenABI, provider.getSigner())
-
-        const approveAmount = ethers.utils.parseEther(state.sellAmount)
-
-        //??
-        const approvalResponse = await sellToken.approve(tempStore.poolAddress, approveAmount)
-
-        // const allow = await sellToken.allowance(this.stepStore.activeWallet, this.tempStore.poolAddress)
-        // console.log("allowance", ethers.utils.formatEther(allow._hex))
-
-        const poolAction = tokenToSell.value === token0.value ? "sellToken0" : "buyToken0"
+        // buy(baseToken, qouteToken, desiredAmount, maxPrice, deadline)
+        // sell(baseToken, qouteToken, desiredAmount, minPrice, deadline)
 
         //for 1x token0 how much token0 do you get
-        // const price = this.tokenToSell === this.token0 ? this.bidAsk[0] : String(1 / Number(this.bidAsk[1]))
-        const price = tokenToSell.value === token0.value ? bidAsk.value[0] : bidAsk.value[1]
-        const formatedPrice = ethers.utils.parseEther(price)
 
-        const token0Amount = tokenToSell.value === token0.value ? sellAmount.value : buyAmount.value
-        const formatedToken0Amount = ethers.utils.parseEther(token0Amount)
+        // const price = tokenToSell.value === token0.value ? bidAsk.value[0] : bidAsk.value[1]
 
-        console.log(" - swap - pool action: ", poolAction)
-        console.log(" - swap - amount: ", token0Amount)
-        console.log(" - swap - price - : ", price)
-        // return
-        await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
-            console.log(" - swap -  SUCCESSFUL SWAP -")
-            console.log(res)
-        })
+        // await poolContract[poolAction](formatedToken0Amount, formatedPrice).then((res) => {
+        //     console.log(" - swap -  SUCCESSFUL SWAP -")
+        //     console.log(res)
+        // })
     } catch (err) {
         console.log(" - swap - could swap")
         console.log(err)

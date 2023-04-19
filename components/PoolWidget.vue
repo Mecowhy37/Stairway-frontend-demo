@@ -1,5 +1,6 @@
 <template>
     <div class="widget white-box">
+        <!-- {{ bidAskFormat }} -->
         <div
             class="contents"
             v-for="(i, x) in new Array(2)"
@@ -61,7 +62,7 @@
         <div class="buttons">
             <Btn
                 v-if="bidAsk === null"
-                @click="createPair()"
+                @click="callAddLiquidity()"
                 wide
                 bulky
                 :loading="waitingForAdding"
@@ -196,28 +197,13 @@ const poolShare = computed(() => {
         ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
         : null
 })
-
-function createPair() {
-    // console.log(...stepStore.bothPoolTokenAddresses)
-    // console.log(...ABAmounts.value)
+function callAddLiquidity() {
     addLiquidity(...stepStore.bothPoolTokenAddresses, ...ABAmounts.value, stepStore.connectedWallet.provider).then(
         () => {
             state.amountA = ""
             state.amountB = ""
         }
     )
-}
-function callAddLiquidity() {
-    const tokens = [...stepStore.bothPoolTokenAddresses]
-    const orderedTokens = Boolean(baseTokenIndex.value) ? tokens.reverse() : tokens
-
-    const amounts = [...ABAmounts.value]
-    const orderedAmounts = Boolean(baseTokenIndex.value) ? amounts.reverse() : amounts
-
-    addLiquidity(...orderedTokens, ...orderedAmounts, stepStore.connectedWallet.provider).then(() => {
-        state.amountA = ""
-        state.amountB = ""
-    })
 }
 
 watch(

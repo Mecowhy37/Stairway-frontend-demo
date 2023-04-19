@@ -103,10 +103,14 @@ export function usePools(routerAddress) {
                 resetPool()
 
                 if (err.reason === "DEX__PoolNotFound()") {
-                    console.log("not found")
+                    console.log("not found", err)
                     return null
                 }
             })
+        const factoryAddress = await router.factory()
+        const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
+        const allPools = await factory.getAllPools()
+        console.log("allPools:", allPools)
     }
 
     async function getPoolInfo(addressA, addressB, providerArg) {
@@ -121,7 +125,9 @@ export function usePools(routerAddress) {
         const pool = new ethers.Contract(poolAddress, PoolABI, provider)
 
         const thisAmount = ethers.formatEther(await pool.thisRegisteredBalance())
+        console.log("thisAmount:", thisAmount)
         const thatAmount = ethers.formatEther(await pool.thatRegisteredBalance())
+        console.log("thatAmount:", thatAmount)
 
         thisReserve.value = Number(thisAmount)
         thatReserve.value = Number(thatAmount)
@@ -203,9 +209,6 @@ export function usePools(routerAddress) {
     }
 
     async function redeemLiquidity(redeemProcent, providerArg) {
-        // address, amount, deadline
-        // approve amount
-        console.log(lpTokenAddress.value, liquidityTokenBalance.value)
         if (lpTokenAddress.value && liquidityTokenBalance.value) {
             const provider = new ethers.BrowserProvider(providerArg)
             const signer = await provider.getSigner()
