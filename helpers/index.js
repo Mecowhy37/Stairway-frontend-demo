@@ -110,7 +110,7 @@ export function usePools(routerAddress) {
         const factoryAddress = await router.factory()
         const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
         const allPools = await factory.getAllPools()
-        console.log("allPools:", allPools)
+        // console.log("allPools:", allPools)
     }
 
     async function getPoolInfo(addressA, addressB, providerArg) {
@@ -121,13 +121,12 @@ export function usePools(routerAddress) {
         const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
 
         const poolAddress = await factory.getPool(addressA, addressB)
-        // try {
         const pool = new ethers.Contract(poolAddress, PoolABI, provider)
 
         const thisAmount = ethers.formatEther(await pool.thisRegisteredBalance())
-        console.log("thisAmount:", thisAmount)
+        // console.log("thisAmount:", thisAmount)
         const thatAmount = ethers.formatEther(await pool.thatRegisteredBalance())
-        console.log("thatAmount:", thatAmount)
+        // console.log("thatAmount:", thatAmount)
 
         thisReserve.value = Number(thisAmount)
         thatReserve.value = Number(thatAmount)
@@ -145,9 +144,6 @@ export function usePools(routerAddress) {
         liquidityTokenBalance.value = bal
 
         lpTotalSupply.value = await getTotalSupply(lpToken)
-        // } catch (err) {
-        //     throw new Error("poolInfo failed")
-        // }
     }
 
     async function addLiquidity(addressA, addressB, amountA, amountB, providerArg) {
@@ -197,6 +193,18 @@ export function usePools(routerAddress) {
                 return null
             })
     }
+
+    async function checkAllowance(tokenAddress, owner, spender, providerArg) {
+        try {
+            const provider = new ethers.BrowserProvider(providerArg)
+            const token = new ethers.Contract(tokenAddress, TokenABI, provider)
+            const allowance = await token.allowance(owner, spender)
+            return allowance
+        } catch (err) {
+            return err
+        }
+    }
+
     function resetPool() {
         bidAsk.value = null
         baseTokenAddress.value = null
@@ -250,6 +258,7 @@ export function usePools(routerAddress) {
         poolRatio,
         getPoolInfo,
         getBidAsk,
+        checkAllowance,
         lpTotalSupply,
         liquidityTokenBalance,
         redeemLiquidity,

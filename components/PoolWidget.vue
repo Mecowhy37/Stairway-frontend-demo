@@ -1,6 +1,6 @@
 <template>
     <div class="widget white-box">
-        <!-- {{ bidAskFormat }} -->
+        {{ ABAllowance }}
         <div
             class="contents"
             v-for="(i, x) in new Array(2)"
@@ -60,6 +60,25 @@
             <p>please insert both amount to set pool starting ratio</p>
         </div> -->
         <div class="buttons">
+            <!-- <div
+                v-if="stepStore.bothPoolTokensThere"
+                class="contents"
+            >
+                <Btn
+                    wide
+                    secondary
+                    bulky
+                >
+                    Approve {{ ABTokens[0].symbol }}
+                </Btn>
+                <Btn
+                    wide
+                    secondary
+                    bulky
+                >
+                    Approve {{ ABTokens[1].symbol }}
+                </Btn>
+            </div> -->
             <Btn
                 v-if="bidAsk === null"
                 @click="callAddLiquidity()"
@@ -81,13 +100,20 @@
             >
                 {{ waitingForAdding ? "waiting for pool" : "add liquidity" }}
             </Btn>
-            <Btn
+            <!-- <Btn
                 wide
                 bulky
                 @click="getPoolInf()"
             >
                 check pool
             </Btn>
+            <Btn
+                wide
+                bulky
+                @click="checkAllow()"
+            >
+                check allowance
+            </Btn> -->
         </div>
     </div>
     <div
@@ -151,6 +177,9 @@ import { getToken, useBalances, usePools } from "~/helpers/index"
 import * as Factory from "../ABIs/Factory.json"
 const FactoryABI = Factory.default
 
+import * as Token from "../ABIs/ERC20.json"
+const TokenABI = Token.default
+
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
@@ -163,6 +192,7 @@ const {
     thatReserve,
     getBidAsk,
     getPoolInfo,
+    checkAllowance,
     lpTotalSupply,
     liquidityTokenBalance,
     waitingBidAsk,
@@ -176,27 +206,52 @@ const {
 const state = reactive({
     amountA: "",
     amountB: "",
+    approvalA: null,
+    approvalB: null,
     balanceA: null,
     balanceB: null,
     selectTokenIndex: 0,
     lastChangedToken: 0,
     redeemProcent: 50,
 })
+//modal stuff----------
+const toggleTokenModal = inject("modal")
+function openTokenSelectModal(index) {
+    toggleTokenModal(ABTokens.value, setToken)
+    state.selectTokenIndex = index
+}
+async function setToken(token) {
+    ABTokens.value = ABTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
+    if (token !== null) {
+        const allowance = BigInt(await getApprovedAmount(token.address))
+        ABAllowance.value = ABAllowance.value.map((el, index) => (index === state.selectTokenIndex ? allowance : el))
+    }
+}
+//----------------------
+
+async function getApprovedAmount(address) {
+    const allowance = await checkAllowance(
+        address,
+        stepStore.connectedAccount,
+        stepStore.routerAddress,
+        stepStore.connectedWallet.provider
+    ).catch((err) => {
+        console.log("finshed executing apporval getter with error")
+        retrurn
+    })
+    console.log("the allowance is", ABAllowance.value)
+    return allowance
+}
+
 function getPoolInf() {
     getPoolInfo(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
 }
-
 function setRedeemProc(proc) {
     state.redeemProcent = proc
 }
 function redeemLiquidityCall() {
     redeemLiquidity(state.redeemProcent, stepStore.connectedWallet.provider)
 }
-const poolShare = computed(() => {
-    return liquidityTokenBalance.value && lpTotalSupply.value
-        ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
-        : null
-})
 function callAddLiquidity() {
     addLiquidity(...stepStore.bothPoolTokenAddresses, ...ABAmounts.value, stepStore.connectedWallet.provider).then(
         () => {
@@ -205,28 +260,6 @@ function callAddLiquidity() {
         }
     )
 }
-
-watch(
-    () => [stepStore.bothPoolTokensThere, stepStore.connectedWallet],
-    async (newValue) => {
-        if (newValue[0] && newValue[1]) {
-            await getBidAsk(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-        } else {
-            bidAsk.value = null
-            baseTokenAddress.value = null
-            poolRatio.value = null
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-// watch(waitingForAdding, (newValue) => {
-//     if (newValue) {
-//         ABAmounts.value = ["", ""]
-//     }
-// })
-
 async function getSigner() {
     const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
     const signer = await provider.getSigner()
@@ -253,21 +286,16 @@ async function getSigner() {
     })
     console.log(transactionHash)
 }
-
-const toggleTokenModal = inject("modal")
-function openTokenSelectModal(index) {
-    toggleTokenModal(ABTokens.value, setToken)
-    state.selectTokenIndex = index
-}
-
-function setToken(token) {
-    ABTokens.value = ABTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
-}
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
     ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
 
+const poolShare = computed(() => {
+    return liquidityTokenBalance.value && lpTotalSupply.value
+        ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
+        : null
+})
 const ABTokens = computed({
     get() {
         return [poolTokens.value.A, poolTokens.value.B]
@@ -275,6 +303,15 @@ const ABTokens = computed({
     set(newValue) {
         poolTokens.value.A = newValue[0]
         poolTokens.value.B = newValue[1]
+    },
+})
+const ABAllowance = computed({
+    get() {
+        return [state.approvalA, state.approvalB]
+    },
+    set(newValue) {
+        state.approvalA = newValue[0]
+        state.approvalA = newValue[1]
     },
 })
 const ABAmounts = computed({
@@ -314,8 +351,38 @@ const ABAmounts = computed({
         state.amountB = newValue[1]
     },
 })
+const bothAmountsIn = computed(() => {
+    return ABAmounts.value.every((el) => el !== "")
+})
+const balances = computed(() => {
+    return [state.balanceA, state.balanceB]
+})
+const baseTokenIndex = computed(() => {
+    return bidAsk.value && ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
+})
+const canCreatePool = computed(() => {
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && bidAsk.value === null
+})
+const canAddLiquidity = computed(() => {
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && bidAsk.value !== null
+})
+
 watch(
-    ABTokens,
+    () => [stepStore.bothPoolTokensThere, stepStore.connectedWallet],
+    (newValue) => {
+        if (newValue[0] && newValue[1]) {
+            getBidAsk(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+        } else {
+            resetPool()
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+watch(
+    () => [ABTokens, stepStore.connectedWallet],
     (newValue, oldValue) => {
         if (oldValue?.every((el) => el !== null) && newValue.some((el) => el === null)) {
             resetPool()
@@ -334,21 +401,6 @@ watch(
         immediate: true,
     }
 )
-const bothAmountsIn = computed(() => {
-    return ABAmounts.value.every((el) => el !== "")
-})
-const balances = computed(() => {
-    return [state.balanceA, state.balanceB]
-})
-const baseTokenIndex = computed(() => {
-    return bidAsk.value && ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
-})
-const canCreatePool = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && bidAsk.value === null
-})
-const canAddLiquidity = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && bidAsk.value !== null
-})
 </script>
 
 <style lang="scss" scoped>

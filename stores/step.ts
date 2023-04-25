@@ -120,35 +120,21 @@ export const useStepStore = defineStore("step", (): any => {
         return [swapTokens.A, swapTokens.B]
     })
 
-    const bothSwapTokensThere = computed(() => {
-        if (!swapTokensCmp.value.some(el => el === null)) {
-            return true
-        }
-        return false
-    })
-    const bothPoolTokensThere = computed(() => {
-        if (!poolTokensCmp.value.some(el => el === null)) {
-            return true
-        }
-        return false
-    })
+    const bothSwapTokensThere = computed(() => !swapTokensCmp.value.some(el => el === null) ? true : false)
+    const bothPoolTokensThere = computed(() => !poolTokensCmp.value.some(el => el === null) ? true : false)
 
 
-    const bothSwapTokenAddresses = computed(() => {
-        return bothSwapTokensThere.value ? swapTokensCmp.value.map(el => el.address) : null
-    })
-    const bothPoolTokenAddresses = computed(() => {
-        return bothPoolTokensThere.value ? poolTokensCmp.value.map(el => el.address) : null
-    })
+    const bothSwapTokenAddresses = computed(() => bothSwapTokensThere.value ? swapTokensCmp.value.map(el => el.address) : null)
+    const bothPoolTokenAddresses = computed(() => bothPoolTokensThere.value ? poolTokensCmp.value.map(el => el.address) : null)
     
 
 
-    const { updateBalance } = useBalances()
-    const { getBidAsk } = usePools(routerAddress)
+    // const { updateBalance } = useBalances()
+    // const { getBidAsk } = usePools(routerAddress)
 
-    watch(allTokens, (newValue, oldValue) => {
-        updateBalance(newValue, oldValue)
-    })
+    // watch(allTokens, (newValue, oldValue) => {
+    //     updateBalance(newValue, oldValue)
+    // })
 
 
     // const swapAddress = ref(null)
