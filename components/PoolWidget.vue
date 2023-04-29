@@ -1,6 +1,32 @@
 <template>
     <div class="widget white-box">
-        {{ ABAllowance }}
+        <div class="top-bar row">
+            {{ ABAllowance }}
+            <Dropdown>
+                <template #dropdown-activator="{ on }">
+                    <Btn
+                        transparent
+                        compact
+                    >
+                        <template #icon>
+                            <h3>
+                                <mdicon
+                                    name="cog"
+                                    size="30"
+                                />
+                            </h3>
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown>
+                    <Settings
+                        ref="settings"
+                        :default-slippage="0.1"
+                        :default-deadline="30"
+                    ></Settings>
+                </template>
+            </Dropdown>
+        </div>
         <div
             class="contents"
             v-for="(i, x) in new Array(2)"
@@ -229,6 +255,10 @@ async function setToken(token) {
 }
 //----------------------
 
+//settings--------------
+const settings = ref()
+//----------------------
+
 async function getApprovedAmount(address) {
     const allowance = await checkAllowance(
         address,
@@ -253,12 +283,17 @@ function redeemLiquidityCall() {
     redeemLiquidity(state.redeemProcent, stepStore.connectedWallet.provider)
 }
 function callAddLiquidity() {
-    addLiquidity(...stepStore.bothPoolTokenAddresses, ...ABAmounts.value, stepStore.connectedWallet.provider).then(
-        () => {
-            state.amountA = ""
-            state.amountB = ""
-        }
+    addLiquidity(
+        ...stepStore.bothPoolTokenAddresses,
+        ...ABAmounts.value,
+        settings.value.slippage,
+        settings.value.deadline,
+        stepStore.connectedWallet.provider
     )
+    // .then(() => {
+    //     state.amountA = ""
+    //     state.amountB = ""
+    // })
 }
 async function getSigner() {
     const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
@@ -408,6 +443,10 @@ watch(
     margin-top: 2rem;
     width: 500px;
     transition: background-color var(--transition);
+    .top-bar {
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
     .window {
         display: flex;
         align-items: center;

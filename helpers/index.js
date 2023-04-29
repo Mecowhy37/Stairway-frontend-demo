@@ -19,7 +19,7 @@ import * as Pool from "../ABIs/Pool.json"
 const PoolABI = Pool.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
-const routerAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+const routerAddress = "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318"
 
 export function getToken(symb) {
     return TokenList.find((el) => el.symbol === symb)
@@ -110,7 +110,7 @@ export function usePools(routerAddress) {
         const factoryAddress = await router.factory()
         const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
         const allPools = await factory.getAllPools()
-        // console.log("allPools:", allPools)
+        console.log("allPools:", allPools)
     }
 
     async function getPoolInfo(addressA, addressB, providerArg) {
@@ -146,7 +146,7 @@ export function usePools(routerAddress) {
         lpTotalSupply.value = await getTotalSupply(lpToken)
     }
 
-    async function addLiquidity(addressA, addressB, amountA, amountB, providerArg) {
+    async function addLiquidity(addressA, addressB, amountA, amountB, slippage, deadline, providerArg) {
         const provider = new ethers.BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new ethers.Contract(routerAddress, RouterABI, signer)
@@ -157,41 +157,41 @@ export function usePools(routerAddress) {
 
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadline = blockTimestamp + 360
-        const approve1 = await approveSpending(addressA, parsedAmountA, signer)
-        const approve2 = await approveSpending(addressB, parsedAmountB, signer)
-        Promise.all([approve1, approve2]).catch((err) => {
-            console.log(err)
-        })
+        // const approve1 = await approveSpending(addressA, parsedAmountA, signer)
+        // const approve2 = await approveSpending(addressB, parsedAmountB, signer)
+        // Promise.all([approve1, approve2]).catch((err) => {
+        //     console.log(err)
+        // })
 
-        await router
-            .addLiquidity(addressA, addressB, parsedAmountA, parsedAmountB, deadline)
-            .then(async (res) => {
-                // console.log("res", res)
-                waitingForAdding.value = true
-                getBidAsk(addressA, addressB, providerArg).then(() => {
-                    if (bidAsk.value === null) {
-                        interval.value = setInterval(() => {
-                            if (bidAsk.value === null) {
-                                iterations.value++
-                                getBidAsk(addressA, addressB, providerArg, true)
-                            } else {
-                                waitingForAdding.value = false
-                                clearInterval(interval.value)
-                                console.log("pool is found after " + iterations.value / 2 + " seconds")
-                            }
-                        }, 500)
-                    } else {
-                        console.log("immediately")
-                        waitingForAdding.value = false
-                    }
-                })
-            })
-            .catch((err) => {
-                console.log(" - pool - couldnt create pool - ")
-                waitingForAdding.value = false
-                console.log(err)
-                return null
-            })
+        // await router
+        //     .addLiquidity(addressA, addressB, parsedAmountA, parsedAmountB, deadline)
+        //     .then(async (res) => {
+        //         // console.log("res", res)
+        //         waitingForAdding.value = true
+        //         getBidAsk(addressA, addressB, providerArg).then(() => {
+        //             if (bidAsk.value === null) {
+        //                 interval.value = setInterval(() => {
+        //                     if (bidAsk.value === null) {
+        //                         iterations.value++
+        //                         getBidAsk(addressA, addressB, providerArg, true)
+        //                     } else {
+        //                         waitingForAdding.value = false
+        //                         clearInterval(interval.value)
+        //                         console.log("pool is found after " + iterations.value / 2 + " seconds")
+        //                     }
+        //                 }, 500)
+        //             } else {
+        //                 console.log("immediately")
+        //                 waitingForAdding.value = false
+        //             }
+        //         })
+        //     })
+        //     .catch((err) => {
+        //         console.log(" - pool - couldnt create pool - ")
+        //         waitingForAdding.value = false
+        //         console.log(err)
+        //         return null
+        //     })
     }
 
     async function checkAllowance(tokenAddress, owner, spender, providerArg) {

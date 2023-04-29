@@ -13,6 +13,7 @@
                 'btn--bulky': props.bulky,
                 'btn--pill': props.pill,
                 'btn--unclickable': props.loading,
+                'btn--compact': props.compact,
             },
         ]"
     >
@@ -23,8 +24,11 @@
         >
             <slot name="default"></slot>
         </component>
-        <div v-if="slots.icon">
-            <slot name="icon"> </slot>
+        <div
+            v-if="slots.icon"
+            id="icon-slot"
+        >
+            <slot name="icon"></slot>
         </div>
         <span
             v-if="props.loading"
@@ -49,6 +53,7 @@ const props = defineProps({
     pill: Boolean,
     disabled: Boolean,
     loading: Boolean,
+    compact: Boolean,
 })
 const emits = defineEmits([])
 const slots = useSlots()
@@ -87,6 +92,7 @@ $horiz-padd: 1rem;
             margin-right: 0.5rem;
         }
     }
+
     &--plain {
         background-color: var(--flat-bg);
         * {
@@ -108,6 +114,11 @@ $horiz-padd: 1rem;
     }
     &--transparent {
         background-color: transparent;
+        #icon-slot {
+            & * {
+                color: var(--main-color);
+            }
+        }
     }
     &--wide {
         width: 100%;
@@ -122,6 +133,9 @@ $horiz-padd: 1rem;
     }
     &--unclickable {
         pointer-events: none;
+    }
+    &--compact {
+        padding: 0;
     }
 }
 

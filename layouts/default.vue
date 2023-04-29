@@ -88,7 +88,6 @@ p {
 
 .row {
     display: flex;
-    flex-direction: row;
 }
 
 .centerize {

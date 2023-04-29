@@ -3,6 +3,32 @@
         {{ bidAskFormat[0] }}
         {{ bidAskFormat[1] }}
         <!-- {{ state.tokenToSellIndex }} -->
+        <div class="top-bar row">
+            {{ ABAllowance }}
+            <Dropdown>
+                <template #dropdown-activator="{ on }">
+                    <Btn
+                        transparent
+                        compact
+                    >
+                        <template #icon>
+                            <h3>
+                                <mdicon
+                                    name="cog"
+                                    size="30"
+                                />
+                            </h3>
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown>
+                    <Settings
+                        :default-slippage="0.1"
+                        :default-deadline="30"
+                    ></Settings>
+                </template>
+            </Dropdown>
+        </div>
         <div
             v-for="(i, x) in new Array(2)"
             class="window"
@@ -366,12 +392,16 @@ $secodary: #ffd5c9;
     border-radius: var(--outer-wdg-radius);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
     padding: 0.5rem;
-    padding-top: 3rem;
+    /* padding-top: 3rem; */
     /* box-shadow: rgba(0, 0, 0, 0.05) 0px 13px 35px -5px, rgba(0, 0, 0, 0.15) 0px 8px 22px -8px; */
     /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
     /* padding: 0.6rem; */
     /* padding-top: 6rem; */
 
+    .top-bar {
+        flex-direction: row-reverse;
+        margin-bottom: 0.5rem;
+    }
     .window {
         background-color: var(--swap-windows);
         transition: background-color var(--transition);
@@ -427,7 +457,7 @@ $secodary: #ffd5c9;
             }
         }
 
-        &:nth-of-type(2) {
+        &:nth-of-type(3) {
             margin-top: 0.5rem;
         }
         & + button {
