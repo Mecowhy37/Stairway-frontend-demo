@@ -27,6 +27,7 @@
         <div
             v-if="slots.icon"
             id="icon-slot"
+            :class="{ 'icon-contrast': props.iconContrast }"
         >
             <slot name="icon"></slot>
         </div>
@@ -54,6 +55,7 @@ const props = defineProps({
     disabled: Boolean,
     loading: Boolean,
     compact: Boolean,
+    iconContrast: Boolean,
 })
 const emits = defineEmits([])
 const slots = useSlots()
@@ -114,7 +116,7 @@ $horiz-padd: 1rem;
     }
     &--transparent {
         background-color: transparent;
-        #icon-slot {
+        #icon-slot.icon-contrast {
             & * {
                 color: var(--main-color);
             }

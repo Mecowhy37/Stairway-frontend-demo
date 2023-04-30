@@ -1,11 +1,12 @@
 <template>
     <div class="widget white-box">
         <div class="top-bar row">
-            {{ ABAllowance }}
+            {{ String(ABAllowance) }}
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn
                         transparent
+                        icon-contrast
                         compact
                     >
                         <template #icon>
@@ -21,7 +22,7 @@
                 <template #dropdown>
                     <Settings
                         ref="settings"
-                        :default-slippage="0.1"
+                        :default-slippage="0.5"
                         :default-deadline="30"
                     ></Settings>
                 </template>
@@ -126,20 +127,13 @@
             >
                 {{ waitingForAdding ? "waiting for pool" : "add liquidity" }}
             </Btn>
-            <!-- <Btn
+            <Btn
                 wide
                 bulky
                 @click="getPoolInf()"
             >
                 check pool
             </Btn>
-            <Btn
-                wide
-                bulky
-                @click="checkAllow()"
-            >
-                check allowance
-            </Btn> -->
         </div>
     </div>
     <div
@@ -232,8 +226,8 @@ const {
 const state = reactive({
     amountA: "",
     amountB: "",
-    approvalA: null,
-    approvalB: null,
+    approvalA: "",
+    approvalB: "",
     balanceA: null,
     balanceB: null,
     selectTokenIndex: 0,
@@ -248,30 +242,12 @@ function openTokenSelectModal(index) {
 }
 async function setToken(token) {
     ABTokens.value = ABTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
-    if (token !== null) {
-        const allowance = BigInt(await getApprovedAmount(token.address))
-        ABAllowance.value = ABAllowance.value.map((el, index) => (index === state.selectTokenIndex ? allowance : el))
-    }
 }
 //----------------------
 
 //settings--------------
 const settings = ref()
 //----------------------
-
-async function getApprovedAmount(address) {
-    const allowance = await checkAllowance(
-        address,
-        stepStore.connectedAccount,
-        stepStore.routerAddress,
-        stepStore.connectedWallet.provider
-    ).catch((err) => {
-        console.log("finshed executing apporval getter with error")
-        retrurn
-    })
-    console.log("the allowance is", ABAllowance.value)
-    return allowance
-}
 
 function getPoolInf() {
     getPoolInfo(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
@@ -288,6 +264,7 @@ function callAddLiquidity() {
         ...ABAmounts.value,
         settings.value.slippage,
         settings.value.deadline,
+        stepStore.connectedAccount,
         stepStore.connectedWallet.provider
     )
     // .then(() => {
@@ -346,7 +323,7 @@ const ABAllowance = computed({
     },
     set(newValue) {
         state.approvalA = newValue[0]
-        state.approvalA = newValue[1]
+        state.approvalB = newValue[1]
     },
 })
 const ABAmounts = computed({
@@ -417,25 +394,56 @@ watch(
 )
 
 watch(
-    () => [ABTokens, stepStore.connectedWallet],
+    () => [ABTokens.value, stepStore.connectedWallet],
     (newValue, oldValue) => {
-        if (oldValue?.every((el) => el !== null) && newValue.some((el) => el === null)) {
+        const newTokens = newValue?.at(0)
+        const oldTokens = oldValue?.at(0)
+        if (oldTokens?.every((el) => el !== null) && newTokens?.some((el) => el === null)) {
             resetPool()
         }
-        newValue.forEach((el, index) => {
-            // if (!el) {
-            //     if (index === 0) {
-            //         state.amountA = null
-            //     } else {
-            //         state.amountB = null
-            //     }
-            // }
-        })
+        // const newToken = newTokens.filter((el) => (!oldTokens?.includes(el) ? true : false))
+        const newToken = newTokens
+
+        if (newValue?.at(1) !== null) {
+            // console.log(newToken)
+            newToken.forEach(async (el1) => {
+                const allowance = el1 !== null ? BigInt(await getApprovedAmount(el1.address)) : ""
+                ABAllowance.value = ABAllowance.value.map((el2, index) =>
+                    index === newTokens?.indexOf(el1) ? allowance : el2
+                )
+                // console.log("ABAllowance.value:", ABAllowance.value)
+            })
+        } else {
+            ABAllowance.value = ["", ""]
+        }
+        // }
+        // newValue.forEach((el, index) => {
+        // if (!el) {
+        //     if (index === 0) {
+        //         state.amountA = null
+        //     } else {
+        //         state.amountB = null
+        //     }
+        // }
+        // })
     },
     {
         immediate: true,
     }
 )
+
+async function getApprovedAmount(address) {
+    const allowance = await checkAllowance(
+        address,
+        stepStore.connectedAccount,
+        stepStore.routerAddress,
+        stepStore.connectedWallet.provider
+    ).catch((err) => {
+        console.log("finshed executing apporval getter with error")
+        retrurn
+    })
+    return allowance
+}
 </script>
 
 <style lang="scss" scoped>

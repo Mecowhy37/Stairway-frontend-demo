@@ -9,6 +9,7 @@
                 <template #dropdown-activator="{ on }">
                     <Btn
                         transparent
+                        icon-contrast
                         compact
                     >
                         <template #icon>

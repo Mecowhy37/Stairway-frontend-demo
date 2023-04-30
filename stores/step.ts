@@ -33,7 +33,7 @@ export const useStepStore = defineStore("step", (): any => {
     
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
-    const routerAddress = "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318"
+    const routerAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
     const unhandled = "0x0000000000000000000000000000000000000000"
 
     const injected = injectedModule()
