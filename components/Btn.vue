@@ -107,6 +107,10 @@ $horiz-padd: 1rem;
     &--secondary {
         background-color: transparent;
         border: 2px solid var(--primary-btn-bg);
+        &:hover {
+            border: 2px solid var(--primary-btn-bg);
+            background-color: rgba(67, 187, 112, 0.15);
+        }
         * {
             color: var(--primary-btn-bg);
         }

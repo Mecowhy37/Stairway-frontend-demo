@@ -97,7 +97,7 @@ export function usePools(routerAddress) {
                 return res
             })
             .catch((err) => {
-                console.log("err is here ", err)
+                // console.log("err is here ", err)
 
                 resetPool()
 
@@ -160,50 +160,45 @@ export function usePools(routerAddress) {
 
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
-        const approve1 = await approveSpending(addressA, parsedAmountA, signer)
-        const approve2 = await approveSpending(addressB, parsedAmountB, signer)
-        Promise.all([approve1, approve2]).catch((err) => {
-            console.log(err)
-        })
 
-        await router
-            .addLiquidity(
-                addressA,
-                addressB,
-                parsedMinAmountA,
-                parsedAmountA,
-                parsedMinAmountB,
-                parsedAmountB,
-                recipient,
-                deadlineStamp
-            )
-            .then(async (res) => {
-                // console.log("res", res)
-                waitingForAdding.value = true
-                getBidAsk(addressA, addressB, providerArg).then(() => {
-                    if (bidAsk.value === null) {
-                        interval.value = setInterval(() => {
-                            if (bidAsk.value === null) {
-                                iterations.value++
-                                getBidAsk(addressA, addressB, providerArg, true)
-                            } else {
-                                waitingForAdding.value = false
-                                clearInterval(interval.value)
-                                console.log("pool is found after " + iterations.value / 2 + " seconds")
-                            }
-                        }, 500)
-                    } else {
-                        console.log("immediately")
-                        waitingForAdding.value = false
-                    }
-                })
-            })
-            .catch((err) => {
-                console.log(" - pool - couldnt create pool - ")
-                waitingForAdding.value = false
-                console.log(err)
-                return null
-            })
+        // await router
+        // .addLiquidity(
+        //     addressA,
+        //     addressB,
+        //     parsedMinAmountA,
+        //     parsedAmountA,
+        //     parsedMinAmountB,
+        //     parsedAmountB,
+        //     recipient,
+        //     deadlineStamp
+        // )
+        // .then(async (res) => {
+        //     // console.log("res", res)
+        //     waitingForAdding.value = true
+        //     getBidAsk(addressA, addressB, providerArg).then(() => {
+        //         if (bidAsk.value === null) {
+        //             interval.value = setInterval(() => {
+        //                 if (bidAsk.value === null) {
+        //                     iterations.value++
+        //                     getBidAsk(addressA, addressB, providerArg, true)
+        //                 } else {
+        //                     waitingForAdding.value = false
+        //                     clearInterval(interval.value)
+        //                     console.log("pool is found after " + iterations.value / 2 + " seconds")
+        //                 }
+        //             }, 500)
+        //         } else {
+        //             console.log("immediately")
+        //             waitingForAdding.value = false
+        //         }
+        //     })
+        // })
+        // .catch((err) => {
+        //     console.log(" - pool - couldnt create pool - ")
+        //     waitingForAdding.value = false
+        //     console.log(err)
+        //     return null
+        // })
     }
 
     async function checkAllowance(tokenAddress, owner, spender, providerArg) {
@@ -257,9 +252,12 @@ export function usePools(routerAddress) {
         }
     }
 
-    async function approveSpending(tokenAddress, amount, signer) {
+    async function approveSpending(tokenAddress, signer) {
         const erc20 = new ethers.Contract(tokenAddress, TokenABI, signer)
-        return await erc20.approve(routerAddress, amount)
+        const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        const tx = await erc20.approve(routerAddress, maxUint)
+        const receipt = await tx.wait(1)
+        return
     }
 
     return {

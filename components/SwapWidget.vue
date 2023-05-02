@@ -4,7 +4,7 @@
         {{ bidAskFormat[1] }}
         <!-- {{ state.tokenToSellIndex }} -->
         <div class="top-bar row">
-            {{ ABAllowance }}
+            <!-- {{ ABAllowance }} -->
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn

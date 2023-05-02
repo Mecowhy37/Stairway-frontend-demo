@@ -1,7 +1,8 @@
 <template>
     <div class="widget white-box">
         <div class="top-bar row">
-            {{ String(ABAllowance) }}
+            {{ String(ABAllowance) }} <br />
+            {{ String(ABAmountsUint) }}
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn
@@ -87,25 +88,25 @@
             <p>please insert both amount to set pool starting ratio</p>
         </div> -->
         <div class="buttons">
-            <!-- <div
+            <div
                 v-if="stepStore.bothPoolTokensThere"
                 class="contents"
             >
-                <Btn
-                    wide
-                    secondary
-                    bulky
+                <div
+                    v-for="(token, index) in ABTokens"
+                    class="contents"
                 >
-                    Approve {{ ABTokens[0].symbol }}
-                </Btn>
-                <Btn
-                    wide
-                    secondary
-                    bulky
-                >
-                    Approve {{ ABTokens[1].symbol }}
-                </Btn>
-            </div> -->
+                    <Btn
+                        v-if="ABAllowance[index] < ABAmountsUint[index]"
+                        @click="callApproveSpending(token.address)"
+                        wide
+                        secondary
+                        bulky
+                    >
+                        Approve {{ token.symbol }}
+                    </Btn>
+                </div>
+            </div>
             <Btn
                 v-if="bidAsk === null"
                 @click="callAddLiquidity()"
@@ -115,6 +116,13 @@
                 :disabled="!canCreatePool || !bothAmountsIn"
             >
                 {{ waitingForAdding ? "waiting for pool" : "create pool" }}
+            </Btn>
+            <Btn
+                @click="printAllowance()"
+                wide
+                bulky
+            >
+                printAllowance()
             </Btn>
             <!-- @click="addLiquidity()" -->
             <Btn
@@ -205,6 +213,7 @@ const stepStore = useStepStore()
 
 const { poolTokens } = storeToRefs(stepStore)
 const {
+    approveSpending,
     bidAsk,
     baseTokenAddress,
     poolRatio,
@@ -271,6 +280,11 @@ function callAddLiquidity() {
     //     state.amountA = ""
     //     state.amountB = ""
     // })
+}
+async function callApproveSpending(address) {
+    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+    const signer = await provider.getSigner()
+    approveSpending(address, signer)
 }
 async function getSigner() {
     const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
@@ -363,6 +377,9 @@ const ABAmounts = computed({
         state.amountB = newValue[1]
     },
 })
+const ABAmountsUint = computed(() => {
+    return ABAmounts.value.map((el) => (el !== "" ? ethers.parseEther(el) : 0))
+})
 const bothAmountsIn = computed(() => {
     return ABAmounts.value.every((el) => el !== "")
 })
@@ -383,7 +400,7 @@ watch(
     () => [stepStore.bothPoolTokensThere, stepStore.connectedWallet],
     (newValue) => {
         if (newValue[0] && newValue[1]) {
-            getBidAsk(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            // getBidAsk(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
         } else {
             resetPool()
         }
@@ -398,21 +415,14 @@ watch(
     (newValue, oldValue) => {
         const newTokens = newValue?.at(0)
         const oldTokens = oldValue?.at(0)
+        const wallet = newValue.at(1)
         if (oldTokens?.every((el) => el !== null) && newTokens?.some((el) => el === null)) {
             resetPool()
         }
-        // const newToken = newTokens.filter((el) => (!oldTokens?.includes(el) ? true : false))
-        const newToken = newTokens
+        // const newTokensNotNull = newTokens.filter((el) => (!oldTokens?.includes(el) && el !== null ? true : false))
 
-        if (newValue?.at(1) !== null) {
-            // console.log(newToken)
-            newToken.forEach(async (el1) => {
-                const allowance = el1 !== null ? BigInt(await getApprovedAmount(el1.address)) : ""
-                ABAllowance.value = ABAllowance.value.map((el2, index) =>
-                    index === newTokens?.indexOf(el1) ? allowance : el2
-                )
-                // console.log("ABAllowance.value:", ABAllowance.value)
-            })
+        if (wallet !== null) {
+            getAllowances()
         } else {
             ABAllowance.value = ["", ""]
         }
@@ -431,6 +441,18 @@ watch(
         immediate: true,
     }
 )
+
+async function getAllowances() {
+    console.log("getting allowance")
+    ABTokens.value.forEach(async (el1, index1) => {
+        const allowance = el1 !== null ? BigInt(await getApprovedAmount(el1.address)) : BigInt(0n)
+        ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
+    })
+}
+function printAllowance() {
+    getAllowances()
+    console.log("ABAllowance:", ABAllowance.value)
+}
 
 async function getApprovedAmount(address) {
     const allowance = await checkAllowance(
