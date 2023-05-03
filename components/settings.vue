@@ -2,7 +2,7 @@
     <div class="settings">
         <h3>settings</h3>
         <div class="setting">
-            <p>slippage tolerance {{ state.slippage }}</p>
+            <p>slippage tolerance</p>
             <div class="row">
                 <Btn @click="resetSlippage">Auto</Btn>
                 <input
@@ -23,7 +23,7 @@
             </p>
         </div>
         <div class="setting">
-            <p>transaction deadline {{ state.deadline }}</p>
+            <p>transaction deadline</p>
             <div class="row">
                 <input
                     v-model="state.deadline"

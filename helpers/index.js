@@ -65,7 +65,8 @@ export function useBalances(providerArg) {
 }
 
 export function usePools(routerAddress) {
-    const bidAsk = ref(null)
+    const bidAsk = ref("")
+    const poolAddress = ref("")
     const baseTokenAddress = ref(null)
     const thisReserve = ref(null)
     const thatReserve = ref(null)
@@ -83,8 +84,36 @@ export function usePools(routerAddress) {
         return bidAsk.value !== null ? bidAsk.value.map((el) => ethers.formatEther(el)) : []
     })
 
+    async function findPool(addressA, addressB, providerArg) {
+        const provider = new ethers.BrowserProvider(providerArg)
+        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        const factoryAdd = await router.factory()
+        const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+        const poolAdd = await factory.getPool(addressA, addressB)
+        poolAddress.value = poolAdd
+        console.log("pool found")
+        return poolAdd
+    }
+
+    async function setupPool(tokens, providerArg) {
+        // bidAsk.value = null
+        // poolAddress.value = null
+        // baseTokenAddress.value = null
+        // thisReserve.value = null
+        // thatReserve.value = null
+        // poolRatio.value = null
+        // lpTokenAddress.value = null
+        // liquidityTokenBalance.value = null
+        // lpTotalSupply.value = null
+        console.log("hello form setup")
+        const provider = new ethers.BrowserProvider(providerArg)
+        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        const bidAskVar = await router.getBidAsk(...tokens)
+        bidAsk.value = bidAskVar
+        console.log("bidAskVar:", bidAskVar)
+    }
+
     async function getBidAsk(addressA, addressB, providerArg, continuous = false) {
-        console.log("looking for pool(bidAsk)...")
         const provider = new ethers.BrowserProvider(providerArg)
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
         await router
@@ -109,7 +138,7 @@ export function usePools(routerAddress) {
         const factoryAddress = await router.factory()
         const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
         const allPools = await factory.getAllPools()
-        console.log("allPools:", allPools)
+        // console.log("allPools:", allPools)
     }
 
     async function getPoolInfo(addressA, addressB, providerArg) {
@@ -119,8 +148,9 @@ export function usePools(routerAddress) {
         const factoryAddress = await router.factory()
         const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
 
-        const poolAddress = await factory.getPool(addressA, addressB)
-        const pool = new ethers.Contract(poolAddress, PoolABI, provider)
+        const poolAddressVar = await factory.getPool(addressA, addressB)
+        const pool = new ethers.Contract(poolAddressVar, PoolABI, provider)
+        poolAddress.value = poolAddressVar
 
         const thisAmount = ethers.formatEther(await pool.thisRegisteredBalance())
         // console.log("thisAmount:", thisAmount)
@@ -153,52 +183,49 @@ export function usePools(routerAddress) {
         // do
         const parsedAmountA = ethers.parseEther(amountA)
         const parsedAmountB = ethers.parseEther(amountB)
-        console.log("parsedAmountB:", parsedAmountB)
         const parsedMinAmountA = ethers.parseEther(String(amountA - (amountA * slippage) / 100))
         const parsedMinAmountB = ethers.parseEther(String(amountB - (amountB * slippage) / 100))
-        console.log("parsedMinAmountB:", parsedMinAmountB)
 
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
-        // await router
-        // .addLiquidity(
-        //     addressA,
-        //     addressB,
-        //     parsedMinAmountA,
-        //     parsedAmountA,
-        //     parsedMinAmountB,
-        //     parsedAmountB,
-        //     recipient,
-        //     deadlineStamp
-        // )
-        // .then(async (res) => {
-        //     // console.log("res", res)
-        //     waitingForAdding.value = true
-        //     getBidAsk(addressA, addressB, providerArg).then(() => {
-        //         if (bidAsk.value === null) {
-        //             interval.value = setInterval(() => {
-        //                 if (bidAsk.value === null) {
-        //                     iterations.value++
-        //                     getBidAsk(addressA, addressB, providerArg, true)
-        //                 } else {
-        //                     waitingForAdding.value = false
-        //                     clearInterval(interval.value)
-        //                     console.log("pool is found after " + iterations.value / 2 + " seconds")
-        //                 }
-        //             }, 500)
-        //         } else {
-        //             console.log("immediately")
-        //             waitingForAdding.value = false
-        //         }
-        //     })
-        // })
-        // .catch((err) => {
-        //     console.log(" - pool - couldnt create pool - ")
-        //     waitingForAdding.value = false
-        //     console.log(err)
-        //     return null
-        // })
+        await router
+            .addLiquidity(
+                addressA,
+                addressB,
+                parsedMinAmountA,
+                parsedAmountA,
+                parsedMinAmountB,
+                parsedAmountB,
+                recipient,
+                deadlineStamp
+            )
+            .then(async (res) => {
+                waitingForAdding.value = true
+                getBidAsk(addressA, addressB, providerArg).then(() => {
+                    if (bidAsk.value === null) {
+                        console.log("")
+                        // interval.value = setInterval(() => {
+                        //     if (bidAsk.value === null) {
+                        //         iterations.value++
+                        //         getBidAsk(addressA, addressB, providerArg, true)
+                        //     } else {
+                        //         waitingForAdding.value = false
+                        //         clearInterval(interval.value)
+                        //         console.log("pool is found after " + iterations.value / 2 + " seconds")
+                        //     }
+                        // }, 500)
+                    } else {
+                        // waitingForAdding.value = false
+                    }
+                })
+            })
+            .catch((err) => {
+                console.log(" - pool - couldnt create pool - ")
+                waitingForAdding.value = false
+                console.log(err)
+                return null
+            })
     }
 
     async function checkAllowance(tokenAddress, owner, spender, providerArg) {
@@ -213,8 +240,9 @@ export function usePools(routerAddress) {
     }
 
     function resetPool() {
-        bidAsk.value = null
-        baseTokenAddress.value = null
+        bidAsk.value = ""
+        poolAddress.value = ""
+        baseTokenAddress.value = ""
         thisReserve.value = null
         thatReserve.value = null
         poolRatio.value = null
@@ -234,7 +262,7 @@ export function usePools(routerAddress) {
             const deadline = blockTimestamp + 360
 
             try {
-                await approveSpending(lpTokenAddress.value, amountFraction, signer)
+                await approveSpending(lpTokenAddress.value, amountFraction, provider)
                 await router
                     .redeemLiquidity(lpTokenAddress.value, amountFraction, deadline)
                     .then((res) => {
@@ -252,22 +280,44 @@ export function usePools(routerAddress) {
         }
     }
 
-    async function approveSpending(tokenAddress, signer) {
+    // async function approveSpending(tokenAddress, provider) {
+    async function approveSpending(tokenAddress, provider, amount, callback = false) {
+        const signer = await provider.getSigner()
         const erc20 = new ethers.Contract(tokenAddress, TokenABI, signer)
         const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-        const tx = await erc20.approve(routerAddress, maxUint)
+        // const tx = await erc20.approve(routerAddress, maxUint)
+        const tx = await erc20.approve(routerAddress, amount)
         const receipt = await tx.wait(1)
+        await listenForTransactionMine(tx, provider)
+        if (callback !== false) {
+            callback()
+        }
+        console.log("Done!")
+
+        function listenForTransactionMine(txRes, provider) {
+            console.log(`Mining ${txRes.hash}...`)
+            return new Promise((resolve, reject) => {
+                provider.once(txRes.hash, (txReciept) => {
+                    console.log(`Completed with ${txReciept.confirmations} confiramations.`)
+                    console.log(txReciept)
+                    resolve()
+                })
+            })
+        }
         return
     }
 
     return {
         bidAsk,
+        poolAddress,
         thisReserve,
         thatReserve,
         baseTokenAddress,
         poolRatio,
         getPoolInfo,
         getBidAsk,
+        findPool,
+        setupPool,
         checkAllowance,
         lpTotalSupply,
         liquidityTokenBalance,

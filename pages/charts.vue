@@ -18,7 +18,7 @@ import { useStepStore } from "@/stores/step"
 import { mapStores } from "pinia"
 
 import * as Router from "../ABIs/DEX.json"
-const Router = Router.default
+const RouterABI = Router.default
 
 export default {
     head() {

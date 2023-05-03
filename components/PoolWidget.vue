@@ -1,8 +1,9 @@
 <template>
     <div class="widget white-box">
         <div class="top-bar row">
-            {{ String(ABAllowance) }} <br />
-            {{ String(ABAmountsUint) }}
+            {{ `[${String(ABAllowance[0])}, ${String(ABAllowance[1])}]` }} <br />
+            {{ poolAddress }} <br />
+            {{ String(bidAsk) }} <br />
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn
@@ -96,9 +97,10 @@
                     v-for="(token, index) in ABTokens"
                     class="contents"
                 >
+                    <!-- @click="callApproveSpending(token.address)" -->
                     <Btn
                         v-if="ABAllowance[index] < ABAmountsUint[index]"
-                        @click="callApproveSpending(token.address)"
+                        @click="callApproveSpending(token.address, ABAmountsUint[index])"
                         wide
                         secondary
                         bulky
@@ -202,11 +204,17 @@ import { useStepStore } from "@/stores/step"
 
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
+import * as Router from "../ABIs/DEX.json"
+const RouterABI = Router.default
+
 import * as Factory from "../ABIs/Factory.json"
 const FactoryABI = Factory.default
 
 import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
+
+import * as Pool from "../ABIs/Pool.json"
+const PoolABI = Pool.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
@@ -215,11 +223,14 @@ const { poolTokens } = storeToRefs(stepStore)
 const {
     approveSpending,
     bidAsk,
+    poolAddress,
     baseTokenAddress,
     poolRatio,
     thisReserve,
     thatReserve,
     getBidAsk,
+    findPool,
+    setupPool,
     getPoolInfo,
     checkAllowance,
     lpTotalSupply,
@@ -275,43 +286,30 @@ function callAddLiquidity() {
         settings.value.deadline,
         stepStore.connectedAccount,
         stepStore.connectedWallet.provider
-    )
-    // .then(() => {
-    //     state.amountA = ""
-    //     state.amountB = ""
-    // })
-}
-async function callApproveSpending(address) {
-    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
-    const signer = await provider.getSigner()
-    approveSpending(address, signer)
-}
-async function getSigner() {
-    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
-    const signer = await provider.getSigner()
-    const txDetails = {
-        to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        value: 100000000000000,
-    }
-
-    const sendTransaction = () => {
-        return signer.sendTransaction(txDetails).then((tx) => tx.hash)
-    }
-
-    // const gasPrice = () => provider.getGasPrice().then((res) => res.toString())
-
-    const estimateGas = () => {
-        return signer.estimateGas(txDetails).then((res) => res.toString())
-    }
-    const transactionHash = await stepStore.onboard.state.actions.preflightNotifications({
-        sendTransaction,
-        // gasPrice,
-        estimateGas,
-        // balance: balanceValue,
-        txDetails: txDetails,
+    ).then(() => {
+        state.amountA = ""
+        state.amountB = ""
     })
-    console.log(transactionHash)
 }
+// function callApproveSpending(address) {
+function callApproveSpending(address, amount) {
+    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+    // approveSpending(address, provider)
+    approveSpending(address, provider, amount, getAllowances)
+}
+
+// watch(
+//     () => stepStore.connectedWallet,
+//     (newValue) => {
+//         if (newValue) {
+//             setEars(true)
+//         }
+//         // else {
+//         //     console.log("not connected")
+//         // }
+//     }
+// )
+
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
     ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
@@ -390,25 +388,59 @@ const baseTokenIndex = computed(() => {
     return bidAsk.value && ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
 })
 const canCreatePool = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && bidAsk.value === null
+    return (
+        stepStore.connectedWallet && stepStore.bothPoolTokensThere && bidAsk.value === null && isSuffientAllowance.value
+    )
 })
 const canAddLiquidity = computed(() => {
     return stepStore.connectedWallet && stepStore.bothPoolTokensThere && bidAsk.value !== null
 })
+const isSuffientAllowance = computed(() => {
+    return ABAllowance.value.map((el, index) => el >= ABAmountsUint.value[index]).every((el) => el === true)
+})
 
 watch(
     () => [stepStore.bothPoolTokensThere, stepStore.connectedWallet],
-    (newValue) => {
-        if (newValue[0] && newValue[1]) {
-            // getBidAsk(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+    ([bothTokens, wallet], [prevBothTokens, prevWallet]) => {
+        if (bothTokens && wallet) {
+            if (prevWallet !== null) {
+                console.log("looking for pool...")
+                findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            }
         } else {
+            console.log("reset pool")
             resetPool()
         }
-    },
-    {
-        immediate: true,
     }
 )
+
+watch(
+    () => [poolAddress.value, stepStore.connectedWallet],
+    ([poolAdd, wallet], [prevPoolAdd, prevWallet]) => {
+        if (poolAdd !== prevPoolAdd && poolAdd !== "" && poolAdd !== unhandled && wallet) {
+            console.log("setup")
+        }
+    }
+)
+
+async function setEars(listen) {
+    if (listen) {
+        console.log("setting listener")
+        const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+        const router = new ethers.Contract(stepStore.routerAddress, RouterABI, provider)
+        const factoryAdd = await router.factory()
+        const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+        const poolAdd = await factory.getPool(...stepStore.bothPoolTokenAddresses)
+        console.log("poolAdd:", poolAdd)
+        const pool = new ethers.Contract(poolAdd, PoolABI, provider)
+
+        pool.on("LiquidityChange", () => {
+            console.log("o kurwa")
+        })
+    } else {
+        pool.on("LiquidityChange", null)
+    }
+}
 
 watch(
     () => [ABTokens.value, stepStore.connectedWallet],
@@ -443,7 +475,6 @@ watch(
 )
 
 async function getAllowances() {
-    console.log("getting allowance")
     ABTokens.value.forEach(async (el1, index1) => {
         const allowance = el1 !== null ? BigInt(await getApprovedAmount(el1.address)) : BigInt(0n)
         ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
@@ -451,7 +482,7 @@ async function getAllowances() {
 }
 function printAllowance() {
     getAllowances()
-    console.log("ABAllowance:", ABAllowance.value)
+    console.log("ABAllowancecd:", ABAllowance.value)
 }
 
 async function getApprovedAmount(address) {
@@ -476,6 +507,9 @@ async function getApprovedAmount(address) {
     .top-bar {
         justify-content: space-between;
         margin-bottom: 0.5rem;
+        &.row {
+            /* flex-direction: row-reverse; */
+        }
     }
     .window {
         display: flex;
