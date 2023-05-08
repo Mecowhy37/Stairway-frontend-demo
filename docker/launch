@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 NAME=stepswap-frontend
 docker build . -t $NAME
