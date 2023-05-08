@@ -86,92 +86,52 @@ export function usePools(routerAddress) {
 
     async function findPool(addressA, addressB, providerArg) {
         const provider = new ethers.BrowserProvider(providerArg)
+        console.log(provider)
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
         const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
         const poolAdd = await factory.getPool(addressA, addressB)
-        poolAddress.value = poolAdd
         console.log("pool found")
+        poolAddress.value = poolAdd
         return poolAdd
     }
 
-    async function setupPool(tokens, providerArg) {
-        // bidAsk.value = null
-        // poolAddress.value = null
-        // baseTokenAddress.value = null
-        // thisReserve.value = null
-        // thatReserve.value = null
-        // poolRatio.value = null
-        // lpTokenAddress.value = null
-        // liquidityTokenBalance.value = null
-        // lpTotalSupply.value = null
-        console.log("hello form setup")
+    async function setupPool(poolAdd, tokenAddresses, providerArg) {
         const provider = new ethers.BrowserProvider(providerArg)
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
-        const bidAskVar = await router.getBidAsk(...tokens)
+
+        const factoryAddress = await router.factory()
+        const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
+
+        const pool = new ethers.Contract(poolAdd, PoolABI, provider)
+
+        // BID_ASK
+        const bidAskVar = await router.getBidAsk(...tokenAddresses)
         bidAsk.value = bidAskVar
-        console.log("bidAskVar:", bidAskVar)
-    }
 
-    async function getBidAsk(addressA, addressB, providerArg, continuous = false) {
-        const provider = new ethers.BrowserProvider(providerArg)
-        const router = new ethers.Contract(routerAddress, RouterABI, provider)
-        await router
-            .getBidAsk(addressA, addressB)
-            .then((res) => {
-                // console.log("found!", res)
-                console.log("found!")
-                bidAsk.value = [res[0], res[1]]
-                getPoolInfo(addressA, addressB, providerArg)
-                return res
-            })
-            .catch((err) => {
-                // console.log("err is here ", err)
+        // BASE TOKEN
+        const thisToken = await pool.thisToken()
+        baseTokenAddress.value = thisToken
 
-                resetPool()
-
-                if (err.reason === "DEX__PoolNotFound()") {
-                    console.log("not found", err)
-                    return null
-                }
-            })
-        const factoryAddress = await router.factory()
-        const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
-        const allPools = await factory.getAllPools()
-        // console.log("allPools:", allPools)
-    }
-
-    async function getPoolInfo(addressA, addressB, providerArg) {
-        const provider = new ethers.BrowserProvider(providerArg)
-        const router = new ethers.Contract(routerAddress, RouterABI, provider)
-
-        const factoryAddress = await router.factory()
-        const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
-
-        const poolAddressVar = await factory.getPool(addressA, addressB)
-        const pool = new ethers.Contract(poolAddressVar, PoolABI, provider)
-        poolAddress.value = poolAddressVar
-
+        // RESERVES & RATIO
         const thisAmount = ethers.formatEther(await pool.thisRegisteredBalance())
-        // console.log("thisAmount:", thisAmount)
         const thatAmount = ethers.formatEther(await pool.thatRegisteredBalance())
-        // console.log("thatAmount:", thatAmount)
 
         thisReserve.value = Number(thisAmount)
         thatReserve.value = Number(thatAmount)
 
         poolRatio.value = Number(thatAmount) / Number(thisAmount)
 
-        const thisToken = await pool.thisToken()
-        baseTokenAddress.value = thisToken
-
+        // LIQUIDITY TOKEN
         const lpToken = await pool.lpToken()
         lpTokenAddress.value = lpToken
 
+        // LQ TOKEN BALANCE
         const { getBalance, getTotalSupply } = useBalances(providerArg)
         const bal = await getBalance({ address: lpToken, decimals: 18 })
         liquidityTokenBalance.value = bal
 
+        // LQ TOKEN SUPPLY
         lpTotalSupply.value = await getTotalSupply(lpToken)
     }
 
@@ -201,24 +161,8 @@ export function usePools(routerAddress) {
                 deadlineStamp
             )
             .then(async (res) => {
-                waitingForAdding.value = true
-                getBidAsk(addressA, addressB, providerArg).then(() => {
-                    if (bidAsk.value === null) {
-                        console.log("")
-                        // interval.value = setInterval(() => {
-                        //     if (bidAsk.value === null) {
-                        //         iterations.value++
-                        //         getBidAsk(addressA, addressB, providerArg, true)
-                        //     } else {
-                        //         waitingForAdding.value = false
-                        //         clearInterval(interval.value)
-                        //         console.log("pool is found after " + iterations.value / 2 + " seconds")
-                        //     }
-                        // }, 500)
-                    } else {
-                        // waitingForAdding.value = false
-                    }
-                })
+                //listen for liquidity change
+                // listenForPoolCreation(addressA, addressB, providerArg)
             })
             .catch((err) => {
                 console.log(" - pool - couldnt create pool - ")
@@ -226,6 +170,23 @@ export function usePools(routerAddress) {
                 console.log(err)
                 return null
             })
+    }
+
+    async function listenForPoolCreation(providerArg, active = true) {
+        const provider = new ethers.BrowserProvider(providerArg)
+        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        const factoryAdd = await router.factory()
+        const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+
+        if (active === false) {
+            console.log("NOT listening for pool")
+            factory.on("PoolCreated", null)
+            return
+        }
+        console.log("listening for pool")
+        factory.on("PoolCreated", (event) => {
+            console.log("pool created", event)
+        })
     }
 
     async function checkAllowance(tokenAddress, owner, spender, providerArg) {
@@ -314,8 +275,6 @@ export function usePools(routerAddress) {
         thatReserve,
         baseTokenAddress,
         poolRatio,
-        getPoolInfo,
-        getBidAsk,
         findPool,
         setupPool,
         checkAllowance,
@@ -329,5 +288,6 @@ export function usePools(routerAddress) {
         iterations,
         resetPool,
         redeemLiquidity,
+        listenForPoolCreation,
     }
 }
