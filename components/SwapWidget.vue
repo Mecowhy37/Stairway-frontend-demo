@@ -1,10 +1,10 @@
 <template>
     <div class="widget">
-        {{ bidAskFormat[0] }}
-        {{ bidAskFormat[1] }}
+        <!-- {{ bidAskFormat[0] }} -->
+        <!-- {{ bidAskFormat[1] }} -->
         <!-- {{ state.tokenToSellIndex }} -->
         <div class="top-bar row">
-            <!-- {{ ABAllowance }} -->
+            <!-- {{ id }} -->
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn
@@ -99,6 +99,13 @@
             <!-- :disabled="!stepStore.bothSwapTokensThere" -->
             swap
         </Btn>
+        <Btn
+            wide
+            bulky
+            @click="mystery()"
+        >
+            mistery pool
+        </Btn>
         <!-- <div class="slippage">
             <div
             class="checkbox inset"
@@ -125,18 +132,42 @@ const TokenABI = Token.default
 import * as Router from "../ABIs/DEX.json"
 const RouterABI = Router.default
 
+import * as Pool from "../ABIs/Pool.json"
+const PoolABI = Pool.default
+
+import * as Factory from "../ABIs/Factory.json"
+const FactoryABI = Factory.default
+
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 const tempStore = useTempStore()
 
 const { swapTokens } = storeToRefs(stepStore)
-const { bidAsk, getBidAsk, bidAskFormat, baseTokenAddress, resetPool } = usePools(stepStore.routerAddress)
+const { bidAsk, getBidAsk, bidAskFormat, baseTokenAddress, poolAddress, resetPool, setupPool, findPool } = usePools(
+    stepStore.routerAddress
+)
+async function mystery() {
+    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+    const pool = new ethers.Contract("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0", PoolABI, provider)
+    const thisToken = await pool.thisToken()
+    console.log("broadcast pool address", "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0")
+    console.log("pool.thisToken:", thisToken)
+    const thatToken = await pool.thatToken()
+    console.log("pool.thatToken:", thatToken)
+    console.log("_____________________________")
 
+    const router = new ethers.Contract(stepStore.routerAddress, RouterABI, provider)
+    const factoryAdd = await router.factory()
+    console.log("factoryAdd:", factoryAdd)
+    const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+
+    const poolFromF = await factory.getPool(thisToken, thatToken)
+    console.log("factory.getPool(this, that) = ", poolFromF)
+}
 const state = reactive({
     balanceA: null,
     balanceB: null,
-    bidAsk: [],
     token0Index: null,
     buyAmount: "",
     sellAmount: "",
@@ -183,17 +214,51 @@ watch(
         immediate: true,
     }
 )
+// watch(
+//     () => [stepStore.bothSwapTokensThere, stepStore.connectedWallet],
+//     async (newValue) => {
+//         if (newValue[0] && newValue[1]) {
+//             // await getBidAsk(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
+//         } else {
+//             resetPool()
+//         }
+//     },
+//     {
+//         immediate: true,
+//     }
+// )
 watch(
     () => [stepStore.bothSwapTokensThere, stepStore.connectedWallet],
-    async (newValue) => {
-        if (newValue[0] && newValue[1]) {
-            await getBidAsk(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
-        } else {
+    async ([bothTokens, wallet], [prevBothTokens, prevWallet]) => {
+        if (bothTokens && wallet) {
+            if (prevWallet !== null) {
+                console.log("looking for pool...")
+                const pool = await findPool(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
+            }
+            // } else if (wallet) {
+            //     setPoolCreationListener(stepStore.connectedWallet.provider, false)
+            // }
+            return
+        }
+        if (wallet && !bothTokens) {
+            console.log("reset pool")
             resetPool()
         }
-    },
-    {
-        immediate: true,
+    }
+)
+watch(
+    () => [poolAddress.value, stepStore.connectedWallet],
+    ([poolAdd, wallet], [prevPoolAdd, prevWallet]) => {
+        if (poolAdd !== prevPoolAdd && poolAdd !== "" && poolAdd !== unhandled && wallet) {
+            console.log("setup")
+            setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            //set ears too
+            return
+        }
+        if (poolAdd === unhandled) {
+            //set ears to off
+            return
+        }
     }
 )
 

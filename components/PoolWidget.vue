@@ -1,7 +1,7 @@
 <template>
     <div class="widget white-box">
         <div class="top-bar row">
-            {{ `[${String(ABAllowance[0])}, ${String(ABAllowance[1])}]` }} <br />
+            <!-- {{ `[${String(ABAllowance[0])}, ${String(ABAllowance[1])}]` }} <br /> -->
             {{ poolAddress }} <br />
             {{ String(bidAsk) }} <br />
             <Dropdown>
@@ -110,7 +110,7 @@
                 </div>
             </div>
             <Btn
-                v-if="poolAddress === unhandled"
+                v-if="poolAddress === ''"
                 @click="callAddLiquidity()"
                 wide
                 bulky
@@ -214,6 +214,7 @@ import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 
 import * as Pool from "../ABIs/Pool.json"
+import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript"
 const PoolABI = Pool.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -239,7 +240,7 @@ const {
     waitingForAdding,
     resetPool,
     redeemLiquidity,
-    listenForPoolCreation,
+    setPoolCreationListener,
 } = usePools(stepStore.routerAddress)
 
 const state = reactive({
@@ -290,6 +291,7 @@ function callAddLiquidity() {
         state.amountB = ""
     })
 }
+
 // function callApproveSpending(address) {
 function callApproveSpending(address, amount) {
     const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
@@ -378,12 +380,12 @@ const canCreatePool = computed(() => {
     return (
         stepStore.connectedWallet &&
         stepStore.bothPoolTokensThere &&
-        poolAddress.value === unhandled &&
+        poolAddress.value === "" &&
         isSuffientAllowance.value
     )
 })
 const canAddLiquidity = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && poolAddress.value !== unhandled
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && poolAddress.value !== ""
 })
 const isSuffientAllowance = computed(() => {
     return ABAllowance.value.map((el, index) => el >= ABAmountsUint.value[index]).every((el) => el === true)
@@ -391,19 +393,27 @@ const isSuffientAllowance = computed(() => {
 
 watch(
     () => [stepStore.bothPoolTokensThere, stepStore.connectedWallet],
-    ([bothTokens, wallet], [prevBothTokens, prevWallet]) => {
+    async ([bothTokens, wallet], [prevBothTokens, prevWallet]) => {
         if (bothTokens && wallet) {
             if (prevWallet !== null) {
-                console.log("looking for pool...")
-                findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-                listenForPoolCreation(stepStore.connectedWallet.provider)
+                const pool = await findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+
+                if (pool === unhandled) {
+                    const createdPoolAddress = await setPoolCreationListener(stepStore.connectedWallet.provider)
+                    console.log("createdPoolAddress, finding pool:", createdPoolAddress)
+                    findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+                }
             }
-        } else if (wallet) {
-            listenForPoolCreation(stepStore.connectedWallet.provider, false)
-        } else {
-            console.log("reset pool")
+            return
+        }
+        if (!bothTokens && wallet) {
+            console.log("reset pool and dont listen for creation")
+            setPoolCreationListener(stepStore.connectedWallet.provider, false)
             resetPool()
         }
+    },
+    {
+        // immediate: true,
     }
 )
 
@@ -411,23 +421,15 @@ watch(
     () => [poolAddress.value, stepStore.connectedWallet],
     ([poolAdd, wallet], [prevPoolAdd, prevWallet]) => {
         if (poolAdd !== prevPoolAdd && poolAdd !== "" && poolAdd !== unhandled && wallet) {
-            console.log("setup")
             setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-            //set ears too
+            //set ears for liquidity change
             return
         }
         if (poolAdd === unhandled) {
-            console.log("0x000000")
-            //set ears to off
-            return
+            resetPool()
         }
     }
 )
-onMounted(() => {
-    if (stepStore.bothPoolTokensThere && stepStore.connectedWallet) {
-        findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-    }
-})
 
 // watch(
 //     () => stepStore.connectedWallet,

@@ -65,7 +65,7 @@ export function useBalances(providerArg) {
 }
 
 export function usePools(routerAddress) {
-    const bidAsk = ref("")
+    const bidAsk = ref(null)
     const poolAddress = ref("")
     const baseTokenAddress = ref(null)
     const thisReserve = ref(null)
@@ -85,18 +85,21 @@ export function usePools(routerAddress) {
     })
 
     async function findPool(addressA, addressB, providerArg) {
+        console.log("looking for pool...")
+
         const provider = new ethers.BrowserProvider(providerArg)
-        console.log(provider)
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
         const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
         const poolAdd = await factory.getPool(addressA, addressB)
-        console.log("pool found")
+        console.log("resolt found from factory.getPool(): ", poolAdd)
         poolAddress.value = poolAdd
         return poolAdd
     }
 
     async function setupPool(poolAdd, tokenAddresses, providerArg) {
+        console.log("setup")
+
         const provider = new ethers.BrowserProvider(providerArg)
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
 
@@ -135,6 +138,30 @@ export function usePools(routerAddress) {
         lpTotalSupply.value = await getTotalSupply(lpToken)
     }
 
+    async function getBidAsk(addressA, addressB, providerArg) {
+        const provider = new ethers.BrowserProvider(providerArg)
+        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        await router
+            .getBidAsk(addressA, addressB)
+            .then((res) => {
+                // console.log("found!", res)
+                console.log("found!")
+                bidAsk.value = [res[0], res[1]]
+                findPool(addressA, addressB, providerArg)
+                return res
+            })
+            .catch((err) => {
+                // console.log("err is here ", err)
+
+                resetPool()
+
+                if (err.reason === "DEX__PoolNotFound()") {
+                    console.log("not found", err)
+                    return null
+                }
+            })
+    }
+
     async function addLiquidity(addressA, addressB, amountA, amountB, slippage, deadline, recipient, providerArg) {
         const provider = new ethers.BrowserProvider(providerArg)
         const signer = await provider.getSigner()
@@ -162,7 +189,7 @@ export function usePools(routerAddress) {
             )
             .then(async (res) => {
                 //listen for liquidity change
-                // listenForPoolCreation(addressA, addressB, providerArg)
+                // setPoolCreationListener(addressA, addressB, providerArg)
             })
             .catch((err) => {
                 console.log(" - pool - couldnt create pool - ")
@@ -172,7 +199,7 @@ export function usePools(routerAddress) {
             })
     }
 
-    async function listenForPoolCreation(providerArg, active = true) {
+    async function setPoolCreationListener(providerArg, active = true) {
         const provider = new ethers.BrowserProvider(providerArg)
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
@@ -180,12 +207,14 @@ export function usePools(routerAddress) {
 
         if (active === false) {
             console.log("NOT listening for pool")
-            factory.on("PoolCreated", null)
+            factory.once("PoolCreated", null)
             return
         }
         console.log("listening for pool")
-        factory.on("PoolCreated", (event) => {
-            console.log("pool created", event)
+        return new Promise((resolve, reject) => {
+            factory.once("PoolCreated", (event) => {
+                resolve(event)
+            })
         })
     }
 
@@ -201,7 +230,7 @@ export function usePools(routerAddress) {
     }
 
     function resetPool() {
-        bidAsk.value = ""
+        bidAsk.value = null
         poolAddress.value = ""
         baseTokenAddress.value = ""
         thisReserve.value = null
@@ -246,8 +275,8 @@ export function usePools(routerAddress) {
         const signer = await provider.getSigner()
         const erc20 = new ethers.Contract(tokenAddress, TokenABI, signer)
         const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-        // const tx = await erc20.approve(routerAddress, maxUint)
-        const tx = await erc20.approve(routerAddress, amount)
+        const tx = await erc20.approve(routerAddress, maxUint)
+        // const tx = await erc20.approve(routerAddress, amount)
         const receipt = await tx.wait(1)
         await listenForTransactionMine(tx, provider)
         if (callback !== false) {
@@ -270,6 +299,7 @@ export function usePools(routerAddress) {
 
     return {
         bidAsk,
+        getBidAsk,
         poolAddress,
         thisReserve,
         thatReserve,
@@ -288,6 +318,6 @@ export function usePools(routerAddress) {
         iterations,
         resetPool,
         redeemLiquidity,
-        listenForPoolCreation,
+        setPoolCreationListener,
     }
 }
