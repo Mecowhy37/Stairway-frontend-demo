@@ -110,7 +110,7 @@
                 </div>
             </div>
             <Btn
-                v-if="poolAddress === ''"
+                v-if="poolAddress === unhandled || poolAddress === ''"
                 @click="callAddLiquidity()"
                 wide
                 bulky
@@ -241,6 +241,7 @@ const {
     resetPool,
     redeemLiquidity,
     setPoolCreationListener,
+    factory,
 } = usePools(stepStore.routerAddress)
 
 const state = reactive({
@@ -380,68 +381,83 @@ const canCreatePool = computed(() => {
     return (
         stepStore.connectedWallet &&
         stepStore.bothPoolTokensThere &&
-        poolAddress.value === "" &&
+        poolAddress.value === unhandled &&
         isSuffientAllowance.value
     )
 })
 const canAddLiquidity = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && poolAddress.value !== ""
+    return (
+        stepStore.connectedWallet &&
+        stepStore.bothPoolTokensThere &&
+        poolAddress.value !== "" &&
+        poolAddress.value !== unhandled
+    )
 })
 const isSuffientAllowance = computed(() => {
     return ABAllowance.value.map((el, index) => el >= ABAmountsUint.value[index]).every((el) => el === true)
 })
 
 watch(
-    () => [stepStore.bothPoolTokensThere, stepStore.connectedWallet],
-    async ([bothTokens, wallet], [prevBothTokens, prevWallet]) => {
+    () => [stepStore.bothPoolTokenAddresses, stepStore.connectedAccount],
+    async (newVal, oldVal) => {
+        const [bothTokens, wallet] = [...newVal]
+        const [prevBothTokens, prevWallet] = oldVal ? [oldVal[0], oldVal[1]] : [null, null]
         if (bothTokens && wallet) {
-            if (prevWallet !== null) {
-                const pool = await findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-
-                if (pool === unhandled) {
-                    const createdPoolAddress = await setPoolCreationListener(stepStore.connectedWallet.provider)
-                    console.log("createdPoolAddress, finding pool:", createdPoolAddress)
-                    findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            if (
+                (prevBothTokens !== bothTokens && prevWallet === wallet) ||
+                (prevBothTokens === bothTokens && prevWallet !== wallet)
+            ) {
+                const currentPool = poolAddress.value
+                const newPool = await findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+                if (currentPool === newPool && newPool === unhandled) {
+                    console.log("off on")
+                    resetPool()
+                    setPoolCreationListener(stepStore.connectedWallet.provider, false)
+                    receiveAndSetAPool()
                 }
             }
             return
         }
-        if (!bothTokens && wallet) {
-            console.log("reset pool and dont listen for creation")
-            setPoolCreationListener(stepStore.connectedWallet.provider, false)
-            resetPool()
+        if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
+            poolAddress.value = ""
         }
     },
     {
-        // immediate: true,
+        immediate: true,
     }
 )
-
-watch(
-    () => [poolAddress.value, stepStore.connectedWallet],
-    ([poolAdd, wallet], [prevPoolAdd, prevWallet]) => {
-        if (poolAdd !== prevPoolAdd && poolAdd !== "" && poolAdd !== unhandled && wallet) {
-            setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-            //set ears for liquidity change
-            return
-        }
-        if (poolAdd === unhandled) {
-            resetPool()
-        }
+onMounted(() => {
+    if (stepStore.bothPoolTokenAddresses && stepStore.connectedAccount) {
+        findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
     }
-)
+})
 
-// watch(
-//     () => stepStore.connectedWallet,
-//     (newValue) => {
-//         if (newValue) {
-//             setEars(true)
-//         } else {
-//             setEars(false)
-//             console.log("not connected")
-//         }
-//     }
-// )
+watch(poolAddress, async (poolAdd, prevPoolAdd) => {
+    if (!(poolAdd === unhandled || poolAdd === "")) {
+        console.log("exists")
+        setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+        setPoolCreationListener(stepStore.connectedWallet.provider, false)
+    } else if (poolAdd === unhandled) {
+        console.log("unhandled")
+        resetPool()
+        receiveAndSetAPool()
+    } else {
+        console.log("empty")
+        resetPool()
+        setPoolCreationListener(stepStore.connectedWallet.provider, false)
+    }
+})
+
+async function receiveAndSetAPool() {
+    await setPoolCreationListener(stepStore.connectedWallet.provider).then(([thisToken, thatToken, newPoolAddress]) => {
+        const incoming = [thisToken, thatToken]
+        const current = stepStore.bothPoolTokenAddresses
+        if (current?.every((el) => incoming.includes(el))) {
+            console.log("setting new pool")
+            poolAddress.value = newPoolAddress
+        }
+    })
+}
 
 async function setEars(listen, poolAdd = unhandled) {
     if (poolAdd === unhandled || listen === false) {
@@ -461,13 +477,17 @@ async function setEars(listen, poolAdd = unhandled) {
 watch(
     () => [ABTokens.value, stepStore.connectedWallet],
     (newValue, oldValue) => {
-        const newTokens = newValue?.at(0)
+        const newTokens = newValue.at(0)
         const oldTokens = oldValue?.at(0)
         const wallet = newValue.at(1)
-        if (oldTokens?.every((el) => el !== null) && newTokens?.some((el) => el === null)) {
-            resetPool()
-        }
+        // if (oldTokens?.every((el) => el !== null) && newTokens?.some((el) => el === null)) {
+        //     resetPool()
+        // }
         // const newTokensNotNull = newTokens.filter((el) => (!oldTokens?.includes(el) && el !== null ? true : false))
+        // const bothTokensThere = newTokens.every((el) => el !== null)
+        // if (bothTokensThere && oldTokens !== newTokens && wallet) {
+
+        // }
 
         if (wallet !== null) {
             getAllowances()
@@ -484,6 +504,10 @@ watch(
         //     }
         // }
         // })
+
+        // things I want to achive
+        // if
+        // when both tokens are there I want find a pool
     },
     {
         immediate: true,

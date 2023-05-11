@@ -74,7 +74,7 @@ export function usePools(routerAddress) {
     const lpTokenAddress = ref(null)
     const liquidityTokenBalance = ref(null)
     const lpTotalSupply = ref(null)
-
+    const factory = ref()
     const interval = ref()
     const iterations = ref(0)
     const waitingForAdding = ref(false)
@@ -85,14 +85,13 @@ export function usePools(routerAddress) {
     })
 
     async function findPool(addressA, addressB, providerArg) {
-        console.log("looking for pool...")
-
+        console.log("findPool")
         const provider = new ethers.BrowserProvider(providerArg)
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
         const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
         const poolAdd = await factory.getPool(addressA, addressB)
-        console.log("resolt found from factory.getPool(): ", poolAdd)
+
         poolAddress.value = poolAdd
         return poolAdd
     }
@@ -193,9 +192,7 @@ export function usePools(routerAddress) {
             })
             .catch((err) => {
                 console.log(" - pool - couldnt create pool - ")
-                waitingForAdding.value = false
                 console.log(err)
-                return null
             })
     }
 
@@ -204,17 +201,23 @@ export function usePools(routerAddress) {
         const router = new ethers.Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
         const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
-
-        if (active === false) {
-            console.log("NOT listening for pool")
-            factory.once("PoolCreated", null)
-            return
-        }
-        console.log("listening for pool")
         return new Promise((resolve, reject) => {
-            factory.once("PoolCreated", (event) => {
-                resolve(event)
-            })
+            if (active === false) {
+                console.log("NOT listening for pool")
+                factory.off("PoolCreated", creationHandler)
+                return
+            }
+            console.log("listening for pool")
+            factory.once("PoolCreated", creationHandler)
+
+            function creationHandler(thisToken, thatToken, newPoolAddress, extras, extras2, extras3) {
+                console.log("extras:", extras)
+                console.log("extras2:", extras2)
+                console.log("extras3:", extras3)
+                console.log("pool created:", newPoolAddress)
+                factory.off("PoolCreated", creationHandler)
+                resolve([thisToken, thatToken, newPoolAddress])
+            }
         })
     }
 
@@ -231,7 +234,6 @@ export function usePools(routerAddress) {
 
     function resetPool() {
         bidAsk.value = null
-        poolAddress.value = ""
         baseTokenAddress.value = ""
         thisReserve.value = null
         thatReserve.value = null
@@ -287,9 +289,7 @@ export function usePools(routerAddress) {
         function listenForTransactionMine(txRes, provider) {
             console.log(`Mining ${txRes.hash}...`)
             return new Promise((resolve, reject) => {
-                provider.once(txRes.hash, (txReciept) => {
-                    console.log(`Completed with ${txReciept.confirmations} confiramations.`)
-                    console.log(txReciept)
+                provider.once(txRes.hash, async (txReciept) => {
                     resolve()
                 })
             })
@@ -319,5 +319,6 @@ export function usePools(routerAddress) {
         resetPool,
         redeemLiquidity,
         setPoolCreationListener,
+        factory,
     }
 }

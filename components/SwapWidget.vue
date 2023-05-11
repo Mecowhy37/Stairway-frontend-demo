@@ -149,21 +149,21 @@ const { bidAsk, getBidAsk, bidAskFormat, baseTokenAddress, poolAddress, resetPoo
 )
 async function mystery() {
     const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
-    const pool = new ethers.Contract("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0", PoolABI, provider)
+    const pool = new ethers.Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", PoolABI, provider)
     const thisToken = await pool.thisToken()
-    console.log("broadcast pool address", "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0")
+    console.log("broadcast pool address", "0x5FbDB2315678afecb367f032d93F642f64180aa3")
     console.log("pool.thisToken:", thisToken)
     const thatToken = await pool.thatToken()
     console.log("pool.thatToken:", thatToken)
     console.log("_____________________________")
 
-    const router = new ethers.Contract(stepStore.routerAddress, RouterABI, provider)
-    const factoryAdd = await router.factory()
-    console.log("factoryAdd:", factoryAdd)
-    const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+    // const router = new ethers.Contract(stepStore.routerAddress, RouterABI, provider)
+    // const factoryAdd = await router.factory()
+    // console.log("factoryAdd:", factoryAdd)
+    // const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
 
-    const poolFromF = await factory.getPool(thisToken, thatToken)
-    console.log("factory.getPool(this, that) = ", poolFromF)
+    // const poolFromF = await factory.getPool(thisToken, thatToken)
+    // console.log("factory.getPool(this, that) = ", poolFromF)
 }
 const state = reactive({
     balanceA: null,
