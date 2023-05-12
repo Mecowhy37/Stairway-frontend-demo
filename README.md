@@ -36,6 +36,9 @@ Build the application for production:
 
 ```bash
 npm run build
+
+```bash
+./node_modules/.bin/nuxt generate
 ```
 
 Locally preview production build:
