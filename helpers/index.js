@@ -1,8 +1,8 @@
 import { ref } from "vue"
-import { ethers } from "ethers"
+import { BrowserProvider, Contract, parseEther, formatEther, formatUnits } from "ethers"
+
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
-
 import * as Tokens from "../constants/tokenList.json"
 const TokenList = Tokens.default
 
@@ -46,18 +46,18 @@ export function useBalances(providerArg) {
     }
 
     async function getBalance(token) {
-        const provider = new ethers.BrowserProvider(providerArg)
-        const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
+        const provider = new BrowserProvider(providerArg)
+        const tokenContract = new Contract(token.address, TokenABI, provider)
         const balance = await tokenContract.balanceOf(connectedAccount.value)
-        const formatedBalance = ethers.formatUnits(balance, token.decimals)
+        const formatedBalance = formatUnits(balance, token.decimals)
         return formatedBalance
     }
 
     async function getTotalSupply(address) {
-        const provider = new ethers.BrowserProvider(providerArg)
-        const tokenContract = new ethers.Contract(address, TokenABI, provider)
+        const provider = new BrowserProvider(providerArg)
+        const tokenContract = new Contract(address, TokenABI, provider)
         const totalSupply = await tokenContract.totalSupply()
-        const formatedTotalSupply = ethers.formatEther(totalSupply)
+        const formatedTotalSupply = formatEther(totalSupply)
         return formatedTotalSupply
     }
 
@@ -81,15 +81,15 @@ export function usePools(routerAddress) {
     const waitingBidAsk = ref(false)
 
     const bidAskFormat = computed(() => {
-        return bidAsk.value !== null ? bidAsk.value.map((el) => ethers.formatEther(el)) : []
+        return bidAsk.value !== null ? bidAsk.value.map((el) => formatEther(el)) : []
     })
 
     async function findPool(addressA, addressB, providerArg) {
         console.log("findPool")
-        const provider = new ethers.BrowserProvider(providerArg)
-        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        const provider = new BrowserProvider(providerArg)
+        const router = new Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
-        const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+        const factory = new Contract(factoryAdd, FactoryABI, provider)
         const poolAdd = await factory.getPool(addressA, addressB)
 
         poolAddress.value = poolAdd
@@ -99,13 +99,13 @@ export function usePools(routerAddress) {
     async function setupPool(poolAdd, tokenAddresses, providerArg) {
         console.log("setup")
 
-        const provider = new ethers.BrowserProvider(providerArg)
-        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        const provider = new BrowserProvider(providerArg)
+        const router = new Contract(routerAddress, RouterABI, provider)
 
         const factoryAddress = await router.factory()
-        const factory = new ethers.Contract(factoryAddress, FactoryABI, provider)
+        const factory = new Contract(factoryAddress, FactoryABI, provider)
 
-        const pool = new ethers.Contract(poolAdd, PoolABI, provider)
+        const pool = new Contract(poolAdd, PoolABI, provider)
 
         // BID_ASK
         const bidAskVar = await router.getBidAsk(...tokenAddresses)
@@ -116,8 +116,8 @@ export function usePools(routerAddress) {
         baseTokenAddress.value = thisToken
 
         // RESERVES & RATIO
-        const thisAmount = ethers.formatEther(await pool.thisRegisteredBalance())
-        const thatAmount = ethers.formatEther(await pool.thatRegisteredBalance())
+        const thisAmount = formatEther(await pool.thisRegisteredBalance())
+        const thatAmount = formatEther(await pool.thatRegisteredBalance())
 
         thisReserve.value = Number(thisAmount)
         thatReserve.value = Number(thatAmount)
@@ -138,8 +138,8 @@ export function usePools(routerAddress) {
     }
 
     async function getBidAsk(addressA, addressB, providerArg) {
-        const provider = new ethers.BrowserProvider(providerArg)
-        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        const provider = new BrowserProvider(providerArg)
+        const router = new Contract(routerAddress, RouterABI, provider)
         await router
             .getBidAsk(addressA, addressB)
             .then((res) => {
@@ -162,15 +162,15 @@ export function usePools(routerAddress) {
     }
 
     async function addLiquidity(addressA, addressB, amountA, amountB, slippage, deadline, recipient, providerArg) {
-        const provider = new ethers.BrowserProvider(providerArg)
+        const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
-        const router = new ethers.Contract(routerAddress, RouterABI, signer)
+        const router = new Contract(routerAddress, RouterABI, signer)
         // check allowance if its enought
         // do
-        const parsedAmountA = ethers.parseEther(amountA)
-        const parsedAmountB = ethers.parseEther(amountB)
-        const parsedMinAmountA = ethers.parseEther(String(amountA - (amountA * slippage) / 100))
-        const parsedMinAmountB = ethers.parseEther(String(amountB - (amountB * slippage) / 100))
+        const parsedAmountA = parseEther(amountA)
+        const parsedAmountB = parseEther(amountB)
+        const parsedMinAmountA = parseEther(String(amountA - (amountA * slippage) / 100))
+        const parsedMinAmountB = parseEther(String(amountB - (amountB * slippage) / 100))
 
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
@@ -197,10 +197,10 @@ export function usePools(routerAddress) {
     }
 
     async function setPoolCreationListener(providerArg, active = true) {
-        const provider = new ethers.BrowserProvider(providerArg)
-        const router = new ethers.Contract(routerAddress, RouterABI, provider)
+        const provider = new BrowserProvider(providerArg)
+        const router = new Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
-        const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+        const factory = new Contract(factoryAdd, FactoryABI, provider)
         return new Promise((resolve, reject) => {
             if (active === false) {
                 console.log("NOT listening for pool")
@@ -223,8 +223,8 @@ export function usePools(routerAddress) {
 
     async function checkAllowance(tokenAddress, owner, spender, providerArg) {
         try {
-            const provider = new ethers.BrowserProvider(providerArg)
-            const token = new ethers.Contract(tokenAddress, TokenABI, provider)
+            const provider = new BrowserProvider(providerArg)
+            const token = new Contract(tokenAddress, TokenABI, provider)
             const allowance = await token.allowance(owner, spender)
             return allowance
         } catch (err) {
@@ -245,10 +245,10 @@ export function usePools(routerAddress) {
 
     async function redeemLiquidity(redeemProcent, providerArg) {
         if (lpTokenAddress.value && liquidityTokenBalance.value) {
-            const provider = new ethers.BrowserProvider(providerArg)
+            const provider = new BrowserProvider(providerArg)
             const signer = await provider.getSigner()
-            const router = new ethers.Contract(routerAddress, RouterABI, signer)
-            const amount = ethers.parseEther(liquidityTokenBalance.value)
+            const router = new Contract(routerAddress, RouterABI, signer)
+            const amount = parseEther(liquidityTokenBalance.value)
             const amountFraction = `${(amount * BigInt(redeemProcent)) / BigInt(100)}`
             const blockTimestamp = (await provider.getBlock("latest")).timestamp
             const deadline = blockTimestamp + 360
@@ -275,7 +275,7 @@ export function usePools(routerAddress) {
     // async function approveSpending(tokenAddress, provider) {
     async function approveSpending(tokenAddress, provider, amount, callback = false) {
         const signer = await provider.getSigner()
-        const erc20 = new ethers.Contract(tokenAddress, TokenABI, signer)
+        const erc20 = new Contract(tokenAddress, TokenABI, signer)
         const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
         const tx = await erc20.approve(routerAddress, maxUint)
         // const tx = await erc20.approve(routerAddress, amount)

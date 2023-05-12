@@ -197,7 +197,8 @@
 <script setup>
 import { inject } from "vue"
 
-import { ethers } from "ethers"
+// import { ethers } from "ethers"
+import { BrowserProvider, Contract, parseEther } from "ethers"
 
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
@@ -214,7 +215,6 @@ import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 
 import * as Pool from "../ABIs/Pool.json"
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript"
 const PoolABI = Pool.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -295,7 +295,7 @@ function callAddLiquidity() {
 
 // function callApproveSpending(address) {
 function callApproveSpending(address, amount) {
-    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
     // approveSpending(address, provider)
     approveSpending(address, provider, amount, getAllowances)
 }
@@ -366,7 +366,7 @@ const ABAmounts = computed({
     },
 })
 const ABAmountsUint = computed(() => {
-    return ABAmounts.value.map((el) => (el !== "" ? ethers.parseEther(el) : 0))
+    return ABAmounts.value.map((el) => (el !== "" ? parseEther(el) : 0))
 })
 const bothAmountsIn = computed(() => {
     return ABAmounts.value.every((el) => el !== "")
@@ -464,9 +464,9 @@ async function setEars(listen, poolAdd = unhandled) {
         pool.on("LiquidityChange", null)
         return
     }
-    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
+    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
     console.log("poolAdd:", poolAdd)
-    const pool = new ethers.Contract(poolAdd, PoolABI, provider)
+    const pool = new Contract(poolAdd, PoolABI, provider)
 
     console.log("setting listener")
     pool.on("LiquidityChange", () => {
@@ -516,7 +516,7 @@ watch(
 
 async function getAllowances() {
     ABTokens.value.forEach(async (el1, index1) => {
-        const allowance = el1 !== null ? BigInt(await getApprovedAmount(el1.address)) : BigInt(0n)
+        const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
         ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
     })
 }
