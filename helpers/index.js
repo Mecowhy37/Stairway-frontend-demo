@@ -74,7 +74,6 @@ export function usePools(routerAddress) {
     const lpTokenAddress = ref(null)
     const liquidityTokenBalance = ref(null)
     const lpTotalSupply = ref(null)
-    const factory = ref()
     const interval = ref()
     const iterations = ref(0)
     const waitingForAdding = ref(false)
@@ -137,6 +136,12 @@ export function usePools(routerAddress) {
         lpTotalSupply.value = await getTotalSupply(lpToken)
     }
 
+    const poolShare = computed(() => {
+        return liquidityTokenBalance.value && lpTotalSupply.value
+            ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
+            : null
+    })
+
     async function getBidAsk(addressA, addressB, providerArg) {
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
@@ -196,28 +201,45 @@ export function usePools(routerAddress) {
             })
     }
 
-    async function setPoolCreationListener(providerArg, active = true) {
+    async function setPoolCreationListener(providerArg) {
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
         const factory = new Contract(factoryAdd, FactoryABI, provider)
         return new Promise((resolve, reject) => {
-            if (active === false) {
-                console.log("NOT listening for pool")
-                factory.off("PoolCreated", creationHandler)
-                return
-            }
-            console.log("listening for pool")
-            factory.once("PoolCreated", creationHandler)
+            console.log("listening for pool created")
+            factory.on("PoolCreated", creationHandler)
 
-            function creationHandler(thisToken, thatToken, newPoolAddress, extras, extras2, extras3) {
-                console.log("extras:", extras)
-                console.log("extras2:", extras2)
-                console.log("extras3:", extras3)
+            function creationHandler(thisToken, thatToken, newPoolAddress) {
                 console.log("pool created:", newPoolAddress)
                 factory.off("PoolCreated", creationHandler)
                 resolve([thisToken, thatToken, newPoolAddress])
             }
+        })
+    }
+    let currentPoolContract = null
+    function setLiquidityChangeListener(providerArg) {
+        const provider = new BrowserProvider(providerArg)
+        const newPoolContract = new Contract(poolAddress.value, PoolABI, provider)
+        return new Promise((resolve, reject) => {
+            if (currentPoolContract) {
+                console.log("removing previous change listener")
+                currentPoolContract.off("LiquidityChange", liquidityHandler)
+            }
+
+            console.log("setting change listener for new pool")
+            newPoolContract.on("LiquidityChange", liquidityHandler)
+
+            function liquidityHandler(beneficiary, thisIn, thatIn, thisOut, thatOut, contract) {
+                const poolAdd = contract.emitter.target
+                console.log("liqudity changed in pool: ", poolAdd)
+
+                newPoolContract.off("LiquidityChange", liquidityHandler)
+                currentPoolContract = null
+
+                resolve([beneficiary, thisIn, thatIn, thisOut, thatOut, poolAdd])
+            }
+            currentPoolContract = newPoolContract
         })
     }
 
@@ -243,58 +265,54 @@ export function usePools(routerAddress) {
         lpTotalSupply.value = null
     }
 
-    async function redeemLiquidity(redeemProcent, providerArg) {
-        if (lpTokenAddress.value && liquidityTokenBalance.value) {
-            const provider = new BrowserProvider(providerArg)
-            const signer = await provider.getSigner()
-            const router = new Contract(routerAddress, RouterABI, signer)
-            const amount = parseEther(liquidityTokenBalance.value)
-            const amountFraction = `${(amount * BigInt(redeemProcent)) / BigInt(100)}`
-            const blockTimestamp = (await provider.getBlock("latest")).timestamp
-            const deadline = blockTimestamp + 360
-
+    async function redeemLiquidity(tokenA, tokenB, redeemPercent, connectedAccount, providerArg) {
+        await setupPool(poolAddress.value, [tokenA, tokenB], providerArg)
+        if (poolShare.value) {
             try {
-                await approveSpending(lpTokenAddress.value, amountFraction, provider)
-                await router
-                    .redeemLiquidity(lpTokenAddress.value, amountFraction, deadline)
-                    .then((res) => {
-                        console.log(res)
-                    })
-                    .catch((err) => {
-                        console.error("redeem error: ", err)
-                    })
+                const provider = new BrowserProvider(providerArg)
+                const signer = await provider.getSigner()
+                const router = new Contract(routerAddress, RouterABI, signer)
+
+                const tokenList = [tokenA, tokenB]
+                const orderedTokens = tokenA === baseTokenAddress.value ? tokenList : tokenList.reverse()
+
+                const amount0 = parseEther(String((thisReserve.value * poolShare.value * redeemPercent) / 10000))
+                const amount1 = parseEther(String((thatReserve.value * poolShare.value * redeemPercent) / 10000))
+                const lqAmount = parseEther(String((liquidityTokenBalance.value * redeemPercent) / 100))
+                const blockTimestamp = (await provider.getBlock("latest")).timestamp
+                const deadline = blockTimestamp + 360
+
+                await approveSpending(lpTokenAddress.value, providerArg, lqAmount).then(() => {
+                    router.redeemLiquidity(...orderedTokens, amount0, amount1, lqAmount, connectedAccount, deadline)
+                })
             } catch (err) {
-                console.log("err i  her: ", err)
+                console.log("failed to redeem liquidity: ", err)
             }
-            // Promise.all([approval, redeeming]).catch((err) => {
-            //     console.log(err)
-            // })
         }
     }
 
     // async function approveSpending(tokenAddress, provider) {
-    async function approveSpending(tokenAddress, provider, amount, callback = false) {
+    async function approveSpending(tokenAddress, providerArg, amount, callback = false) {
+        const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const erc20 = new Contract(tokenAddress, TokenABI, signer)
         const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-        const tx = await erc20.approve(routerAddress, maxUint)
-        // const tx = await erc20.approve(routerAddress, amount)
-        const receipt = await tx.wait(1)
-        await listenForTransactionMine(tx, provider)
-        if (callback !== false) {
-            callback()
-        }
-        console.log("Done!")
-
-        function listenForTransactionMine(txRes, provider) {
-            console.log(`Mining ${txRes.hash}...`)
-            return new Promise((resolve, reject) => {
-                provider.once(txRes.hash, async (txReciept) => {
-                    resolve()
-                })
+        const quantity = amount === 0 ? maxUint : amount
+        const tx = await erc20.approve(routerAddress, quantity)
+        await tx.wait(1)
+        return await listenForTransactionMine(tx, provider, callback)
+    }
+    function listenForTransactionMine(txRes, provider, callback = false) {
+        console.log(`Mining ${txRes.hash}...`)
+        return new Promise((resolve, reject) => {
+            provider.once(txRes.hash, async (txReciept) => {
+                if (callback !== false) {
+                    callback()
+                }
+                resolve()
+                console.log("Done!")
             })
-        }
-        return
+        })
     }
 
     return {
@@ -306,6 +324,7 @@ export function usePools(routerAddress) {
         baseTokenAddress,
         poolRatio,
         findPool,
+        poolShare,
         setupPool,
         checkAllowance,
         lpTotalSupply,
@@ -319,6 +338,6 @@ export function usePools(routerAddress) {
         resetPool,
         redeemLiquidity,
         setPoolCreationListener,
-        factory,
+        setLiquidityChangeListener,
     }
 }

@@ -2,7 +2,7 @@
     <div class="widget">
         <!-- {{ bidAskFormat[0] }} -->
         <!-- {{ bidAskFormat[1] }} -->
-        <!-- {{ state.tokenToSellIndex }} -->
+        {{ poolAddress }}
         <div class="top-bar row">
             <!-- {{ id }} -->
             <Dropdown>
@@ -122,7 +122,7 @@
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
 import { useTempStore } from "@/stores/temp"
-import { ethers } from "ethers"
+import { BrowserProvider, Contract, formatUnits } from "ethers"
 
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
@@ -148,8 +148,8 @@ const { bidAsk, getBidAsk, bidAskFormat, baseTokenAddress, poolAddress, resetPoo
     stepStore.routerAddress
 )
 async function mystery() {
-    const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
-    const pool = new ethers.Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", PoolABI, provider)
+    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+    const pool = new Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", PoolABI, provider)
     const thisToken = await pool.thisToken()
     console.log("broadcast pool address", "0x5FbDB2315678afecb367f032d93F642f64180aa3")
     console.log("pool.thisToken:", thisToken)
@@ -157,10 +157,10 @@ async function mystery() {
     console.log("pool.thatToken:", thatToken)
     console.log("_____________________________")
 
-    // const router = new ethers.Contract(stepStore.routerAddress, RouterABI, provider)
+    // const router = new Contract(stepStore.routerAddress, RouterABI, provider)
     // const factoryAdd = await router.factory()
     // console.log("factoryAdd:", factoryAdd)
-    // const factory = new ethers.Contract(factoryAdd, FactoryABI, provider)
+    // const factory = new Contract(factoryAdd, FactoryABI, provider)
 
     // const poolFromF = await factory.getPool(thisToken, thatToken)
     // console.log("factory.getPool(this, that) = ", poolFromF)
@@ -285,10 +285,10 @@ async function getBalance(token, both = false) {
         }
 
         // console.log("getting it")
-        const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
-        const tokenContract = new ethers.Contract(token.address, TokenABI, provider)
+        const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+        const tokenContract = new Contract(token.address, TokenABI, provider)
         const balance = await tokenContract.balanceOf(stepStore.connectedAccount)
-        const formatedBalance = ethers.formatUnits(balance, token.decimals)
+        const formatedBalance = formatUnits(balance, token.decimals)
         if (ABTokens.value.indexOf(token) === 0) {
             state.balanceA = formatedBalance
         } else {
@@ -319,8 +319,8 @@ function setToken(token) {
 }
 async function swap() {
     try {
-        const provider = new ethers.BrowserProvider(stepStore.connectedWallet.provider)
-        const router = new ethers.Contract(stepStore.routerAddress, RouterABI, provider)
+        const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+        const router = new Contract(stepStore.routerAddress, RouterABI, provider)
 
         const baseTokenIndex = switchedTokens.value.indexOf(
             switchedTokens.value.find((el) => el.address === baseTokenAddress.value)
@@ -332,7 +332,7 @@ async function swap() {
         // console.log("price:", price)
         console.log("baseTokenIndex:", baseTokenIndex)
         console.log("tokenToSellIndex", state.tokenToSellIndex)
-        // const sellToken = new ethers.Contract(switchedTokens.value[0], TokenABI, provider.getSigner())
+        // const sellToken = new Contract(switchedTokens.value[0], TokenABI, provider.getSigner())
         // await sellToken.approve(stepStore.routerAddress, state.sellAmount)
 
         // buy(baseToken, qouteToken, desiredAmount, maxPrice, deadline)

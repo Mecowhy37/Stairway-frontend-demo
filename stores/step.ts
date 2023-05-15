@@ -1,11 +1,14 @@
 import type { Ref } from "vue"
 import { defineStore } from "pinia"
-import { ethers } from "ethers"
+import { BrowserProvider, Contract } from "ethers"
 import { init, useOnboard } from "@web3-onboard/vue"
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
 import * as Router from "../ABIs/DEX.json"
 const RouterABI = Router.default
+
+import * as Factory from "../ABIs/Factory.json"
+const FactoryABI = Factory.default
 
 import injectedModule from "@web3-onboard/injected-wallets"
 declare global {
@@ -61,35 +64,6 @@ export const useStepStore = defineStore("step", (): any => {
                 enabled: false,
             },
         },
-        // apiKey: "df032d43-e68f-4e04-8fc8-a30d5ba8d157",
-        // notify: {
-        //     desktop: {
-        //       enabled: true,
-        //       transactionHandler: transaction => {
-        //         console.log('tx: ',{ transaction })
-        //         // if (transaction.eventCode === 'txPool') {
-        //           return {
-        //             type: 'success',
-        //             message: 'Your transaction from #1 DApp is in the mempool',
-        //           }
-        //         // }
-        //       },
-        //       position: 'bottomLeft'
-        //     },
-        //     mobile: {
-        //       enabled: true,
-        //       transactionHandler: transaction => {
-        //         console.log({ transaction })
-        //     //     if (transaction.eventCode === 'txPool') {
-        //     //       return {
-        //     //         type: 'success',
-        //     //         message: 'Your transaction from #1 DApp is in the mempool',
-        //     //       }
-        //     //     }
-        //       },
-        //       position: 'topRight'
-        //     }
-        //   },
         connect: {
             autoConnectLastWallet: true,
         },
@@ -116,6 +90,7 @@ export const useStepStore = defineStore("step", (): any => {
     const poolTokensCmp = computed(() => {
         return [poolTokens.A, poolTokens.B]
     })
+
     const swapTokensCmp = computed(() => {
         return [swapTokens.A, swapTokens.B]
     })
@@ -128,22 +103,12 @@ export const useStepStore = defineStore("step", (): any => {
     const bothPoolTokenAddresses = computed(() => bothPoolTokensThere.value ? poolTokensCmp.value.map(el => el.address) : null)
     
 
-
     // const { updateBalance } = useBalances()
     // const { getBidAsk } = usePools(routerAddress)
 
     // watch(allTokens, (newValue, oldValue) => {
     //     updateBalance(newValue, oldValue)
     // })
-
-
-    // const swapAddress = ref(null)
-    // watch(swapTokensCmp, async (newValue) => {
-    //     if (bothSwapTokensThere && connectedWallet){
-    //         swapAddress.value = getBidAsk(...bothSwapTokenAddresses.value, connectedWallet.value.provider)
-    //     }
-    // })
-
 
 
     const connectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null)
@@ -165,20 +130,6 @@ export const useStepStore = defineStore("step", (): any => {
         })
     }
 
-    async function tryWallet() {
-        
-        console.log(connectedWallet.value?.accounts)
-
-        // let eth
-        // let account
-        // if (window.ethereum) {
-        //   eth = window.ethereum;
-        //   account = await eth.request({ method: "eth_accounts" })
-        //   console.log(connectedWallet.value)
-        //   console.log(account)
-        // }
-    }
-
     // const state = onboard.state.select()
     // const {unsubscribe} = state.subscribe(update =>
     //     console.log('state update: ', update)
@@ -186,21 +137,6 @@ export const useStepStore = defineStore("step", (): any => {
 
     // remember to unsubscribe when updates are no longer needed
     // unsubscribe()
-
-    // async function initialize() {
-    //     const eth = window.ethereum
-    //     if (!eth) {
-    //       console.log("Please install MetaMask extension to your browser")
-    //     }
-
-    //     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    //     // console.log("MetaMask is installed!")
-    //     console.log(provider)
-
-    //     const eth = window.ethereum
-    //     const account = await eth.request({ method: "eth_accounts" })
-    //     activeWallet.value = account.length !== 0 ? account[0] : null
-    // }
 
     return {
         onboard,
@@ -212,7 +148,6 @@ export const useStepStore = defineStore("step", (): any => {
         poolTokens,
         allTokens,
 
-        // poolAddress,
         poolTokensCmp,
         bothPoolTokensThere,
         bothPoolTokenAddresses,
@@ -222,7 +157,6 @@ export const useStepStore = defineStore("step", (): any => {
 
         connectedChain,
         isConnectingText,
-        activeWallet,
         connectWallet,
         connectWalletAction,
         connectedWallet,
@@ -232,7 +166,6 @@ export const useStepStore = defineStore("step", (): any => {
 
         connectedAccount,
         getTruncatedWalletAddress,
-        tryWallet,
     }
 })
 // tokenList,

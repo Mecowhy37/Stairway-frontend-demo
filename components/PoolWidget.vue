@@ -1,7 +1,6 @@
 <template>
     <div class="widget white-box">
         <div class="top-bar row">
-            <!-- {{ `[${String(ABAllowance[0])}, ${String(ABAllowance[1])}]` }} <br /> -->
             {{ poolAddress }} <br />
             {{ String(bidAsk) }} <br />
             <Dropdown>
@@ -119,13 +118,6 @@
             >
                 {{ waitingForAdding ? "waiting for pool" : "create pool" }}
             </Btn>
-            <Btn
-                @click="printAllowance()"
-                wide
-                bulky
-            >
-                printAllowance()
-            </Btn>
             <!-- @click="addLiquidity()" -->
             <Btn
                 v-if="canAddLiquidity"
@@ -137,13 +129,13 @@
             >
                 {{ waitingForAdding ? "waiting for pool" : "add liquidity" }}
             </Btn>
-            <Btn
+            <!-- <Btn
                 wide
                 bulky
                 @click="getPoolInf()"
             >
                 check pool
-            </Btn>
+            </Btn> -->
         </div>
     </div>
     <div
@@ -152,14 +144,14 @@
     >
         <div class="info-box green-box green-box--padded">
             <p>your pool share: {{ poolShare }}%</p>
-            <p>procent to redeem: {{ state.redeemProcent }}%</p>
+            <p>procent to redeem: {{ state.redeemPercent }}%</p>
             <div class="inputs-flex">
                 <input
                     type="range"
                     min="0"
                     max="100"
                     step="1"
-                    v-model="state.redeemProcent"
+                    v-model="state.redeemPercent"
                 />
                 <p @click="setRedeemProc(25)">25%</p>
                 <p @click="setRedeemProc(50)">50%</p>
@@ -171,16 +163,16 @@
                 pooled {{ ABTokens[0]?.symbol }}:
                 {{
                     ABTokens[0]?.address === baseTokenAddress
-                        ? (thisReserve * state.redeemProcent) / 100
-                        : (thatReserve * state.redeemProcent) / 100
+                        ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
+                        : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
                 }}
             </p>
             <p>
                 pooled {{ ABTokens[1]?.symbol }}:
                 {{
                     ABTokens[1]?.address === baseTokenAddress
-                        ? (thisReserve * state.redeemProcent) / 100
-                        : (thatReserve * state.redeemProcent) / 100
+                        ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
+                        : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
                 }}
             </p>
         </div>
@@ -197,7 +189,6 @@
 <script setup>
 import { inject } from "vue"
 
-// import { ethers } from "ethers"
 import { BrowserProvider, Contract, parseEther } from "ethers"
 
 import { storeToRefs } from "pinia"
@@ -215,6 +206,7 @@ import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 
 import * as Pool from "../ABIs/Pool.json"
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript"
 const PoolABI = Pool.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -224,11 +216,12 @@ const { poolTokens } = storeToRefs(stepStore)
 const {
     approveSpending,
     bidAsk,
-    poolAddress,
     baseTokenAddress,
     poolRatio,
     thisReserve,
     thatReserve,
+    poolAddress,
+    poolShare,
     findPool,
     setupPool,
     checkAllowance,
@@ -241,7 +234,7 @@ const {
     resetPool,
     redeemLiquidity,
     setPoolCreationListener,
-    factory,
+    setLiquidityChangeListener,
 } = usePools(stepStore.routerAddress)
 
 const state = reactive({
@@ -253,7 +246,7 @@ const state = reactive({
     balanceB: null,
     selectTokenIndex: 0,
     lastChangedToken: 0,
-    redeemProcent: 50,
+    redeemPercent: 100,
 })
 //modal stuff----------
 const toggleTokenModal = inject("modal")
@@ -274,10 +267,15 @@ function getPoolInf() {
     findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
 }
 function setRedeemProc(proc) {
-    state.redeemProcent = proc
+    state.redeemPercent = proc
 }
 function redeemLiquidityCall() {
-    redeemLiquidity(state.redeemProcent, stepStore.connectedWallet.provider)
+    redeemLiquidity(
+        ...stepStore.bothPoolTokenAddresses,
+        state.redeemPercent,
+        stepStore.connectedAccount,
+        stepStore.connectedWallet.provider
+    )
 }
 function callAddLiquidity() {
     addLiquidity(
@@ -292,24 +290,35 @@ function callAddLiquidity() {
         state.amountB = ""
     })
 }
-
 // function callApproveSpending(address) {
 function callApproveSpending(address, amount) {
-    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
-    // approveSpending(address, provider)
-    approveSpending(address, provider, amount, getAllowances)
+    if (stepStore.connectedWallet) {
+        approveSpending(address, stepStore.connectedWallet.provider, 0, getAllowances)
+    }
 }
-
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
     ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
+async function getAllowances() {
+    ABTokens.value.forEach(async (el1, index1) => {
+        const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
+        ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
+    })
+}
+async function getApprovedAmount(address) {
+    try {
+        return await checkAllowance(
+            address,
+            stepStore.connectedAccount,
+            stepStore.routerAddress,
+            stepStore.connectedWallet.provider
+        )
+    } catch (err) {
+        console.log("failed to get appoved amounts", err)
+    }
+}
 
-const poolShare = computed(() => {
-    return liquidityTokenBalance.value && lpTotalSupply.value
-        ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
-        : null
-})
 const ABTokens = computed({
     get() {
         return [poolTokens.value.A, poolTokens.value.B]
@@ -399,7 +408,7 @@ const isSuffientAllowance = computed(() => {
 
 watch(
     () => [stepStore.bothPoolTokenAddresses, stepStore.connectedAccount],
-    async (newVal, oldVal) => {
+    (newVal, oldVal) => {
         const [bothTokens, wallet] = [...newVal]
         const [prevBothTokens, prevWallet] = oldVal ? [oldVal[0], oldVal[1]] : [null, null]
         if (bothTokens && wallet) {
@@ -407,14 +416,7 @@ watch(
                 (prevBothTokens !== bothTokens && prevWallet === wallet) ||
                 (prevBothTokens === bothTokens && prevWallet !== wallet)
             ) {
-                const currentPool = poolAddress.value
-                const newPool = await findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-                if (currentPool === newPool && newPool === unhandled) {
-                    console.log("off on")
-                    resetPool()
-                    setPoolCreationListener(stepStore.connectedWallet.provider, false)
-                    receiveAndSetAPool()
-                }
+                findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
             }
             return
         }
@@ -426,53 +428,69 @@ watch(
         immediate: true,
     }
 )
-onMounted(() => {
-    if (stepStore.bothPoolTokenAddresses && stepStore.connectedAccount) {
-        findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-    }
-})
 
-watch(poolAddress, async (poolAdd, prevPoolAdd) => {
-    if (!(poolAdd === unhandled || poolAdd === "")) {
-        console.log("exists")
-        setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-        setPoolCreationListener(stepStore.connectedWallet.provider, false)
-    } else if (poolAdd === unhandled) {
-        console.log("unhandled")
-        resetPool()
-        receiveAndSetAPool()
-    } else {
-        console.log("empty")
-        resetPool()
-        setPoolCreationListener(stepStore.connectedWallet.provider, false)
-    }
-})
-
-async function receiveAndSetAPool() {
-    await setPoolCreationListener(stepStore.connectedWallet.provider).then(([thisToken, thatToken, newPoolAddress]) => {
-        const incoming = [thisToken, thatToken]
-        const current = stepStore.bothPoolTokenAddresses
-        if (current?.every((el) => incoming.includes(el))) {
-            console.log("setting new pool")
-            poolAddress.value = newPoolAddress
+watch(
+    poolAddress,
+    async (poolAdd, prevPoolAdd) => {
+        if (stepStore.connectedWallet) {
+            getAllowances()
+            if (!(poolAdd === unhandled || poolAdd === "")) {
+                setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+                function setOverAgain() {
+                    setLiquidityChangeListener(stepStore.connectedWallet.provider).then(
+                        ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
+                            if (poolContractAddress === poolAddress.value) {
+                                setupPool(
+                                    poolContractAddress,
+                                    stepStore.bothPoolTokenAddresses,
+                                    stepStore.connectedWallet.provider
+                                )
+                            }
+                            setOverAgain()
+                        }
+                    )
+                }
+                setOverAgain()
+            } else {
+                resetPool()
+            }
         }
-    })
-}
-
-async function setEars(listen, poolAdd = unhandled) {
-    if (poolAdd === unhandled || listen === false) {
-        pool.on("LiquidityChange", null)
-        return
+    },
+    {
+        immediate: true,
     }
-    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
-    console.log("poolAdd:", poolAdd)
-    const pool = new Contract(poolAdd, PoolABI, provider)
+)
 
-    console.log("setting listener")
-    pool.on("LiquidityChange", () => {
-        console.log("o kurwa")
-    })
-}
+const allowNewContracts = ref(false)
+watch(
+    () => stepStore.connectedWallet,
+    (wallet) => {
+        if (!wallet) {
+            allowNewContracts.value = true
+            return
+        }
+        if (wallet && allowNewContracts.value) {
+            function setOverAgain() {
+                setPoolCreationListener(stepStore.connectedWallet.provider).then(
+                    ([thisToken, thatToken, newPoolAddress]) => {
+                        const incoming = [thisToken, thatToken]
+                        const current = stepStore.bothPoolTokenAddresses
+                        if (current?.every((el) => incoming.includes(el))) {
+                            console.log("setting new pool")
+                            poolAddress.value = newPoolAddress
+                        }
+                        setOverAgain()
+                    }
+                )
+            }
+            setOverAgain()
+            allowNewContracts.value = false
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 
 watch(
     () => [ABTokens.value, stepStore.connectedWallet],
@@ -489,7 +507,7 @@ watch(
 
         // }
 
-        if (wallet !== null) {
+        if (wallet) {
             getAllowances()
         } else {
             ABAllowance.value = ["", ""]
@@ -504,39 +522,16 @@ watch(
         //     }
         // }
         // })
-
-        // things I want to achive
-        // if
-        // when both tokens are there I want find a pool
     },
     {
         immediate: true,
     }
 )
-
-async function getAllowances() {
-    ABTokens.value.forEach(async (el1, index1) => {
-        const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
-        ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
-    })
-}
-function printAllowance() {
-    getAllowances()
-    console.log("ABAllowancecd:", ABAllowance.value)
-}
-
-async function getApprovedAmount(address) {
-    const allowance = await checkAllowance(
-        address,
-        stepStore.connectedAccount,
-        stepStore.routerAddress,
-        stepStore.connectedWallet.provider
-    ).catch((err) => {
-        console.log("finshed executing apporval getter with error")
-        retrurn
-    })
-    return allowance
-}
+onMounted(() => {
+    if (stepStore.connectedWallet && stepStore.bothPoolTokensThere) {
+        findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+    }
+})
 </script>
 
 <style lang="scss" scoped>
