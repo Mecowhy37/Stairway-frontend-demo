@@ -201,45 +201,73 @@ export function usePools(routerAddress) {
             })
     }
 
+    let currentFactoryContract = null
     async function setPoolCreationListener(providerArg) {
+        if (providerArg === false) {
+            if (currentFactoryContract) {
+                console.log("FACTORY - turn off 'poolCreated'")
+                currentFactoryContract.off("PoolCreated")
+                currentFactoryContract = null
+            }
+            return
+        }
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
-        const factory = new Contract(factoryAdd, FactoryABI, provider)
+        const newFactoryContract = new Contract(factoryAdd, FactoryABI, provider)
         return new Promise((resolve, reject) => {
-            console.log("listening for pool created")
-            factory.on("PoolCreated", creationHandler)
+            if (currentFactoryContract) {
+                console.log("FACTORY - removing 'poolCreated'")
+                currentFactoryContract.off("PoolCreated", creationHandler)
+            }
+
+            console.log("FACTORY - listening for 'poolCreated'")
+            newFactoryContract.on("PoolCreated", creationHandler)
 
             function creationHandler(thisToken, thatToken, newPoolAddress) {
-                console.log("pool created:", newPoolAddress)
-                factory.off("PoolCreated", creationHandler)
+                console.log("FACTORY - pool created:", newPoolAddress)
+
+                newFactoryContract.off("PoolCreated", creationHandler)
+                currentFactoryContract = null
+
                 resolve([thisToken, thatToken, newPoolAddress])
             }
+            currentFactoryContract = newFactoryContract
         })
     }
-    let currentPoolContract = null
-    function setLiquidityChangeListener(providerArg) {
+
+    let currentPoolContracts = []
+    function setLiquidityChangeListener(providerArg, poolAdd = false) {
+        if (providerArg === false) {
+            console.log("POOL - turn off all listeners")
+            currentPoolContracts.forEach((el) => el.off("LiquidityChange"))
+            currentPoolContracts = []
+            return
+        }
         const provider = new BrowserProvider(providerArg)
-        const newPoolContract = new Contract(poolAddress.value, PoolABI, provider)
+        const addressToContract = !poolAdd ? poolAddress.value : poolAdd
+        const newPoolContract = new Contract(addressToContract, PoolABI, provider)
+        const currentPoolMap = currentPoolContracts.map((el) => el && el.target)
+
         return new Promise((resolve, reject) => {
-            if (currentPoolContract) {
-                console.log("removing previous change listener")
-                currentPoolContract.off("LiquidityChange", liquidityHandler)
+            if (currentPoolMap.includes(newPoolContract.target)) {
+                console.log("POOL - pool already listening")
+                return
             }
 
-            console.log("setting change listener for new pool")
+            console.log("POOL - listening for 'liquidityChange'")
             newPoolContract.on("LiquidityChange", liquidityHandler)
+            currentPoolContracts.push(newPoolContract)
 
             function liquidityHandler(beneficiary, thisIn, thatIn, thisOut, thatOut, contract) {
                 const poolAdd = contract.emitter.target
-                console.log("liqudity changed in pool: ", poolAdd)
+                console.log("POOL - liqudity changed in: ", poolAdd)
 
                 newPoolContract.off("LiquidityChange", liquidityHandler)
-                currentPoolContract = null
+                currentPoolContracts = currentPoolContracts.filter((el) => el.target !== newPoolContract.target)
 
                 resolve([beneficiary, thisIn, thatIn, thisOut, thatOut, poolAdd])
             }
-            currentPoolContract = newPoolContract
         })
     }
 

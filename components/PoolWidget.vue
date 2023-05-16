@@ -301,10 +301,12 @@ function setTokenAmount(event, inputIndex) {
     ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
 async function getAllowances() {
-    ABTokens.value.forEach(async (el1, index1) => {
-        const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
-        ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
-    })
+    if (stepStore.connectedWallet) {
+        ABTokens.value.forEach(async (el1, index1) => {
+            const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
+            ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
+        })
+    }
 }
 async function getApprovedAmount(address) {
     try {
@@ -422,6 +424,7 @@ watch(
         }
         if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
             poolAddress.value = ""
+            // resetPool()
         }
     },
     {
@@ -429,31 +432,44 @@ watch(
     }
 )
 
+function setupLiquidityChange(providerArg, poolAdd = false) {
+    if (providerArg === false) {
+        setLiquidityChangeListener(false)
+        return
+    }
+    setLiquidityChangeListener(providerArg, poolAdd).then(
+        ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
+            if (poolContractAddress === poolAddress.value) {
+                setupPool(poolContractAddress, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            }
+            setupLiquidityChange(stepStore.connectedWallet.provider, poolContractAddress)
+        }
+    )
+}
+function setupPoolCreated(providerArg) {
+    if (providerArg === false) {
+        setPoolCreationListener(false)
+        return
+    }
+    setPoolCreationListener(providerArg).then(([thisToken, thatToken, newPoolAddress]) => {
+        const incoming = [thisToken, thatToken]
+        const current = stepStore.bothPoolTokenAddresses
+        if (current?.every((el) => incoming.includes(el))) {
+            console.log("setting new pool")
+            poolAddress.value = newPoolAddress
+        }
+        setupPoolCreated(stepStore.connectedWallet.provider)
+    })
+}
 watch(
     poolAddress,
-    async (poolAdd, prevPoolAdd) => {
-        if (stepStore.connectedWallet) {
-            getAllowances()
-            if (!(poolAdd === unhandled || poolAdd === "")) {
-                setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-                function setOverAgain() {
-                    setLiquidityChangeListener(stepStore.connectedWallet.provider).then(
-                        ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
-                            if (poolContractAddress === poolAddress.value) {
-                                setupPool(
-                                    poolContractAddress,
-                                    stepStore.bothPoolTokenAddresses,
-                                    stepStore.connectedWallet.provider
-                                )
-                            }
-                            setOverAgain()
-                        }
-                    )
-                }
-                setOverAgain()
-            } else {
-                resetPool()
-            }
+    (poolAdd, prevPoolAdd) => {
+        getAllowances()
+        if (!(poolAdd === unhandled || poolAdd === "")) {
+            setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            setupLiquidityChange(stepStore.connectedWallet.provider)
+        } else {
+            resetPool()
         }
     },
     {
@@ -461,30 +477,17 @@ watch(
     }
 )
 
-const allowNewContracts = ref(false)
 watch(
-    () => stepStore.connectedWallet,
-    (wallet) => {
-        if (!wallet) {
-            allowNewContracts.value = true
+    () => stepStore.connectedAccount,
+    (wallet, prevWallet) => {
+        if (wallet !== prevWallet && wallet) {
+            setupPoolCreated(stepStore.connectedWallet.provider)
             return
         }
-        if (wallet && allowNewContracts.value) {
-            function setOverAgain() {
-                setPoolCreationListener(stepStore.connectedWallet.provider).then(
-                    ([thisToken, thatToken, newPoolAddress]) => {
-                        const incoming = [thisToken, thatToken]
-                        const current = stepStore.bothPoolTokenAddresses
-                        if (current?.every((el) => incoming.includes(el))) {
-                            console.log("setting new pool")
-                            poolAddress.value = newPoolAddress
-                        }
-                        setOverAgain()
-                    }
-                )
-            }
-            setOverAgain()
-            allowNewContracts.value = false
+        if (!wallet) {
+            setPoolCreationListener(false)
+            setLiquidityChangeListener(false)
+            // setLiquidityChangeListener(false)
         }
     },
     {
