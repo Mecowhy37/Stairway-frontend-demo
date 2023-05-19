@@ -1,38 +1,37 @@
 @use "./colors" as *;
 
 $dark-map: (
-    // widget
-    --widget-bg: $dark-green-1,
-    --primary-btn-bg: $light-pink,
-    --primary-btn-color: $dark-green-1,
-    // --primary-btn-outline: ,
-    --swap-windows: $dark-green-2,
+    --primary-btn-bg: #45ffc5,
+    --primary-btn-color: #1b1b1b,
+
+    --primary-disabled-bg: rgba(108, 108, 108, 0.3),
+    --primary-disabled-color: #b8b8b8,
+
     --flat-bg: $dark-green-2,
     --flat-outline: $dark-green-5,
     // else
-    --bg-gradient-light: linear-gradient(180deg, $light-orange-1 0%, $light-pink 53%, $light-pink 100%),
-    --bg-gradient-dark:
-        linear-gradient(180deg, $dark-green-1 0%, $dark-green-2 23%, $dark-green-3 53%, $dark-green-3 100%),
-    --main-color: $light-pink,
-    --inset-shadow: ($dark-green-2-op 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.2) 0px 18px 36px -18px inset),
+    --bg-gradient-light: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
+    --bg-gradient-dark: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
+    --inset-shadow: (
+        $dark-green-2-op 0px 30px 60px -12px inset,
+        rgba(0, 0, 0, 0.2) 0px 18px 36px -18px inset,
+    ),
     // ?
 );
 
 $light-map: (
-    //widget
-    --widget-bg: $white,
-    --primary-btn-bg: $green,
-    --primary-btn-color: $white,
-    // --primary-btn-outline: ,
-    --swap-windows: $light-green,
+    --primary-btn-bg: #45ffc5,
+    --primary-btn-color: #1b1b1b,
+
+    --primary-disabled-bg: rgba(108, 108, 108, 0.3),
+    --primary-disabled-color: #b8b8b8,
+
     --flat-bg: $light-orange-2,
     --flat-outline: $light-orange-3,
     // else
-    --bg-gradient-light: linear-gradient(180deg, $light-orange-1 0%, $light-pink 53%, $light-pink 100%),
-    --bg-gradient-dark:
-        linear-gradient(180deg, $dark-green-1 0%, $dark-green-2 23%, $dark-green-3 53%, $dark-green-3 100%),
-    --main-color: $dark-green-5,
-    --inset-shadow: none
+    --bg-gradient-dark: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
+    --bg-gradient-light: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
+    --inset-shadow: none,
 );
 
 @mixin spread-map($map: ()) {

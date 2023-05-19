@@ -1,26 +1,26 @@
 <template>
     <header class="navbar">
-        <h3 class="navbar__logo">StepSwap</h3>
+        <p class="navbar__logo">StepSwap</p>
         <nav class="navigation">
             <NuxtLink
                 to="/"
                 class="navigation__link"
-                ><h3>swap</h3></NuxtLink
+                ><p>swap</p></NuxtLink
             >
             <NuxtLink
                 to="/pool"
                 class="navigation__link"
-                ><h3>pool</h3></NuxtLink
+                ><p>pool</p></NuxtLink
             >
             <NuxtLink
                 to="/vote"
                 class="navigation__link"
-                ><h3>vote</h3></NuxtLink
+                ><p>vote</p></NuxtLink
             >
             <NuxtLink
                 to="/charts"
                 class="navigation__link"
-                ><h3>charts</h3></NuxtLink
+                ><p>charts</p></NuxtLink
             >
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->
@@ -36,16 +36,16 @@
                     <Btn plain>
                         Etheruem
                         <template #icon>
-                            <h3>
+                            <p>
                                 <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
-                            </h3>
+                            </p>
                         </template>
                     </Btn>
                 </template>
                 <template #dropdown>
                     <div class="networks-dd">
-                        <h3>1</h3>
-                        <h3>3</h3>
+                        <p>1</p>
+                        <p>3</p>
                     </div>
                 </template>
             </Dropdown>
@@ -54,19 +54,19 @@
                 class="cta-dd"
             >
                 <Btn
+                    ref="ctaDropDown"
                     transparent
                     @click="stepStore.connectWallet()"
-                    ref="ctaDropDown"
                     >connect</Btn
                 >
                 <div class="divider"></div>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
-                        <Btn transparent>
+                        <Btn transparent="true">
                             <template #icon>
-                                <h3>
+                                <p>
                                     <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
-                                </h3>
+                                </p>
                             </template>
                         </Btn>
                     </template>
@@ -91,9 +91,9 @@
                     >
                         {{ stepStore.getTruncatedWalletAddress }}
                         <template #icon>
-                            <h3>
+                            <p>
                                 <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
-                            </h3>
+                            </p>
                         </template>
                     </Btn>
                 </template>
@@ -154,7 +154,7 @@ function revertTheme() {
                 /* padding: 0 5%; */
                 border-radius: 1px;
                 width: calc(100% - 1.6rem);
-                background-color: var(--main-color);
+                background-color: var(--text-color);
                 transition: opacity ease-in-out 0.15s, background-color var(--transition);
                 transform: translateX(-50%);
             }

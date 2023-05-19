@@ -107,7 +107,7 @@ defineExpose({
             justify-content: space-between;
             width: 100%;
             padding: 1rem;
-            border-bottom: 1px solid var(--main-color);
+            border-bottom: 1px solid var(--text-color);
             &__close {
                 cursor: pointer;
             }

@@ -3,7 +3,10 @@
         id="base"
         :class="[stepStore.isDark ? themes.dark : themes.light]"
     >
-        <div class="bg-gradient bg-gradient--light"></div>
+        <div
+            class="bg-gradient bg-gradient--light"
+            :class="{ hide: stepStore.isDark }"
+        ></div>
         <div
             class="bg-gradient bg-gradient--dark"
             :class="{ hide: !stepStore.isDark }"
@@ -43,21 +46,22 @@ provide("modal", toggleTokenModal)
 <style lang="scss" module="themes" src="assets/main.scss"></style>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
 * {
-    color: var(--main-color);
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     transition: color var(--transition);
-    font-family: "Quicksand", sans-serif;
+    font-family: "DM Sans", sans-serif;
     font-weight: 500;
     user-select: none;
 }
 html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
-    font-size: calc(15px + (15 - 15) * ((100vw - 300px) / (1600 - 300)));
+    color: var(--text-color);
+    $size: 16px;
+    font-size: calc($size + 0 * ((100vw - 300px) / (1600 - 300)));
+    font-weight: 500;
 }
 body #base {
     display: grid;
@@ -72,18 +76,26 @@ body #base {
         }
     }
 }
+h1 {
+    font-size: 4rem;
+}
 h2 {
-    font-size: 2.6rem;
+    font-size: 2.25rem;
 }
 h3 {
+    font-size: 1.5rem;
+}
+h4 {
     font-size: 1.25rem;
 }
 p {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    &.caption {
+        font-size: 0.9rem;
+    }
 }
-.bolder {
-    font-size: 1.4rem;
-    font-weight: bolder;
+.text-highlight {
+    color: var(--primary-btn-bg);
 }
 
 .row {

@@ -2,11 +2,19 @@
 
 :root {
     --transition: 0.3s;
-    --outer-wdg-radius: 1.4rem;
-    --inner-wdg-radius: 1.1rem;
+    --outer-wdg-radius: 20px;
+    --inner-wdg-radius: 6px;
+    --small-wdg-radius: 3px;
 
     --account-center-position-top: 10%;
     --account-center-z-index: auto;
+
+    --text-color: #1b1b1b;
+    --text-color-reverse: #ffffff;
+    --text-grey: #b8b8b8;
+
+    --widget-bg: rgba(0, 0, 0, 0.8);
+    --swap-windows: rgba(0, 0, 0, 0.45);
 
     .light {
         @include spread-map($light-map);

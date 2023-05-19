@@ -18,7 +18,7 @@
         ]"
     >
         <component
-            is="h3"
+            :is="props.is"
             id="default-slot"
             :class="{ wicon: slots.icon && slots.default }"
         >
@@ -32,7 +32,7 @@
             <slot name="icon"></slot>
         </div>
         <span
-            v-if="props.loading"
+            v-if="loading"
             class="loader"
         ></span>
     </button>
@@ -44,19 +44,53 @@ import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
 
-const props = defineProps({
-    secondary: Boolean,
-    thin: Boolean,
-    wide: Boolean,
-    bulky: Boolean,
-    transparent: Boolean,
-    plain: Boolean,
-    pill: Boolean,
-    disabled: Boolean,
-    loading: Boolean,
-    compact: Boolean,
-    iconContrast: Boolean,
+export interface Props {
+    is?: string
+    secondary?: boolean
+    thin?: boolean
+    wide?: boolean
+    bulky?: boolean
+    transparent?: boolean
+    plain?: boolean
+    pill?: boolean
+    disabled?: boolean
+    loading?: boolean
+    compact?: boolean
+    iconContrast?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    is: "p",
 })
+
+// const {
+//     is = "p",
+//     secondary,
+//     thin,
+//     wide,
+//     bulky,
+//     transparent = false,
+//     plain,
+//     pill,
+//     disabled,
+//     loading,
+//     compact,
+//     iconContrast,
+// } = defineProps<{
+//     is?: String
+//     secondary?: Boolean
+//     thin?: Boolean
+//     wide?: Boolean
+//     bulky?: Boolean
+//     transparent?: Boolean
+//     plain?: Boolean
+//     pill?: Boolean
+//     disabled?: Boolean
+//     loading?: Boolean
+//     compact?: Boolean
+//     iconContrast?: Boolean
+// }>()
+
 const emits = defineEmits([])
 const slots = useSlots()
 const attrs = useAttrs()
@@ -78,11 +112,12 @@ $horiz-padd: 1rem;
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
     &:disabled {
-        opacity: 0.5;
+        background-color: var(--primary-disabled-bg);
+        color: var(--primary-disabled-color);
     }
     cursor: pointer;
     * {
-        color: var(--primary-btn-color);
+        /* color: var(--primary-btn-color); */
         pointer-events: none;
     }
     &:hover {
@@ -98,7 +133,7 @@ $horiz-padd: 1rem;
     &--plain {
         background-color: var(--flat-bg);
         * {
-            color: var(--main-color);
+            color: var(--text-color);
         }
         &:hover {
             border: 1px solid var(--flat-outline) !important;
@@ -122,7 +157,7 @@ $horiz-padd: 1rem;
         background-color: transparent;
         #icon-slot.icon-contrast {
             & * {
-                color: var(--main-color);
+                color: var(--text-color-reverse);
             }
         }
     }
@@ -133,7 +168,7 @@ $horiz-padd: 1rem;
         border-radius: 9999px;
     }
     &--bulky {
-        $height: 3.5rem;
+        $height: 2.8rem;
         height: $height;
         border-radius: var(--inner-wdg-radius);
     }

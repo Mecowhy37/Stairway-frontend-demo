@@ -1,22 +1,21 @@
 <template>
-    <div class="widget white-box">
+    <div class="widget base-wdg-box">
         <div class="top-bar row">
-            {{ poolAddress }} <br />
-            {{ String(bidAsk) }} <br />
+            <h3>Add Liquidity</h3>
+            <!-- {{ poolAddress }} <br /> -->
+            <!-- {{ String(bidAsk) }} <br /> -->
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn
                         transparent
-                        icon-contrast
                         compact
+                        icon-contrast
                     >
                         <template #icon>
-                            <h3>
-                                <mdicon
-                                    name="cog"
-                                    size="30"
-                                />
-                            </h3>
+                            <mdicon
+                                name="cog"
+                                size="30"
+                            />
                         </template>
                     </Btn>
                 </template>
@@ -29,50 +28,54 @@
                 </template>
             </Dropdown>
         </div>
+        <div class="tips">
+            <p><span class="text-highlight">Tip:</span> when you add liquidity</p>
+        </div>
         <div
             class="contents"
             v-for="(i, x) in new Array(2)"
         >
-            <div class="window green-box">
-                <label
-                    for="amount_1"
-                    @click="!waitingForAdding && openTokenSelectModal(x)"
-                >
-                    <h3
-                        class="bolder"
-                        v-if="ABTokens[x] !== null"
+            <div class="window layer-wdg-box">
+                <div class="window__upper">
+                    <label
+                        for="amount_1"
+                        @click="!waitingForAdding && openTokenSelectModal(x)"
                     >
-                        {{ ABTokens[x]?.symbol }}
-                    </h3>
-                    <h3
-                        class="bolder"
-                        v-else
-                    >
-                        select token
-                    </h3>
-                    <p v-if="balances[x] !== null">balance: {{ balances[x] }}</p>
-                </label>
-                <input
-                    id="amount_1"
-                    type="number"
-                    name="amount_1"
-                    placeholder="0"
-                    inputmode="decimal"
-                    pattern="^[0-9]*[.,]?[0-9]*$"
-                    spellcheck="false"
-                    autocomplete="off"
-                    autocorrect="off"
-                    minlength="1"
-                    @input="setTokenAmount($event, x)"
-                    :value="ABAmounts[x]"
-                    :disabled="waitingForAdding"
-                />
+                        <h4 v-if="ABTokens[x] !== null">
+                            {{ ABTokens[x]?.symbol }}
+                        </h4>
+                        <h4 v-else>select token</h4>
+                        <mdicon
+                            class="icon"
+                            name="chevron-down"
+                        />
+                        <!-- <p v-if="balances[x] !== null">balance: {{ balances[x] }}</p> -->
+                    </label>
+                    <input
+                        id="amount_1"
+                        type="number"
+                        name="amount_1"
+                        placeholder="0"
+                        inputmode="decimal"
+                        pattern="^[0-9]*[.,]?[0-9]*$"
+                        spellcheck="false"
+                        autocomplete="off"
+                        autocorrect="off"
+                        minlength="1"
+                        @input="setTokenAmount($event, x)"
+                        :value="ABAmounts[x]"
+                        :disabled="waitingForAdding"
+                    />
+                </div>
+                <div class="window__lower">
+                    <p class="caption">Balance: fsd</p>
+                </div>
             </div>
             <div
                 v-if="x === 0"
                 id="add-symbol"
             >
-                <h1>+</h1>
+                <h2>+</h2>
             </div>
         </div>
         <!-- <div class="info-zone">
@@ -100,6 +103,7 @@
                     <Btn
                         v-if="ABAllowance[index] < ABAmountsUint[index]"
                         @click="callApproveSpending(token.address, ABAmountsUint[index])"
+                        is="h4"
                         wide
                         secondary
                         bulky
@@ -111,23 +115,25 @@
             <Btn
                 v-if="poolAddress === unhandled || poolAddress === ''"
                 @click="callAddLiquidity()"
+                is="h4"
                 wide
                 bulky
                 :loading="waitingForAdding"
                 :disabled="!canCreatePool || !bothAmountsIn"
             >
-                {{ waitingForAdding ? "waiting for pool" : "create pool" }}
+                {{ waitingForAdding ? "Waiting for pool" : "Create Pool" }}
             </Btn>
             <!-- @click="addLiquidity()" -->
             <Btn
                 v-if="canAddLiquidity"
                 wide
+                is="h4"
                 bulky
                 @click="callAddLiquidity()"
                 :loading="waitingForAdding"
                 :disabled="!canAddLiquidity || !bothAmountsIn"
             >
-                {{ waitingForAdding ? "waiting for pool" : "add liquidity" }}
+                {{ waitingForAdding ? "Waiting for pool" : "Add Liquidity" }}
             </Btn>
             <!-- <Btn
                 wide
@@ -139,10 +145,10 @@
         </div>
     </div>
     <div
-        class="redeem white-box"
+        class="redeem base-wdg-box"
         v-if="poolShare"
     >
-        <div class="info-box green-box green-box--padded">
+        <div class="info-box layer-wdg-box layer-wdg-box--padded">
             <p>your pool share: {{ poolShare }}%</p>
             <p>procent to redeem: {{ state.redeemPercent }}%</p>
             <div class="inputs-flex">
@@ -206,7 +212,6 @@ import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 
 import * as Pool from "../ABIs/Pool.json"
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript"
 const PoolABI = Pool.default
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -539,65 +544,89 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .widget {
-    margin-top: 2rem;
-    width: 500px;
+    width: 450px;
     transition: background-color var(--transition);
+    color: var(--text-color-reverse);
     .top-bar {
         justify-content: space-between;
         margin-bottom: 0.5rem;
+        border-bottom: 2px solid var(--text-color-reverse);
+        padding: 17px 0;
+        margin-bottom: 24px;
         &.row {
             /* flex-direction: row-reverse; */
         }
     }
+    .tips {
+        margin-bottom: 24px;
+    }
     .window {
-        display: flex;
-        align-items: center;
-        position: relative;
-        width: 100%;
-        height: 6.5rem;
-
-        &.transitions {
+        /* &.transitions {
             &,
             * {
                 transition-property: all;
                 transition-duration: var(--transition);
             }
-        }
-
-        label {
+        } */
+        display: flex;
+        flex-direction: column;
+        /* height: 5rem; */
+        overflow: hidden;
+        &__upper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
             position: relative;
-            flex-shrink: 0;
-            margin: 0 1.2rem;
-            /* margin-bottom: 1.5rem; */
+            width: 100%;
 
-            cursor: pointer;
-            p {
-                white-space: nowrap;
+            label {
+                position: relative;
+                flex-shrink: 0;
+                display: flex;
+                margin: 8px;
+
+                background-color: var(--primary-disabled-bg);
+                padding: 10px 20px;
+                padding-right: 10px;
+                border-radius: var(--small-wdg-radius);
+                .icon {
+                    margin-left: 4px;
+                }
+                cursor: pointer;
+                p {
+                    white-space: nowrap;
+                }
+            }
+            input {
+                color: var(--text-grey);
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                border: none;
+                outline: none;
+                text-align: right;
+                font-size: 2rem;
+                padding-right: 8px;
+
+                &::placeholder {
+                    opacity: 0.8;
+                }
+                // hiding browser default arrows
+                &::-webkit-outer-spin-button,
+                &::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+                &[type="number"] {
+                    -moz-appearance: textfield;
+                }
             }
         }
-        input {
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            text-align: right;
-            padding-right: 1rem;
-            font-weight: 400;
-            font-size: 2.5rem;
-
-            &::placeholder {
-                opacity: 0.8;
-            }
-            // hiding browser default arrows
-            &::-webkit-outer-spin-button,
-            &::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
-            &[type="number"] {
-                -moz-appearance: textfield;
-            }
+        &__lower {
+            padding: 5px 8px;
+            text-align: end;
+            background-color: var(--swap-windows);
+            color: var(--text-grey);
         }
     }
     #add-symbol {
@@ -670,18 +699,19 @@ onMounted(() => {
         }
     }
 }
-.green-box {
+.base-wdg-box {
+    background-color: var(--widget-bg);
+    border-radius: var(--outer-wdg-radius);
+    /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
+    padding: 20px;
+    padding-top: 0;
+}
+.layer-wdg-box {
     background-color: var(--swap-windows);
     transition: background-color var(--transition);
     border-radius: var(--inner-wdg-radius);
     &--padded {
         padding: 1rem;
     }
-}
-.white-box {
-    background-color: var(--widget-bg);
-    border-radius: var(--outer-wdg-radius);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
-    padding: 0.5rem;
 }
 </style>

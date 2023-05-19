@@ -99,13 +99,13 @@
             <!-- :disabled="!stepStore.bothSwapTokensThere" -->
             swap
         </Btn>
-        <Btn
+        <!-- <Btn
             wide
             bulky
             @click="mystery()"
         >
             mistery pool
-        </Btn>
+        </Btn> -->
         <!-- <div class="slippage">
             <div
             class="checkbox inset"
