@@ -56,7 +56,7 @@ onClickOutside(toActivate, (event) => {
         width: 250px;
         padding: 0.6rem;
         border-radius: 8px;
-        background-color: var(--flat-bg);
+        background-color: var(--flat-bg-solid);
         border: 1px solid var(--flat-outline);
         z-index: 100;
 

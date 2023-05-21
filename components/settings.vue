@@ -2,7 +2,7 @@
     <div class="settings">
         <h3>settings</h3>
         <div class="setting">
-            <p>slippage tolerance</p>
+            <p>slippage tolerance (%)</p>
             <div class="row">
                 <Btn @click="resetSlippage">Auto</Btn>
                 <input

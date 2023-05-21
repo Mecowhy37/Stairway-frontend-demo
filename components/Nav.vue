@@ -1,26 +1,16 @@
 <template>
     <header class="navbar">
-        <p class="navbar__logo">StepSwap</p>
+        <h4 class="navbar__logo">Stairway</h4>
         <nav class="navigation">
             <NuxtLink
                 to="/"
                 class="navigation__link"
-                ><p>swap</p></NuxtLink
+                ><h4>swap</h4></NuxtLink
             >
             <NuxtLink
                 to="/pool"
                 class="navigation__link"
-                ><p>pool</p></NuxtLink
-            >
-            <NuxtLink
-                to="/vote"
-                class="navigation__link"
-                ><p>vote</p></NuxtLink
-            >
-            <NuxtLink
-                to="/charts"
-                class="navigation__link"
-                ><p>charts</p></NuxtLink
+                ><h4>pool</h4></NuxtLink
             >
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->
@@ -34,7 +24,7 @@
             <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn plain>
-                        Etheruem
+                        Ethereum
                         <template #icon>
                             <p>
                                 <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
@@ -59,10 +49,10 @@
                     @click="stepStore.connectWallet()"
                     >connect</Btn
                 >
-                <div class="divider"></div>
-                <Dropdown>
+                <!-- <div class="divider"></div> -->
+                <!-- <Dropdown>
                     <template #dropdown-activator="{ on }">
-                        <Btn transparent="true">
+                        <Btn transparent>
                             <template #icon>
                                 <p>
                                     <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
@@ -75,12 +65,10 @@
                             secondary
                             thin
                         >
-                            <!-- compact
-                        wide -->
                             <span>some actions</span>
                         </Btn>
                     </template>
-                </Dropdown>
+                </Dropdown> -->
             </span>
             <Dropdown v-else>
                 <template #dropdown-activator="{ on }">
@@ -99,7 +87,6 @@
                 </template>
                 <template #dropdown>
                     <Btn
-                        compact
                         wide
                         @click="stepStore.disconnectConnectedWallet()"
                     >
@@ -137,6 +124,7 @@ function revertTheme() {
         margin-left: 8%;
 
         &__link {
+            color: var(--text-color);
             position: relative;
             padding: 0 0.8rem;
             text-decoration: none;
@@ -176,7 +164,7 @@ function revertTheme() {
 
         .cta-dd {
             display: flex;
-            background-color: hotpink;
+            background-color: var(--cta-bg);
             border-radius: 9999px;
             .divider {
                 align-self: center;

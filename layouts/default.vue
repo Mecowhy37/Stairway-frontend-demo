@@ -77,7 +77,7 @@ body #base {
     }
 }
 h1 {
-    font-size: 4rem;
+    font-size: 3.5rem;
 }
 h2 {
     font-size: 2.25rem;
@@ -96,6 +96,9 @@ p {
 }
 .text-highlight {
     color: var(--primary-btn-bg);
+}
+.grey-text {
+    color: var(--text-grey);
 }
 
 .row {

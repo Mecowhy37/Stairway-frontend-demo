@@ -1,14 +1,8 @@
 @use "./colors" as *;
 
 $dark-map: (
-    --primary-btn-bg: #45ffc5,
     --primary-btn-color: #1b1b1b,
 
-    --primary-disabled-bg: rgba(108, 108, 108, 0.3),
-    --primary-disabled-color: #b8b8b8,
-
-    --flat-bg: $dark-green-2,
-    --flat-outline: $dark-green-5,
     // else
     --bg-gradient-light: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
     --bg-gradient-dark: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
@@ -20,14 +14,8 @@ $dark-map: (
 );
 
 $light-map: (
-    --primary-btn-bg: #45ffc5,
     --primary-btn-color: #1b1b1b,
 
-    --primary-disabled-bg: rgba(108, 108, 108, 0.3),
-    --primary-disabled-color: #b8b8b8,
-
-    --flat-bg: $light-orange-2,
-    --flat-outline: $light-orange-3,
     // else
     --bg-gradient-dark: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
     --bg-gradient-light: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),

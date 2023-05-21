@@ -8,17 +8,21 @@
                 'btn--secondary': props.secondary,
                 'btn--secondary--thin': props.secondary && props.thin,
                 'btn--plain': props.plain,
+                'btn--opaque': props.opaque,
                 'btn--transparent': props.transparent,
                 'btn--wide': props.wide,
                 'btn--bulky': props.bulky,
                 'btn--pill': props.pill,
                 'btn--unclickable': props.loading,
+                'btn--tiny': props.tiny,
                 'btn--compact': props.compact,
+                'btn--w-icon': slots.icon,
             },
         ]"
     >
         <component
             :is="props.is"
+            class="slot"
             id="default-slot"
             :class="{ wicon: slots.icon && slots.default }"
         >
@@ -26,8 +30,9 @@
         </component>
         <div
             v-if="slots.icon"
+            class="slot"
             id="icon-slot"
-            :class="{ 'icon-contrast': props.iconContrast }"
+            :class="{ contrast: props.iconContrast }"
         >
             <slot name="icon"></slot>
         </div>
@@ -52,9 +57,11 @@ export interface Props {
     bulky?: boolean
     transparent?: boolean
     plain?: boolean
+    opaque?: boolean
     pill?: boolean
     disabled?: boolean
     loading?: boolean
+    tiny?: boolean
     compact?: boolean
     iconContrast?: boolean
 }
@@ -74,7 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
 //     pill,
 //     disabled,
 //     loading,
-//     compact,
+//     tiny,
 //     iconContrast,
 // } = defineProps<{
 //     is?: String
@@ -87,7 +94,7 @@ const props = withDefaults(defineProps<Props>(), {
 //     pill?: Boolean
 //     disabled?: Boolean
 //     loading?: Boolean
-//     compact?: Boolean
+//     tiny?: Boolean
 //     iconContrast?: Boolean
 // }>()
 
@@ -106,15 +113,17 @@ $horiz-padd: 1rem;
     justify-content: center;
     border-radius: 8px;
     border: 1px solid transparent;
-    background-color: var(--primary-btn-bg);
     transition-property: background-color, color;
     transition-duration: var(--transition);
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
+    background-color: var(--primary-btn-bg);
+
     &:disabled {
         background-color: var(--primary-disabled-bg);
-        color: var(--primary-disabled-color);
+        color: var(--text-grey);
     }
+
     cursor: pointer;
     * {
         /* color: var(--primary-btn-color); */
@@ -126,19 +135,18 @@ $horiz-padd: 1rem;
     #default-slot {
         line-height: 100%;
         &.wicon {
-            margin-right: 0.5rem;
+            /* margin-right: 0.5rem; */
+            margin-right: 5rem;
+        }
+    }
+    .slot {
+        &.contrast {
+            * {
+                color: var(--text-color-reverse);
+            }
         }
     }
 
-    &--plain {
-        background-color: var(--flat-bg);
-        * {
-            color: var(--text-color);
-        }
-        &:hover {
-            border: 1px solid var(--flat-outline) !important;
-        }
-    }
     &--secondary {
         background-color: transparent;
         border: 2px solid var(--primary-btn-bg);
@@ -153,13 +161,27 @@ $horiz-padd: 1rem;
             border: 1px solid var(--primary-btn-bg);
         }
     }
+    &--plain {
+        background-color: var(--primary-disabled-bg-solid);
+        * {
+            color: var(--text-color-reverse);
+        }
+    }
+    &--opaque {
+        background-color: var(--primary-disabled-bg);
+        border: 2px solid transparent;
+        * {
+            color: var(--text-color-reverse);
+        }
+        &:hover,
+        &.selected {
+            /* border: 1px solid var(--flat-outline) !important; */
+            border: 2px solid var(--primary-btn-bg);
+            background-color: rgba(67, 187, 112, 0.3);
+        }
+    }
     &--transparent {
         background-color: transparent;
-        #icon-slot.icon-contrast {
-            & * {
-                color: var(--text-color-reverse);
-            }
-        }
     }
     &--wide {
         width: 100%;
@@ -168,15 +190,21 @@ $horiz-padd: 1rem;
         border-radius: 9999px;
     }
     &--bulky {
-        $height: 2.8rem;
+        $height: 3rem;
         height: $height;
         border-radius: var(--inner-wdg-radius);
     }
     &--unclickable {
         pointer-events: none;
     }
-    &--compact {
+    &--tiny {
         padding: 0;
+    }
+    &--compact {
+        border-radius: 3px;
+
+        padding-right: 10px;
+        padding-left: 10px;
     }
 }
 
@@ -185,10 +213,10 @@ $horiz-padd: 1rem;
         border: none !important;
     } */
     > :first-child {
-        padding-right: 13px !important;
+        /* padding-right: 13px !important; */
     }
     > :last-child button {
-        padding-left: 10px !important;
+        /* padding-left: 10px !important; */
     }
 }
 .loader {

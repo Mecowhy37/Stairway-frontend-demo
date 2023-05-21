@@ -16,6 +16,15 @@
     --widget-bg: rgba(0, 0, 0, 0.8);
     --swap-windows: rgba(0, 0, 0, 0.45);
 
+    --primary-btn-bg: #45ffc5;
+    --primary-disabled-bg-solid: #323333;
+    --primary-disabled-bg: rgba(108, 108, 108, 0.3);
+
+    --flat-bg: var(--widget-bg);
+    --flat-bg-solid: #303332;
+    --flat-outline: var(--primary-btn-bg);
+    --cta-bg: #00d2d4;
+
     .light {
         @include spread-map($light-map);
     }

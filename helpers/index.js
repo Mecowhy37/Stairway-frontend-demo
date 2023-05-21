@@ -82,6 +82,24 @@ export function usePools(routerAddress) {
     const bidAskFormat = computed(() => {
         return bidAsk.value !== null ? bidAsk.value.map((el) => formatEther(el)) : []
     })
+    const bidAskDisplay = computed(() => {
+        return bidAskFormat
+            ? bidAskFormat.value.map((el) =>
+                  el >= 1 ? Number(el).toFixed(2) : Number(el) < 0.0001 ? "<0.0001" : Number(el).toPrecision(2)
+              )
+            : []
+    })
+    const bidAskDisplayReverse = computed(() => {
+        return bidAskFormat
+            ? bidAskFormat.value.map((el) =>
+                  Number(1 / el) >= 1
+                      ? Number(1 / el).toFixed(2)
+                      : Number(1 / el) < 0.0001
+                      ? "<0.0001"
+                      : Number(1 / el).toPrecision(2)
+              )
+            : []
+    })
 
     async function findPool(addressA, addressB, providerArg) {
         console.log("findPool")
@@ -359,6 +377,8 @@ export function usePools(routerAddress) {
         liquidityTokenBalance,
         redeemLiquidity,
         bidAskFormat,
+        bidAskDisplay,
+        bidAskDisplayReverse,
         addLiquidity,
         waitingForAdding,
         approveSpending,

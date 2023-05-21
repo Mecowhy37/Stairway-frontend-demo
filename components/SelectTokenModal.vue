@@ -91,9 +91,9 @@ defineExpose({
 
     &__window {
         place-self: center;
-        width: 200px;
+        width: 400px;
         max-height: 50%;
-        margin-top: 30%;
+        /* margin-top: 30%; */
         background-color: white;
         border-radius: 12px;
         display: flex;
