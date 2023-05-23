@@ -24,31 +24,11 @@ export function getToken(symb) {
     return TokenList.find((el) => el.symbol === symb)
 }
 
-export function useBalances(providerArg) {
-    // I will return object that contains
-    //      {
-    //          "address": balance
-    //      }
-
-    const balances = ref({})
-    const stepStore = useStepStore()
-    const { connectedAccount, connectedWallet } = storeToRefs(stepStore)
-
-    function updateBalance(newVal, oldVal) {
-        // console.log(
-        //     "old: ",
-        //     oldVal.map((el) => el?.symbol || null)
-        // )
-        // console.log(
-        //     "new: ",
-        //     newVal.map((el) => el?.symbol || null)
-        // )
-    }
-
-    async function getBalance(token) {
+export function useBalances() {
+    async function getBalance(token, wallet, providerArg) {
         const provider = new BrowserProvider(providerArg)
         const tokenContract = new Contract(token.address, TokenABI, provider)
-        const balance = await tokenContract.balanceOf(connectedAccount.value)
+        const balance = await tokenContract.balanceOf(wallet)
         const formatedBalance = formatUnits(balance, token.decimals)
         return formatedBalance
     }
@@ -61,7 +41,7 @@ export function useBalances(providerArg) {
         return formatedTotalSupply
     }
 
-    return { updateBalance, getBalance, getTotalSupply }
+    return { getBalance, getTotalSupply }
 }
 
 export function usePools(routerAddress) {
@@ -103,6 +83,7 @@ export function usePools(routerAddress) {
 
     async function findPool(addressA, addressB, providerArg) {
         console.log("findPool")
+
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
         const factoryAdd = await router.factory()
@@ -368,6 +349,7 @@ export function usePools(routerAddress) {
         thisReserve,
         thatReserve,
         baseTokenAddress,
+        lpTokenAddress,
         poolRatio,
         findPool,
         poolShare,

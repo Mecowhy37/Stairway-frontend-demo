@@ -6,6 +6,7 @@
         :class="[
             {
                 'btn--secondary': props.secondary,
+                'btn--cta': props.cta,
                 'btn--secondary--thin': props.secondary && props.thin,
                 'btn--plain': props.plain,
                 'btn--opaque': props.opaque,
@@ -17,6 +18,7 @@
                 'btn--tiny': props.tiny,
                 'btn--compact': props.compact,
                 'btn--w-icon': slots.icon,
+                'btn--reverse': props.reverse,
             },
         ]"
     >
@@ -52,6 +54,7 @@ const stepStore = useStepStore()
 export interface Props {
     is?: string
     secondary?: boolean
+    cta?: boolean
     thin?: boolean
     wide?: boolean
     bulky?: boolean
@@ -64,6 +67,7 @@ export interface Props {
     tiny?: boolean
     compact?: boolean
     iconContrast?: boolean
+    reverse?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -104,14 +108,14 @@ const attrs = useAttrs()
 </script>
 
 <style lang="scss">
-$vert-padd: 0.4rem;
-$horiz-padd: 1rem;
+$vert-padd: 0.6rem;
+$horiz-padd: 1.3rem;
 .btn {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: var(--inner-wdg-radius);
     border: 1px solid transparent;
     transition-property: background-color, color;
     transition-duration: var(--transition);
@@ -135,8 +139,6 @@ $horiz-padd: 1rem;
     #default-slot {
         line-height: 100%;
         &.wicon {
-            /* margin-right: 0.5rem; */
-            margin-right: 5rem;
         }
     }
     .slot {
@@ -146,7 +148,6 @@ $horiz-padd: 1rem;
             }
         }
     }
-
     &--secondary {
         background-color: transparent;
         border: 2px solid var(--primary-btn-bg);
@@ -161,6 +162,9 @@ $horiz-padd: 1rem;
             border: 1px solid var(--primary-btn-bg);
         }
     }
+    &--cta {
+        background-color: var(--cta-bg);
+    }
     &--plain {
         background-color: var(--primary-disabled-bg-solid);
         * {
@@ -168,11 +172,13 @@ $horiz-padd: 1rem;
         }
     }
     &--opaque {
-        background-color: var(--primary-disabled-bg);
+        /* background-color: var(--primary-disabled-bg); */
+        background-color: #3f4040;
         border: 2px solid transparent;
         * {
             color: var(--text-color-reverse);
         }
+        /* &.selectable:hover, */
         &:hover,
         &.selected {
             /* border: 1px solid var(--flat-outline) !important; */
@@ -205,6 +211,20 @@ $horiz-padd: 1rem;
 
         padding-right: 10px;
         padding-left: 10px;
+    }
+    &--reverse {
+        flex-direction: row-reverse;
+        #icon-slot {
+            margin-left: -0.3rem !important;
+            margin-right: 0 !important;
+        }
+    }
+    &--w-icon {
+        gap: 0.2rem;
+        #icon-slot {
+            margin-right: -0.3rem;
+            margin-left: 0;
+        }
     }
 }
 

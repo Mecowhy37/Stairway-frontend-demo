@@ -13,14 +13,14 @@
         ></div>
         <Nav />
         <div
-            class="slot"
+            class="page-slot"
             id="slot-wrap"
         >
             <slot />
         </div>
 
         <div
-            class="slot"
+            class="page-slot"
             id="modal-wrap"
         >
             <!-- <ClientOnly> -->
@@ -53,6 +53,7 @@ provide("modal", toggleTokenModal)
     padding: 0;
     transition: color var(--transition);
     font-family: "DM Sans", sans-serif;
+    line-height: 100%;
     font-weight: 500;
     user-select: none;
 }
@@ -68,7 +69,7 @@ body #base {
     height: 100vh;
     position: relative;
 }
-.slot {
+.page-slot {
     display: contents;
     &#modal-wrap {
         > span {
@@ -103,6 +104,9 @@ p {
 
 .row {
     display: flex;
+    &.space-between {
+        justify-content: space-between;
+    }
 }
 
 .centerize {

@@ -3,8 +3,6 @@
         <div class="widget base-wdg-box">
             <div class="top-bar row">
                 <h3>Add Liquidity</h3>
-                <!-- {{ poolAddress }} <br /> -->
-                <!-- {{ String(bidAsk) }} <br /> -->
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
                         <Btn
@@ -79,7 +77,7 @@
                     <h2>+</h2>
                 </div>
             </div>
-            <!-- <div class="info-zone">
+            <!-- <div class="prices-share">
             <p class="reminder">please insert both amounts</p>
             <p class="info">
                 {{
@@ -93,9 +91,9 @@
         </div> -->
             <div
                 v-if="bidAsk"
-                class="info-zone"
+                class="prices-share"
             >
-                <h4>Prices (bid / ask) and pool share</h4>
+                <h4>Prices bid/ask and pool share</h4>
                 <div class="table row">
                     <div>
                         <p>{{ bidAskDisplay[0] }} / {{ bidAskDisplay[1] }}</p>
@@ -112,26 +110,30 @@
                 </div>
             </div>
             <div class="buttons">
+                <!-- <div
+                    v-if=""
+                    class="contents"
+                > -->
                 <div
-                    v-if="stepStore.bothPoolTokensThere && stepStore.connectedWallet"
+                    v-for="(token, index) in ABTokens"
                     class="contents"
                 >
-                    <div
-                        v-for="(token, index) in ABTokens"
-                        class="contents"
+                    <!-- @click="callApproveSpending(token.address)" -->
+                    <Btn
+                        v-if="
+                            ABAllowance[index] < ABAmountsUint[index] &&
+                            stepStore.bothPoolTokensThere &&
+                            stepStore.connectedWallet
+                        "
+                        @click="callApproveSpending(token.address, ABAmountsUint[index])"
+                        is="h4"
+                        wide
+                        secondary
+                        bulky
                     >
-                        <!-- @click="callApproveSpending(token.address)" -->
-                        <Btn
-                            v-if="ABAllowance[index] < ABAmountsUint[index]"
-                            @click="callApproveSpending(token.address, ABAmountsUint[index])"
-                            is="h4"
-                            wide
-                            secondary
-                            bulky
-                        >
-                            Approve {{ token.symbol }}
-                        </Btn>
-                    </div>
+                        Approve {{ token.symbol }}
+                    </Btn>
+                    <!-- </div> -->
                 </div>
                 <Btn
                     v-if="stepStore.connectedWallet && (poolAddress === unhandled || poolAddress === '')"
@@ -146,7 +148,7 @@
                 </Btn>
                 <!-- @click="addLiquidity()" -->
                 <Btn
-                    v-if="stepStore.connectedWallet && canAddLiquidity"
+                    v-if="stepStore.connectedWallet && !(poolAddress === unhandled || poolAddress === '')"
                     wide
                     is="h4"
                     bulky
@@ -277,14 +279,16 @@
                     </p>
                 </div>
             </div>
-            <Btn
-                is="h4"
-                wide
-                bulky
-                @click="redeemLiquidityCall()"
-            >
-                Remove Liquidity
-            </Btn>
+            <div class="buttons">
+                <Btn
+                    is="h4"
+                    wide
+                    bulky
+                    @click="redeemLiquidityCall()"
+                >
+                    Remove Liquidity
+                </Btn>
+            </div>
         </div>
     </div>
 </template>
@@ -331,6 +335,7 @@ const {
     liquidityTokenBalance,
     waitingBidAsk,
     bidAskFormat,
+    lpTokenAddress,
     bidAskDisplay,
     bidAskDisplayReverse,
     addLiquidity,
@@ -407,6 +412,7 @@ function callAddLiquidity() {
 function callApproveSpending(address, amount) {
     if (stepStore.connectedWallet) {
         approveSpending(address, stepStore.connectedWallet.provider, 0, getAllowances)
+        // approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
     }
 }
 function setTokenAmount(event, inputIndex) {
@@ -502,17 +508,13 @@ const baseTokenIndex = computed(() => {
     return bidAsk.value && ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
 })
 const canCreatePool = computed(() => {
-    return (
-        stepStore.connectedWallet &&
-        stepStore.bothPoolTokensThere &&
-        poolAddress.value === unhandled &&
-        isSuffientAllowance.value
-    )
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && isSuffientAllowance.value
 })
 const canAddLiquidity = computed(() => {
     return (
         stepStore.connectedWallet &&
         stepStore.bothPoolTokensThere &&
+        isSuffientAllowance.value &&
         poolAddress.value !== "" &&
         poolAddress.value !== unhandled
     )
@@ -600,7 +602,6 @@ watch(
         if (!wallet) {
             setPoolCreationListener(false)
             setLiquidityChangeListener(false)
-            // setLiquidityChangeListener(false)
         }
     },
     {
@@ -650,7 +651,7 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .wrap {
     gap: 20px;
     align-items: start;
@@ -666,17 +667,19 @@ onMounted(() => {
         margin-bottom: 20px;
     }
     .window {
-        /* &.transitions {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        &.transitions {
             &,
             * {
                 transition-property: all;
                 transition-duration: var(--transition);
             }
-        } */
-        display: flex;
-        flex-direction: column;
-        /* height: 5rem; */
-        overflow: hidden;
+        }
+        &:last-of-type {
+            margin-bottom: 15px;
+        }
         &__upper {
             flex-grow: 1;
             display: flex;
@@ -737,35 +740,30 @@ onMounted(() => {
     #add-symbol {
         text-align: center;
     }
-    .info-zone {
-        margin-top: 20px;
+    .prices-share {
+        margin: 20px 0;
         .table {
-            justify-content: space-between;
             margin-top: 10px;
             padding-top: 10px;
             border-top: 2px solid var(--primary-disabled-bg);
-            & > div {
-                text-align: center;
-                p:first-of-type {
-                    margin-bottom: 5px;
-                }
-            }
         }
-
-        /* &.reminder {
-                background-color: rgba(237, 190, 103, 0.3);
-                border: 2px solid rgba(255, 166, 0, 0.53);
-            }
-            &.info {
-                background-color: rgba(116, 237, 103, 0.3);
-                border: 2px solid rgba(35, 149, 58, 0.53);
-            } */
     }
     .buttons {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        margin-top: 20px;
+        > .btn:last-of-type {
+            margin-bottom: 20px;
+        }
+    }
+}
+.table {
+    justify-content: space-evenly;
+    & > div {
+        text-align: center;
+        p:first-of-type {
+            margin-bottom: 5px;
+        }
     }
 }
 .redeem {
@@ -854,8 +852,7 @@ onMounted(() => {
     background-color: var(--widget-bg);
     border-radius: var(--outer-wdg-radius);
     /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
-    padding: 20px;
-    padding-top: 0;
+    padding: 0 20px;
 }
 .layer-wdg-box {
     background-color: var(--swap-windows);

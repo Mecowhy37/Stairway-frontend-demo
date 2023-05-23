@@ -1,120 +1,120 @@
 <template>
-    <div class="widget">
-        <!-- {{ bidAskFormat[0] }} -->
-        <!-- {{ bidAskFormat[1] }} -->
-        {{ poolAddress }}
-        <div class="top-bar row">
-            <!-- {{ id }} -->
-            <Dropdown>
-                <template #dropdown-activator="{ on }">
-                    <Btn
-                        transparent
-                        icon-contrast
-                        compact
-                    >
-                        <template #icon>
-                            <h3>
+    <div class="wrap">
+        <div class="widget base-wdg-box">
+            <div class="top-bar row">
+                <h3>Trade</h3>
+                <Dropdown>
+                    <template #dropdown-activator="{ on }">
+                        <Btn
+                            transparent
+                            tiny
+                            icon-contrast
+                        >
+                            <template #icon>
                                 <mdicon
                                     name="cog"
                                     size="30"
                                 />
-                            </h3>
-                        </template>
-                    </Btn>
-                </template>
-                <template #dropdown>
-                    <Settings
-                        :default-slippage="0.1"
-                        :default-deadline="30"
-                    ></Settings>
-                </template>
-            </Dropdown>
-        </div>
-        <div
-            v-for="(i, x) in new Array(2)"
-            class="window"
-            :class="[token0Style[x], isMountedStyle]"
-        >
-            <label
-                :for="'amount_' + x + 1"
-                @click="openTokenSelectModal($event, x)"
-            >
-                <h3
-                    v-if="switchedTokens[x] !== null"
-                    class="bolder"
-                >
-                    {{ switchedTokens[x].symbol }}
-                </h3>
-                <h3
-                    v-else
-                    class="bolder"
-                >
-                    select token
-                </h3>
-                <p v-if="switchedBalances[x] !== null">balance: {{ switchedBalances[x] }}</p>
-            </label>
-            <input
-                type="number"
-                :id="'amount_' + x + 1"
-                :name="'amount_' + x + 1"
-                placeholder="0"
-                inputmode="decimal"
-                pattern="^[0-9]*[.,]?[0-9]*$"
-                spellcheck="false"
-                autocomplete="off"
-                autocorrect="off"
-                minlength="1"
-                @input="setTokenAmount($event, x)"
-                :value="amountInputs[x]"
-            />
-            <div
-                v-if="x === 0"
-                class="floater floater__switch"
-                @click="switchOrder"
-            >
-                <h4>switch</h4>
+                            </template>
+                        </Btn>
+                    </template>
+                    <template #dropdown>
+                        <Settings
+                            ref="settings"
+                            :default-slippage="0.5"
+                            :default-deadline="30"
+                        ></Settings>
+                    </template>
+                </Dropdown>
+            </div>
+            <div class="tips">
+                <p>
+                    <span class="text-highlight">Tip:</span> pool with these tokens doesnt exist yet,
+                    <span class="text-highlight">create it.</span>
+                </p>
             </div>
             <div
-                v-if="x === 0"
-                class="floater floater__rate"
-                :class="{ 'show-rate': state.showRate }"
+                class="contents"
+                v-for="(i, x) in new Array(2)"
             >
-                {{ rate }}
+                <div class="window layer-wdg-box">
+                    <div class="window__upper">
+                        <label
+                            for="amount_1"
+                            @click="!waitingForAdding && openTokenSelectModal(x)"
+                        >
+                            <h4 v-if="switchedTokens[x] !== null">
+                                {{ switchedTokens[x]?.symbol }}
+                            </h4>
+                            <h4 v-else>select token</h4>
+                            <mdicon
+                                class="icon"
+                                name="chevron-down"
+                            />
+                            <!-- <p v-if="balances[x] !== null">balance: {{ balances[x] }}</p> -->
+                        </label>
+                        <input
+                            id="amount_1"
+                            type="number"
+                            name="amount_1"
+                            placeholder="0"
+                            inputmode="decimal"
+                            pattern="^[0-9]*[.,]?[0-9]*$"
+                            spellcheck="false"
+                            autocomplete="off"
+                            autocorrect="off"
+                            minlength="1"
+                            :disabled="waitingForAdding"
+                            :value="ABAmounts[x]"
+                            @input="setTokenAmount($event, x)"
+                        />
+                    </div>
+                    <div class="window__lower">
+                        <p class="caption">Balance: fsd</p>
+                    </div>
+                </div>
+                <div
+                    v-if="x === 0"
+                    id="add-symbol"
+                >
+                    <h2 @click="switchOrder()">+</h2>
+                </div>
+            </div>
+            <div class="buttons">
+                <Btn
+                    v-if="
+                        ABAllowance[0] < ABAmountsUint[0] && stepStore.bothSwapTokensThere && stepStore.connectedWallet
+                    "
+                    @click="callApproveSpending(switchedTokens[0].address, ABAmountsUint[0])"
+                    is="h4"
+                    wide
+                    secondary
+                    bulky
+                >
+                    Approve {{ switchedTokens[0].symbol }}
+                </Btn>
+                <Btn
+                    v-if="stepStore.connectedWallet"
+                    :disabled="poolAddress === unhandled || poolAddress === ''"
+                    is="h4"
+                    wide
+                    bulky
+                >
+                    <!-- :disabled="!canCreatePool || !bothAmountsIn" -->
+                    Swap
+                </Btn>
+
+                <Btn
+                    v-if="!stepStore.connectedWallet"
+                    is="h4"
+                    wide
+                    bulky
+                    @click="stepStore.connectWallet()"
+                >
+                    Connect wallet
+                </Btn>
             </div>
         </div>
-        <Btn
-            v-if="!stepStore.connectedWallet"
-            @click="stepStore.connectWalletAction"
-            wide
-            bulky
-        >
-            connect
-        </Btn>
-        <Btn
-            v-else
-            @click="swap()"
-            wide
-            bulky
-        >
-            <!-- :disabled="!stepStore.bothSwapTokensThere" -->
-            swap
-        </Btn>
-        <!-- <Btn
-            wide
-            bulky
-            @click="mystery()"
-        >
-            mistery pool
-        </Btn> -->
-        <!-- <div class="slippage">
-            <div
-            class="checkbox inset"
-            @click="toggleSlippage"
-            >
-            <div v-show="noSlippage">✓</div>
-        </div>
-        <label for="slippage">No slippage - set price</label> 3226855 17.15 strzegomska 36 centrum medyczne
-    </div> -->
     </div>
 </template>
 
@@ -122,7 +122,7 @@
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
 import { useTempStore } from "@/stores/temp"
-import { BrowserProvider, Contract, formatUnits } from "ethers"
+import { BrowserProvider, Contract, formatUnits, parseEther } from "ethers"
 
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
@@ -144,9 +144,32 @@ const stepStore = useStepStore()
 const tempStore = useTempStore()
 
 const { swapTokens } = storeToRefs(stepStore)
-const { bidAsk, getBidAsk, bidAskFormat, baseTokenAddress, poolAddress, resetPool, setupPool, findPool } = usePools(
-    stepStore.routerAddress
-)
+const {
+    approveSpending,
+    bidAsk,
+    baseTokenAddress,
+    poolRatio,
+    thisReserve,
+    thatReserve,
+    poolAddress,
+    poolShare,
+    findPool,
+    setupPool,
+    checkAllowance,
+    lpTotalSupply,
+    liquidityTokenBalance,
+    waitingBidAsk,
+    bidAskFormat,
+    bidAskDisplay,
+    bidAskDisplayReverse,
+    addLiquidity,
+    waitingForAdding,
+    resetPool,
+    redeemLiquidity,
+    setPoolCreationListener,
+    setLiquidityChangeListener,
+} = usePools(stepStore.routerAddress)
+
 async function mystery() {
     const provider = new BrowserProvider(stepStore.connectedWallet.provider)
     const pool = new Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", PoolABI, provider)
@@ -166,11 +189,13 @@ async function mystery() {
     // console.log("factory.getPool(this, that) = ", poolFromF)
 }
 const state = reactive({
+    amountA: "",
+    amountB: "",
+    approvalA: "",
+    approvalB: "",
     balanceA: null,
     balanceB: null,
     token0Index: null,
-    buyAmount: "",
-    sellAmount: "",
     tokenToSellIndex: 0,
     lastChangedToken: 0,
     selectTokenIndex: 0,
@@ -184,7 +209,55 @@ const ABTokens = computed(() => {
     return [swapTokens.value.A, swapTokens.value.B]
     // return [state.TokenA, state.TokenB]
 })
-
+const ABAllowance = computed({
+    get() {
+        return [state.approvalA, state.approvalB]
+    },
+    set(newValue) {
+        state.approvalA = newValue[0]
+        state.approvalB = newValue[1]
+    },
+})
+const ABAmountsUint = computed(() => {
+    return ABAmounts.value.map((el) => (el !== "" ? parseEther(el) : 0))
+})
+const ABAmounts = computed({
+    get() {
+        function Round(amt) {
+            let amount = Number(amt)
+            amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+            return amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
+            // const middle = amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
+            // return Number(middle) < 0.00001 ? "<0.00001" : middle
+        }
+        if (bidAsk.value) {
+            if (
+                (state.lastChangedToken === 0 && String(state.amountA).length === 0) ||
+                (state.lastChangedToken === 1 && String(state.amountB).length === 0)
+            ) {
+                return ["", ""]
+            }
+            if (state.lastChangedToken === 0) {
+                state.amountB = Round(
+                    Boolean(baseTokenIndex.value)
+                        ? state.amountA * (1 / poolRatio.value)
+                        : state.amountA * poolRatio.value
+                )
+            } else {
+                state.amountA = Round(
+                    Boolean(baseTokenIndex.value)
+                        ? state.amountB * poolRatio.value
+                        : state.amountB * (1 / poolRatio.value)
+                )
+            }
+        }
+        return [state.amountA || "", state.amountB || ""]
+    },
+    set(newValue) {
+        state.amountA = newValue[0]
+        state.amountB = newValue[1]
+    },
+})
 watch(
     ABTokens,
     (newValue, oldValue) => {
@@ -251,7 +324,7 @@ watch(
     ([poolAdd, wallet], [prevPoolAdd, prevWallet]) => {
         if (poolAdd !== prevPoolAdd && poolAdd !== "" && poolAdd !== unhandled && wallet) {
             console.log("setup")
-            setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            setupPool(poolAdd, stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
             //set ears too
             return
         }
@@ -297,19 +370,22 @@ async function getBalance(token, both = false) {
     }
 }
 function switchOrder() {
-    const shuffle = [state.sellAmount, state.buyAmount].reverse()
-    state.sellAmount = shuffle[0]
-    state.buyAmount = shuffle[1]
+    const shuffle = [state.amountB, state.amountA].reverse()
+    state.amountA = shuffle[1]
+    state.amountB = shuffle[0]
+    const shuffle2 = [state.approvalA, state.approvalB].reverse()
+    state.approvalA = shuffle2[1]
+    state.approvalB = shuffle2[0]
     state.lastChangedToken = state.lastChangedToken === 0 ? 1 : 0
     state.tokenToSellIndex = state.tokenToSellIndex === 0 ? 1 : 0
 }
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
-    amountInputs.value = amountInputs.value.map((el, i) => (inputIndex === i ? event.target.value : el))
+    ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
 
 const toggleTokenModal = inject("modal")
-function openTokenSelectModal(event, index) {
+function openTokenSelectModal(index) {
     toggleTokenModal(ABTokens.value, setToken)
     state.selectTokenIndex = index
 }
@@ -333,7 +409,7 @@ async function swap() {
         console.log("baseTokenIndex:", baseTokenIndex)
         console.log("tokenToSellIndex", state.tokenToSellIndex)
         // const sellToken = new Contract(switchedTokens.value[0], TokenABI, provider.getSigner())
-        // await sellToken.approve(stepStore.routerAddress, state.sellAmount)
+        // await sellToken.approve(stepStore.routerAddress, state.amountB)
 
         // buy(baseToken, qouteToken, desiredAmount, maxPrice, deadline)
         // sell(baseToken, qouteToken, desiredAmount, minPrice, deadline)
@@ -364,40 +440,6 @@ const tokensNotNull = computed(() => {
     return ABTokens.value.every((el) => el !== null)
 })
 
-const amountInputs = computed({
-    get() {
-        function Round(amt) {
-            let amount = Number(amt)
-            amount = amount >= 1 ? amount.toFixed(3) : amount.toPrecision(3)
-            return amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
-        }
-        if (
-            (state.lastChangedToken === 0 && String(state.sellAmount).length === 0) ||
-            (state.lastChangedToken === 1 && String(state.buyAmount).length === 0)
-        ) {
-            return ["", ""]
-        }
-        if (state.lastChangedToken === 0) {
-            if (switchedTokens.value[0] === ABTokens.value[0]) {
-                state.buyAmount = Round(state.sellAmount * bidAskFormat.value[0])
-            } else {
-                state.buyAmount = Round(state.sellAmount / bidAskFormat.value[1])
-            }
-        } else {
-            if (switchedTokens.value[0] === ABTokens.value[0]) {
-                state.sellAmount = Round(state.buyAmount / bidAskFormat.value[0])
-            } else {
-                state.sellAmount = Round(state.buyAmount * bidAskFormat.value[1])
-            }
-        }
-        return [state.sellAmount || "", state.buyAmount || ""]
-    },
-    //unneccessary, can be moved where amountInputs are st
-    set(newValue) {
-        state.sellAmount = newValue[0]
-        state.buyAmount = newValue[1]
-    },
-})
 const rate = computed(() => {
     if (state.showRate) {
         let rate = tokenToSell.value === token0.value ? bidAsk.value[0] : 1 / Number(bidAsk.value[1])
@@ -423,6 +465,31 @@ const switchedTokens = computed({
         }
     },
 })
+function callApproveSpending(address, amount) {
+    if (stepStore.connectedWallet) {
+        approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
+    }
+}
+async function getAllowances() {
+    if (stepStore.connectedWallet) {
+        ABTokens.value.forEach(async (el1, index1) => {
+            const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
+            ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
+        })
+    }
+}
+async function getApprovedAmount(address) {
+    try {
+        return await checkAllowance(
+            address,
+            stepStore.connectedAccount,
+            stepStore.routerAddress,
+            stepStore.connectedWallet.provider
+        )
+    } catch (err) {
+        console.log("failed to get appoved amounts", err)
+    }
+}
 const switchedBalances = computed(() => {
     const list = [state.balanceA, state.balanceB]
     return state.tokenToSellIndex === 0 ? list : list.reverse()
@@ -443,145 +510,3 @@ onMounted(() => {
     state.alreadyMounted = true
 })
 </script>
-
-<style lang="scss" scoped>
-/* $primary: #efe8d6;
-$secodary: #0a44c9; */
-
-$primary: #b1d6f6;
-$secodary: #ffd5c9;
-
-.widget {
-    background-color: var(--widget-bg);
-    transition: background-color var(--transition);
-    width: 500px;
-    border-radius: var(--outer-wdg-radius);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
-    padding: 0.5rem;
-    /* padding-top: 3rem; */
-    /* box-shadow: rgba(0, 0, 0, 0.05) 0px 13px 35px -5px, rgba(0, 0, 0, 0.15) 0px 8px 22px -8px; */
-    /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
-    /* padding: 0.6rem; */
-    /* padding-top: 6rem; */
-
-    .top-bar {
-        flex-direction: row-reverse;
-        margin-bottom: 0.5rem;
-    }
-    .window {
-        background-color: var(--swap-windows);
-        transition: background-color var(--transition);
-        display: flex;
-        align-items: center;
-        position: relative;
-        width: 100%;
-        height: 6.5rem;
-        &.token0 {
-            height: 8rem;
-        }
-        border-radius: var(--inner-wdg-radius);
-        &.transitions {
-            &,
-            * {
-                transition-property: all;
-                transition-duration: var(--transition);
-            }
-        }
-
-        label {
-            position: relative;
-            flex-shrink: 0;
-            margin: 0 1.2rem;
-            /* margin-bottom: 1.5rem; */
-            cursor: pointer;
-            p {
-                white-space: nowrap;
-            }
-        }
-        input {
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            text-align: right;
-            padding-right: 1rem;
-            font-weight: 400;
-            font-size: 2.5rem;
-
-            &::placeholder {
-                opacity: 0.8;
-            }
-            // hiding browser default arrows
-            &::-webkit-outer-spin-button,
-            &::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
-            &[type="number"] {
-                -moz-appearance: textfield;
-            }
-        }
-
-        &:nth-of-type(3) {
-            margin-top: 0.5rem;
-        }
-        & + button {
-            margin-top: 0.5rem;
-        }
-        .floater {
-            position: absolute;
-            top: calc(100% + 0.3rem);
-            padding: 0.35rem 0.65rem;
-            cursor: pointer;
-            background-color: var(--swap-windows);
-            border: var(--widget-bg) 0.4rem solid;
-            z-index: 2;
-
-            &__switch {
-                /* transform: translateY(-50%); */
-                /* border-radius: 1.3rem 0 0 1.3rem; */
-                /* right: calc(0% - 0.4rem); */
-                transform: translate(50%, -50%);
-                right: 50%;
-                border-radius: calc(var(--inner-wdg-radius) * 0.8);
-            }
-            &__rate {
-                border-radius: 0 1.3rem 1.3rem 0;
-                left: calc(0% - 0.4rem);
-                transform: translateY(-50%) scale(0);
-                transform-origin: left center;
-                &.show-rate {
-                    transform: translateY(-50%) scale(1);
-                }
-            }
-        }
-        .slippage {
-            margin: 1.6rem 0;
-            display: flex;
-            align-items: center;
-
-            label {
-                margin-left: 1.2rem;
-            }
-
-            .checkbox {
-                background: #18302b;
-                width: 4rem;
-                aspect-ratio: 1/1;
-                flex-grow: 0;
-                border-radius: 10px;
-                cursor: pointer;
-                display: table;
-                text-align: center;
-
-                div {
-                    font-size: 2.2rem;
-                    display: table-cell;
-                    vertical-align: middle;
-                }
-            }
-        }
-    }
-}
-</style>
