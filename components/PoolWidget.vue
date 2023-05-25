@@ -65,6 +65,7 @@
                             :value="ABAmounts[x]"
                             :disabled="waitingForAdding"
                         />
+                        <!-- :value="ABAmounts[x]" -->
                     </div>
                     <div class="window__lower">
                         <p class="caption">Balance: fsd</p>
@@ -488,7 +489,11 @@ const ABAmounts = computed({
                 )
             }
         }
+
         return [state.amountA || "", state.amountB || ""]
+        // return [state.amountA || "", state.amountB || ""].map((el) =>
+        //     el.replace(/[^\d.]/g, "").replace(/^(\d*\.\d*)\..*/, "$1")
+        // )
     },
     set(newValue) {
         state.amountA = newValue[0]
@@ -555,7 +560,12 @@ function setupLiquidityChange(providerArg, poolAdd = false) {
     setLiquidityChangeListener(providerArg, poolAdd).then(
         ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
             if (poolContractAddress === poolAddress.value) {
-                setupPool(poolContractAddress, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+                setupPool(
+                    poolContractAddress,
+                    stepStore.bothPoolTokenAddresses,
+                    stepStore.connectedWallet.provider,
+                    stepStore.connectedAccount
+                )
             }
             setupLiquidityChange(stepStore.connectedWallet.provider, poolContractAddress)
         }
@@ -581,7 +591,12 @@ watch(
     (poolAdd, prevPoolAdd) => {
         getAllowances()
         if (!(poolAdd === unhandled || poolAdd === "")) {
-            setupPool(poolAdd, stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            setupPool(
+                poolAdd,
+                stepStore.bothPoolTokenAddresses,
+                stepStore.connectedWallet.provider,
+                stepStore.connectedAccount
+            )
             setupLiquidityChange(stepStore.connectedWallet.provider)
         } else {
             resetPool()
@@ -661,7 +676,6 @@ onMounted(() => {
 }
 .widget {
     transition: background-color var(--transition);
-    color: var(--text-color-reverse);
 
     .tips {
         margin-bottom: 20px;
@@ -706,7 +720,7 @@ onMounted(() => {
                 }
             }
             input {
-                color: var(--text-grey);
+                color: var(--text-color-reverse);
                 width: 100%;
                 height: 100%;
                 background: transparent;
@@ -717,7 +731,8 @@ onMounted(() => {
                 padding-right: 8px;
 
                 &::placeholder {
-                    opacity: 0.8;
+                    color: var(--text-grey);
+                    /* opacity: 0.8; */
                 }
                 // hiding browser default arrows
                 &::-webkit-outer-spin-button,
@@ -845,7 +860,8 @@ onMounted(() => {
     justify-content: space-between;
     /* margin-bottom: 0.5rem; */
     border-bottom: 2px solid var(--text-color-reverse);
-    padding: 17px 0;
+    padding-top: 20px;
+    padding-bottom: 12px;
     margin-bottom: 20px;
 }
 .base-wdg-box {
@@ -853,6 +869,7 @@ onMounted(() => {
     border-radius: var(--outer-wdg-radius);
     /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
     padding: 0 20px;
+    color: var(--text-color-reverse);
 }
 .layer-wdg-box {
     background-color: var(--swap-windows);

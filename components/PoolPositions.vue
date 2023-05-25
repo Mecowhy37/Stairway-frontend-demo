@@ -81,6 +81,13 @@ const stepStore = useStepStore()
 const { getBalance, getTotalSupply } = useBalances()
 const { setPoolCreationListener } = usePools(stepStore.routerAddress)
 
+// const activePositions: Ref<>
+// {
+//     "address": {
+//         data
+//     }
+// }
+
 const openedIndex: Ref<number | null> = ref(null)
 function toggle(index: number) {
     if (openedIndex.value === index) {
@@ -90,16 +97,31 @@ function toggle(index: number) {
     openedIndex.value = index
 }
 
-async function getAllPools(providerArg) {
+async function getAllPositions(providerArg) {
     const provider = new BrowserProvider(providerArg)
     const router = new Contract(stepStore.routerAddress, RouterABI, provider)
     const factoryAdd = await router.factory()
     const factory = new Contract(factoryAdd, FactoryABI, provider)
     const allPools = await factory.getAllPools()
-    allPools.forEach(async (poolAdd: string) => {
-        const pool = new Contract(poolAdd, PoolABI, provider)
-        const lpToken = await pool.lpToken()
-    })
+
+    let allLpTokens = []
+    await Promise.all(
+        allPools.map(async (poolAdd) => {
+            const pool = new Contract(poolAdd, PoolABI, provider)
+            const lpToken = await pool.lpToken()
+            console.log("lpToken:", lpToken)
+            allLpTokens.push(lpToken)
+        })
+    )
+    console.log("allLpTokens:", allLpTokens)
+
+    let allPositions = []
+    await Promise.all(
+        allLpTokens.map(async (lp) => {
+            const lpBalance = await getBalance({ address: lp, decimals: 18 }, stepStore.connectedAccount, providerArg)
+            console.log("lpBalance:", lpBalance)
+        })
+    )
 }
 function setupPoolCreated(providerArg) {
     if (providerArg === false) {
@@ -117,7 +139,7 @@ watch(
     (wallet, prevWallet) => {
         if (wallet !== prevWallet && wallet) {
             setupPoolCreated(stepStore.connectedWallet.provider)
-            getAllPools(stepStore.connectedWallet.provider)
+            getAllPositions(stepStore.connectedWallet.provider)
             return
         }
         if (!wallet) {

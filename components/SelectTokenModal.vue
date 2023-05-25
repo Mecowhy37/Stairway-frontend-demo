@@ -31,8 +31,22 @@
 </template>
 
 <script setup>
+import { BrowserProvider, Contract, parseEther } from "ethers"
 import allTokens from "../constants/tokenList.json"
-const tokenList = ref(allTokens)
+
+import * as Token from "../ABIs/ERC20.json"
+const TokenABI = Token.default
+
+import * as Foundry from "../ABIs/TokenFoundry.json"
+const FoundryABI = Foundry.default
+
+import { useStepStore } from "@/stores/step"
+import { storeToRefs } from "pinia"
+
+const stepStore = useStepStore()
+const { tokenList } = storeToRefs(stepStore)
+
+// const tokenList = ref(allTokens)
 
 // const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
 // tokenList.value = data.value?.tokens
@@ -53,10 +67,56 @@ function toggleTokenModal(tokens = false, callback = false) {
 const filteredTokenList = computed(
     () =>
         tokenList.value.filter(
-            (el) => el.chainId === 31337 && !ABTokens.value?.find((tkn) => tkn?.address === el.address)
+            (el) =>
+                // el.chainId === stepStore.connectedChain.id &&
+                el.chainId === parseInt(stepStore.connectedChain.id, 16) &&
+                !ABTokens.value?.find((tkn) => tkn?.address === el.address)
             // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
         )
     // () => tokenList.value.filter((el) => el.chainId === 31337)
+)
+async function checkTokens() {
+    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+    const foundry = new Contract(stepStore.foundryAddress, FoundryABI, provider)
+    const tokens = await foundry.getAllTokens()
+    const tokenMap = []
+    await Promise.all(
+        tokens.map(async (tknAdd) => {
+            const tkn = new Contract(tknAdd, TokenABI, provider)
+            const symbol = await tkn.symbol()
+            tokenMap.push({
+                address: tknAdd,
+                symbol,
+                name: symbol,
+                decimals: 18,
+                chainId: parseInt(stepStore.connectedChain.id, 16),
+            })
+        })
+    )
+    console.log("tokenMap:", tokenMap)
+
+    tokenMap.forEach((el) => {
+        if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {
+            tokenList.value.push(el)
+        }
+    })
+}
+watch(showTokenModal, (newVal) => {
+    if (stepStore.connectedWallet && newVal) {
+        checkTokens()
+    }
+})
+
+watch(
+    () => stepStore.connectedAccount,
+    (wallet, prevWallet) => {
+        if (wallet !== prevWallet && wallet) {
+            checkTokens()
+        }
+    },
+    {
+        immediate: true,
+    }
 )
 
 function setToken(token) {

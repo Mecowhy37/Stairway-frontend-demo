@@ -33,7 +33,7 @@ export function useBalances() {
         return formatedBalance
     }
 
-    async function getTotalSupply(address) {
+    async function getTotalSupply(address, providerArg) {
         const provider = new BrowserProvider(providerArg)
         const tokenContract = new Contract(address, TokenABI, provider)
         const totalSupply = await tokenContract.totalSupply()
@@ -94,14 +94,11 @@ export function usePools(routerAddress) {
         return poolAdd
     }
 
-    async function setupPool(poolAdd, tokenAddresses, providerArg) {
+    async function setupPool(poolAdd, tokenAddresses, providerArg, wallet) {
         console.log("setup")
 
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
-
-        const factoryAddress = await router.factory()
-        const factory = new Contract(factoryAddress, FactoryABI, provider)
 
         const pool = new Contract(poolAdd, PoolABI, provider)
 
@@ -127,12 +124,12 @@ export function usePools(routerAddress) {
         lpTokenAddress.value = lpToken
 
         // LQ TOKEN BALANCE
-        const { getBalance, getTotalSupply } = useBalances(providerArg)
-        const bal = await getBalance({ address: lpToken, decimals: 18 })
+        const { getBalance, getTotalSupply } = useBalances()
+        const bal = await getBalance({ address: lpTokenAddress.value, decimals: 18 }, wallet, providerArg)
         liquidityTokenBalance.value = bal
 
         // LQ TOKEN SUPPLY
-        lpTotalSupply.value = await getTotalSupply(lpToken)
+        lpTotalSupply.value = await getTotalSupply(lpToken, providerArg)
     }
 
     const poolShare = computed(() => {
@@ -293,7 +290,7 @@ export function usePools(routerAddress) {
     }
 
     async function redeemLiquidity(tokenA, tokenB, redeemPercent, connectedAccount, providerArg) {
-        await setupPool(poolAddress.value, [tokenA, tokenB], providerArg)
+        await setupPool(poolAddress.value, [tokenA, tokenB], providerArg, connectedAccount)
         if (poolShare.value) {
             try {
                 const provider = new BrowserProvider(providerArg)
@@ -369,5 +366,6 @@ export function usePools(routerAddress) {
         redeemLiquidity,
         setPoolCreationListener,
         setLiquidityChangeListener,
+        listenForTransactionMine,
     }
 }

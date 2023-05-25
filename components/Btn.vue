@@ -17,7 +17,7 @@
                 'btn--unclickable': props.loading,
                 'btn--tiny': props.tiny,
                 'btn--compact': props.compact,
-                'btn--w-icon': slots.icon,
+                'btn--w-icon': slots.icon && slots.default,
                 'btn--reverse': props.reverse,
             },
         ]"

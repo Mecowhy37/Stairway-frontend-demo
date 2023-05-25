@@ -393,20 +393,19 @@ function openTokenSelectModal(index) {
 function setToken(token) {
     switchedTokens.value = switchedTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
 }
+const baseTokenIndex = computed(() => {
+    return switchedTokens.value.indexOf(switchedTokens.value.find((el) => el.address === baseTokenAddress.value))
+})
 async function swap() {
     try {
         const provider = new BrowserProvider(stepStore.connectedWallet.provider)
         const router = new Contract(stepStore.routerAddress, RouterABI, provider)
-
-        const baseTokenIndex = switchedTokens.value.indexOf(
-            switchedTokens.value.find((el) => el.address === baseTokenAddress.value)
-        )
         const qouteTokenAddress = ABTokens.value.find((el) => el.address !== baseTokenAddress.value).address
-        const poolAction = baseTokenIndex === 0 ? "sell" : "buy"
+        const poolAction = baseTokenIndex.value === 0 ? "sell" : "buy"
 
         const price = switchedTokens.value[0] === ABTokens.value[0] ? bidAsk.value[0] : bidAsk.value[1]
         // console.log("price:", price)
-        console.log("baseTokenIndex:", baseTokenIndex)
+        console.log("baseTokenIndex:", baseTokenIndex.value)
         console.log("tokenToSellIndex", state.tokenToSellIndex)
         // const sellToken = new Contract(switchedTokens.value[0], TokenABI, provider.getSigner())
         // await sellToken.approve(stepStore.routerAddress, state.amountB)

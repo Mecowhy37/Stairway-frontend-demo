@@ -28,6 +28,7 @@ declare global {
 //   }
 
 export const useStepStore = defineStore("step", (): any => {
+    const tokenList = ref([])
     const isDark: Ref<boolean> = ref(false)
     const chainId: Ref<number | null> = ref(31337)
     const activeWallet: Ref<string | null> = ref(null)
@@ -36,7 +37,9 @@ export const useStepStore = defineStore("step", (): any => {
     
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
-    const routerAddress = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82"
+    const routerAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+    const foundryAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+
     const unhandled = "0x0000000000000000000000000000000000000000"
 
     const injected = injectedModule()
@@ -143,10 +146,12 @@ export const useStepStore = defineStore("step", (): any => {
 
         chainId,
         routerAddress,
+        foundryAddress,
         isDark,
         swapTokens,
         poolTokens,
         allTokens,
+        tokenList,
 
         poolTokensCmp,
         bothPoolTokensThere,
