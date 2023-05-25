@@ -1,6 +1,6 @@
 <template>
     <div class="getTokens widget base-wdg-box">
-        <div class="top-bar row">
+        <!-- <div class="top-bar row">
             <h3>Create token</h3>
             <Dropdown>
                 <template #dropdown-activator="{ on }">
@@ -25,11 +25,11 @@
                     ></Settings>
                 </template>
             </Dropdown>
-        </div>
+        </div> -->
         <!-- <div class="row space-between"> -->
-        <div class="token-part row">
+        <div class="token-part">
             <div class="token-part__wrap token-part__wrap__symbol">
-                <div class="row">
+                <div class="row space-between">
                     <h4 class="grey-text">symbol</h4>
                     <span
                         v-if="truncatedTokenAddress"
@@ -45,14 +45,7 @@
                     </span>
                 </div>
                 <div class="layer-wdg-box row">
-                    <input
-                        v-model="tokenSymbol"
-                        type="text"
-                        placeholder="ABCDE"
-                    />
-                    <div class="divider"></div>
                     <Btn
-                        compact
                         transparent
                         icon-contrast
                         @click="openTokenSelectModal()"
@@ -61,6 +54,12 @@
                             <mdicon name="chevron-down" />
                         </template>
                     </Btn>
+                    <div class="divider"></div>
+                    <input
+                        v-model="tokenSymbol"
+                        type="text"
+                        placeholder="ABCDE"
+                    />
                 </div>
             </div>
             <div class="token-part__wrap">
@@ -229,7 +228,8 @@ watch(copied, (newVal) => {
 
 <style lang="scss" scoped>
 .getTokens {
-    width: 550px;
+    width: 450px;
+    padding-top: 15px;
     .token-part {
         width: 100%;
         gap: 12px;
@@ -250,7 +250,6 @@ watch(copied, (newVal) => {
                 text-align: right;
                 font-size: 2rem;
                 padding: 8px;
-                text-align: left;
 
                 &::placeholder {
                     color: var(--text-grey);
@@ -267,9 +266,6 @@ watch(copied, (newVal) => {
                 }
             }
             &__symbol {
-                & > .row:first-of-type {
-                    gap: 20px;
-                }
                 .address {
                     * {
                         transition: color 0.1s;
@@ -285,6 +281,9 @@ watch(copied, (newVal) => {
                     width: 1px;
                     background-color: var(--text-color-reverse);
                 }
+            }
+            &:last-of-type {
+                margin-top: 12px;
             }
         }
     }
