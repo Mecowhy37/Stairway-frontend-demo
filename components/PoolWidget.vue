@@ -94,15 +94,38 @@
                 v-if="bidAsk"
                 class="prices-share"
             >
-                <h4>Prices bid/ask and pool share</h4>
+                <h4>Prices</h4>
                 <div class="table row">
                     <div>
-                        <p>{{ bidAskDisplay[0] }} / {{ bidAskDisplay[1] }}</p>
+                        <p class="grey-text">Bid</p>
+                        <p class="grey-text">Ask</p>
+                    </div>
+                    <div>
+                        <p>{{ bidAskDisplay[0] }}</p>
+                        <p>{{ bidAskDisplay[1] }}</p>
                         <p class="caption grey-text">{{ ABTokens[0].symbol }} per {{ ABTokens[1].symbol }}</p>
                     </div>
                     <div>
-                        <p>{{ bidAskDisplayReverse[0] }} / {{ bidAskDisplayReverse[1] }}</p>
+                        <p>{{ bidAskDisplayReverse[0] }}</p>
+                        <p>{{ bidAskDisplayReverse[1] }}</p>
                         <p class="caption grey-text">{{ ABTokens[1].symbol }} per {{ ABTokens[0].symbol }}</p>
+                    </div>
+                    <!-- <div>
+                        <p>{{ poolShare }}%</p>
+                        <p class="caption grey-text">pool share</p>
+                    </div> -->
+                </div>
+            </div>
+            <div
+                v-if="poolShare"
+                class="prices-share"
+            >
+                <h4>Pool share</h4>
+                <div class="table row">
+                    <div v-for="(token, x) in ABTokensBaseOrdered">
+                        <p v-if="x === 0">{{ (thisReserve * poolShare) / 100 }}</p>
+                        <p v-else>{{ (thatReserve * poolShare) / 100 }}</p>
+                        <p class="caption grey-text">pooled {{ token.symbol }}</p>
                     </div>
                     <div>
                         <p>{{ poolShare }}%</p>
@@ -450,6 +473,10 @@ const ABTokens = computed({
         poolTokens.value.B = newValue[1]
     },
 })
+const ABTokensBaseOrdered = computed(() => {
+    const list = ABTokens.value
+    return baseTokenIndex.value === 0 ? list : list.reverse()
+})
 const ABAllowance = computed({
     get() {
         return [state.approvalA, state.approvalB]
@@ -756,7 +783,7 @@ onMounted(() => {
         text-align: center;
     }
     .prices-share {
-        margin: 20px 0;
+        margin: 15px 0;
         .table {
             margin-top: 10px;
             padding-top: 10px;
@@ -773,11 +800,15 @@ onMounted(() => {
     }
 }
 .table {
-    justify-content: space-evenly;
+    justify-content: space-between;
     & > div {
         text-align: center;
-        p:first-of-type {
+        flex-basis: 25%;
+        p {
             margin-bottom: 5px;
+        }
+        p:last-of-type {
+            margin-bottom: 0px;
         }
     }
 }

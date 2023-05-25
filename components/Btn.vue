@@ -153,7 +153,7 @@ $horiz-padd: 1.3rem;
         border: 2px solid var(--primary-btn-bg);
         &:hover {
             border: 2px solid var(--primary-btn-bg);
-            background-color: rgba(67, 187, 112, 0.15);
+            background-color: var(--primary-btn-bg-opaque);
         }
         * {
             color: var(--primary-btn-bg);
@@ -179,11 +179,13 @@ $horiz-padd: 1.3rem;
             color: var(--text-color-reverse);
         }
         /* &.selectable:hover, */
-        &:hover,
-        &.selected {
+        &:hover {
             /* border: 1px solid var(--flat-outline) !important; */
             border: 2px solid var(--primary-btn-bg);
-            background-color: rgba(67, 187, 112, 0.3);
+            background-color: var(--primary-btn-bg-opaque);
+        }
+        &.selected {
+            border: 2px solid var(--primary-btn-bg);
         }
     }
     &--transparent {
