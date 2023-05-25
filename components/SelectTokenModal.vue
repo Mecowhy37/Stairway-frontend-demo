@@ -93,7 +93,6 @@ async function checkTokens() {
             })
         })
     )
-    console.log("tokenMap:", tokenMap)
 
     tokenMap.forEach((el) => {
         if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {

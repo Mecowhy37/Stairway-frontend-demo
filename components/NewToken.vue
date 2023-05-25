@@ -58,7 +58,7 @@
                     <input
                         v-model="tokenSymbol"
                         type="text"
-                        placeholder="ABCDE"
+                        placeholder="STRVY"
                     />
                 </div>
             </div>
@@ -82,7 +82,7 @@
                 bulky
                 :disabled="!canGetTokens"
             >
-                Get Tokens
+                {{ claimed ? "Tokens claimed!" : "Get Tokens" }}
             </Btn>
             <Btn
                 v-if="!stepStore.connectedWallet"
@@ -108,12 +108,16 @@ import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 
 import { useStepStore } from "@/stores/step"
+import { storeToRefs } from "pinia"
 const stepStore = useStepStore()
+const { tokenList } = storeToRefs(stepStore)
+
 const { listenForTransactionMine } = usePools(stepStore.routerAddress)
 
 const tokenSymbol = ref("")
 const tokenAmount = ref(1000000)
 const copied = ref(false)
+const claimed = ref(false)
 
 const toggleTokenModal = inject("modal")
 function openTokenSelectModal() {
@@ -123,18 +127,16 @@ function setToken(token) {
     tokenSymbol.value = token?.symbol ? token.symbol : ""
 }
 
-const tokenMap = ref([])
-
 async function checkTokens() {
     const provider = new BrowserProvider(stepStore.connectedWallet.provider)
     const foundry = new Contract(stepStore.foundryAddress, FoundryABI, provider)
     const tokens = await foundry.getAllTokens()
-    const tokenMapArr = []
+    const tokenMap = []
     await Promise.all(
         tokens.map(async (tknAdd) => {
             const tkn = new Contract(tknAdd, TokenABI, provider)
             const symbol = await tkn.symbol()
-            tokenMapArr.push({
+            tokenMap.push({
                 address: tknAdd,
                 symbol,
                 name: symbol,
@@ -143,8 +145,11 @@ async function checkTokens() {
             })
         })
     )
-    tokenMap.value = tokenMapArr
-    console.log("tokenMap:", tokenMap)
+    tokenMap.forEach((el) => {
+        if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {
+            tokenList.value.push(el)
+        }
+    })
 }
 async function getTokens() {
     const provider = new BrowserProvider(stepStore.connectedWallet.provider)
@@ -165,7 +170,8 @@ async function getTokens() {
                 await mintTokens()
             })
             .finally(async () => {
-                tokenAmount.value = ""
+                // tokenAmount.value = ""
+                claimed.value = true
                 checkTokens()
             })
     } catch (err) {
@@ -186,7 +192,7 @@ const canGetTokens = computed(() => {
     return tokenSymbol.value.length >= 1 && tokenAmount.value > 0
 })
 const selectedAddress = computed(() => {
-    return tokenMap.value.find((el) => el.symbol.toUpperCase() === tokenSymbol.value)?.address
+    return tokenList.value.find((el) => el.symbol.toUpperCase() === tokenSymbol.value)?.address
 })
 const truncatedTokenAddress = computed(() => {
     if (!selectedAddress.value) {
@@ -222,6 +228,13 @@ watch(copied, (newVal) => {
         setTimeout(() => {
             copied.value = false
         }, 1000)
+    }
+})
+watch(claimed, (newVal) => {
+    if (newVal) {
+        setTimeout(() => {
+            claimed.value = false
+        }, 2000)
     }
 })
 </script>
