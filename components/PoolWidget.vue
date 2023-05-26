@@ -52,15 +52,12 @@
                         </label>
                         <input
                             id="amount_1"
-                            type="number"
+                            type="text"
                             name="amount_1"
                             placeholder="0"
-                            inputmode="decimal"
-                            pattern="^[0-9]*[.,]?[0-9]*$"
                             spellcheck="false"
                             autocomplete="off"
                             autocorrect="off"
-                            minlength="1"
                             @input="setTokenAmount($event, x)"
                             :value="ABAmounts[x]"
                             :disabled="waitingForAdding"
@@ -225,7 +222,9 @@
                     </template>
                 </Dropdown>
             </div>
-            <div class="tokens">{{ ABTokens[0].symbol }} / {{ ABTokens[1].symbol }}</div>
+            <div>
+                <h4>{{ ABTokens[0].symbol }} / {{ ABTokens[1].symbol }}</h4>
+            </div>
             <div class="amount">
                 <p class="grey-text">Amount</p>
                 <div class="percents row">
@@ -381,6 +380,7 @@ const state = reactive({
     lastChangedToken: 0,
     redeemPercent: 100,
 })
+
 //modal stuff----------
 const toggleTokenModal = inject("modal")
 function openTokenSelectModal(index) {
@@ -388,6 +388,11 @@ function openTokenSelectModal(index) {
     state.selectTokenIndex = index
 }
 async function setToken(token) {
+    const sameTokenIndex = ABTokens.value.findIndex((el) => el?.address === token.address)
+    if (sameTokenIndex !== -1 && sameTokenIndex !== state.selectTokenIndex) {
+        ABTokens.value = ABTokens.value.reverse()
+        return
+    }
     ABTokens.value = ABTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
 }
 //----------------------
@@ -396,9 +401,7 @@ async function setToken(token) {
 const settings = ref()
 //----------------------
 
-function getPoolInf() {
-    findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-}
+//RedeemWidget----------
 const options = ref()
 function setRedeemProc(event, proc) {
     removeSelected()
@@ -419,6 +422,8 @@ function redeemLiquidityCall() {
         stepStore.connectedWallet.provider
     )
 }
+//-----------------------
+
 function callAddLiquidity() {
     addLiquidity(
         ...stepStore.bothPoolTokenAddresses,
@@ -432,16 +437,36 @@ function callAddLiquidity() {
         state.amountB = ""
     })
 }
-// function callApproveSpending(address) {
-function callApproveSpending(address, amount) {
-    if (stepStore.connectedWallet) {
-        approveSpending(address, stepStore.connectedWallet.provider, 0, getAllowances)
-        // approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
-    }
-}
+
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
     ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
+}
+
+function calcQuote(value) {
+    return Number(value) * poolRatio.value + ""
+}
+function calcBase(value) {
+    if (!poolRatio.value) {
+        return ""
+    }
+    return Number(value) * (1 / poolRatio.value) + ""
+}
+function cleanInput(value, oldValue) {
+    value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
+    let dotCount = value.split(".").length - 1
+    if (dotCount === 2) {
+        value = oldValue
+    }
+    return value
+}
+
+// function callApproveSpending(address) {
+function callApproveSpending(address, amount) {
+    if (stepStore.connectedWallet) {
+        // approveSpending(address, stepStore.connectedWallet.provider, 0, getAllowances)
+        approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
+    }
 }
 async function getAllowances() {
     if (stepStore.connectedWallet) {
@@ -474,7 +499,7 @@ const ABTokens = computed({
     },
 })
 const ABTokensBaseOrdered = computed(() => {
-    const list = ABTokens.value
+    const list = [...ABTokens.value]
     return baseTokenIndex.value === 0 ? list : list.reverse()
 })
 const ABAllowance = computed({
@@ -486,16 +511,18 @@ const ABAllowance = computed({
         state.approvalB = newValue[1]
     },
 })
+
+// this is a computed property that is responsible for calulating the opposing input to display amount to be added when there is poolRatio
 const ABAmounts = computed({
     get() {
+        // Round function trimms down unncessary digits and adds < mark when unsignificant
         function Round(amt) {
             let amount = Number(amt)
             amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-            return amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
-            // const middle = amount === "NaN" || Number(amount) === 0 ? "" : String(parseFloat(amount))
-            // return Number(middle) < 0.00001 ? "<0.00001" : middle
+            return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
         }
-        if (bidAsk.value) {
+        if (poolRatio.value && stepStore.bothPoolTokensThere) {
+            // this if() cleans up other input when prior is set to 0
             if (
                 (state.lastChangedToken === 0 && String(state.amountA).length === 0) ||
                 (state.lastChangedToken === 1 && String(state.amountB).length === 0)
@@ -503,45 +530,89 @@ const ABAmounts = computed({
                 return ["", ""]
             }
             if (state.lastChangedToken === 0) {
-                state.amountB = Round(
-                    Boolean(baseTokenIndex.value)
-                        ? state.amountA * (1 / poolRatio.value)
-                        : state.amountA * poolRatio.value
-                )
+                if (state.amountA.length !== 0) {
+                    if (baseTokenIndex.value === 0) {
+                        state.amountB = Round(calcQuote(state.amountA))
+                    } else {
+                        state.amountB = Round(calcBase(state.amountA))
+                    }
+                }
             } else {
-                state.amountA = Round(
-                    Boolean(baseTokenIndex.value)
-                        ? state.amountB * poolRatio.value
-                        : state.amountB * (1 / poolRatio.value)
-                )
+                if (state.amountB.length !== 0) {
+                    if (baseTokenIndex.value === 0) {
+                        state.amountA = Round(calcBase(state.amountB))
+                    } else {
+                        state.amountA = Round(calcQuote(state.amountB))
+                    }
+                }
             }
         }
 
-        return [state.amountA || "", state.amountB || ""]
-        // return [state.amountA || "", state.amountB || ""].map((el) =>
-        //     el.replace(/[^\d.]/g, "").replace(/^(\d*\.\d*)\..*/, "$1")
-        // )
+        return [state.amountA, state.amountB]
     },
     set(newValue) {
         state.amountA = newValue[0]
         state.amountB = newValue[1]
     },
 })
+
+//this wacher is responsible for cleaning up inputs from unwanted  charactera only where the input takes place
+watch(
+    ABAmounts,
+    (newVal, oldVal) => {
+        const [newA, newB] = [...newVal]
+        const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
+        if (state.lastChangedToken === 0 && newA !== oldA) {
+            state.amountA = cleanInput(newA, oldA)
+        } else if (state.lastChangedToken === 1 && newB !== oldB) {
+            state.amountB = cleanInput(newB, oldB)
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+// amounts formated to uint256
 const ABAmountsUint = computed(() => {
-    return ABAmounts.value.map((el) => (el !== "" ? parseEther(el) : 0))
+    return ABAmounts.value.map((el) => {
+        if (!el) {
+            return 0
+        }
+        const regex = /[<>]/
+        if (regex.test(el)) {
+            return parseEther("0.00001")
+        }
+        console.log("herer ", el)
+        return parseEther(el)
+    })
 })
+
+//checks if both amounts are filled in
 const bothAmountsIn = computed(() => {
     return ABAmounts.value.every((el) => el !== "")
 })
+
+// #TODO probably remove
 const balances = computed(() => {
     return [state.balanceA, state.balanceB]
 })
+
+//finds which token is base in the pool
 const baseTokenIndex = computed(() => {
-    return bidAsk.value && ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
+    return (
+        stepStore.bothPoolTokensThere &&
+        bidAsk.value &&
+        ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
+    )
 })
+
+//checks whether pool can be created
 const canCreatePool = computed(() => {
     return stepStore.connectedWallet && stepStore.bothPoolTokensThere && isSuffientAllowance.value
 })
+
+//checks whether liquidity can be added
 const canAddLiquidity = computed(() => {
     return (
         stepStore.connectedWallet &&
@@ -551,34 +622,13 @@ const canAddLiquidity = computed(() => {
         poolAddress.value !== unhandled
     )
 })
+
+//checkes if allowance is bigger than inputed amounts
 const isSuffientAllowance = computed(() => {
     return ABAllowance.value.map((el, index) => el >= ABAmountsUint.value[index]).every((el) => el === true)
 })
 
-watch(
-    () => [stepStore.bothPoolTokenAddresses, stepStore.connectedAccount],
-    (newVal, oldVal) => {
-        const [bothTokens, wallet] = [...newVal]
-        const [prevBothTokens, prevWallet] = oldVal ? [oldVal[0], oldVal[1]] : [null, null]
-        if (bothTokens && wallet) {
-            if (
-                (prevBothTokens !== bothTokens && prevWallet === wallet) ||
-                (prevBothTokens === bothTokens && prevWallet !== wallet)
-            ) {
-                findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-            }
-            return
-        }
-        if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
-            poolAddress.value = ""
-            // resetPool()
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
+// sets up liquidity chage listners with callback and turn offs
 function setupLiquidityChange(providerArg, poolAdd = false) {
     if (providerArg === false) {
         setLiquidityChangeListener(false)
@@ -598,6 +648,8 @@ function setupLiquidityChange(providerArg, poolAdd = false) {
         }
     )
 }
+
+//sets up pool created listener with callback and turn offs
 function setupPoolCreated(providerArg) {
     if (providerArg === false) {
         setPoolCreationListener(false)
@@ -613,6 +665,32 @@ function setupPoolCreated(providerArg) {
         setupPoolCreated(stepStore.connectedWallet.provider)
     })
 }
+
+//looks for pool when two tokens are there and when wallet changes
+watch(
+    () => [stepStore.bothPoolTokenAddresses, stepStore.connectedAccount],
+    (newVal, oldVal) => {
+        const [bothTokens, wallet] = [...newVal]
+        const [prevBothTokens, prevWallet] = oldVal ? [oldVal[0], oldVal[1]] : [null, null]
+        if (bothTokens && wallet) {
+            if (
+                (prevBothTokens !== bothTokens && prevWallet === wallet) ||
+                (prevBothTokens === bothTokens && prevWallet !== wallet)
+            ) {
+                findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+            }
+            return
+        }
+        if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
+            poolAddress.value = ""
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+// triggered when pool address changes
 watch(
     poolAddress,
     (poolAdd, prevPoolAdd) => {
@@ -626,6 +704,8 @@ watch(
             )
             setupLiquidityChange(stepStore.connectedWallet.provider)
         } else {
+            //resets previous calulated amount to "0" when pool in no longer there
+            ABAmounts.value = ABAmounts.value.map((el, index) => (index !== state.lastChangedToken ? "" : el))
             resetPool()
         }
     },
@@ -634,6 +714,28 @@ watch(
     }
 )
 
+//triggered when selected tokens are changed
+watch(
+    () => [ABTokens.value, stepStore.connectedWallet],
+    (newValue, oldValue) => {
+        const newTokens = newValue.at(0)
+        // const oldTokens = oldValue?.at(0)
+        const wallet = newValue.at(1)
+        // const newTokensNotNull = newTokens.filter((el) => (!oldTokens?.includes(el) && el !== null ? true : false))
+        // const bothTokensThere = newTokens.every((el) => el !== null)
+
+        if (wallet) {
+            getAllowances()
+        } else {
+            ABAllowance.value = ["", ""]
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+// look if wallet has been changed
 watch(
     () => stepStore.connectedAccount,
     (wallet, prevWallet) => {
@@ -651,41 +753,7 @@ watch(
     }
 )
 
-watch(
-    () => [ABTokens.value, stepStore.connectedWallet],
-    (newValue, oldValue) => {
-        const newTokens = newValue.at(0)
-        const oldTokens = oldValue?.at(0)
-        const wallet = newValue.at(1)
-        // if (oldTokens?.every((el) => el !== null) && newTokens?.some((el) => el === null)) {
-        //     resetPool()
-        // }
-        // const newTokensNotNull = newTokens.filter((el) => (!oldTokens?.includes(el) && el !== null ? true : false))
-        // const bothTokensThere = newTokens.every((el) => el !== null)
-        // if (bothTokensThere && oldTokens !== newTokens && wallet) {
-
-        // }
-
-        if (wallet) {
-            getAllowances()
-        } else {
-            ABAllowance.value = ["", ""]
-        }
-        // }
-        // newValue.forEach((el, index) => {
-        // if (!el) {
-        //     if (index === 0) {
-        //         state.amountA = null
-        //     } else {
-        //         state.amountB = null
-        //     }
-        // }
-        // })
-    },
-    {
-        immediate: true,
-    }
-)
+//maybe only needed in development to find pool on code reload
 onMounted(() => {
     if (stepStore.connectedWallet && stepStore.bothPoolTokensThere) {
         findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
@@ -806,6 +874,7 @@ onMounted(() => {
         flex-basis: 25%;
         p {
             margin-bottom: 5px;
+            white-space: nowrap;
         }
         p:last-of-type {
             margin-bottom: 0px;
