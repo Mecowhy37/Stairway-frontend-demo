@@ -78,13 +78,12 @@ export const useStepStore = defineStore("step", (): any => {
     // )
 
     const swapTokens = reactive({
-        A: getToken('fUSD'),
+        A: null,
         B: null
     })
     const poolTokens = reactive({
-        A: getToken('fBTC'),
-        B: getToken('fUSD'),
-        // B: null
+        A: null,
+        B: null
     })
 
     const allTokens = computed(() => {

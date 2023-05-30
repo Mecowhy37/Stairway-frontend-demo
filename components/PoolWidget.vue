@@ -20,7 +20,7 @@
                     </template>
                     <template #dropdown>
                         <Settings
-                            ref="settings"
+                            ref="settingsAdd"
                             :default-slippage="0.5"
                             :default-deadline="30"
                         ></Settings>
@@ -40,10 +40,10 @@
                             for="amount_1"
                             @click="!waitingForAdding && openTokenSelectModal(x)"
                         >
-                            <h4 v-if="ABTokens[x] !== null">
+                            <p v-if="ABTokens[x] !== null">
                                 {{ ABTokens[x]?.symbol }}
-                            </h4>
-                            <h4 v-else>select token</h4>
+                            </p>
+                            <p v-else>select token</p>
                             <mdicon
                                 class="icon"
                                 name="chevron-down"
@@ -58,19 +58,20 @@
                             spellcheck="false"
                             autocomplete="off"
                             autocorrect="off"
-                            @input="setTokenAmount($event, x)"
-                            :value="ABAmounts[x]"
                             :disabled="waitingForAdding"
+                            :value="ABAmounts[x]"
+                            @input="setTokenAmount($event, x)"
                         />
                         <!-- :value="ABAmounts[x]" -->
                     </div>
                     <div class="window__lower">
-                        <p class="caption">Balance: fsd</p>
+                        <p class="caption">Balance: {{ Number(ABBalance[x]) }}</p>
                     </div>
                 </div>
                 <div
                     v-if="x === 0"
-                    id="add-symbol"
+                    id="mid-symbol"
+                    class="plus"
                 >
                     <h2>+</h2>
                 </div>
@@ -88,45 +89,50 @@
             <p>please insert both amount to set pool starting ratio</p>
         </div> -->
             <div
-                v-if="bidAsk"
-                class="prices-share"
+                v-if="bidAsk || poolShare"
+                class="tables"
             >
-                <h4>Prices</h4>
-                <div class="table row">
-                    <div>
-                        <p class="grey-text">Bid</p>
-                        <p class="grey-text">Ask</p>
-                    </div>
-                    <div>
-                        <p>{{ bidAskDisplay[0] }}</p>
-                        <p>{{ bidAskDisplay[1] }}</p>
-                        <p class="caption grey-text">{{ ABTokens[0].symbol }} per {{ ABTokens[1].symbol }}</p>
-                    </div>
-                    <div>
-                        <p>{{ bidAskDisplayReverse[0] }}</p>
-                        <p>{{ bidAskDisplayReverse[1] }}</p>
-                        <p class="caption grey-text">{{ ABTokens[1].symbol }} per {{ ABTokens[0].symbol }}</p>
-                    </div>
-                    <!-- <div>
+                <div
+                    v-if="bidAsk"
+                    class="prices-share"
+                >
+                    <p>Prices</p>
+                    <div class="table row">
+                        <div class="left">
+                            <p class="grey-text caption">Bid</p>
+                            <p class="grey-text caption">Ask</p>
+                        </div>
+                        <div>
+                            <p class="caption">{{ bidAskDisplay[0] }}</p>
+                            <p class="caption">{{ bidAskDisplay[1] }}</p>
+                            <p class="caption grey-text">{{ ABTokens[0].symbol }} per {{ ABTokens[1].symbol }}</p>
+                        </div>
+                        <div>
+                            <p class="caption">{{ bidAskDisplayReverse[0] }}</p>
+                            <p class="caption">{{ bidAskDisplayReverse[1] }}</p>
+                            <p class="caption grey-text">{{ ABTokens[1].symbol }} per {{ ABTokens[0].symbol }}</p>
+                        </div>
+                        <!-- <div>
                         <p>{{ poolShare }}%</p>
                         <p class="caption grey-text">pool share</p>
                     </div> -->
-                </div>
-            </div>
-            <div
-                v-if="poolShare"
-                class="prices-share"
-            >
-                <h4>Pool share</h4>
-                <div class="table row">
-                    <div v-for="(token, x) in ABTokensBaseOrdered">
-                        <p v-if="x === 0">{{ (thisReserve * poolShare) / 100 }}</p>
-                        <p v-else>{{ (thatReserve * poolShare) / 100 }}</p>
-                        <p class="caption grey-text">pooled {{ token.symbol }}</p>
                     </div>
-                    <div>
-                        <p>{{ poolShare }}%</p>
-                        <p class="caption grey-text">pool share</p>
+                </div>
+                <div
+                    v-if="poolShare"
+                    class="prices-share"
+                >
+                    <p>Pool share</p>
+                    <div class="table row">
+                        <div v-for="(token, x) in ABTokensBaseOrdered">
+                            <p v-if="x === 0">{{ (thisReserve * poolShare) / 100 }}</p>
+                            <p v-else>{{ (thatReserve * poolShare) / 100 }}</p>
+                            <p class="caption grey-text">pooled {{ token.symbol }}</p>
+                        </div>
+                        <div>
+                            <p>{{ poolShare }}%</p>
+                            <p class="caption grey-text">pool share</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -215,7 +221,7 @@
                     </template>
                     <template #dropdown>
                         <Settings
-                            ref="settings"
+                            ref="settingsRedeem"
                             :default-slippage="0.5"
                             :default-deadline="30"
                         ></Settings>
@@ -223,7 +229,7 @@
                 </Dropdown>
             </div>
             <div>
-                <h4>{{ ABTokens[0].symbol }} / {{ ABTokens[1].symbol }}</h4>
+                <p>{{ ABTokens[0].symbol }} / {{ ABTokens[1].symbol }}</p>
             </div>
             <div class="amount">
                 <p class="grey-text">Amount</p>
@@ -369,19 +375,21 @@ const {
     setLiquidityChangeListener,
 } = usePools(stepStore.routerAddress)
 
+const { getTokenBalance } = useBalances()
+
 const state = reactive({
     amountA: "",
     amountB: "",
     approvalA: "",
     approvalB: "",
-    balanceA: null,
-    balanceB: null,
+    balanceA: "",
+    balanceB: "",
     selectTokenIndex: 0,
     lastChangedToken: 0,
     redeemPercent: 100,
 })
 
-//modal stuff----------
+//MODAL STUFF----------
 const toggleTokenModal = inject("modal")
 function openTokenSelectModal(index) {
     toggleTokenModal(ABTokens.value, setToken)
@@ -395,13 +403,14 @@ async function setToken(token) {
     }
     ABTokens.value = ABTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
 }
-//----------------------
+//MODAL STUFF----------
 
-//settings--------------
-const settings = ref()
-//----------------------
+//SETTINGS--------------
+const settingsAdd = ref()
+const settingsRedeem = ref()
+//SETTINGS--------------
 
-//RedeemWidget----------
+//REDEEM WIDGET----------
 const options = ref()
 function setRedeemProc(event, proc) {
     removeSelected()
@@ -419,17 +428,30 @@ function redeemLiquidityCall() {
         ...stepStore.bothPoolTokenAddresses,
         state.redeemPercent,
         stepStore.connectedAccount,
+        settingsRedeem.value.deadline,
         stepStore.connectedWallet.provider
     )
 }
-//-----------------------
+//REDEEM WIDGET----------
+
+// TOKENS ---------------
+// TOKENS ---------------
+
+// AMOUNTS --------------
+// AMOUNTS --------------
+
+// BALANCES -------------
+// BALANCES -------------
+
+// ALLOWANCES -----------
+// ALLOWANCES -----------
 
 function callAddLiquidity() {
     addLiquidity(
         ...stepStore.bothPoolTokenAddresses,
         ...ABAmounts.value,
-        settings.value.slippage,
-        settings.value.deadline,
+        settingsAdd.value.slippage,
+        settingsAdd.value.deadline,
         stepStore.connectedAccount,
         stepStore.connectedWallet.provider
     ).then(() => {
@@ -464,8 +486,8 @@ function cleanInput(value, oldValue) {
 // function callApproveSpending(address) {
 function callApproveSpending(address, amount) {
     if (stepStore.connectedWallet) {
-        // approveSpending(address, stepStore.connectedWallet.provider, 0, getAllowances)
-        approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
+        approveSpending(address, stepStore.connectedWallet.provider, 0, getAllowances)
+        // approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
     }
 }
 async function getAllowances() {
@@ -489,6 +511,30 @@ async function getApprovedAmount(address) {
     }
 }
 
+async function getBalance(token, both = false) {
+    if (stepStore.connectedWallet) {
+        if (both) {
+            getBalance(poolTokens.value.A)
+            getBalance(poolTokens.value.B)
+            return
+        }
+        if (!token) {
+            return
+        }
+
+        const formatedBalance = await getTokenBalance(
+            token,
+            stepStore.connectedAccount,
+            stepStore.connectedWallet.provider
+        )
+        if (ABTokens.value.indexOf(token) === 0) {
+            state.balanceA = formatedBalance
+        } else {
+            state.balanceB = formatedBalance
+        }
+    }
+}
+
 const ABTokens = computed({
     get() {
         return [poolTokens.value.A, poolTokens.value.B]
@@ -497,6 +543,12 @@ const ABTokens = computed({
         poolTokens.value.A = newValue[0]
         poolTokens.value.B = newValue[1]
     },
+})
+const ABBalance = computed({
+    get() {
+        return [state.balanceA, state.balanceB]
+    },
+    set() {},
 })
 const ABTokensBaseOrdered = computed(() => {
     const list = [...ABTokens.value]
@@ -556,23 +608,6 @@ const ABAmounts = computed({
     },
 })
 
-//this wacher is responsible for cleaning up inputs from unwanted  charactera only where the input takes place
-watch(
-    ABAmounts,
-    (newVal, oldVal) => {
-        const [newA, newB] = [...newVal]
-        const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
-        if (state.lastChangedToken === 0 && newA !== oldA) {
-            state.amountA = cleanInput(newA, oldA)
-        } else if (state.lastChangedToken === 1 && newB !== oldB) {
-            state.amountB = cleanInput(newB, oldB)
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
 // amounts formated to uint256
 const ABAmountsUint = computed(() => {
     return ABAmounts.value.map((el) => {
@@ -583,7 +618,6 @@ const ABAmountsUint = computed(() => {
         if (regex.test(el)) {
             return parseEther("0.00001")
         }
-        console.log("herer ", el)
         return parseEther(el)
     })
 })
@@ -591,11 +625,6 @@ const ABAmountsUint = computed(() => {
 //checks if both amounts are filled in
 const bothAmountsIn = computed(() => {
     return ABAmounts.value.every((el) => el !== "")
-})
-
-// #TODO probably remove
-const balances = computed(() => {
-    return [state.balanceA, state.balanceB]
 })
 
 //finds which token is base in the pool
@@ -645,6 +674,7 @@ function setupLiquidityChange(providerArg, poolAdd = false) {
                 )
             }
             setupLiquidityChange(stepStore.connectedWallet.provider, poolContractAddress)
+            getBalance(null, true)
         }
     )
 }
@@ -663,9 +693,26 @@ function setupPoolCreated(providerArg) {
             poolAddress.value = newPoolAddress
         }
         setupPoolCreated(stepStore.connectedWallet.provider)
+        getBalance(null, true)
     })
 }
 
+//this wacher is responsible for cleaning up inputs from unwanted  charactera only where the input takes place
+watch(
+    ABAmounts,
+    (newVal, oldVal) => {
+        const [newA, newB] = [...newVal]
+        const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
+        if (state.lastChangedToken === 0 && newA !== oldA) {
+            state.amountA = cleanInput(newA, oldA)
+        } else if (state.lastChangedToken === 1 && newB !== oldB) {
+            state.amountB = cleanInput(newB, oldB)
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 //looks for pool when two tokens are there and when wallet changes
 watch(
     () => [stepStore.bothPoolTokenAddresses, stepStore.connectedAccount],
@@ -719,15 +766,13 @@ watch(
     () => [ABTokens.value, stepStore.connectedWallet],
     (newValue, oldValue) => {
         const newTokens = newValue.at(0)
-        // const oldTokens = oldValue?.at(0)
         const wallet = newValue.at(1)
-        // const newTokensNotNull = newTokens.filter((el) => (!oldTokens?.includes(el) && el !== null ? true : false))
-        // const bothTokensThere = newTokens.every((el) => el !== null)
-
         if (wallet) {
             getAllowances()
+            getBalance(null, true)
         } else {
             ABAllowance.value = ["", ""]
+            ABBalance.value = ["", ""]
         }
     },
     {
@@ -741,6 +786,14 @@ watch(
     (wallet, prevWallet) => {
         if (wallet !== prevWallet && wallet) {
             setupPoolCreated(stepStore.connectedWallet.provider)
+            if (!(poolAddress.value === unhandled || poolAddress.value === "")) {
+                setupPool(
+                    poolAddress.value,
+                    stepStore.bothPoolTokenAddresses,
+                    stepStore.connectedWallet.provider,
+                    stepStore.connectedAccount
+                )
+            }
             return
         }
         if (!wallet) {
@@ -758,6 +811,11 @@ onMounted(() => {
     if (stepStore.connectedWallet && stepStore.bothPoolTokensThere) {
         findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
     }
+})
+
+onUnmounted(() => {
+    setPoolCreationListener(false)
+    setLiquidityChangeListener(false)
 })
 </script>
 
@@ -812,6 +870,7 @@ onMounted(() => {
                 cursor: pointer;
                 p {
                     white-space: nowrap;
+                    line-height: 1.5rem;
                 }
             }
             input {
@@ -841,21 +900,39 @@ onMounted(() => {
             }
         }
         &__lower {
+            gap: 5px;
             padding: 5px 8px;
             text-align: end;
             background-color: var(--swap-windows);
             color: var(--text-grey);
         }
     }
-    #add-symbol {
-        text-align: center;
+    #mid-symbol {
+        display: flex;
+        justify-content: center;
+        &.plus {
+            margin-bottom: 5px;
+        }
+        &.button {
+            margin: 5px;
+            transform: rotate(0);
+            transition: transform 0.2s;
+            &.rotate {
+                transform: rotate(-180deg);
+            }
+        }
     }
-    .prices-share {
-        margin: 15px 0;
-        .table {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px solid var(--primary-disabled-bg);
+    .tables {
+        margin: 20px 0;
+        .prices-share {
+            &:nth-child(2) {
+                margin-top: 5px;
+            }
+            .table {
+                margin-top: 7px;
+                padding-top: 7px;
+                border-top: 2px solid var(--primary-disabled-bg);
+            }
         }
     }
     .buttons {
@@ -870,10 +947,17 @@ onMounted(() => {
 .table {
     justify-content: space-between;
     & > div {
+        &.left {
+            p {
+                text-align: left;
+                margin-left: 10%;
+            }
+        }
         text-align: center;
+        /* text-align: left; */
         flex-basis: 25%;
         p {
-            margin-bottom: 5px;
+            /* margin-bottom: 2px; */
             white-space: nowrap;
         }
         p:last-of-type {
@@ -960,7 +1044,7 @@ onMounted(() => {
     justify-content: space-between;
     /* margin-bottom: 0.5rem; */
     border-bottom: 2px solid var(--text-color-reverse);
-    padding-top: 20px;
+    padding-top: 17px;
     padding-bottom: 12px;
     margin-bottom: 20px;
 }

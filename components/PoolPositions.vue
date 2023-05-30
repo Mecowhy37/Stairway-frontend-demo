@@ -78,7 +78,7 @@ import * as Pool from "../ABIs/Pool.json"
 const PoolABI = Pool.default
 
 const stepStore = useStepStore()
-const { getBalance, getTotalSupply } = useBalances()
+const { getTokenBalance, getTotalSupply } = useBalances()
 const { setPoolCreationListener } = usePools(stepStore.routerAddress)
 
 // const activePositions: Ref<>
@@ -118,7 +118,11 @@ async function getAllPositions(providerArg) {
     let allPositions = []
     await Promise.all(
         allLpTokens.map(async (lp) => {
-            const lpBalance = await getBalance({ address: lp, decimals: 18 }, stepStore.connectedAccount, providerArg)
+            const lpBalance = await getTokenBalance(
+                { address: lp, decimals: 18 },
+                stepStore.connectedAccount,
+                providerArg
+            )
             console.log("lpBalance:", lpBalance)
         })
     )

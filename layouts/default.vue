@@ -85,14 +85,16 @@ h2 {
 }
 h3 {
     font-size: 1.5rem;
+    line-height: 1.7rem;
 }
 h4 {
     font-size: 1.25rem;
 }
 p {
     font-size: 1rem;
+    line-height: 1.2rem;
     &.caption {
-        font-size: 0.9rem;
+        font-size: 13px;
     }
 }
 .text-highlight {

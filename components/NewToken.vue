@@ -40,8 +40,8 @@
                             size="20px"
                             name="content-copy"
                         />
-                        <h4 v-if="!copied">{{ truncatedTokenAddress }}</h4>
-                        <h4 v-else-if="copied">copied!</h4>
+                        <p v-if="!copied">{{ truncatedTokenAddress }}</p>
+                        <p v-else-if="copied">copied!</p>
                     </span>
                 </div>
                 <div class="layer-wdg-box row">
@@ -287,6 +287,9 @@ watch(claimed, (newVal) => {
                             transition: color 0.1s;
                             color: var(--primary-btn-bg);
                         }
+                    }
+                    .mdi:hover {
+                        color: var(--text-color-reverse);
                     }
                 }
                 .divider {

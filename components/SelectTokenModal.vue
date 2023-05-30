@@ -152,7 +152,7 @@ defineExpose({
     &__window {
         place-self: center;
         width: 400px;
-        max-height: 50%;
+        height: 50%;
         /* margin-top: 30%; */
         background-color: white;
         border-radius: 12px;
@@ -173,10 +173,9 @@ defineExpose({
             }
         }
         .token-list {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: auto;
-            flex-grow: 0;
+            /* display: flex;
+            flex-direction: column; */
+            /* margin-bottom: auto; */
             overflow-y: scroll;
             -ms-overflow-style: none;
             scrollbar-width: none;

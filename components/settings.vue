@@ -38,6 +38,8 @@
 </template>
 
 <script setup>
+import { provide } from "vue"
+
 const props = defineProps({
     defaultSlippage: Number,
     defaultDeadline: Number,
@@ -84,7 +86,6 @@ function validateDeadline(val) {
     }
     state.deadlineError = false
 }
-
 defineExpose({
     slippage: toRefs(state).slippage,
     deadline: toRefs(state).deadline,

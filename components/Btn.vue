@@ -14,6 +14,7 @@
                 'btn--wide': props.wide,
                 'btn--bulky': props.bulky,
                 'btn--pill': props.pill,
+                'btn--circle': props.circle,
                 'btn--unclickable': props.loading,
                 'btn--tiny': props.tiny,
                 'btn--compact': props.compact,
@@ -62,6 +63,7 @@ export interface Props {
     plain?: boolean
     opaque?: boolean
     pill?: boolean
+    circle?: boolean
     disabled?: boolean
     loading?: boolean
     tiny?: boolean
@@ -196,6 +198,11 @@ $horiz-padd: 1.3rem;
     }
     &--pill {
         border-radius: 9999px;
+    }
+    &--circle {
+        background: var(--swap-windows);
+        border-radius: 9999px;
+        padding: 5px;
     }
     &--bulky {
         $height: 3rem;
