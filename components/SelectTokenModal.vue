@@ -24,7 +24,7 @@
                 >
                     {{ token.name }}
                 </p>
-                <!-- <p @click="setToken(null)">deselect</p> -->
+                <p @click="setToken(null)">deselect</p>
             </div>
         </div>
     </div>

@@ -74,7 +74,6 @@
                     v-if="x === 0"
                     id="mid-symbol"
                     class="button"
-                    :class="{ rotate: Boolean(state.order) }"
                 >
                     <Btn
                         circle
@@ -108,10 +107,11 @@
                 </Btn>
                 <Btn
                     v-if="stepStore.connectedWallet"
-                    :disabled="poolAddress === unhandled || poolAddress === ''"
+                    @click="callSwap"
                     is="h4"
                     wide
                     bulky
+                    :disabled="!canSwap"
                 >
                     Swap
                 </Btn>
@@ -158,25 +158,17 @@ const {
     approveSpending,
     bidAsk,
     baseTokenAddress,
-    poolRatio,
-    thisReserve,
-    thatReserve,
     poolAddress,
-    poolShare,
     findPool,
     getBidAsk,
     setupPool,
     checkAllowance,
-    lpTotalSupply,
-    liquidityTokenBalance,
-    waitingBidAsk,
     bidAskFormat,
     bidAskDisplay,
     bidAskDisplayReverse,
-    addLiquidity,
+    swap,
     waitingForAdding,
     resetPool,
-    redeemLiquidity,
     setPoolCreationListener,
     setLiquidityChangeListener,
 } = usePools(stepStore.routerAddress)
@@ -197,20 +189,28 @@ const state = reactive({
     noSlippage: false,
     alreadyMounted: false,
 })
+// WIDGET ------------------
+const canSwap = computed(() => {
+    return (
+        !(poolAddress.value === unhandled || poolAddress.value === "") &&
+        bothAmountsIn.value &&
+        isSuffientAllowance.value
+    )
+})
+const bothAmountsIn = computed(() => {
+    return switchedAmounts.value.every((el) => el !== "")
+})
+const isSuffientAllowance = computed(() => {
+    return switchedAllowances.value[0] >= switchedAmountsUint.value[0]
+})
+function callSwap() {
+    console.log(ABTokensBaseOrdered.value.map((el) => el.address))
+}
+// WIDGET ------------------
 
 // TOKENS ------------------
-function setToken(token) {
-    const sameTokenIndex = switchedTokens.value.findIndex((el) => el?.address === token.address)
-    if (sameTokenIndex !== -1 && sameTokenIndex !== state.selectTokenIndex) {
-        switchedTokens.value = switchedTokens.value.reverse()
-        return
-    }
-    switchedTokens.value = switchedTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
-}
 const ABTokens = computed(() => {
-    // return [swapTokens.value[0], swapTokens.value[1]]
     return [swapTokens.value.A, swapTokens.value.B]
-    // return [state.TokenA, state.TokenB]
 })
 const switchedTokens = computed({
     get() {
@@ -228,14 +228,34 @@ const switchedTokens = computed({
         }
     },
 })
-const baseTokenIndex = computed(() => {
-    return switchedTokens.value.indexOf(
-        switchedTokens.value.find((el) => (el?.address === baseTokenAddress.value ? el : null))
-    )
-})
+function setToken(token) {
+    if (token) {
+        const sameTokenIndex = switchedTokens.value.findIndex((el) => el?.address === token.address)
+        if (sameTokenIndex !== -1 && sameTokenIndex !== state.selectTokenIndex) {
+            switchedTokens.value = switchedTokens.value.reverse()
+            return
+        }
+    }
+    switchedTokens.value = switchedTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
+}
 function switchOrder() {
     state.order = state.order === 0 ? 1 : 0
 }
+const ABTokensBaseOrdered = computed(() => {
+    if (baseTokenIndex) {
+        const list = [...ABTokens.value]
+        return baseTokenIndex.value === 0 ? list : list.reverse()
+    } else {
+        return null
+    }
+})
+const baseTokenIndex = computed(() => {
+    if (stepStore.bothSwapTokensThere && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
+        return switchedTokens.value.indexOf(switchedTokens.value.find((el) => el.address == baseTokenAddress.value))
+    } else {
+        return null
+    }
+})
 // TOKENS ------------------
 
 // AMOUNTS -----------------
@@ -312,16 +332,16 @@ function cleanInput(value, oldValue) {
     }
     return value
 }
-//this wacher is responsible for cleaning up inputs from unwanted  charactera only where the input takes place
+// CLEANS IMPUTED AMOUNT
 watch(
     () => [state.amountA, state.amountB],
     (newVal, oldVal) => {
         if (bidAsk.value) {
             const [newA, newB] = [...newVal]
             const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
-            if (newA !== oldA) {
+            if (state.lastChangedToken === 0 && newA !== oldA) {
                 state.amountA = cleanInput(newA, oldA)
-            } else if (newB !== oldB) {
+            } else if (state.lastChangedToken === 1 && newB !== oldB) {
                 state.amountB = cleanInput(newB, oldB)
             }
         }
@@ -330,7 +350,6 @@ watch(
         immediate: true,
     }
 )
-
 // AMOUNTS -----------------
 
 // BALANCES ----------------
@@ -407,6 +426,20 @@ const switchedAllowances = computed({
 })
 // ALLOWANCES --------------
 
+// MODAL -------------
+const toggleTokenModal = inject("modal")
+function openTokenSelectModal(index) {
+    if (stepStore.connectedWallet) {
+        toggleTokenModal(ABTokens.value, setToken)
+        state.selectTokenIndex = index
+    }
+}
+// MODAL -------------
+
+//SETTINGS--------------
+const settings = ref()
+//SETTINGS--------------
+
 // sets up liquidity chage listners with callback and turn offs
 function setupLiquidityChange(providerArg, poolAdd = false) {
     if (providerArg === false) {
@@ -447,39 +480,25 @@ function setupPoolCreated(providerArg) {
     })
 }
 
-watch(
-    () => [ABTokens.value, stepStore.connectedWallet],
-    (newValue) => {
-        const wallet = newValue[1]
-        if (wallet) {
-            getAllowances()
-            getBalance(null, true)
-        } else {
-            switchedAllowances.value = ["", ""]
-            switchedBalances.value = ["", ""]
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
+// FINDS POOL OR GETS BID ASK BY TOKEN ADDRESSES
 watch(
     () => [stepStore.bothSwapTokenAddresses, stepStore.connectedWallet],
     (newVal, oldVal) => {
         const [bothTokens, wallet] = [...newVal]
-        const [prevBothTokens, prevWallet] = oldVal ? [oldVal[0], oldVal[1]] : [null, null]
+        const [prevBothTokens, prevWallet] = oldVal ? [...oldVal] : [[null, null], null]
         if (bothTokens && wallet) {
             if (
                 (prevBothTokens !== bothTokens && prevWallet === wallet) ||
                 (prevBothTokens === bothTokens && prevWallet !== wallet)
             ) {
-                const areSame = bothTokens.map((el, index) => el === prevBothTokens[Number(!Boolean(index))])
+                const areSame = bothTokens.map(
+                    (el, index) => prevBothTokens && el === prevBothTokens[Number(!Boolean(index))]
+                )
                 const differentOrder = areSame.every((el) => el === true)
                 if (differentOrder && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
-                    getBidAsk(stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
+                    getBidAsk(bothTokens, stepStore.connectedWallet.provider)
                 } else {
-                    findPool(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
+                    findPool(...bothTokens, stepStore.connectedWallet.provider)
                 }
             }
             return
@@ -492,6 +511,8 @@ watch(
         immediate: true,
     }
 )
+
+//SETS UP POOL OR RESETS BY POOL ADDRESS
 watch(
     poolAddress,
     (poolAdd, prevPoolAdd) => {
@@ -518,6 +539,25 @@ watch(
     }
 )
 
+//GETS BALANCES AND ALLOWANCES BY TOKENS AND WALLET
+watch(
+    () => [ABTokens.value, stepStore.connectedWallet],
+    (newValue) => {
+        const wallet = newValue[1]
+        if (wallet) {
+            getAllowances()
+            getBalance(null, true)
+        } else {
+            switchedAllowances.value = ["", ""]
+            switchedBalances.value = ["", ""]
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+// SETS UP LISTENERS OR SETS POOL BASED ON CONNECTED WALLET
 watch(
     () => stepStore.connectedAccount,
     (wallet, prevWallet) => {
@@ -543,14 +583,6 @@ watch(
     }
 )
 
-// MODAL -------------
-const toggleTokenModal = inject("modal")
-function openTokenSelectModal(index) {
-    toggleTokenModal(ABTokens.value, setToken)
-    state.selectTokenIndex = index
-}
-// MODAL -------------
-
 // const rate = computed(() => {
 //     if (state.showRate) {
 //         let rate = tokenToSell.value === token0.value ? bidAsk.value[0] : 1 / Number(bidAsk.value[1])
@@ -569,6 +601,7 @@ onMounted(() => {
     }
 })
 
+//TURNS OFF LISTENERS
 onUnmounted(() => {
     setPoolCreationListener(false)
     setLiquidityChangeListener(false)

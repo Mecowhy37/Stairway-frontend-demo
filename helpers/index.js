@@ -245,6 +245,10 @@ export function usePools(routerAddress) {
         }
     }
 
+    async function swap(tokens, providerArg) {
+        // address, address, desiredAmount, maxPrice, recepient, deadline
+    }
+
     let currentFactoryContract = null
     async function setPoolCreationListener(providerArg) {
         if (providerArg === false) {
@@ -341,11 +345,12 @@ export function usePools(routerAddress) {
         checkAllowance,
         lpTotalSupply,
         liquidityTokenBalance,
+        swap,
+        addLiquidity,
         redeemLiquidity,
         bidAskFormat,
         bidAskDisplay,
         bidAskDisplayReverse,
-        addLiquidity,
         waitingForAdding,
         approveSpending,
         iterations,
