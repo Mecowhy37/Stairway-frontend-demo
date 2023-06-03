@@ -47,7 +47,7 @@ export function useBalances() {
 export function usePools(routerAddress) {
     const bidAsk = ref(null)
     const poolAddress = ref("")
-    const baseTokenAddress = ref(null)
+    const thisTokenAddress = ref(null)
     const thisReserve = ref(null)
     const thatReserve = ref(null)
     const poolRatio = ref(null)
@@ -100,40 +100,42 @@ export function usePools(routerAddress) {
 
     async function setupPool(poolAdd, tokenAddresses, providerArg, wallet) {
         console.log("setup")
-
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
-
         const pool = new Contract(poolAdd, PoolABI, provider)
 
         // BID_ASK
         const bidAskVar = await router.getBidAsk(...tokenAddresses)
-        bidAsk.value = bidAskVar
 
-        // BASE TOKEN
+        // DEPTH
+        const depth = await router.getDepth(...tokenAddresses)
+        console.log("depth:", depth)
+
+        // THIS TOKEN
         const thisToken = await pool.thisToken()
-        baseTokenAddress.value = thisToken
 
         // RESERVES & RATIO
-        const thisAmount = formatEther(await pool.thisRegisteredBalance())
-        const thatAmount = formatEther(await pool.thatRegisteredBalance())
-
-        thisReserve.value = Number(thisAmount)
-        thatReserve.value = Number(thatAmount)
-
-        poolRatio.value = Number(thatAmount) / Number(thisAmount)
+        const thisAmount = formatEther(await pool.thisBalance())
+        const thatAmount = formatEther(await pool.thatBalance())
 
         // LIQUIDITY TOKEN
         const lpToken = await pool.lpToken()
-        lpTokenAddress.value = lpToken
 
         // LQ TOKEN BALANCE
         const { getTokenBalance, getTotalSupply } = useBalances()
-        const bal = await getTokenBalance({ address: lpTokenAddress.value, decimals: 18 }, wallet, providerArg)
-        liquidityTokenBalance.value = bal
+        const bal = await getTokenBalance({ address: lpToken, decimals: 18 }, wallet, providerArg)
 
         // LQ TOKEN SUPPLY
-        lpTotalSupply.value = await getTotalSupply(lpToken, providerArg)
+        const totalSupply = await getTotalSupply(lpToken, providerArg)
+
+        bidAsk.value = bidAskVar
+        thisTokenAddress.value = thisToken
+        thisReserve.value = Number(thisAmount)
+        thatReserve.value = Number(thatAmount)
+        poolRatio.value = Number(thatAmount) / Number(thisAmount)
+        lpTokenAddress.value = lpToken
+        liquidityTokenBalance.value = bal
+        lpTotalSupply.value = totalSupply
     }
 
     const poolShare = computed(() => {
@@ -220,7 +222,7 @@ export function usePools(routerAddress) {
                 const router = new Contract(routerAddress, RouterABI, signer)
 
                 const tokenList = [tokenA, tokenB]
-                const orderedTokens = tokenA === baseTokenAddress.value ? tokenList : tokenList.reverse()
+                const orderedTokens = tokenA === thisTokenAddress.value ? tokenList : tokenList.reverse()
 
                 const amount0 = parseEther(String((thisReserve.value * poolShare.value * redeemPercent) / 10000))
                 const amount1 = parseEther(String((thatReserve.value * poolShare.value * redeemPercent) / 10000))
@@ -321,7 +323,7 @@ export function usePools(routerAddress) {
 
     function resetPool() {
         bidAsk.value = null
-        baseTokenAddress.value = ""
+        thisTokenAddress.value = ""
         thisReserve.value = null
         thatReserve.value = null
         poolRatio.value = null
@@ -336,7 +338,7 @@ export function usePools(routerAddress) {
         poolAddress,
         thisReserve,
         thatReserve,
-        baseTokenAddress,
+        thisTokenAddress,
         lpTokenAddress,
         poolRatio,
         findPool,

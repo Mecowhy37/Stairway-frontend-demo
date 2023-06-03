@@ -172,7 +172,7 @@ const { swapTokens } = storeToRefs(stepStore)
 const {
     approveSpending,
     bidAsk,
-    baseTokenAddress,
+    thisTokenAddress,
     poolAddress,
     findPool,
     getBidAsk,

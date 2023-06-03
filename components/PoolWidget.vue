@@ -262,7 +262,7 @@
                     <p class="grey-text">pooled {{ ABTokens[0]?.symbol }}:</p>
                     <p>
                         {{
-                            ABTokens[0]?.address === baseTokenAddress
+                            ABTokens[0]?.address === thisTokenAddress
                                 ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
                                 : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
                         }}
@@ -272,7 +272,7 @@
                     <p class="grey-text">pooled {{ ABTokens[1]?.symbol }}:</p>
                     <p>
                         {{
-                            ABTokens[1]?.address === baseTokenAddress
+                            ABTokens[1]?.address === thisTokenAddress
                                 ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
                                 : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
                         }}
@@ -322,7 +322,7 @@ const { poolTokens } = storeToRefs(stepStore)
 const {
     approveSpending,
     bidAsk,
-    baseTokenAddress,
+    thisTokenAddress,
     poolRatio,
     thisReserve,
     thatReserve,
@@ -406,7 +406,7 @@ const ABTokens = computed({
 
 const thisTokenIndex = computed(() => {
     if (stepStore.bothPoolTokensThere && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
-        return ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
+        return ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == thisTokenAddress.value))
     } else {
         return null
     }
