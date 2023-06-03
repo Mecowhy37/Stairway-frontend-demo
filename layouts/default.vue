@@ -93,8 +93,11 @@ h4 {
 p {
     font-size: 1rem;
     line-height: 1.2rem;
-    &.caption {
-        font-size: 13px;
+}
+.caption {
+    &,
+    & * {
+        font-size: 13px !important;
     }
 }
 .text-highlight {

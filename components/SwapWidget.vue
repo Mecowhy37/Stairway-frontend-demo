@@ -3,6 +3,7 @@
         <div class="widget base-wdg-box">
             <div class="top-bar row">
                 <h3>Trade</h3>
+                <h3>{{ bidAskDisplay }}</h3>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
                         <Btn
@@ -126,6 +127,20 @@
                     Connect wallet
                 </Btn>
             </div>
+            <div
+                v-if="bidAsk"
+                class="sum-up grey-text caption"
+            >
+                <p>1 {{ switchedTokens[1].symbol }} = {{ rate }} {{ switchedTokens[0].symbol }}</p>
+                <div class="row space-between">
+                    <p>Volume available at this price (23423GHFK)</p>
+                    <p>3ETH</p>
+                </div>
+                <div class="row space-between">
+                    <p>Gas price</p>
+                    <p>$0.00021</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -204,7 +219,7 @@ const isSuffientAllowance = computed(() => {
     return switchedAllowances.value[0] >= switchedAmountsUint.value[0]
 })
 function callSwap() {
-    console.log(ABTokensBaseOrdered.value.map((el) => el.address))
+    console.log(switchedTokens.value.map((el) => el.address))
 }
 // WIDGET ------------------
 
@@ -232,7 +247,7 @@ function setToken(token) {
     if (token) {
         const sameTokenIndex = switchedTokens.value.findIndex((el) => el?.address === token.address)
         if (sameTokenIndex !== -1 && sameTokenIndex !== state.selectTokenIndex) {
-            switchedTokens.value = switchedTokens.value.reverse()
+            switchOrder()
             return
         }
     }
@@ -241,21 +256,7 @@ function setToken(token) {
 function switchOrder() {
     state.order = state.order === 0 ? 1 : 0
 }
-const ABTokensBaseOrdered = computed(() => {
-    if (baseTokenIndex) {
-        const list = [...ABTokens.value]
-        return baseTokenIndex.value === 0 ? list : list.reverse()
-    } else {
-        return null
-    }
-})
-const baseTokenIndex = computed(() => {
-    if (stepStore.bothSwapTokensThere && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
-        return switchedTokens.value.indexOf(switchedTokens.value.find((el) => el.address == baseTokenAddress.value))
-    } else {
-        return null
-    }
-})
+
 // TOKENS ------------------
 
 // AMOUNTS -----------------
@@ -263,18 +264,9 @@ function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = state.order === 0 ? inputIndex : Number(!Boolean(inputIndex))
     switchedAmounts.value = switchedAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
-
 const switchedAmounts = computed({
     get() {
         let list = [state.amountA, state.amountB]
-        function Round(amt) {
-            let amount = Number(amt)
-            amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-            if (amount == 0) {
-                return ""
-            }
-            return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
-        }
         if (bidAsk.value) {
             if (list[state.lastChangedToken] === "") {
                 list[Number(!Boolean(state.lastChangedToken))] = ""
@@ -310,6 +302,17 @@ const switchedAmountsUint = computed(() => {
         return parseEther(el)
     })
 })
+const rate = computed(() => {
+    if (bidAsk.value) {
+        if (state.order === 0) {
+            return Round(String(1 / bidAskFormat.value[0]))
+        } else {
+            return Round(String(1 * bidAskFormat.value[1]))
+        }
+    } else {
+        return null
+    }
+})
 function calcQuote(value) {
     if (state.order === 0) {
         return String(Number(value) * bidAskFormat.value[0])
@@ -323,6 +326,14 @@ function calcBase(value) {
     } else {
         return String(Number(value) / bidAskFormat.value[1])
     }
+}
+function Round(amt) {
+    let amount = Number(amt)
+    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+    if (amount == 0) {
+        return ""
+    }
+    return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
 }
 function cleanInput(value, oldValue) {
     value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
@@ -496,6 +507,7 @@ watch(
                 )
                 const differentOrder = areSame.every((el) => el === true)
                 if (differentOrder && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
+                    console.log("getBidAsk:", getBidAsk)
                     getBidAsk(bothTokens, stepStore.connectedWallet.provider)
                 } else {
                     findPool(...bothTokens, stepStore.connectedWallet.provider)
@@ -541,12 +553,19 @@ watch(
 
 //GETS BALANCES AND ALLOWANCES BY TOKENS AND WALLET
 watch(
+    // () => [switchedTokens.value, stepStore.connectedWallet],
     () => [ABTokens.value, stepStore.connectedWallet],
     (newValue) => {
         const wallet = newValue[1]
         if (wallet) {
             getAllowances()
             getBalance(null, true)
+            // if (!(poolAddress.value === "" || poolAddress === unhandled) && stepStore.bothSwapTokensThere) {
+            //     const list = [...stepStore.bothSwapTokenAddresses]
+            //     const addresses = state.order === 0 ? list : list.reverse()
+
+            //     getBidAsk(addresses, stepStore.connectedWallet.provider)
+            // }
         } else {
             switchedAllowances.value = ["", ""]
             switchedBalances.value = ["", ""]
@@ -582,16 +601,6 @@ watch(
         immediate: true,
     }
 )
-
-// const rate = computed(() => {
-//     if (state.showRate) {
-//         let rate = tokenToSell.value === token0.value ? bidAsk.value[0] : 1 / Number(bidAsk.value[1])
-//         rate = Number(rate) > 1 ? Number(rate).toFixed(2) : Number(rate).toPrecision(2)
-//         return `1 ${switchedTokens.value[0].symbol} = ${rate} ${switchedTokens.value[1].symbol}`
-//     } else {
-//         return ""
-//     }
-// })
 
 //maybe only needed in development to find pool on code reload
 onMounted(() => {

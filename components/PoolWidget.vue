@@ -3,7 +3,6 @@
         <div class="widget base-wdg-box">
             <div class="top-bar row">
                 <h3>Add Liquidity</h3>
-                <h3>Remove Liquidity</h3>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
                         <Btn
@@ -90,43 +89,14 @@
             <p>please insert both amount to set pool starting ratio</p>
         </div> -->
             <div
-                v-if="bidAsk || poolShare"
+                v-if="poolShare"
                 class="tables"
             >
-                <div
-                    v-if="bidAsk"
-                    class="prices-share"
-                >
-                    <p>Prices</p>
-                    <div class="table row">
-                        <div class="left">
-                            <p class="grey-text caption">Bid</p>
-                            <p class="grey-text caption">Ask</p>
-                        </div>
-                        <div>
-                            <p class="caption">{{ bidAskDisplay[0] }}</p>
-                            <p class="caption">{{ bidAskDisplay[1] }}</p>
-                            <p class="caption grey-text">{{ ABTokens[0].symbol }} per {{ ABTokens[1].symbol }}</p>
-                        </div>
-                        <div>
-                            <p class="caption">{{ bidAskDisplayReverse[0] }}</p>
-                            <p class="caption">{{ bidAskDisplayReverse[1] }}</p>
-                            <p class="caption grey-text">{{ ABTokens[1].symbol }} per {{ ABTokens[0].symbol }}</p>
-                        </div>
-                        <!-- <div>
-                        <p>{{ poolShare }}%</p>
-                        <p class="caption grey-text">pool share</p>
-                    </div> -->
-                    </div>
-                </div>
-                <div
-                    v-if="poolShare"
-                    class="prices-share"
-                >
+                <div class="prices-share">
                     <p>Pool share</p>
                     <div class="table row">
-                        <div v-for="(token, x) in ABTokensBaseOrdered">
-                            <p v-if="x === 0">{{ (thisReserve * poolShare) / 100 }}</p>
+                        <div v-for="(token, x) in ABTokens">
+                            <p v-if="x === thisTokenIndex">{{ (thisReserve * poolShare) / 100 }}</p>
                             <p v-else>{{ (thatReserve * poolShare) / 100 }}</p>
                             <p class="caption grey-text">pooled {{ token.symbol }}</p>
                         </div>
@@ -433,15 +403,8 @@ const ABTokens = computed({
         poolTokens.value.B = newValue[1]
     },
 })
-const ABTokensBaseOrdered = computed(() => {
-    if (baseTokenIndex) {
-        const list = [...ABTokens.value]
-        return baseTokenIndex.value === 0 ? list : list.reverse()
-    } else {
-        return null
-    }
-})
-const baseTokenIndex = computed(() => {
+
+const thisTokenIndex = computed(() => {
     if (stepStore.bothPoolTokensThere && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
         return ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == baseTokenAddress.value))
     } else {
@@ -479,7 +442,7 @@ const ABAmounts = computed({
             }
             if (state.lastChangedToken === 0) {
                 if (state.amountA.length !== 0) {
-                    if (baseTokenIndex.value === 0) {
+                    if (thisTokenIndex.value === 0) {
                         state.amountB = Round(calcQuote(state.amountA))
                     } else {
                         state.amountB = Round(calcBase(state.amountA))
@@ -487,7 +450,7 @@ const ABAmounts = computed({
                 }
             } else {
                 if (state.amountB.length !== 0) {
-                    if (baseTokenIndex.value === 0) {
+                    if (thisTokenIndex.value === 0) {
                         state.amountA = Round(calcBase(state.amountB))
                     } else {
                         state.amountA = Round(calcQuote(state.amountB))
@@ -525,9 +488,9 @@ function calcQuote(value) {
     return Number(value) * poolRatio.value + ""
 }
 function calcBase(value) {
-    if (!poolRatio.value) {
-        return ""
-    }
+    // if (!poolRatio.value) {
+    //     return ""
+    // }
     return Number(value) * (1 / poolRatio.value) + ""
 }
 function cleanInput(value, oldValue) {
@@ -712,7 +675,7 @@ watch(
                 (prevBothTokens !== bothTokens && prevWallet === wallet) ||
                 (prevBothTokens === bothTokens && prevWallet !== wallet)
             ) {
-                findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+                findPool(...bothTokens, stepStore.connectedWallet.provider)
             }
             return
         }
@@ -953,6 +916,11 @@ onUnmounted(() => {
             margin-bottom: 0px;
         }
     }
+}
+.sum-up {
+    margin-top: -5px;
+
+    padding-bottom: 20px;
 }
 .redeem {
     flex-grow: 0;
