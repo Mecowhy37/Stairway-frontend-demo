@@ -37,8 +37,8 @@ export const useStepStore = defineStore("step", (): any => {
     
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
-    const routerAddress = "0x09635F643e140090A9A8Dcd712eD6285858ceBef"
-    const foundryAddress = "0x59b670e9fA9D0A427751Af201D676719a970857b"
+    const routerAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+    const foundryAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
 
     const unhandled = "0x0000000000000000000000000000000000000000"
 

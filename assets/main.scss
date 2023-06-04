@@ -27,6 +27,14 @@
     --flat-outline: var(--primary-btn-bg);
     --cta-bg: #00d2d4;
 
+    --info-bg: rgb(255, 36, 245);
+    --info-bg-opaque: rgba(255, 36, 245, 0.1);
+
+    --list-hover-bg: rgba(57, 171, 219, 0.2);
+    --list-hover-stroke: rgba(57, 171, 219, 0.3);
+
+    --list-click-bg: rgba(57, 171, 219, 0.6);
+    --list-click-stroke: rgb(57, 171, 219);
     .light {
         @include spread-map($light-map);
     }

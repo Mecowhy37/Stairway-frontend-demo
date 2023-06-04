@@ -1,7 +1,10 @@
 <template>
     <div class="settings">
         <h3>settings</h3>
-        <div class="setting">
+        <div
+            class="setting"
+            v-if="!noSlippage"
+        >
             <p>slippage tolerance (%)</p>
             <div class="row">
                 <Btn @click="resetSlippage">Auto</Btn>
@@ -43,6 +46,7 @@ import { provide } from "vue"
 const props = defineProps({
     defaultSlippage: Number,
     defaultDeadline: Number,
+    noSlippage: Boolean,
 })
 
 const state = reactive({

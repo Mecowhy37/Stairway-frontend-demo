@@ -1,32 +1,5 @@
 <template>
     <div class="getTokens widget base-wdg-box">
-        <!-- <div class="top-bar row">
-            <h3>Create token</h3>
-            <Dropdown>
-                <template #dropdown-activator="{ on }">
-                    <Btn
-                        transparent
-                        tiny
-                        icon-contrast
-                    >
-                        <template #icon>
-                            <mdicon
-                                name="cog"
-                                size="30"
-                            />
-                        </template>
-                    </Btn>
-                </template>
-                <template #dropdown>
-                    <Settings
-                        ref="settings"
-                        :default-slippage="0.5"
-                        :default-deadline="30"
-                    ></Settings>
-                </template>
-            </Dropdown>
-        </div> -->
-        <!-- <div class="row space-between"> -->
         <div class="token-part">
             <div class="token-part__wrap token-part__wrap__symbol">
                 <div class="row space-between">
@@ -35,12 +8,16 @@
                         v-if="truncatedTokenAddress"
                         class="address row"
                         @click="copyAddress"
+                        @mouseover="hoverIn"
+                        @mouseout="hoverOut"
                     >
                         <mdicon
                             size="20px"
                             name="content-copy"
                         />
-                        <p v-if="!copied">{{ truncatedTokenAddress }}</p>
+                        <p v-if="!copied">
+                            {{ !textCopy ? truncatedTokenAddress : "copy" }}
+                        </p>
                         <p v-else-if="copied">copied!</p>
                     </span>
                 </div>
@@ -187,13 +164,20 @@ function copyAddress() {
     copied.value = true
     navigator.clipboard.writeText(selectedAddress.value)
 }
-
 const canGetTokens = computed(() => {
     return tokenSymbol.value.length >= 1 && tokenAmount.value > 0
 })
 const selectedAddress = computed(() => {
     return tokenList.value.find((el) => el.symbol.toUpperCase() === tokenSymbol.value)?.address
 })
+
+const textCopy = ref(false)
+function hoverIn() {
+    textCopy.value = true
+}
+function hoverOut() {
+    textCopy.value = false
+}
 const truncatedTokenAddress = computed(() => {
     if (!selectedAddress.value) {
         return null

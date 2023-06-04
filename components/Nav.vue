@@ -12,11 +12,11 @@
                 class="navigation__link"
                 ><h4>pool</h4></NuxtLink
             >
-            <NuxtLink
+            <!-- <NuxtLink
                 to="/pools"
                 class="navigation__link"
                 ><h4>pools</h4></NuxtLink
-            >
+            > -->
             <NuxtLink
                 to="/getTokens"
                 class="navigation__link"
@@ -26,12 +26,12 @@
             <!-- <div class="navigation__underline"></div> -->
         </nav>
         <div class="nav-actions">
-            <Btn
+            <!-- <Btn
                 plain
                 @click="revertTheme"
                 >. . .</Btn
-            >
-            <Dropdown>
+            > -->
+            <!-- <Dropdown>
                 <template #dropdown-activator="{ on }">
                     <Btn plain>
                         Ethereum
@@ -48,14 +48,18 @@
                         <p>3</p>
                     </div>
                 </template>
-            </Dropdown>
-            <span
+            </Dropdown> -->
+            <!-- <span
                 v-if="!stepStore.connectedWallet"
                 class="cta-dd"
+                > -->
+            <span
+                @mouseover="showDisconnect"
+                @mouseout="hideDisconnect"
             >
                 <Btn
+                    v-if="!stepStore.connectedWallet"
                     ref="ctaDropDown"
-                    transparent
                     @click="stepStore.connectWallet()"
                     >connect</Btn
                 >
@@ -79,31 +83,28 @@
                         </Btn>
                     </template>
                 </Dropdown> -->
+                <!-- </span> -->
+                <!-- <Dropdown v-else> -->
+                <!-- <template #dropdown-activator="{ on }"> -->
+                <Btn
+                    v-else
+                    plain
+                    @click="stepStore.disconnectConnectedWallet()"
+                >
+                    {{ !disconnectText ? stepStore.getTruncatedWalletAddress : "disconnect" }}
+                </Btn>
             </span>
-            <Dropdown v-else>
-                <template #dropdown-activator="{ on }">
-                    <Btn
-                        pill
-                        plain
-                        class=""
-                    >
-                        {{ stepStore.getTruncatedWalletAddress }}
-                        <template #icon>
-                            <p>
-                                <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
-                            </p>
-                        </template>
-                    </Btn>
-                </template>
-                <template #dropdown>
-                    <Btn
+
+            <!-- </template> -->
+            <!-- <template #dropdown> -->
+            <!-- <Btn
                         wide
                         @click="stepStore.disconnectConnectedWallet()"
                     >
                         <span>disconnect</span>
-                    </Btn>
-                </template>
-            </Dropdown>
+                    </Btn> -->
+            <!-- </template> -->
+            <!-- </Dropdown> -->
         </div>
     </header>
 </template>
@@ -115,6 +116,14 @@ const stepStore = useStepStore()
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
+}
+
+const disconnectText = ref(false)
+function showDisconnect() {
+    disconnectText.value = true
+}
+function hideDisconnect() {
+    disconnectText.value = false
 }
 </script>
 

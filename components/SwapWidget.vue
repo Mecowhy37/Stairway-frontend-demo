@@ -3,7 +3,6 @@
         <div class="widget base-wdg-box">
             <div class="top-bar row">
                 <h3>Trade</h3>
-                <h3>{{ bidAskDisplay }}</h3>
                 <Dropdown>
                     <template #dropdown-activator="{ on }">
                         <Btn
@@ -24,11 +23,15 @@
                             ref="settings"
                             :default-slippage="0.5"
                             :default-deadline="30"
+                            no-slippage
                         ></Settings>
                     </template>
                 </Dropdown>
             </div>
-            <div class="tips">
+            <div
+                v-if="false"
+                class="tips"
+            >
                 <p>
                     <span class="text-highlight">Tip:</span> pool with these tokens doesnt exist yet,
                     <span class="text-highlight">create it.</span>
@@ -90,6 +93,21 @@
                     </Btn>
                 </div>
             </div>
+            <div
+                v-if="!(poolAddress === '' || poolAddress === unhandled)"
+                class="infos"
+            >
+                <div
+                    v-if="Number(poolDepth) < Number(switchedAmounts[1])"
+                    class="infos__info row"
+                >
+                    <mdicon
+                        name="alert-circle"
+                        size="30"
+                    />
+                    <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p>
+                </div>
+            </div>
             <div class="buttons">
                 <Btn
                     v-if="
@@ -133,13 +151,13 @@
             >
                 <p>1 {{ switchedTokens[1].symbol }} = {{ rate }} {{ switchedTokens[0].symbol }}</p>
                 <div class="row space-between">
-                    <p>Volume available at this price (23423GHFK)</p>
-                    <p>3ETH</p>
+                    <p>Volume available at this price ({{ rate }} {{ switchedTokens[0].symbol }})</p>
+                    <p>{{ displayDepth }} {{ switchedTokens[1].symbol }}</p>
                 </div>
-                <div class="row space-between">
+                <!-- <div class="row space-between">
                     <p>Gas price</p>
                     <p>$0.00021</p>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -148,7 +166,7 @@
 <script setup>
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
-import { BrowserProvider, Contract, formatUnits, parseEther } from "ethers"
+import { BrowserProvider, Contract, formatUnits, parseEther, formatEther } from "ethers"
 
 import { useBalances, usePools } from "~/helpers/index"
 
@@ -172,6 +190,7 @@ const { swapTokens } = storeToRefs(stepStore)
 const {
     approveSpending,
     bidAsk,
+    poolDepth,
     thisTokenAddress,
     poolAddress,
     findPool,
@@ -218,8 +237,18 @@ const bothAmountsIn = computed(() => {
 const isSuffientAllowance = computed(() => {
     return switchedAllowances.value[0] >= switchedAmountsUint.value[0]
 })
+const displayDepth = computed(() => {
+    return poolDepth.value ? Round(poolDepth.value) : null
+})
 function callSwap() {
-    console.log(switchedTokens.value.map((el) => el.address))
+    swap(
+        baseQuoteAddresses.value,
+        switchedAmountsUint.value[1],
+        bidAsk.value[1],
+        stepStore.connectedAccount,
+        settings.value.deadline,
+        stepStore.connectedWallet.provider
+    )
 }
 // WIDGET ------------------
 
@@ -243,6 +272,14 @@ const switchedTokens = computed({
         }
     },
 })
+const baseQuoteAddresses = computed(() => {
+    if (stepStore.bothSwapTokenAddresses) {
+        const list = [...stepStore.bothSwapTokenAddresses]
+        return state.order === 0 ? list.reverse() : list
+    } else {
+        return null
+    }
+})
 function setToken(token) {
     if (token) {
         const sameTokenIndex = switchedTokens.value.findIndex((el) => el?.address === token.address)
@@ -255,15 +292,14 @@ function setToken(token) {
 }
 function switchOrder() {
     state.order = state.order === 0 ? 1 : 0
+    if (!(poolAddress.value === "" || poolAddress.value === unhandled)) {
+        getBidAsk(baseQuoteAddresses.value, stepStore.connectedWallet.provider)
+    }
 }
 
 // TOKENS ------------------
 
 // AMOUNTS -----------------
-function setTokenAmount(event, inputIndex) {
-    state.lastChangedToken = state.order === 0 ? inputIndex : Number(!Boolean(inputIndex))
-    switchedAmounts.value = switchedAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
-}
 const switchedAmounts = computed({
     get() {
         let list = [state.amountA, state.amountB]
@@ -273,9 +309,9 @@ const switchedAmounts = computed({
                 return list
             }
             if (state.lastChangedToken === 0) {
-                list[1] = Round(calcQuote(list[0]))
+                list[1] = Round(calcThat(list[0]))
             } else if (state.lastChangedToken === 1) {
-                list[0] = Round(calcBase(list[1]))
+                list[0] = Round(calcThis(list[1]))
             }
         }
         return state.order === 0 ? list : list.reverse()
@@ -303,28 +339,25 @@ const switchedAmountsUint = computed(() => {
     })
 })
 const rate = computed(() => {
-    if (bidAsk.value) {
-        if (state.order === 0) {
-            return Round(String(1 / bidAskFormat.value[0]))
-        } else {
-            return Round(String(1 * bidAskFormat.value[1]))
-        }
-    } else {
-        return null
-    }
+    return bidAskFormat.value ? Round(String(1 * bidAskFormat.value[1])) : null
 })
-function calcQuote(value) {
-    if (state.order === 0) {
-        return String(Number(value) * bidAskFormat.value[0])
-    } else {
-        return String(Number(value) * bidAskFormat.value[1])
-    }
+function setTokenAmount(event, inputIndex) {
+    state.lastChangedToken = state.order === 0 ? inputIndex : Number(!Boolean(inputIndex))
+    switchedAmounts.value = switchedAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
-function calcBase(value) {
+
+function calcThis(value) {
     if (state.order === 0) {
-        return String(Number(value) / bidAskFormat.value[0])
+        return String(Number(value) * bidAskFormat.value[1])
     } else {
         return String(Number(value) / bidAskFormat.value[1])
+    }
+}
+function calcThat(value) {
+    if (state.order === 0) {
+        return String(Number(value) / bidAskFormat.value[1])
+    } else {
+        return String(Number(value) * bidAskFormat.value[1])
     }
 }
 function Round(amt) {
@@ -462,7 +495,7 @@ function setupLiquidityChange(providerArg, poolAdd = false) {
             if (poolContractAddress === poolAddress.value) {
                 setupPool(
                     poolContractAddress,
-                    stepStore.bothSwapTokenAddresses,
+                    baseQuoteAddresses.value,
                     stepStore.connectedWallet.provider,
                     stepStore.connectedAccount
                 )
@@ -502,16 +535,7 @@ watch(
                 (prevBothTokens !== bothTokens && prevWallet === wallet) ||
                 (prevBothTokens === bothTokens && prevWallet !== wallet)
             ) {
-                const areSame = bothTokens.map(
-                    (el, index) => prevBothTokens && el === prevBothTokens[Number(!Boolean(index))]
-                )
-                const differentOrder = areSame.every((el) => el === true)
-                if (differentOrder && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
-                    console.log("getBidAsk:", getBidAsk)
-                    getBidAsk(bothTokens, stepStore.connectedWallet.provider)
-                } else {
-                    findPool(...bothTokens, stepStore.connectedWallet.provider)
-                }
+                findPool(...baseQuoteAddresses.value, stepStore.connectedWallet.provider)
             }
             return
         }
@@ -531,12 +555,7 @@ watch(
         getAllowances()
 
         if (!(poolAdd === unhandled || poolAdd === "")) {
-            setupPool(
-                poolAdd,
-                stepStore.bothSwapTokenAddresses,
-                stepStore.connectedWallet.provider,
-                stepStore.connectedAccount
-            )
+            setupPool(poolAdd, baseQuoteAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
             setupLiquidityChange(stepStore.connectedWallet.provider)
         } else {
             //resets previous calulated amount to "0" when pool in no longer there
@@ -560,12 +579,6 @@ watch(
         if (wallet) {
             getAllowances()
             getBalance(null, true)
-            // if (!(poolAddress.value === "" || poolAddress === unhandled) && stepStore.bothSwapTokensThere) {
-            //     const list = [...stepStore.bothSwapTokenAddresses]
-            //     const addresses = state.order === 0 ? list : list.reverse()
-
-            //     getBidAsk(addresses, stepStore.connectedWallet.provider)
-            // }
         } else {
             switchedAllowances.value = ["", ""]
             switchedBalances.value = ["", ""]
@@ -585,7 +598,7 @@ watch(
             if (!(poolAddress.value === unhandled || poolAddress.value === "")) {
                 setupPool(
                     poolAddress.value,
-                    stepStore.bothSwapTokenAddresses,
+                    baseQuoteAddresses.value,
                     stepStore.connectedWallet.provider,
                     stepStore.connectedAccount
                 )

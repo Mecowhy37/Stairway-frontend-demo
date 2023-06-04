@@ -146,6 +146,7 @@ defineExpose({
         grid-row: 1/1;
         grid-column: 1/1;
         background-color: rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px);
         z-index: 3;
     }
 
@@ -153,21 +154,20 @@ defineExpose({
         place-self: center;
         width: 400px;
         height: 50%;
-        /* margin-top: 30%; */
-        background-color: white;
+        color: var(--text-color-reverse);
+        background-color: var(--widget-bg);
         border-radius: 12px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
         place-self: center;
-        box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px;
 
         .topbar {
             display: flex;
             justify-content: space-between;
             width: 100%;
             padding: 1rem;
-            border-bottom: 1px solid var(--text-color);
+            border-bottom: 1px solid var(--text-color-reverse);
             &__close {
                 cursor: pointer;
             }
@@ -185,8 +185,17 @@ defineExpose({
 
             p {
                 padding: 1rem 1rem;
+                border-top: 1px solid transparent;
+                border-right: 1px solid transparent;
+                border-left: 1px solid transparent;
+                border-bottom: 1px solid var(--primary-disabled-bg);
                 &:hover {
-                    background-color: var(--swap-windows);
+                    background-color: var(--list-hover-bg);
+                    border: 1px solid var(--list-hover-stroke);
+                }
+                &:active {
+                    background-color: var(--list-click-bg);
+                    border: 1px solid var(--list-click-stroke);
                 }
             }
         }

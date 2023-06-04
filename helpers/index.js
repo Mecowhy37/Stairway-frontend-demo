@@ -51,6 +51,7 @@ export function usePools(routerAddress) {
     const thisReserve = ref(null)
     const thatReserve = ref(null)
     const poolRatio = ref(null)
+    const poolDepth = ref(null)
     const lpTokenAddress = ref(null)
     const liquidityTokenBalance = ref(null)
     const lpTotalSupply = ref(null)
@@ -94,7 +95,9 @@ export function usePools(routerAddress) {
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
         const bidAskVar = await router.getBidAsk(...tokenAddresses)
+        const depth = formatEther(await router.getDepth(...tokenAddresses))
         bidAsk.value = bidAskVar
+        poolDepth.value = depth
         return
     }
 
@@ -108,8 +111,7 @@ export function usePools(routerAddress) {
         const bidAskVar = await router.getBidAsk(...tokenAddresses)
 
         // DEPTH
-        const depth = await router.getDepth(...tokenAddresses)
-        console.log("depth:", depth)
+        const depth = formatEther(await router.getDepth(...tokenAddresses))
 
         // THIS TOKEN
         const thisToken = await pool.thisToken()
@@ -133,6 +135,7 @@ export function usePools(routerAddress) {
         thisReserve.value = Number(thisAmount)
         thatReserve.value = Number(thatAmount)
         poolRatio.value = Number(thatAmount) / Number(thisAmount)
+        poolDepth.value = Number(depth)
         lpTokenAddress.value = lpToken
         liquidityTokenBalance.value = bal
         lpTotalSupply.value = totalSupply
@@ -247,8 +250,16 @@ export function usePools(routerAddress) {
         }
     }
 
-    async function swap(tokens, providerArg) {
+    async function swap(tokens, amount, maxPrice, account, deadline, providerArg) {
         // address, address, desiredAmount, maxPrice, recepient, deadline
+        const provider = new BrowserProvider(providerArg)
+        const signer = await provider.getSigner()
+        const router = new Contract(routerAddress, RouterABI, signer)
+
+        const blockTimestamp = (await provider.getBlock("latest")).timestamp
+        const deadlineStamp = blockTimestamp + deadline * 60
+
+        await router.buy(...tokens, amount, maxPrice, account, deadlineStamp)
     }
 
     let currentFactoryContract = null
@@ -341,6 +352,7 @@ export function usePools(routerAddress) {
         thisTokenAddress,
         lpTokenAddress,
         poolRatio,
+        poolDepth,
         findPool,
         poolShare,
         setupPool,

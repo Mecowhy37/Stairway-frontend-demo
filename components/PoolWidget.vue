@@ -76,18 +76,6 @@
                     <h2>+</h2>
                 </div>
             </div>
-            <!-- <div class="prices-share">
-            <p class="reminder">please insert both amounts</p>
-            <p class="info">
-                {{
-                    `setting initial pool price: ${state.amountA} ${ABTokens[0].symbol} to ${state.amountB} ${ABTokens[1].symbol}`
-                }}
-            </p>
-            <p class="info">
-                {{ `please wait, your ${ABTokens[0].symbol} + ${ABTokens[1].symbol} pool is being created` }}
-            </p>
-            <p>please insert both amount to set pool starting ratio</p>
-        </div> -->
             <div
                 v-if="poolShare"
                 class="tables"
@@ -124,10 +112,10 @@
                             stepStore.connectedWallet
                         "
                         @click="callApproveSpending(token.address, ABAmountsUint[index])"
-                        is="h4"
+                        is="p"
                         wide
-                        secondary
-                        bulky
+                        plain
+                        opaque
                     >
                         Approve {{ token.symbol }}
                     </Btn>
@@ -443,17 +431,17 @@ const ABAmounts = computed({
             if (state.lastChangedToken === 0) {
                 if (state.amountA.length !== 0) {
                     if (thisTokenIndex.value === 0) {
-                        state.amountB = Round(calcQuote(state.amountA))
+                        state.amountB = Round(calcThat(state.amountA))
                     } else {
-                        state.amountB = Round(calcBase(state.amountA))
+                        state.amountB = Round(calcThis(state.amountA))
                     }
                 }
             } else {
                 if (state.amountB.length !== 0) {
                     if (thisTokenIndex.value === 0) {
-                        state.amountA = Round(calcBase(state.amountB))
+                        state.amountA = Round(calcThis(state.amountB))
                     } else {
-                        state.amountA = Round(calcQuote(state.amountB))
+                        state.amountA = Round(calcThat(state.amountB))
                     }
                 }
             }
@@ -484,13 +472,10 @@ function setTokenAmount(event, inputIndex) {
     ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
 
-function calcQuote(value) {
+function calcThat(value) {
     return Number(value) * poolRatio.value + ""
 }
-function calcBase(value) {
-    // if (!poolRatio.value) {
-    //     return ""
-    // }
+function calcThis(value) {
     return Number(value) * (1 / poolRatio.value) + ""
 }
 function cleanInput(value, oldValue) {
@@ -895,6 +880,21 @@ onUnmounted(() => {
             margin-bottom: 20px;
         }
     }
+    .infos {
+        &__info {
+            padding: 10px;
+            border-radius: var(--inner-wdg-radius);
+            align-items: center;
+            &:last-of-type {
+                background-color: var(--info-bg-opaque);
+                margin-bottom: 20px;
+            }
+            .mdi {
+                margin-right: 10px;
+                color: var(--info-bg);
+            }
+        }
+    }
 }
 .table {
     justify-content: space-between;
@@ -919,8 +919,10 @@ onUnmounted(() => {
 }
 .sum-up {
     margin-top: -5px;
-
     padding-bottom: 20px;
+    p {
+        white-space: nowrap;
+    }
 }
 .redeem {
     flex-grow: 0;
