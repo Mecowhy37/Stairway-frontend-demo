@@ -1,9 +1,9 @@
 <template>
     <div class="wrap row">
-        <div class="widget base-wdg-box">
+        <div class="widget base-box">
             <div class="top-bar row">
                 <h3>Add Liquidity</h3>
-                <Dropdown>
+                <Dropdown :settings-ref="settingsAdd">
                     <template #dropdown-activator="{ on }">
                         <Btn
                             transparent
@@ -18,18 +18,27 @@
                             </template>
                         </Btn>
                     </template>
-                    <template #dropdown>
+                    <template #dropdown="{ toggleDropdown }">
                         <Settings
                             ref="settingsAdd"
                             :default-slippage="0.5"
                             :default-deadline="30"
+                            :toggle-dropdown="toggleDropdown"
                         ></Settings>
                     </template>
                 </Dropdown>
             </div>
-            <!-- <div class="tips">
-                <p><span class="text-highlight">Tip:</span> when you add liquidity</p>
-            </div> -->
+            <div class="tips">
+                <p>
+                    <span class="text-highlight">Tip: </span>To try out the interface you'll need some tokens, you can
+                    get them
+                    <span
+                        @click="openNewTokenModal"
+                        class="activator-link text-highlight"
+                        >here</span
+                    >.
+                </p>
+            </div>
             <div
                 class="contents"
                 v-for="(i, x) in new Array(2)"
@@ -86,11 +95,11 @@
                         <div v-for="(token, x) in ABTokens">
                             <p v-if="x === thisTokenIndex">{{ (thisReserve * poolShare) / 100 }}</p>
                             <p v-else>{{ (thatReserve * poolShare) / 100 }}</p>
-                            <p class="caption grey-text">pooled {{ token.symbol }}</p>
+                            <p class="caption grey-text">Pooled {{ token.symbol }}</p>
                         </div>
                         <div>
                             <p>{{ poolShare }}%</p>
-                            <p class="caption grey-text">pool share</p>
+                            <p class="caption grey-text">Pool share</p>
                         </div>
                     </div>
                 </div>
@@ -156,7 +165,7 @@
             </div>
         </div>
         <div
-            class="redeem base-wdg-box"
+            class="redeem base-box"
             v-if="poolShare"
         >
             <div class="top-bar row">
@@ -505,8 +514,14 @@ watch(
 // AMOUNTS --------------
 
 // BALANCES -------------
-const ABBalance = computed(() => {
-    return [state.balanceA, state.balanceB]
+const ABBalance = computed({
+    get() {
+        return [state.balanceA, state.balanceB]
+    },
+    set(newVal) {
+        state.balanceA = newVal[0]
+        state.balanceB = newVal[1]
+    },
 })
 async function getBalance(token, both = false) {
     if (stepStore.connectedWallet) {
@@ -573,10 +588,15 @@ async function getApprovedAmount(address) {
 // ALLOWANCES -----------
 
 //MODAL STUFF----------
-const toggleTokenModal = inject("modal")
+const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleTokenModal(ABTokens.value, setToken)
+    toggleSelectTokenModal(ABTokens.value, setToken)
     state.selectTokenIndex = index
+}
+
+const toggleNewTokenModal = inject("newTokenModal")
+function openNewTokenModal() {
+    toggleNewTokenModal()
 }
 //MODAL STUFF----------
 
@@ -688,7 +708,9 @@ watch(
             setupLiquidityChange(stepStore.connectedWallet.provider)
         } else {
             //resets previous calulated amount to "0" when pool in no longer there
-            ABAmounts.value = ABAmounts.value.map((el, index) => (index !== state.lastChangedToken ? "" : el))
+            if (!(prevPoolAdd === unhandled || prevPoolAdd === "")) {
+                ABAmounts.value = ABAmounts.value.map((el, index) => (index !== state.lastChangedToken ? "" : el))
+            }
             resetPool()
         }
     },
@@ -766,9 +788,17 @@ onUnmounted(() => {
 }
 .widget {
     transition: background-color var(--transition);
-
+    border-radius: var(--outer-wdg-radius);
+    filter: var(--drop-shadow);
+    padding: 0 20px;
     .tips {
         margin-bottom: 20px;
+        p {
+            margin-bottom: 12px;
+            &:last-of-type {
+                margin-bottom: 0px;
+            }
+        }
     }
     .window {
         display: flex;
@@ -824,15 +854,6 @@ onUnmounted(() => {
                 &::placeholder {
                     color: var(--text-grey);
                     /* opacity: 0.8; */
-                }
-                // hiding browser default arrows
-                &::-webkit-outer-spin-button,
-                &::-webkit-inner-spin-button {
-                    -webkit-appearance: none;
-                    margin: 0;
-                }
-                &[type="number"] {
-                    -moz-appearance: textfield;
                 }
             }
         }
@@ -1001,18 +1022,15 @@ onUnmounted(() => {
 
 .top-bar {
     justify-content: space-between;
-    /* margin-bottom: 0.5rem; */
     border-bottom: 2px solid var(--text-color-reverse);
     padding-top: 17px;
     padding-bottom: 12px;
     margin-bottom: 20px;
 }
-.base-wdg-box {
-    background-color: var(--widget-bg);
-    border-radius: var(--outer-wdg-radius);
-    /* box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; */
-    padding: 0 20px;
+.base-box {
     color: var(--text-color-reverse);
+    background-color: var(--widget-bg);
+    backdrop-filter: var(--backdrop-blur);
 }
 .layer-wdg-box {
     background-color: var(--swap-windows);

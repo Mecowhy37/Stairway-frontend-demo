@@ -1,14 +1,14 @@
 <template>
     <div
-        v-if="showTokenModal"
+        v-if="showModal"
         class="modal modal__overlay"
-        @click.self="toggleTokenModal"
+        @click.self.prevent="toggleModal"
     >
-        <div class="modal__window">
+        <div class="modal__window base-box">
             <div class="topbar">
                 <h3>Select a token</h3>
                 <h3
-                    @click="toggleTokenModal"
+                    @click="toggleModal"
                     class="topbar__close"
                 >
                     <mdicon name="close" />
@@ -51,11 +51,11 @@ const { tokenList } = storeToRefs(stepStore)
 // const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
 // tokenList.value = data.value?.tokens
 
-const showTokenModal = ref(false)
+const showModal = ref(false)
 const callbackRef = ref()
 const ABTokens = ref([])
-function toggleTokenModal(tokens = false, callback = false) {
-    showTokenModal.value = !showTokenModal.value
+function toggleModal(tokens = false, callback = false) {
+    showModal.value = !showModal.value
     if (typeof callback === "function") {
         callbackRef.value = callback
     }
@@ -101,12 +101,6 @@ async function checkTokens() {
         }
     })
 }
-watch(showTokenModal, (newVal) => {
-    if (stepStore.connectedWallet && newVal) {
-        checkTokens()
-    }
-})
-
 watch(
     () => stepStore.connectedAccount,
     (wallet, prevWallet) => {
@@ -118,25 +112,27 @@ watch(
         immediate: true,
     }
 )
-
 function setToken(token) {
-    toggleTokenModal()
+    toggleModal()
     callbackRef.value.call(this, token)
 }
 
 const tokenListRef = ref()
-watch(showTokenModal, (isOpen, newIsOpen) => {
+watch(showModal, (isOpen, newIsOpen) => {
     if (newIsOpen === true) {
         tokenListRef.value.scrollTop = 0
+    }
+    if (stepStore.connectedWallet && isOpen) {
+        checkTokens()
     }
 })
 
 defineExpose({
-    toggleTokenModal,
+    toggleModal,
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .modal {
     position: absolute;
     width: 100%;
@@ -145,22 +141,25 @@ defineExpose({
     &__overlay {
         grid-row: 1/1;
         grid-column: 1/1;
-        background-color: rgba(0, 0, 0, 0.15);
-        backdrop-filter: blur(10px);
-        z-index: 3;
+        &--focus {
+            background-color: rgba(232, 232, 232, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        z-index: 4;
+        &--lower {
+            z-index: 3;
+        }
     }
 
     &__window {
-        place-self: center;
         width: 400px;
         height: 50%;
-        color: var(--text-color-reverse);
-        background-color: var(--widget-bg);
-        border-radius: 12px;
+        place-self: center;
+        border-radius: var(--semi-wdg-radius);
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        place-self: center;
+        padding: 0px 0px !important;
 
         .topbar {
             display: flex;
@@ -173,9 +172,6 @@ defineExpose({
             }
         }
         .token-list {
-            /* display: flex;
-            flex-direction: column; */
-            /* margin-bottom: auto; */
             overflow-y: scroll;
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -200,16 +196,5 @@ defineExpose({
             }
         }
     }
-}
-
-.caption {
-    padding: 2rem;
-    pointer-events: all;
-    cursor: pointer;
-    border-radius: 6px;
-    text-align: center;
-    justify-self: end;
-    align-self: end;
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 </style>

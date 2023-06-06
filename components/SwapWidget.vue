@@ -1,9 +1,9 @@
 <template>
     <div class="wrap">
-        <div class="widget base-wdg-box">
+        <div class="widget base-box">
             <div class="top-bar row">
                 <h3>Trade</h3>
-                <Dropdown>
+                <Dropdown :settings-ref="settings">
                     <template #dropdown-activator="{ on }">
                         <Btn
                             transparent
@@ -18,22 +18,32 @@
                             </template>
                         </Btn>
                     </template>
-                    <template #dropdown>
+                    <template #dropdown="{ toggleDropdown }">
                         <Settings
                             ref="settings"
                             :default-slippage="0.5"
                             :default-deadline="30"
+                            :toggle-dropdown="toggleDropdown"
                             no-slippage
                         ></Settings>
                     </template>
                 </Dropdown>
             </div>
             <div
-                v-if="false"
+                v-if="true"
                 class="tips"
             >
                 <p>
-                    <span class="text-highlight">Tip:</span> pool with these tokens doesnt exist yet,
+                    <span class="text-highlight">Tip: </span>To try out the interface you'll need some tokens, you can
+                    get them
+                    <span
+                        @click="openNewTokenModal"
+                        class="activator-link text-highlight"
+                        >here</span
+                    >.
+                </p>
+                <p>
+                    <span class="text-highlight">Tip:</span> Pool with these tokens doesnt exist yet,
                     <span class="text-highlight">create it.</span>
                 </p>
             </div>
@@ -419,9 +429,15 @@ async function getBalance(token, both = false) {
         }
     }
 }
-const switchedBalances = computed(() => {
-    const list = [state.balanceA, state.balanceB]
-    return state.order === 0 ? list : list.reverse()
+const switchedBalances = computed({
+    get() {
+        const list = [state.balanceA, state.balanceB]
+        return state.order === 0 ? list : list.reverse()
+    },
+    set(newVal) {
+        state.balanceA = newVal[0]
+        state.balanceB = newVal[1]
+    },
 })
 // BALANCES ----------------
 
@@ -470,15 +486,19 @@ const switchedAllowances = computed({
 })
 // ALLOWANCES --------------
 
-// MODAL -------------
-const toggleTokenModal = inject("modal")
+// MODAL STUFF -------------
+const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
     if (stepStore.connectedWallet) {
-        toggleTokenModal(ABTokens.value, setToken)
+        toggleSelectTokenModal(ABTokens.value, setToken)
         state.selectTokenIndex = index
     }
 }
-// MODAL -------------
+const toggleNewTokenModal = inject("newTokenModal")
+function openNewTokenModal() {
+    toggleNewTokenModal()
+}
+// MODAL STUFF -------------
 
 //SETTINGS--------------
 const settings = ref()

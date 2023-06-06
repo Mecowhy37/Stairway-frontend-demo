@@ -23,9 +23,8 @@
             class="page-slot"
             id="modal-wrap"
         >
-            <!-- <ClientOnly> -->
-            <SelectTokenModal ref="tokenModal"></SelectTokenModal>
-            <!-- </ClientOnly> -->
+            <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
+            <NewToken ref="newTokenModal"></NewToken>
         </div>
     </div>
 </template>
@@ -36,11 +35,17 @@ import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
 
-const tokenModal = ref()
-function toggleTokenModal(...args) {
-    tokenModal.value.toggleTokenModal(...args)
+const selectTokenModal = ref()
+function toggleSelectTokenModal(...args) {
+    selectTokenModal.value.toggleModal(...args)
 }
-provide("modal", toggleTokenModal)
+provide("selectTokenModal", toggleSelectTokenModal)
+
+const newTokenModal = ref()
+function toggleNewTokenModal() {
+    newTokenModal.value.toggleModal()
+}
+provide("newTokenModal", toggleNewTokenModal)
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>
@@ -103,6 +108,10 @@ p {
 .text-highlight {
     color: var(--primary-btn-bg);
 }
+.activator-link {
+    cursor: pointer;
+    border-bottom: 1px solid var(--primary-btn-bg);
+}
 .grey-text {
     color: var(--text-grey);
 }
@@ -149,6 +158,17 @@ p {
     }
     &.hide {
         opacity: 0;
+    }
+}
+input {
+    // hiding browser default arrows
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    &[type="number"] {
+        -moz-appearance: textfield;
     }
 }
 </style>

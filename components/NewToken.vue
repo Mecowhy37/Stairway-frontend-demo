@@ -1,75 +1,81 @@
 <template>
-    <div class="getTokens widget base-wdg-box">
-        <div class="token-part">
-            <div class="token-part__wrap token-part__wrap__symbol">
-                <div class="row space-between">
-                    <h4 class="grey-text">symbol</h4>
-                    <span
-                        v-if="truncatedTokenAddress"
-                        class="address row"
-                        @click="copyAddress"
-                        @mouseover="hoverIn"
-                        @mouseout="hoverOut"
-                    >
-                        <mdicon
-                            size="20px"
-                            name="content-copy"
+    <div
+        v-if="showModal"
+        @click.self.prevent="toggleModal"
+        class="modal modal__overlay modal__overlay--lower modal__overlay--focus"
+    >
+        <div class="getTokens widget base-box">
+            <div class="token-part">
+                <div class="token-part__wrap token-part__wrap__symbol">
+                    <div class="row space-between">
+                        <h4 class="grey-text">symbol</h4>
+                        <span
+                            v-if="truncatedTokenAddress"
+                            class="address row"
+                            @click="copyAddress"
+                            @mouseover="hoverIn"
+                            @mouseout="hoverOut"
+                        >
+                            <mdicon
+                                size="20px"
+                                name="content-copy"
+                            />
+                            <p v-if="!copied">
+                                {{ truncatedTokenAddress }}
+                            </p>
+                            <p v-else-if="copied">copied!</p>
+                        </span>
+                    </div>
+                    <div class="layer-wdg-box row">
+                        <Btn
+                            transparent
+                            icon-contrast
+                            @click="openTokenSelectModal()"
+                        >
+                            <template #icon>
+                                <mdicon name="chevron-down" />
+                            </template>
+                        </Btn>
+                        <div class="divider"></div>
+                        <input
+                            v-model="tokenSymbol"
+                            type="text"
+                            placeholder="STRVY"
                         />
-                        <p v-if="!copied">
-                            {{ !textCopy ? truncatedTokenAddress : "copy" }}
-                        </p>
-                        <p v-else-if="copied">copied!</p>
-                    </span>
+                    </div>
                 </div>
-                <div class="layer-wdg-box row">
-                    <Btn
-                        transparent
-                        icon-contrast
-                        @click="openTokenSelectModal()"
-                    >
-                        <template #icon>
-                            <mdicon name="chevron-down" />
-                        </template>
-                    </Btn>
-                    <div class="divider"></div>
-                    <input
-                        v-model="tokenSymbol"
-                        type="text"
-                        placeholder="STRVY"
-                    />
+                <div class="token-part__wrap">
+                    <h4 class="grey-text">amount</h4>
+                    <div class="layer-wdg-box">
+                        <input
+                            v-model="tokenAmount"
+                            type="number"
+                            placeholder="0"
+                        />
+                    </div>
                 </div>
             </div>
-            <div class="token-part__wrap">
-                <h4 class="grey-text">amount</h4>
-                <div class="layer-wdg-box">
-                    <input
-                        v-model="tokenAmount"
-                        type="number"
-                        placeholder="0"
-                    />
-                </div>
+            <div class="buttons">
+                <Btn
+                    v-if="stepStore.connectedWallet"
+                    @click="getTokens"
+                    is="h4"
+                    wide
+                    bulky
+                    :disabled="!canGetTokens"
+                >
+                    {{ claimed ? "Tokens claimed!" : "Get Tokens" }}
+                </Btn>
+                <Btn
+                    v-if="!stepStore.connectedWallet"
+                    is="h4"
+                    wide
+                    bulky
+                    @click="stepStore.connectWallet()"
+                >
+                    Connect wallet
+                </Btn>
             </div>
-        </div>
-        <div class="buttons">
-            <Btn
-                v-if="stepStore.connectedWallet"
-                @click="getTokens"
-                is="h4"
-                wide
-                bulky
-                :disabled="!canGetTokens"
-            >
-                {{ claimed ? "Tokens claimed!" : "Get Tokens" }}
-            </Btn>
-            <Btn
-                v-if="!stepStore.connectedWallet"
-                is="h4"
-                wide
-                bulky
-                @click="stepStore.connectWallet()"
-            >
-                Connect wallet
-            </Btn>
         </div>
     </div>
 </template>
@@ -96,13 +102,13 @@ const tokenAmount = ref(1000000)
 const copied = ref(false)
 const claimed = ref(false)
 
-const toggleTokenModal = inject("modal")
-function openTokenSelectModal() {
-    toggleTokenModal(null, setToken)
+const showModal = ref(false)
+function toggleModal() {
+    showModal.value = !showModal.value
 }
-function setToken(token) {
-    tokenSymbol.value = token?.symbol ? token.symbol : ""
-}
+defineExpose({
+    toggleModal,
+})
 
 async function checkTokens() {
     const provider = new BrowserProvider(stepStore.connectedWallet.provider)
@@ -171,13 +177,6 @@ const selectedAddress = computed(() => {
     return tokenList.value.find((el) => el.symbol.toUpperCase() === tokenSymbol.value)?.address
 })
 
-const textCopy = ref(false)
-function hoverIn() {
-    textCopy.value = true
-}
-function hoverOut() {
-    textCopy.value = false
-}
 const truncatedTokenAddress = computed(() => {
     if (!selectedAddress.value) {
         return null
@@ -188,7 +187,15 @@ const truncatedTokenAddress = computed(() => {
     const end = toTruncate.splice(-4).join("")
     return start + "..." + end
 })
-
+// SELECT TOKEN MODAL -----------
+const toggleSelectTokenModal = inject("selectTokenModal")
+function openTokenSelectModal() {
+    toggleSelectTokenModal(null, setToken)
+}
+function setToken(token) {
+    tokenSymbol.value = token?.symbol ? token.symbol : ""
+}
+// SELECT TOKEN MODAL -----------
 watch(tokenSymbol, (newVal) => {
     newVal = newVal.replace(/[^a-zA-Z]/g, "")
     if (newVal.length > 5) {
@@ -226,7 +233,9 @@ watch(claimed, (newVal) => {
 <style lang="scss" scoped>
 .getTokens {
     width: 450px;
+    place-self: center;
     padding-top: 15px;
+    z-index: 3;
     .token-part {
         width: 100%;
         gap: 12px;

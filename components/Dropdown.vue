@@ -13,10 +13,13 @@
 
         <div
             v-show="isDropdownActive"
-            class="dropdown__box"
+            class="dropdown__box base-box"
             ref="toActivate"
         >
-            <slot name="dropdown"></slot>
+            <slot
+                name="dropdown"
+                :toggle-dropdown="toggleDropdown"
+            ></slot>
         </div>
     </div>
 </template>
@@ -24,16 +27,28 @@
 <script setup>
 import { onClickOutside } from "@vueuse/core"
 
+const props = defineProps({
+    settingsRef: Object,
+})
+
 const toActivate = ref(null)
 const openner = ref(null)
 const isDropdownActive = ref(false)
 function toggleDropdown() {
+    if (props.settingsRef) {
+        if (!props.settingsRef.validSettings) {
+            return
+        }
+    }
     isDropdownActive.value = !isDropdownActive.value
 }
 onClickOutside(toActivate, (event) => {
     if (isDropdownActive.value === true) {
         toggleDropdown()
+        event.stopPropagation()
         if (openner.value === event.target.parentNode) {
+            // not used anymore?
+            console.log("IS IT? ? ?")
             event.stopPropagation()
         }
     }
@@ -50,14 +65,11 @@ onClickOutside(toActivate, (event) => {
     }
     &__box {
         position: absolute;
-        right: 0%;
+        right: 1500%;
         top: 100%;
         margin-top: 0.8rem;
         width: 250px;
-        padding: 0.6rem;
-        border-radius: 8px;
-        background-color: var(--flat-bg-solid);
-        border: 1px solid var(--flat-outline);
+        border-radius: var(--semi-wdg-radius);
         z-index: 100;
 
         /* background-color: transparent; */

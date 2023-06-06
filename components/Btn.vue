@@ -16,6 +16,7 @@
                 'btn--pill': props.pill,
                 'btn--circle': props.circle,
                 'btn--unclickable': props.loading,
+                'btn--small': props.small,
                 'btn--tiny': props.tiny,
                 'btn--compact': props.compact,
                 'btn--w-icon': slots.icon && slots.default,
@@ -66,8 +67,9 @@ export interface Props {
     circle?: boolean
     disabled?: boolean
     loading?: boolean
-    tiny?: boolean
+    small?: boolean
     compact?: boolean
+    tiny?: boolean
     iconContrast?: boolean
     reverse?: boolean
 }
@@ -211,6 +213,9 @@ $horiz-padd: 1.3rem;
     }
     &--unclickable {
         pointer-events: none;
+    }
+    &--small {
+        padding: 5px 10px;
     }
     &--tiny {
         padding: 0;
