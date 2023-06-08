@@ -120,21 +120,6 @@
             </div>
             <div class="buttons">
                 <Btn
-                    v-if="
-                        switchedAllowances[0] < switchedAmountsUint[0] &&
-                        stepStore.bothSwapTokensThere &&
-                        stepStore.connectedWallet &&
-                        !(poolAddress === unhandled || poolAddress === '')
-                    "
-                    @click="callApproveSpending(switchedTokens[0].address, switchedAmountsUint[0])"
-                    is="h4"
-                    wide
-                    secondary
-                    bulky
-                >
-                    Approve {{ switchedTokens[0].symbol }}
-                </Btn>
-                <Btn
                     v-if="stepStore.connectedWallet"
                     @click="callSwap"
                     is="h4"
@@ -206,7 +191,6 @@ const {
     findPool,
     getBidAsk,
     setupPool,
-    checkAllowance,
     bidAskFormat,
     bidAskDisplay,
     bidAskDisplayReverse,
@@ -235,17 +219,10 @@ const state = reactive({
 })
 // WIDGET ------------------
 const canSwap = computed(() => {
-    return (
-        !(poolAddress.value === unhandled || poolAddress.value === "") &&
-        bothAmountsIn.value &&
-        isSuffientAllowance.value
-    )
+    return !(poolAddress.value === unhandled || poolAddress.value === "") && bothAmountsIn.value
 })
 const bothAmountsIn = computed(() => {
     return switchedAmounts.value.every((el) => el !== "")
-})
-const isSuffientAllowance = computed(() => {
-    return switchedAllowances.value[0] >= switchedAmountsUint.value[0]
 })
 const displayDepth = computed(() => {
     return poolDepth.value ? Round(poolDepth.value) : null
@@ -253,7 +230,7 @@ const displayDepth = computed(() => {
 function callSwap() {
     swap(
         baseQuoteAddresses.value,
-        switchedAmountsUint.value[1],
+        switchedAmountsUint.value,
         bidAsk.value[1],
         stepStore.connectedAccount,
         settings.value.deadline,
@@ -441,51 +418,6 @@ const switchedBalances = computed({
 })
 // BALANCES ----------------
 
-// ALLOWANCES --------------
-function callApproveSpending(address, amount) {
-    if (stepStore.connectedWallet) {
-        approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
-    }
-}
-async function getAllowances() {
-    if (stepStore.connectedWallet) {
-        switchedTokens.value.forEach(async (el1, index1) => {
-            const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
-            switchedAllowances.value = switchedAllowances.value.map((el2, index2) =>
-                index2 === index1 ? allowance : el2
-            )
-        })
-    }
-}
-async function getApprovedAmount(address) {
-    try {
-        return await checkAllowance(
-            address,
-            stepStore.connectedAccount,
-            stepStore.routerAddress,
-            stepStore.connectedWallet.provider
-        )
-    } catch (err) {
-        console.log("failed to get appoved amounts", err)
-    }
-}
-const switchedAllowances = computed({
-    get() {
-        const list = [state.approvalA, state.approvalB]
-        return state.order === 0 ? list : list.reverse()
-    },
-    set(newVal) {
-        if (state.order === 0) {
-            state.approvalA = newVal[0]
-            state.approvalB = newVal[1]
-        } else {
-            state.approvalA = newVal[1]
-            state.approvalB = newVal[0]
-        }
-    },
-})
-// ALLOWANCES --------------
-
 // MODAL STUFF -------------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
@@ -572,8 +504,6 @@ watch(
 watch(
     poolAddress,
     (poolAdd, prevPoolAdd) => {
-        getAllowances()
-
         if (!(poolAdd === unhandled || poolAdd === "")) {
             setupPool(poolAdd, baseQuoteAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
             setupLiquidityChange(stepStore.connectedWallet.provider)
@@ -590,17 +520,15 @@ watch(
     }
 )
 
-//GETS BALANCES AND ALLOWANCES BY TOKENS AND WALLET
+//GETS BALANCES BY TOKENS AND WALLET
 watch(
     // () => [switchedTokens.value, stepStore.connectedWallet],
     () => [ABTokens.value, stepStore.connectedWallet],
     (newValue) => {
         const wallet = newValue[1]
         if (wallet) {
-            getAllowances()
             getBalance(null, true)
         } else {
-            switchedAllowances.value = ["", ""]
             switchedBalances.value = ["", ""]
         }
     },

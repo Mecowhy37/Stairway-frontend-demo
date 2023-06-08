@@ -185,8 +185,7 @@ export function usePools(routerAddress) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress, RouterABI, signer)
-        // check allowance if its enought
-        // do
+
         const parsedAmountA = parseEther(amountA)
         const parsedAmountB = parseEther(amountB)
         const parsedMinAmountA = parseEther(String(amountA - (amountA * slippage) / 100))
@@ -195,8 +194,29 @@ export function usePools(routerAddress) {
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
-        await router
-            .addLiquidity(
+        try {
+            const allowanceA = await checkAllowance(addressA, signer.address, routerAddress, providerArg)
+            const needApprovalA = allowanceA < parsedAmountA
+
+            const allowanceB = await checkAllowance(addressB, signer.address, routerAddress, providerArg)
+            const needApprovalB = allowanceB < parsedAmountB
+
+            if (needApprovalA || needApprovalB) {
+                const approvalPromises = []
+
+                if (needApprovalA) {
+                    approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
+                }
+
+                if (needApprovalB) {
+                    approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
+                }
+
+                await Promise.all(approvalPromises)
+            }
+
+            // Add liquidity
+            await router.addLiquidity(
                 addressA,
                 addressB,
                 parsedMinAmountA,
@@ -206,14 +226,9 @@ export function usePools(routerAddress) {
                 recipient,
                 deadlineStamp
             )
-            .then(async (res) => {
-                //listen for liquidity change
-                // setPoolCreationListener(addressA, addressB, providerArg)
-            })
-            .catch((err) => {
-                console.log(" - pool - couldnt create pool - ")
-                console.log(err)
-            })
+        } catch (error) {
+            console.log("Failed to add liquidity:", error)
+        }
     }
 
     async function redeemLiquidity(tokenA, tokenB, redeemPercent, connectedAccount, deadline, providerArg) {
@@ -234,23 +249,22 @@ export function usePools(routerAddress) {
                 const blockTimestamp = (await provider.getBlock("latest")).timestamp
                 const deadlineStamp = blockTimestamp + deadline * 60
 
-                await approveSpending(lpTokenAddress.value, providerArg, lqAmount).then(() => {
-                    router.redeemLiquidity(
-                        ...orderedTokens,
-                        amount0,
-                        amount1,
-                        lqAmount,
-                        connectedAccount,
-                        deadlineStamp
-                    )
-                })
+                await approveSpending(lpTokenAddress.value, providerArg, lqAmount)
+                await router.redeemLiquidity(
+                    ...orderedTokens,
+                    amount0,
+                    amount1,
+                    lqAmount,
+                    connectedAccount,
+                    deadlineStamp
+                )
             } catch (err) {
                 console.log("failed to redeem liquidity: ", err)
             }
         }
     }
 
-    async function swap(tokens, amount, maxPrice, account, deadline, providerArg) {
+    async function swap(tokens, amounts, maxPrice, account, deadline, providerArg) {
         // address, address, desiredAmount, maxPrice, recepient, deadline
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
@@ -259,7 +273,13 @@ export function usePools(routerAddress) {
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
-        await router.buy(...tokens, amount, maxPrice, account, deadlineStamp)
+        const allowance = await checkAllowance(tokens[1], signer.address, routerAddress, providerArg)
+        const needApproval = allowance < amounts[0]
+        if (needApproval) {
+            await approveSpending(tokens[1], providerArg, amounts[0])
+        }
+
+        await router.buy(...tokens, amounts[1], maxPrice, account, deadlineStamp)
     }
 
     let currentFactoryContract = null

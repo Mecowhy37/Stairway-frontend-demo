@@ -45,13 +45,9 @@
                     v-model="state.deadline"
                     step="1"
                     type="number"
-                />
-                <p
-                    class="offset"
                     :class="{ error: state.deadlineError }"
-                >
-                    minutes
-                </p>
+                />
+                <p class="offset">minutes</p>
             </div>
         </div>
     </div>
@@ -73,6 +69,7 @@ const state = reactive({
     invalidSLippage: false,
     deadlineError: false,
     invalidDeadline: false,
+    lastValidDealine: null,
 })
 
 function resetSlippage() {
@@ -83,11 +80,17 @@ function validateSlippage(val, closing = false) {
         state.slippageError = false
         state.slippageWarn = null
         state.invalidSLippage = true
+        if (closing) {
+            state.slippageError = true
+            state.slippageWarn = "Missing slippage"
+            return false
+        }
         return
     }
     if (val < 0.05) {
         state.slippageError = false
         state.slippageWarn = "Your transaction may fail"
+        state.invalidSLippage = false
         return
     }
     if (val > 50) {
@@ -100,22 +103,32 @@ function validateSlippage(val, closing = false) {
     state.slippageWarn = null
     state.invalidSLippage = false
 }
-function validateDeadline(val, closing) {
+function validateDeadline(val, closing = false) {
     if (val === "") {
         state.deadlineError = false
         state.invalidDeadline = true
-        return
+        if (closing) {
+            state.deadline = props.defaultDeadline
+        }
+        return false
     }
     if (val < 1 || val > 4320) {
         state.deadlineError = true
         state.invalidDeadline = true
-        return
+        if (closing) {
+            if (val === 0) {
+                state.deadline = props.defaultDeadline
+            }
+            state.deadline = state.lastValidDealine
+        }
+        return false
     }
     state.invalidDeadline = false
     state.deadlineError = false
+    return true
 }
 
-const validSettings = computed(() => {
+const isValidSettings = computed(() => {
     if (props.noSlippage) {
         return !state.invalidDeadline
     } else {
@@ -131,13 +144,19 @@ watch(
 watch(
     () => state.deadline,
     (newVal) => {
-        validateDeadline(newVal)
+        const isValid = validateDeadline(newVal)
+        if (isValid) {
+            state.lastValidDealine = newVal
+        }
     }
 )
 defineExpose({
     slippage: toRefs(state).slippage,
     deadline: toRefs(state).deadline,
-    validSettings,
+    isValidSettings,
+    validateSlippage,
+    validateDeadline,
+    noSlippage: props.noSlippage,
 })
 </script>
 
@@ -185,6 +204,10 @@ defineExpose({
                 background-color: var(--swap-windows);
                 &.grow {
                     flex-grow: 1;
+                }
+                &.error {
+                    color: red;
+                    border: 1px solid red;
                 }
             }
         }

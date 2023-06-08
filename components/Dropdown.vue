@@ -36,8 +36,18 @@ const openner = ref(null)
 const isDropdownActive = ref(false)
 function toggleDropdown() {
     if (props.settingsRef) {
-        if (!props.settingsRef.validSettings) {
-            return
+        if (!props.settingsRef.isValidSettings) {
+            let isValid
+            if (!props.settingsRef.noSlippage) {
+                const slippage = props.settingsRef.slippage
+                isValid = props.settingsRef.validateSlippage(slippage, true)
+            }
+            const deadline = props.settingsRef.deadline
+            props.settingsRef.validateDeadline(deadline, true)
+
+            if (!isValid) {
+                return
+            }
         }
     }
     isDropdownActive.value = !isDropdownActive.value
@@ -48,7 +58,7 @@ onClickOutside(toActivate, (event) => {
         event.stopPropagation()
         if (openner.value === event.target.parentNode) {
             // not used anymore?
-            console.log("IS IT? ? ?")
+            // when activator clicked
             event.stopPropagation()
         }
     }
@@ -59,18 +69,19 @@ onClickOutside(toActivate, (event) => {
 .dropdown {
     display: flex;
     position: relative;
+    z-index: 100;
 
     &__activator {
         display: flex;
     }
     &__box {
         position: absolute;
-        right: 1500%;
+        right: -1500%;
+        z-index: 150;
         top: 100%;
         margin-top: 0.8rem;
         width: 250px;
         border-radius: var(--semi-wdg-radius);
-        z-index: 100;
 
         /* background-color: transparent; */
     }

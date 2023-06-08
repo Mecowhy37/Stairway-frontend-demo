@@ -105,31 +105,6 @@
                 </div>
             </div>
             <div class="buttons">
-                <!-- <div
-                    v-if=""
-                    class="contents"
-                > -->
-                <div
-                    v-for="(token, index) in ABTokens"
-                    class="contents"
-                >
-                    <!-- @click="callApproveSpending(token.address)" -->
-                    <Btn
-                        v-if="
-                            ABAllowance[index] < ABAmountsUint[index] &&
-                            stepStore.bothPoolTokensThere &&
-                            stepStore.connectedWallet
-                        "
-                        @click="callApproveSpending(token.address, ABAmountsUint[index])"
-                        is="p"
-                        wide
-                        plain
-                        opaque
-                    >
-                        Approve {{ token.symbol }}
-                    </Btn>
-                    <!-- </div> -->
-                </div>
                 <Btn
                     v-if="stepStore.connectedWallet && (poolAddress === unhandled || poolAddress === '')"
                     @click="callAddLiquidity()"
@@ -172,7 +147,7 @@
                 <h3>Remove Liquidity</h3>
                 <!-- {{ poolAddress }} <br /> -->
                 <!-- {{ String(bidAsk) }} <br /> -->
-                <Dropdown>
+                <Dropdown :settings-ref="settingsRedeem">
                     <template #dropdown-activator="{ on }">
                         <Btn
                             transparent
@@ -327,7 +302,6 @@ const {
     poolShare,
     findPool,
     setupPool,
-    checkAllowance,
     lpTotalSupply,
     liquidityTokenBalance,
     waitingBidAsk,
@@ -359,22 +333,19 @@ const state = reactive({
 
 // WIDGET ---------------
 const canCreatePool = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere && isSuffientAllowance.value
+    return stepStore.connectedWallet && stepStore.bothPoolTokensThere
 })
 const canAddLiquidity = computed(() => {
     return (
         stepStore.connectedWallet &&
         stepStore.bothPoolTokensThere &&
-        isSuffientAllowance.value &&
         !(poolAddress.value === "" || poolAddress.value === unhandled)
     )
 })
 const bothAmountsIn = computed(() => {
     return ABAmounts.value.every((el) => el !== "")
 })
-const isSuffientAllowance = computed(() => {
-    return ABAllowance.value.map((el, index) => el >= ABAmountsUint.value[index]).every((el) => el === true)
-})
+
 function callAddLiquidity() {
     addLiquidity(
         ...stepStore.bothPoolTokenAddresses,
@@ -426,6 +397,9 @@ const ABAmounts = computed({
         // Round function trimms down unncessary digits and adds < mark when unsignificant
         function Round(amt) {
             let amount = Number(amt)
+            if (amount === 0) {
+                return ""
+            }
             amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
             return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
         }
@@ -465,8 +439,8 @@ const ABAmounts = computed({
 })
 // amounts formated to uint256
 const ABAmountsUint = computed(() => {
-    return ABAmounts.value.map((el) => {
-        if (!el) {
+    return ABAmounts.value.map((el, index) => {
+        if (!el || el === ".") {
             return 0
         }
         const regex = /[<>]/
@@ -482,13 +456,22 @@ function setTokenAmount(event, inputIndex) {
 }
 
 function calcThat(value) {
-    return Number(value) * poolRatio.value + ""
+    value = Number(value)
+    if (Number.isNaN(value)) {
+        return ""
+    }
+    return value * poolRatio.value + ""
 }
 function calcThis(value) {
-    return Number(value) * (1 / poolRatio.value) + ""
+    value = Number(value)
+    if (Number.isNaN(value)) {
+        return ""
+    }
+    return value * (1 / poolRatio.value) + ""
 }
 function cleanInput(value, oldValue) {
     value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
+
     let dotCount = value.split(".").length - 1
     if (dotCount === 2) {
         value = oldValue
@@ -501,9 +484,9 @@ watch(
     (newVal, oldVal) => {
         const [newA, newB] = [...newVal]
         const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
-        if (state.lastChangedToken === 0 && newA !== oldA) {
+        if (state.lastChangedToken === 0) {
             state.amountA = cleanInput(newA, oldA)
-        } else if (state.lastChangedToken === 1 && newB !== oldB) {
+        } else if (state.lastChangedToken === 1) {
             state.amountB = cleanInput(newB, oldB)
         }
     },
@@ -547,45 +530,6 @@ async function getBalance(token, both = false) {
     }
 }
 // BALANCES -------------
-
-// ALLOWANCES -----------
-const ABAllowance = computed({
-    get() {
-        return [state.approvalA, state.approvalB]
-    },
-    set(newValue) {
-        state.approvalA = newValue[0]
-        state.approvalB = newValue[1]
-    },
-})
-// function callApproveSpending(address) {
-function callApproveSpending(address, amount) {
-    if (stepStore.connectedWallet) {
-        // approveSpending(address, stepStore.connectedWallet.provider, 0, getAllowances)
-        approveSpending(address, stepStore.connectedWallet.provider, amount, getAllowances)
-    }
-}
-async function getAllowances() {
-    if (stepStore.connectedWallet) {
-        ABTokens.value.forEach(async (el1, index1) => {
-            const allowance = el1 !== null ? await getApprovedAmount(el1.address) : 0
-            ABAllowance.value = ABAllowance.value.map((el2, index2) => (index2 === index1 ? allowance : el2))
-        })
-    }
-}
-async function getApprovedAmount(address) {
-    try {
-        return await checkAllowance(
-            address,
-            stepStore.connectedAccount,
-            stepStore.routerAddress,
-            stepStore.connectedWallet.provider
-        )
-    } catch (err) {
-        console.log("failed to get appoved amounts", err)
-    }
-}
-// ALLOWANCES -----------
 
 //MODAL STUFF----------
 const toggleSelectTokenModal = inject("selectTokenModal")
@@ -697,7 +641,6 @@ watch(
 watch(
     poolAddress,
     (poolAdd, prevPoolAdd) => {
-        getAllowances()
         if (!(poolAdd === unhandled || poolAdd === "")) {
             setupPool(
                 poolAdd,
@@ -745,17 +688,15 @@ watch(
     }
 )
 
-//GETS BALANCES AND ALLOWANCES BY TOKENS AND WALLET
+//GETS BALANCES BY TOKENS AND WALLET
 watch(
     () => [ABTokens.value, stepStore.connectedWallet],
     (newValue, oldValue) => {
         const newTokens = newValue.at(0)
         const wallet = newValue.at(1)
         if (wallet) {
-            getAllowances()
             getBalance(null, true)
         } else {
-            ABAllowance.value = ["", ""]
             ABBalance.value = ["", ""]
         }
     },
@@ -948,6 +889,9 @@ onUnmounted(() => {
 .redeem {
     flex-grow: 0;
     color: var(--text-color-reverse);
+    border-radius: var(--outer-wdg-radius);
+    filter: var(--drop-shadow);
+    padding: 0 20px;
     & > div {
         margin-bottom: 20px;
     }
