@@ -126,10 +126,18 @@ $horiz-padd: 1.3rem;
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
     background-color: var(--primary-btn-bg);
-
+    box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.05);
     &:disabled {
         background-color: var(--primary-disabled-bg);
         color: var(--text-grey);
+    }
+    &:not(:disabled):hover {
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--primary-btn-bg);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    &:not(:disabled):active {
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), var(--primary-btn-bg);
+        border: 1px solid #ffffff;
     }
 
     cursor: pointer;
@@ -194,6 +202,7 @@ $horiz-padd: 1.3rem;
     }
     &--transparent {
         background-color: transparent;
+        box-shadow: none;
     }
     &--wide {
         width: 100%;

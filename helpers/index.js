@@ -215,7 +215,6 @@ export function usePools(routerAddress) {
                 await Promise.all(approvalPromises)
             }
 
-            // Add liquidity
             await router.addLiquidity(
                 addressA,
                 addressB,
