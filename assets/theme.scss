@@ -1,25 +1,13 @@
 @use "./colors" as *;
 
 $dark-map: (
-    --primary-btn-color: #1b1b1b,
-
-    // else
     --bg-gradient-light: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
     --bg-gradient-dark: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
-    --inset-shadow: (
-        $dark-green-2-op 0px 30px 60px -12px inset,
-        rgba(0, 0, 0, 0.2) 0px 18px 36px -18px inset,
-    ),
-    // ?
 );
 
 $light-map: (
-    --primary-btn-color: #1b1b1b,
-
-    // else
     --bg-gradient-dark: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
     --bg-gradient-light: linear-gradient(180deg, rgba(69, 255, 197, 0.12) 0%, rgba(69, 255, 197, 0) 100%),
-    --inset-shadow: none,
 );
 
 @mixin spread-map($map: ()) {

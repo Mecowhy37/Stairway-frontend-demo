@@ -56,7 +56,7 @@ provide("newTokenModal", toggleNewTokenModal)
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    transition: color var(--transition);
+    /* transition: color var(--transition); */
     font-family: "DM Sans", sans-serif;
     line-height: 100%;
     font-weight: 500;

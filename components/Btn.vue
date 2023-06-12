@@ -5,15 +5,12 @@
         :disabled="props.disabled"
         :class="[
             {
-                'btn--secondary': props.secondary,
-                'btn--cta': props.cta,
-                'btn--secondary--thin': props.secondary && props.thin,
+                'btn--primary': !props.plain && !props.opaque && !props.transparent,
                 'btn--plain': props.plain,
                 'btn--opaque': props.opaque,
                 'btn--transparent': props.transparent,
                 'btn--wide': props.wide,
                 'btn--bulky': props.bulky,
-                'btn--pill': props.pill,
                 'btn--circle': props.circle,
                 'btn--unclickable': props.loading,
                 'btn--small': props.small,
@@ -55,15 +52,12 @@ const stepStore = useStepStore()
 
 export interface Props {
     is?: string
-    secondary?: boolean
-    cta?: boolean
     thin?: boolean
     wide?: boolean
     bulky?: boolean
     transparent?: boolean
     plain?: boolean
     opaque?: boolean
-    pill?: boolean
     circle?: boolean
     disabled?: boolean
     loading?: boolean
@@ -80,26 +74,22 @@ const props = withDefaults(defineProps<Props>(), {
 
 // const {
 //     is = "p",
-//     secondary,
 //     thin,
 //     wide,
 //     bulky,
 //     transparent = false,
 //     plain,
-//     pill,
 //     disabled,
 //     loading,
 //     tiny,
 //     iconContrast,
 // } = defineProps<{
 //     is?: String
-//     secondary?: Boolean
 //     thin?: Boolean
 //     wide?: Boolean
 //     bulky?: Boolean
 //     transparent?: Boolean
 //     plain?: Boolean
-//     pill?: Boolean
 //     disabled?: Boolean
 //     loading?: Boolean
 //     tiny?: Boolean
@@ -121,34 +111,31 @@ $horiz-padd: 1.3rem;
     justify-content: center;
     border-radius: var(--inner-wdg-radius);
     border: 1px solid transparent;
-    transition-property: background-color, color;
-    transition-duration: var(--transition);
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
     background-color: var(--primary-btn-bg);
     box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.05);
+    &--primary {
+        &:not(:disabled):hover {
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--primary-btn-bg);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        &:not(:disabled):active {
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), var(--primary-btn-bg);
+            border: 1px solid #ffffff;
+        }
+    }
     &:disabled {
         background-color: var(--primary-disabled-bg);
         color: var(--text-grey);
     }
-    &:not(:disabled):hover {
-        background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--primary-btn-bg);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-    &:not(:disabled):active {
-        background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), var(--primary-btn-bg);
-        border: 1px solid #ffffff;
-    }
 
     cursor: pointer;
     * {
-        /* color: var(--primary-btn-color); */
         pointer-events: none;
     }
-    &:hover {
-        border: 1px solid transparent;
-    }
     #default-slot {
+        position: relative;
         line-height: 100%;
         &.wicon {
         }
@@ -160,23 +147,6 @@ $horiz-padd: 1.3rem;
             }
         }
     }
-    &--secondary {
-        background-color: transparent;
-        border: 2px solid var(--primary-btn-bg);
-        &:hover {
-            border: 2px solid var(--primary-btn-bg);
-            background-color: var(--primary-btn-bg-opaque);
-        }
-        * {
-            color: var(--primary-btn-bg);
-        }
-        &--thin {
-            border: 1px solid var(--primary-btn-bg);
-        }
-    }
-    &--cta {
-        background-color: var(--cta-bg);
-    }
     &--plain {
         background-color: var(--primary-disabled-bg-solid);
         * {
@@ -184,31 +154,62 @@ $horiz-padd: 1.3rem;
         }
     }
     &--opaque {
-        /* background-color: var(--primary-disabled-bg); */
         background-color: #3f4040;
         border: 2px solid transparent;
         * {
             color: var(--text-color-reverse);
         }
-        /* &.selectable:hover, */
-        &:hover {
-            /* border: 1px solid var(--flat-outline) !important; */
-            border: 2px solid var(--primary-btn-bg);
-            background-color: var(--primary-btn-bg-opaque);
+        &:not(:disabled)::before {
+            position: absolute;
+            content: "";
+            height: 100%;
+            width: 100%;
         }
-        &.selected {
+        &:not(:disabled):hover {
+            border: 2px solid var(--list-click-stroke);
+        }
+        &:not(:disabled):active {
+            &::before {
+                background-color: var(--list-click-bg-lighter);
+            }
+        }
+        &:not(:disabled).selected:hover {
             border: 2px solid var(--primary-btn-bg);
+
+            &::before {
+                background-color: var(--opaque-btn-bg);
+            }
+        }
+        &:not(:disabled).selected {
+            border: 2px solid var(--primary-btn-bg);
+            &::before {
+                background-color: var(--opaque-btn-bg);
+            }
+            &:hover {
+                border: 2px solid white;
+            }
+            &:active {
+                border: 2px solid white;
+                &::before {
+                    background-color: var(--opaque-active-btn-bg-selected);
+                }
+            }
+        }
+        &:disabled {
+            background-color: var(--selectors-disabled-bg);
+            * {
+                color: var(--selectors-disabled-color);
+            }
         }
     }
     &--transparent {
         background-color: transparent;
         box-shadow: none;
+        &:hover {
+        }
     }
     &--wide {
         width: 100%;
-    }
-    &--pill {
-        border-radius: 9999px;
     }
     &--circle {
         background: var(--swap-windows);
@@ -251,17 +252,6 @@ $horiz-padd: 1.3rem;
     }
 }
 
-.cta-dd {
-    /* > button {
-        border: none !important;
-    } */
-    > :first-child {
-        /* padding-right: 13px !important; */
-    }
-    > :last-child button {
-        /* padding-left: 10px !important; */
-    }
-}
 .loader {
     margin-left: 0.5rem;
     height: 25px;

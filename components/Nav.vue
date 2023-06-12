@@ -17,6 +17,11 @@
                 class="navigation__link"
                 ><h4>pools</h4></NuxtLink
             > -->
+            <NuxtLink
+                to="/buttons"
+                class="navigation__link"
+                ><h4>buttons</h4></NuxtLink
+            >
 
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->

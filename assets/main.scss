@@ -18,9 +18,13 @@
     --swap-windows: rgba(0, 0, 0, 0.45);
 
     --primary-btn-bg: #45ffc5;
-    --primary-btn-bg-opaque: rgba(69, 255, 197, 0.15);
     --primary-disabled-bg-solid: #323333;
     --primary-disabled-bg: rgba(108, 108, 108, 0.3);
+    --opaque-btn-bg: rgba(69, 255, 197, 0.1);
+    --opaque-active-btn-bg-selected: rgba(69, 255, 197, 0.302);
+
+    --selectors-disabled-bg: rgba(108, 108, 108, 0.1);
+    --selectors-disabled-color: rgba(255, 255, 255, 0.2);
 
     --flat-bg: var(--widget-bg);
     --flat-bg-solid: #303332;
@@ -34,6 +38,7 @@
     --list-hover-stroke: rgba(57, 171, 219, 0.3);
 
     --list-click-bg: rgba(57, 171, 219, 0.6);
+    --list-click-bg-lighter: rgba(57, 171, 219, 0.4);
     --list-click-stroke: rgb(57, 171, 219);
 
     --drop-shadow: drop-shadow(0px 10px 40px rgba(0, 0, 0, 0.5));
