@@ -76,7 +76,7 @@ onClickOutside(toActivate, (event) => {
     }
     &__box {
         position: absolute;
-        right: -1500%;
+        right: 0%;
         z-index: 150;
         top: 100%;
         margin-top: 0.8rem;

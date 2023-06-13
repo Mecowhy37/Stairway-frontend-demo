@@ -3,15 +3,8 @@
         id="base"
         :class="[stepStore.isDark ? themes.dark : themes.light]"
     >
-        <div
-            class="bg-gradient bg-gradient--light"
-            :class="{ hide: stepStore.isDark }"
-        ></div>
-        <div
-            class="bg-gradient bg-gradient--dark"
-            :class="{ hide: !stepStore.isDark }"
-        ></div>
-        <Nav />
+        <div class="bg-gradient"></div>
+        <Nav ref="nav" />
         <div
             class="page-slot"
             id="slot-wrap"
@@ -19,10 +12,7 @@
             <slot />
         </div>
 
-        <div
-            class="page-slot"
-            id="modal-wrap"
-        >
+        <div class="page-slot">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <NewToken ref="newTokenModal"></NewToken>
         </div>
@@ -34,6 +24,15 @@ import { provide } from "vue"
 import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
+
+const nav = ref(null)
+const navHeight = ref("")
+onMounted(() => {
+    const navbar = nav.value
+    if (navbar) {
+        navHeight.value = navbar.$el.offsetHeight + "px"
+    }
+})
 
 const selectTokenModal = ref()
 function toggleSelectTokenModal(...args) {
@@ -70,17 +69,12 @@ html {
     font-weight: 500;
 }
 body #base {
-    display: grid;
     height: 100vh;
+    /* height: 150vh; */
     position: relative;
 }
 .page-slot {
     display: contents;
-    &#modal-wrap {
-        > span {
-            display: none;
-        }
-    }
 }
 h1 {
     font-size: 3.5rem;
@@ -124,9 +118,11 @@ p {
 }
 
 .centerize {
-    grid-row: 1;
-    grid-column: 1;
-    place-self: center;
+    width: 100%;
+    display: grid;
+    place-content: center;
+    height: calc(100vh - v-bind(navHeight));
+    padding-bottom: v-bind(navHeight);
 }
 
 .main {
@@ -143,22 +139,13 @@ p {
 }
 
 .bg-gradient {
-    grid-row: 1;
-    grid-column: 1;
+    position: absolute;
     width: 100%;
     height: 100%;
     z-index: -2;
-    transition: opacity var(--transition);
-    opacity: 1;
-    &--light {
-        background: var(--bg-gradient-light);
-    }
-    &--dark {
-        background: var(--bg-gradient-dark);
-    }
-    &.hide {
-        opacity: 0;
-    }
+    background-image: url("~/assets/img/stairway-background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 input {
     // hiding browser default arrows

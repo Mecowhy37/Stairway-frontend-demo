@@ -2,7 +2,7 @@
     <div
         v-if="showModal"
         @click.self.prevent="toggleModal"
-        class="modal modal__overlay modal__overlay--lower modal__overlay--focus"
+        class="modal modal--lower modal--focus"
     >
         <div class="getTokens widget base-box">
             <div class="token-part">

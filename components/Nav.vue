@@ -131,7 +131,7 @@ function hideDisconnect() {
 <style lang="scss" scoped>
 /* $nav-height: 75px; */
 .navbar {
-    position: absolute;
+    /* position: absolute; */
     display: flex;
     align-items: center;
     width: 100%;

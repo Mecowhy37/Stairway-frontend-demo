@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="showModal"
-        class="modal modal__overlay"
+        class="modal"
         @click.self.prevent="toggleModal"
     >
         <div class="modal__window base-box">
@@ -135,20 +135,17 @@ defineExpose({
 <style lang="scss">
 .modal {
     position: absolute;
+    top: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: grid;
-    &__overlay {
-        grid-row: 1/1;
-        grid-column: 1/1;
-        &--focus {
-            background-color: rgba(232, 232, 232, 0.5);
-            backdrop-filter: blur(5px);
-        }
-        z-index: 4;
-        &--lower {
-            z-index: 3;
-        }
+    &--focus {
+        background-color: rgba(232, 232, 232, 0.5);
+        backdrop-filter: blur(5px);
+    }
+    z-index: 4;
+    &--lower {
+        z-index: 3;
     }
 
     &__window {
