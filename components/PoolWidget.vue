@@ -74,7 +74,7 @@
                         <!-- :value="ABAmounts[x]" -->
                     </div>
                     <div class="window__lower">
-                        <p class="caption">Balance: {{ Number(ABBalance[x]) }}</p>
+                        <p class="caption">{{ Number(ABBalance[x]) }}</p>
                     </div>
                 </div>
                 <div
@@ -162,11 +162,12 @@
                             </template>
                         </Btn>
                     </template>
-                    <template #dropdown>
+                    <template #dropdown="{ toggleDropdown }">
                         <Settings
                             ref="settingsRedeem"
                             :default-slippage="0.5"
                             :default-deadline="30"
+                            :toggle-dropdown="toggleDropdown"
                         ></Settings>
                     </template>
                 </Dropdown>
@@ -212,7 +213,7 @@
                             outline
                             compact
                             @click="setRedeemProc($event, 100)"
-                            >100%</Btn
+                            >Max</Btn
                         >
                     </div>
                 </div>
@@ -900,6 +901,7 @@ onUnmounted(() => {
             align-items: center;
             justify-content: space-between;
             .options {
+                justify-content: flex-end;
                 gap: 5px;
             }
         }

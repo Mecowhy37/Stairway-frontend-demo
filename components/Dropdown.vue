@@ -37,15 +37,16 @@ const isDropdownActive = ref(false)
 function toggleDropdown() {
     if (props.settingsRef) {
         if (!props.settingsRef.isValidSettings) {
-            let isValid
+            let isDeadlineValid
+            let isSlippageValid
             if (!props.settingsRef.noSlippage) {
                 const slippage = props.settingsRef.slippage
-                isValid = props.settingsRef.validateSlippage(slippage, true)
+                isSlippageValid = props.settingsRef.validateSlippage(slippage, true)
             }
             const deadline = props.settingsRef.deadline
-            props.settingsRef.validateDeadline(deadline, true)
+            isDeadlineValid = props.settingsRef.validateDeadline(deadline, true)
 
-            if (!isValid) {
+            if (isSlippageValid === false || isDeadlineValid === false) {
                 return
             }
         }

@@ -5,7 +5,8 @@ export default defineNuxtConfig({
       "@pinia/nuxt",
   ],
   build: {
-    transpile: ['mdi-vue']
+    standalone: true,
+    transpile: ['mdi-vue'],
   },
   // vite: {
   //   vue: {

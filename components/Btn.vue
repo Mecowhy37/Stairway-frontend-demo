@@ -155,7 +155,7 @@ $horiz-padd: 1.3rem;
     }
     &--opaque {
         background-color: #3f4040;
-        border: 2px solid transparent;
+        border: 1px solid transparent;
         * {
             color: var(--text-color-reverse);
         }
@@ -166,7 +166,7 @@ $horiz-padd: 1.3rem;
             width: 100%;
         }
         &:not(:disabled):hover {
-            border: 2px solid var(--list-click-stroke);
+            border: 1px solid var(--list-click-stroke);
         }
         &:not(:disabled):active {
             &::before {
@@ -174,22 +174,22 @@ $horiz-padd: 1.3rem;
             }
         }
         &:not(:disabled).selected:hover {
-            border: 2px solid var(--primary-btn-bg);
+            border: 1px solid var(--primary-btn-bg);
 
             &::before {
                 background-color: var(--opaque-btn-bg);
             }
         }
         &:not(:disabled).selected {
-            border: 2px solid var(--primary-btn-bg);
+            border: 1px solid var(--primary-btn-bg);
             &::before {
                 background-color: var(--opaque-btn-bg);
             }
             &:hover {
-                border: 2px solid white;
+                border: 1px solid white;
             }
             &:active {
-                border: 2px solid white;
+                border: 1px solid white;
                 &::before {
                     background-color: var(--opaque-active-btn-bg-selected);
                 }

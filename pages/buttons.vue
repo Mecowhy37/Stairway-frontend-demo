@@ -1,16 +1,28 @@
 <template>
     <div class="centerize">
-        <Btn>Button</Btn>
-        <Btn transparent>transparent</Btn>
-        <Btn plain>plain</Btn>
-        <Btn opaque>opaque</Btn>
-        <Btn
-            opaque
-            class="selected"
-            >opaque</Btn
-        >
-        <Btn circle>circle</Btn>
-        <Btn disabled>disabled</Btn>
+        <div class="row">
+            <div>
+                <Btn>Button</Btn>
+                <Btn transparent>transparent</Btn>
+                <Btn plain>plain</Btn>
+                <Btn opaque>opaque</Btn>
+                <Btn
+                    opaque
+                    class="selected"
+                    >opaque</Btn
+                >
+                <Btn circle>circle</Btn>
+                <Btn disabled>disabled</Btn>
+            </div>
+            <div>
+                <Icon name="arrow"></Icon>
+                <Icon name="chevron"></Icon>
+                <Icon name="cog"></Icon>
+                <Icon name="cross"></Icon>
+                <Icon name="plus"></Icon>
+                <Icon name="wallet"></Icon>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -18,11 +30,10 @@
 
 <style lang="scss" scoped>
 .centerize {
-    & > .btn {
+    .btn {
         margin-bottom: 12px;
     }
     .row {
-        background-color: var(--widget-bg);
         padding: 1rem;
         gap: 0.5rem;
     }

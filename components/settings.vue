@@ -13,7 +13,7 @@
             class="setting"
             v-if="!noSlippage"
         >
-            <p class="grey-text caption">slippage tolerance</p>
+            <p class="grey-text caption">Slippage tolerance</p>
             <div class="row">
                 <Btn
                     @click="resetSlippage"
@@ -22,7 +22,6 @@
                     >Auto</Btn
                 >
                 <input
-                    class="grow"
                     type="number"
                     v-model="state.slippage"
                     step="0.1"
@@ -39,12 +38,14 @@
             </p>
         </div>
         <div class="setting">
-            <p class="grey-text caption">transaction deadline</p>
+            <p class="grey-text caption">Transaction deadline</p>
             <div class="row">
                 <input
+                    type="number"
                     v-model="state.deadline"
                     step="1"
-                    type="number"
+                    min="0"
+                    max="4320"
                     :class="{ error: state.deadlineError }"
                 />
                 <p class="offset">minutes</p>
@@ -70,6 +71,7 @@ const state = reactive({
     deadlineError: false,
     invalidDeadline: false,
     lastValidDealine: null,
+    lastValidSlippage: null,
 })
 
 function resetSlippage() {
@@ -85,23 +87,28 @@ function validateSlippage(val, closing = false) {
             state.slippageWarn = "Missing slippage"
             return false
         }
-        return
+        return false
     }
     if (val < 0.05) {
         state.slippageError = false
         state.slippageWarn = "Your transaction may fail"
         state.invalidSLippage = false
-        return
+        return true
     }
     if (val > 50) {
         state.slippageError = true
         state.slippageWarn = "Enter a valid slippage percentage"
         state.invalidSLippage = true
+        if (closing) {
+            state.slippage = state.lastValidSlippage
+            return
+        }
         return
     }
     state.slippageError = false
     state.slippageWarn = null
     state.invalidSLippage = false
+    return true
 }
 function validateDeadline(val, closing = false) {
     if (val === "") {
@@ -109,6 +116,7 @@ function validateDeadline(val, closing = false) {
         state.invalidDeadline = true
         if (closing) {
             state.deadline = props.defaultDeadline
+            return
         }
         return false
     }
@@ -120,6 +128,7 @@ function validateDeadline(val, closing = false) {
                 state.deadline = props.defaultDeadline
             }
             state.deadline = state.lastValidDealine
+            return
         }
         return false
     }
@@ -138,7 +147,10 @@ const isValidSettings = computed(() => {
 watch(
     () => state.slippage,
     (newVal) => {
-        validateSlippage(newVal)
+        const isValid = validateSlippage(newVal)
+        if (isValid) {
+            state.lastValidSlippage = newVal
+        }
     }
 )
 watch(
@@ -179,10 +191,10 @@ defineExpose({
         }
         p {
             &.warn {
-                color: orange;
+                color: #ffcb45;
             }
             &.error {
-                color: red;
+                color: #ff4343;
             }
             &.offset {
                 padding-top: 3px;
@@ -191,23 +203,18 @@ defineExpose({
         .row {
             margin: 4px 0;
             gap: 12px;
-            & > :first-child {
-                /* margin-right: 12px; */
-            }
             input {
-                width: 30%;
                 border-radius: var(--small-wdg-radius);
                 border: 1px solid transparent;
                 outline: none;
                 padding: 5px;
                 color: var(--text-color-reverse);
                 background-color: var(--swap-windows);
-                &.grow {
-                    flex-grow: 1;
-                }
+                flex-grow: 1;
+                text-align: end;
                 &.error {
-                    color: red;
-                    border: 1px solid red;
+                    color: #ff4343;
+                    border: 1px solid #ff4343;
                 }
             }
         }

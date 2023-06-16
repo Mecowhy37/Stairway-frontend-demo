@@ -24,6 +24,15 @@ import { provide } from "vue"
 import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
+watch(
+    () => stepStore.connectedAccount,
+    async (newVal) => {
+        if (newVal) {
+            // await stepStore.onboard.setChain({ chainId: "0x13881" })
+            // console.log("onboard:", stepStore.connectedChain)
+        }
+    }
+)
 
 const nav = ref(null)
 const navHeight = ref("")

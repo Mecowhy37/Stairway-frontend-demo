@@ -37,7 +37,11 @@ export const useStepStore = defineStore("step", (): any => {
     
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
-    const routerAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+    // const MUMBAI_INFRURA: string = "https://polygon-mumbai.infura.io/v3/24ad88cbd3d0493da2a434d65617d51c"
+    const MUMBAI_INFRURA: string = "https://rpc.ankr.com/polygon_mumbai"
+    // const routerAddress = "0xa6EB1ED60220d662434D90bBEbAf19A150d5c780"
+    // const foundryAddress = "0x8eB9468251f156cd0bE11726f5fB84Abd3E70e6b"
+    const routerAddress = "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6"
     const foundryAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
 
     const unhandled = "0x0000000000000000000000000000000000000000"
@@ -55,8 +59,14 @@ export const useStepStore = defineStore("step", (): any => {
             {
                 id: "0x7a69",
                 token: "ETH",
-                label: "Local ANvil",
+                label: "Local Anvil",
                 rpcUrl: LOCAL_ANVIL,
+            },
+            {
+                id: "0x13881",
+                token: "MATIC",
+                label: "Mumbai",
+                rpcUrl: MUMBAI_INFRURA,
             },
         ],
         accountCenter: {
@@ -125,6 +135,15 @@ export const useStepStore = defineStore("step", (): any => {
         }
     })
 
+
+    const isSupportedChain = computed(() => {
+        if (connectedChain.value) {
+            return connectedChain.value?.id === "0x7a69" || connectedChain.value?.id === "0x13881" 
+        } else {
+            return false
+        }
+    })
+
     function connectWalletAction() {
         connectingWallet.value = true
         connectWallet().then(() => {
@@ -143,7 +162,6 @@ export const useStepStore = defineStore("step", (): any => {
     return {
         onboard,
 
-        chainId,
         routerAddress,
         foundryAddress,
         isDark,
@@ -159,6 +177,9 @@ export const useStepStore = defineStore("step", (): any => {
         bothSwapTokensThere,
         bothSwapTokenAddresses,
 
+        isSupportedChain,
+        
+        chainId,
         connectedChain,
         isConnectingText,
         connectWallet,

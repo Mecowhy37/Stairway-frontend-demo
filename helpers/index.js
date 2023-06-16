@@ -205,11 +205,13 @@ export function usePools(routerAddress) {
                 const approvalPromises = []
 
                 if (needApprovalA) {
-                    approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
+                    approvalPromises.unshift(approveSpending(addressA, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
                 }
 
                 if (needApprovalB) {
-                    approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
+                    approvalPromises.unshift(approveSpending(addressB, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
                 }
 
                 await Promise.all(approvalPromises)

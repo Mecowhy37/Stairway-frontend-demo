@@ -81,7 +81,7 @@
                         />
                     </div>
                     <div class="window__lower">
-                        <p class="caption">Balance: {{ Number(switchedBalances[x]) }}</p>
+                        <p class="caption">{{ Number(switchedBalances[x]) }}</p>
                     </div>
                 </div>
                 <div
