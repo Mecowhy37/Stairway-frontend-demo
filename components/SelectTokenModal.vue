@@ -11,7 +11,10 @@
                     @click="toggleModal"
                     class="topbar__close"
                 >
-                    <mdicon name="close" />
+                    <Icon
+                        name="cross"
+                        :size="13"
+                    />
                 </h3>
             </div>
             <div
@@ -68,9 +71,8 @@ const filteredTokenList = computed(
     () =>
         tokenList.value.filter(
             (el) =>
-                // el.chainId === stepStore.connectedChain.id &&
+                // el.chainId === 31337 &&
                 el.chainId === parseInt(stepStore.connectedChain.id, 16)
-            //  &&
             // !ABTokens.value?.find((tkn) => tkn?.address === el.address)
             // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
         )

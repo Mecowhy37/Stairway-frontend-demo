@@ -124,6 +124,12 @@ p {
     &.space-between {
         justify-content: space-between;
     }
+    &.flex-end {
+        justify-content: flex-end;
+    }
+    &.align-center {
+        align-items: center;
+    }
 }
 
 .centerize {

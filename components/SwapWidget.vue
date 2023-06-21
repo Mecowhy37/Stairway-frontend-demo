@@ -11,9 +11,9 @@
                             icon-contrast
                         >
                             <template #icon>
-                                <mdicon
+                                <Icon
                                     name="cog"
-                                    size="30"
+                                    :size="20"
                                 />
                             </template>
                         </Btn>
@@ -55,17 +55,16 @@
                     <div class="window__upper">
                         <label
                             for="amount_1"
-                            @click="!waitingForAdding && openTokenSelectModal(x)"
+                            @click="openTokenSelectModal(x)"
                         >
                             <p v-if="switchedTokens[x] !== null">
                                 {{ switchedTokens[x]?.symbol }}
                             </p>
                             <p v-else>select token</p>
-                            <mdicon
-                                class="icon"
-                                name="chevron-down"
+                            <Icon
+                                name="chevron"
+                                :size="16"
                             />
-                            <!-- <p v-if="balances[x] !== null">balance: {{ balances[x] }}</p> -->
                         </label>
                         <input
                             id="amount_1"
@@ -80,14 +79,18 @@
                             @input="setTokenAmount($event, x)"
                         />
                     </div>
-                    <div class="window__lower">
+                    <div class="window__lower row flex-end align-center">
                         <p class="caption">{{ Number(switchedBalances[x]) }}</p>
+                        <Icon
+                            name="wallet"
+                            :size="13"
+                        />
                     </div>
                 </div>
                 <div
                     v-if="x === 0"
                     id="mid-symbol"
-                    class="button"
+                    class="button plus"
                 >
                     <Btn
                         circle
@@ -95,25 +98,26 @@
                         @click="switchOrder()"
                     >
                         <template #icon>
-                            <mdicon
-                                class="icon"
-                                name="arrow-down"
+                            <Icon
+                                name="arrow"
+                                :size="11"
                             />
                         </template>
                     </Btn>
                 </div>
             </div>
+
             <div
-                v-if="!(poolAddress === '' || poolAddress === unhandled)"
                 class="infos"
+                v-if="!(poolAddress === '' || poolAddress === unhandled)"
             >
                 <div
-                    v-if="Number(poolDepth) < Number(switchedAmounts[1])"
                     class="infos__info row"
+                    v-if="Number(poolDepth) < Number(switchedAmounts[1])"
                 >
-                    <mdicon
-                        name="alert-circle"
-                        size="30"
+                    <Icon
+                        name="warrning"
+                        :size="25"
                     />
                     <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p>
                 </div>
@@ -186,7 +190,6 @@ const {
     approveSpending,
     bidAsk,
     poolDepth,
-    thisTokenAddress,
     poolAddress,
     findPool,
     getBidAsk,
@@ -421,10 +424,8 @@ const switchedBalances = computed({
 // MODAL STUFF -------------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    if (stepStore.connectedWallet) {
-        toggleSelectTokenModal(ABTokens.value, setToken)
-        state.selectTokenIndex = index
-    }
+    toggleSelectTokenModal(ABTokens.value, setToken)
+    state.selectTokenIndex = index
 }
 const toggleNewTokenModal = inject("newTokenModal")
 function openNewTokenModal() {
@@ -482,18 +483,20 @@ watch(
     (newVal, oldVal) => {
         const [bothTokens, wallet] = [...newVal]
         const [prevBothTokens, prevWallet] = oldVal ? [...oldVal] : [[null, null], null]
-        if (bothTokens && wallet) {
-            if (
-                (prevBothTokens !== bothTokens && prevWallet === wallet) ||
-                (prevBothTokens === bothTokens && prevWallet !== wallet)
-            ) {
-                findPool(...baseQuoteAddresses.value, stepStore.connectedWallet.provider)
-            }
-            return
+        if (bothTokens) {
+            // if (bothTokens && wallet) {
+            //     if (
+            //         (prevBothTokens !== bothTokens && prevWallet === wallet) ||
+            //         (prevBothTokens === bothTokens && prevWallet !== wallet)
+            //     ) {
+            // findPool(...baseQuoteAddresses.value, stepStore.connectedWallet.provider)
+            findPool(...baseQuoteAddresses.value)
         }
-        if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
-            poolAddress.value = ""
-        }
+        // return
+        // }
+        // if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
+        //     poolAddress.value = ""
+        // }
     },
     {
         immediate: true,
@@ -505,8 +508,8 @@ watch(
     poolAddress,
     (poolAdd, prevPoolAdd) => {
         if (!(poolAdd === unhandled || poolAdd === "")) {
-            setupPool(poolAdd, baseQuoteAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
-            setupLiquidityChange(stepStore.connectedWallet.provider)
+            // setupPool(poolAdd, baseQuoteAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
+            // setupLiquidityChange(stepStore.connectedWallet.provider)
         } else {
             //resets previous calulated amount to "0" when pool in no longer there
             switchedAmounts.value = switchedAmounts.value.map((el, index) =>
@@ -542,14 +545,14 @@ watch(
     () => stepStore.connectedAccount,
     (wallet, prevWallet) => {
         if (wallet !== prevWallet && wallet) {
-            setupPoolCreated(stepStore.connectedWallet.provider)
+            // setupPoolCreated(stepStore.connectedWallet.provider)
             if (!(poolAddress.value === unhandled || poolAddress.value === "")) {
-                setupPool(
-                    poolAddress.value,
-                    baseQuoteAddresses.value,
-                    stepStore.connectedWallet.provider,
-                    stepStore.connectedAccount
-                )
+                // setupPool(
+                //     poolAddress.value,
+                //     baseQuoteAddresses.value,
+                //     stepStore.connectedWallet.provider,
+                //     stepStore.connectedAccount
+                // )
             }
             return
         }

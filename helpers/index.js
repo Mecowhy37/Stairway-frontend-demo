@@ -80,6 +80,15 @@ export function usePools(routerAddress) {
             : []
     })
 
+    async function getBidAsk(tokenAddresses, providerArg) {
+        const provider = new BrowserProvider(providerArg)
+        const router = new Contract(routerAddress, RouterABI, provider)
+        const bidAskVar = await router.getBidAsk(...tokenAddresses)
+        const depth = formatEther(await router.getDepth(...tokenAddresses))
+        bidAsk.value = bidAskVar
+        poolDepth.value = depth
+        return
+    }
     async function findPool(addressA, addressB, providerArg) {
         const provider = new BrowserProvider(providerArg)
         const router = new Contract(routerAddress, RouterABI, provider)
@@ -90,16 +99,22 @@ export function usePools(routerAddress) {
         poolAddress.value = poolAdd
         return poolAdd
     }
+    // async function findPool(addressA, addressB) {
+    //     console.log("find pool")
 
-    async function getBidAsk(tokenAddresses, providerArg) {
-        const provider = new BrowserProvider(providerArg)
-        const router = new Contract(routerAddress, RouterABI, provider)
-        const bidAskVar = await router.getBidAsk(...tokenAddresses)
-        const depth = formatEther(await router.getDepth(...tokenAddresses))
-        bidAsk.value = bidAskVar
-        poolDepth.value = depth
-        return
-    }
+    //     const url = `https://api.stairway.fi/pool/${addressA}/${addressB}`
+    //     // const url = `https://api.stairway.fi/pool/0x70997970C51812dc3A010C7d01b50e0d17dc79C8/0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
+    //     const response = await $fetch(url)
+    //     console.log("response:", response)
+    //     const data = await response.json()
+    //     console.log("data:", data)
+    // }
+
+    //     const url = `https://api.stairway.fi/pool/${tokenAddresses[0]}/${tokenAddresses[1]}`
+    //     const response = await $fetch(url)
+    //     console.log("response:", response)
+    //     const data = await response.json()
+    //     console.log("data:", data)
 
     async function setupPool(poolAdd, tokenAddresses, providerArg, wallet) {
         console.log("setup")

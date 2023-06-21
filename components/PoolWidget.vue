@@ -11,9 +11,9 @@
                             icon-contrast
                         >
                             <template #icon>
-                                <mdicon
+                                <Icon
                                     name="cog"
-                                    size="30"
+                                    :size="20"
                                 />
                             </template>
                         </Btn>
@@ -47,17 +47,16 @@
                     <div class="window__upper">
                         <label
                             for="amount_1"
-                            @click="!waitingForAdding && openTokenSelectModal(x)"
+                            @click="openTokenSelectModal(x)"
                         >
                             <p v-if="ABTokens[x] !== null">
                                 {{ ABTokens[x]?.symbol }}
                             </p>
                             <p v-else>select token</p>
-                            <mdicon
-                                class="icon"
-                                name="chevron-down"
+                            <Icon
+                                name="chevron"
+                                :size="16"
                             />
-                            <!-- <p v-if="balances[x] !== null">balance: {{ balances[x] }}</p> -->
                         </label>
                         <input
                             id="amount_1"
@@ -73,16 +72,23 @@
                         />
                         <!-- :value="ABAmounts[x]" -->
                     </div>
-                    <div class="window__lower">
+                    <div class="window__lower row flex-end align-center">
                         <p class="caption">{{ Number(ABBalance[x]) }}</p>
+                        <Icon
+                            name="wallet"
+                            :size="13"
+                        />
                     </div>
                 </div>
                 <div
                     v-if="x === 0"
                     id="mid-symbol"
-                    class="plus"
+                    class="plus grey-text"
                 >
-                    <h2>+</h2>
+                    <Icon
+                        name="plus"
+                        :size="16"
+                    />
                 </div>
             </div>
             <div
@@ -155,9 +161,9 @@
                             icon-contrast
                         >
                             <template #icon>
-                                <mdicon
+                                <Icon
                                     name="cog"
-                                    size="30"
+                                    :size="20"
                                 />
                             </template>
                         </Btn>
@@ -765,16 +771,16 @@ onUnmounted(() => {
 
             label {
                 position: relative;
-                flex-shrink: 0;
                 display: flex;
+                align-items: center;
+                flex-shrink: 0;
                 margin: 8px;
-
-                background-color: var(--primary-disabled-bg);
                 padding: 10px 20px;
                 padding-right: 10px;
                 border-radius: var(--small-wdg-radius);
+                background-color: var(--primary-disabled-bg);
                 .icon {
-                    margin-left: 4px;
+                    margin-left: 6px;
                 }
                 cursor: pointer;
                 p {
@@ -811,7 +817,10 @@ onUnmounted(() => {
         display: flex;
         justify-content: center;
         &.plus {
-            margin-bottom: 5px;
+            margin: 12px 0;
+            .icon {
+                margin: 0 6px;
+            }
         }
         &.button {
             margin: 5px;
@@ -852,9 +861,8 @@ onUnmounted(() => {
                 background-color: var(--info-bg-opaque);
                 margin-bottom: 20px;
             }
-            .mdi {
+            .icon {
                 margin-right: 10px;
-                color: var(--info-bg);
             }
         }
     }
@@ -968,9 +976,9 @@ onUnmounted(() => {
 
 .top-bar {
     justify-content: space-between;
+    align-items: center;
     border-bottom: 2px solid var(--text-color-reverse);
-    padding-top: 17px;
-    padding-bottom: 12px;
+    padding: 20px 0;
     margin-bottom: 20px;
 }
 .base-box {

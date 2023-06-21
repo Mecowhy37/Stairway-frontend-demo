@@ -16,10 +16,10 @@
                             @mouseover="hoverIn"
                             @mouseout="hoverOut"
                         >
-                            <mdicon
+                            <!-- <mdicon
                                 size="20px"
                                 name="content-copy"
-                            />
+                            /> -->
                             <p v-if="!copied">
                                 {{ truncatedTokenAddress }}
                             </p>
@@ -33,7 +33,10 @@
                             @click="openTokenSelectModal()"
                         >
                             <template #icon>
-                                <mdicon name="chevron-down" />
+                                <Icon
+                                    name="chevron"
+                                    :size="16"
+                                />
                             </template>
                         </Btn>
                         <div class="divider"></div>

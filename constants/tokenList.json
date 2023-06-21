@@ -1,5 +1,19 @@
 [
     {
+        "chainId": 31337,
+        "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+        "name": "STRVY",
+        "symbol": "STRVY",
+        "decimals": 18
+    },
+    {
+        "chainId": 31337,
+        "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        "name": "Fake PLN",
+        "symbol": "PLNYY",
+        "decimals": 18
+    },
+    {
         "chainId": 1,
         "address": "0x111111111117dC0aa78b770fA6A738034120C302",
         "name": "1inch",

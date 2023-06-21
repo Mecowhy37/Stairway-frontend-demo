@@ -10,7 +10,10 @@
             >
                 New postition
                 <template #icon>
-                    <mdicon name="plus" />
+                    <Icon
+                        name="plus"
+                        :size="25"
+                    />
                 </template>
             </Btn>
         </div>
@@ -30,7 +33,10 @@
                             >
                                 Manage
                                 <template #icon>
-                                    <mdicon :name="openedIndex === x ? 'chevron-up' : 'chevron-down'" />
+                                    <Icon
+                                        name="chevron"
+                                        :size="16"
+                                    />
                                 </template>
                             </Btn>
                         </div>

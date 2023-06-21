@@ -1,13 +1,16 @@
 <template>
     <div class="settings">
         <div class="topbar row space-between">
-            <h3>Settings</h3>
-            <h3
+            <h4>Settings</h4>
+            <h4
                 class="topbar__close"
                 @click="toggleDropdown"
             >
-                <mdicon name="close" />
-            </h3>
+                <Icon
+                    name="cross"
+                    :size="13"
+                />
+            </h4>
         </div>
         <div
             class="setting"

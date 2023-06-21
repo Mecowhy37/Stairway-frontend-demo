@@ -6,15 +6,7 @@ export default defineNuxtConfig({
   ],
   build: {
     standalone: true,
-    transpile: ['mdi-vue'],
   },
-  // vite: {
-  //   vue: {
-  //     script: {
-  //        propsDestructure: true
-  //     }
-  //   }
-  // }
 })
     
     
