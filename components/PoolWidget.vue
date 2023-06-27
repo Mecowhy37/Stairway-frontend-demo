@@ -73,7 +73,8 @@
                         <!-- :value="ABAmounts[x]" -->
                     </div>
                     <div class="window__lower row flex-end align-center">
-                        <p class="caption">{{ Number(ABBalance[x]) }}</p>
+                        <!-- <p class="caption">{{ Number(ABBalance[x]) }}</p> -->
+                        <p class="caption">1478</p>
                         <Icon
                             name="wallet"
                             :size="13"
@@ -91,28 +92,29 @@
                     />
                 </div>
             </div>
-            <div
-                v-if="poolShare"
-                class="tables"
-            >
+            <!-- v-if="poolShare" -->
+            <div class="tables">
                 <div class="prices-share">
                     <p>Pool share</p>
                     <div class="table row">
                         <div v-for="(token, x) in ABTokens">
-                            <p v-if="x === thisTokenIndex">{{ (thisReserve * poolShare) / 100 }}</p>
-                            <p v-else>{{ (thatReserve * poolShare) / 100 }}</p>
-                            <p class="caption grey-text">Pooled {{ token.symbol }}</p>
+                            <!-- <p v-if="x === thisTokenIndex">{{ (thisReserve * poolShare) / 100 }}</p>
+                            <p v-else>{{ (thatReserve * poolShare) / 100 }}</p> -->
+                            <!-- <p class="caption grey-text">Pooled {{ token.symbol }}</p> -->
+                            <p>8845</p>
+                            <p class="caption grey-text">Pooled fETH</p>
                         </div>
                         <div>
-                            <p>{{ poolShare }}%</p>
+                            <!-- <p>{{ poolShare }}%</p> -->
+                            <p>78%</p>
                             <p class="caption grey-text">Pool share</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="buttons">
+                <!-- v-if="stepStore.connectedWallet && (poolAddress === unhandled || poolAddress === '')" -->
                 <Btn
-                    v-if="stepStore.connectedWallet && (poolAddress === unhandled || poolAddress === '')"
                     @click="callAddLiquidity()"
                     is="h4"
                     wide
@@ -120,11 +122,11 @@
                     :loading="waitingForAdding"
                     :disabled="!canCreatePool || !bothAmountsIn"
                 >
-                    {{ waitingForAdding ? "Waiting for pool" : "Create Pool" }}
+                    Create Pool
                 </Btn>
                 <!-- @click="addLiquidity()" -->
+                <!-- v-if="stepStore.connectedWallet && !(poolAddress === unhandled || poolAddress === '')" -->
                 <Btn
-                    v-if="stepStore.connectedWallet && !(poolAddress === unhandled || poolAddress === '')"
                     wide
                     is="h4"
                     bulky
@@ -132,10 +134,10 @@
                     :loading="waitingForAdding"
                     :disabled="!canAddLiquidity || !bothAmountsIn"
                 >
-                    {{ waitingForAdding ? "Waiting for pool" : "Add Liquidity" }}
+                    Add Liquidity
                 </Btn>
+                <!-- v-if="!stepStore.connectedWallet" -->
                 <Btn
-                    v-if="!stepStore.connectedWallet"
                     is="h4"
                     wide
                     bulky
@@ -145,14 +147,10 @@
                 </Btn>
             </div>
         </div>
-        <div
-            class="redeem base-box"
-            v-if="poolShare"
-        >
+        <!-- v-if="poolShare" -->
+        <div class="redeem base-box">
             <div class="top-bar row">
                 <h3>Remove Liquidity</h3>
-                <!-- {{ poolAddress }} <br /> -->
-                <!-- {{ String(bidAsk) }} <br /> -->
                 <Dropdown :settings-ref="settingsRedeem">
                     <template #dropdown-activator="{ on }">
                         <Btn
@@ -179,7 +177,8 @@
                 </Dropdown>
             </div>
             <div>
-                <p>{{ ABTokens[0].symbol }} / {{ ABTokens[1].symbol }}</p>
+                <!-- <p>{{ ABTokens[0].symbol }} / {{ ABTokens[1].symbol }}</p> -->
+                <p>fBTC / fUSD</p>
             </div>
             <div class="amount">
                 <p class="grey-text">Amount</p>
@@ -238,24 +237,28 @@
             <!-- <p>procent to redeem: {{ state.redeemPercent }}%</p> -->
             <div class="summary">
                 <div class="row">
-                    <p class="grey-text">pooled {{ ABTokens[0]?.symbol }}:</p>
-                    <p>
+                    <!-- <p class="grey-text">pooled {{ ABTokens[0]?.symbol }}:</p> -->
+                    <p class="grey-text">pooled fUSD:</p>
+                    <!-- <p>
                         {{
                             ABTokens[0]?.address === thisTokenAddress
                                 ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
                                 : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
                         }}
-                    </p>
+                    </p> -->
+                    7593
                 </div>
                 <div class="row">
-                    <p class="grey-text">pooled {{ ABTokens[1]?.symbol }}:</p>
-                    <p>
+                    <!-- <p class="grey-text">pooled {{ ABTokens[1]?.symbol }}:</p> -->
+                    <p class="grey-text">pooled fBTC:</p>
+                    <!-- <p>
                         {{
                             ABTokens[1]?.address === thisTokenAddress
                                 ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
                                 : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
                         }}
-                    </p>
+                    </p> -->
+                    7593
                 </div>
             </div>
             <div class="buttons">
@@ -315,7 +318,6 @@ const {
     bidAskFormat,
     lpTokenAddress,
     bidAskDisplay,
-    bidAskDisplayReverse,
     addLiquidity,
     waitingForAdding,
     resetPool,
@@ -570,73 +572,65 @@ function removeSelected() {
     options.value.childNodes.forEach((el) => el.classList.remove("selected"))
 }
 function redeemLiquidityCall() {
-    redeemLiquidity(
-        ...stepStore.bothPoolTokenAddresses,
-        state.redeemPercent,
-        stepStore.connectedAccount,
-        settingsRedeem.value.deadline,
-        stepStore.connectedWallet.provider
-    )
+    console.log("redeemLiquidityCall()")
+
+    // redeemLiquidity(
+    //     ...stepStore.bothPoolTokenAddresses,
+    //     state.redeemPercent,
+    //     stepStore.connectedAccount,
+    //     settingsRedeem.value.deadline,
+    //     stepStore.connectedWallet.provider
+    // )
 }
 //REDEEM WIDGET----------
 
 // sets up liquidity chage listners with callback and turn offs
-function setupLiquidityChange(providerArg, poolAdd = false) {
-    if (providerArg === false) {
-        setLiquidityChangeListener(false)
-        return
-    }
-    setLiquidityChangeListener(providerArg, poolAdd).then(
-        ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
-            if (poolContractAddress === poolAddress.value) {
-                setupPool(
-                    poolContractAddress,
-                    stepStore.bothPoolTokenAddresses,
-                    stepStore.connectedWallet.provider,
-                    stepStore.connectedAccount
-                )
-            }
-            setupLiquidityChange(stepStore.connectedWallet.provider, poolContractAddress)
-            getBalance(null, true)
-        }
-    )
-}
+// function setupLiquidityChange(providerArg, poolAdd = false) {
+//     if (providerArg === false) {
+//         setLiquidityChangeListener(false)
+//         return
+//     }
+//     setLiquidityChangeListener(providerArg, poolAdd).then(
+//         ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
+//             if (poolContractAddress === poolAddress.value) {
+//                 setupPool(
+//                     poolContractAddress,
+//                     stepStore.bothPoolTokenAddresses,
+//                     stepStore.connectedWallet.provider,
+//                     stepStore.connectedAccount
+//                 )
+//             }
+//             setupLiquidityChange(stepStore.connectedWallet.provider, poolContractAddress)
+//             getBalance(null, true)
+//         }
+//     )
+// }
 
 //sets up pool created listener with callback and turn offs
-function setupPoolCreated(providerArg) {
-    if (providerArg === false) {
-        setPoolCreationListener(false)
-        return
-    }
-    setPoolCreationListener(providerArg).then(([thisToken, thatToken, newPoolAddress]) => {
-        const incoming = [thisToken, thatToken]
-        const current = stepStore.bothPoolTokenAddresses
-        if (current?.every((el) => incoming.includes(el))) {
-            console.log("setting new pool")
-            poolAddress.value = newPoolAddress
-        }
-        setupPoolCreated(stepStore.connectedWallet.provider)
-        getBalance(null, true)
-    })
-}
+// function setupPoolCreated(providerArg) {
+//     if (providerArg === false) {
+//         setPoolCreationListener(false)
+//         return
+//     }
+//     setPoolCreationListener(providerArg).then(([thisToken, thatToken, newPoolAddress]) => {
+//         const incoming = [thisToken, thatToken]
+//         const current = stepStore.bothPoolTokenAddresses
+//         if (current?.every((el) => incoming.includes(el))) {
+//             console.log("setting new pool")
+//             poolAddress.value = newPoolAddress
+//         }
+//         setupPoolCreated(stepStore.connectedWallet.provider)
+//         getBalance(null, true)
+//     })
+// }
 
 // FINDS POOL BY TOKEN ADDRESSES
 watch(
-    () => [stepStore.bothPoolTokenAddresses, stepStore.connectedAccount],
-    (newVal, oldVal) => {
-        const [bothTokens, wallet] = [...newVal]
-        const [prevBothTokens, prevWallet] = oldVal ? [oldVal[0], oldVal[1]] : [null, null]
-        if (bothTokens && wallet) {
-            if (
-                (prevBothTokens !== bothTokens && prevWallet === wallet) ||
-                (prevBothTokens === bothTokens && prevWallet !== wallet)
-            ) {
-                findPool(...bothTokens, stepStore.connectedWallet.provider)
-            }
+    () => stepStore.bothPoolTokenAddresses,
+    (bothTokens) => {
+        if (bothTokens) {
+            findPool(...bothTokens, stepStore.connectedWallet.provider)
             return
-        }
-        if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
-            poolAddress.value = ""
         }
     },
     {
@@ -655,39 +649,12 @@ watch(
                 stepStore.connectedWallet.provider,
                 stepStore.connectedAccount
             )
-            setupLiquidityChange(stepStore.connectedWallet.provider)
         } else {
             //resets previous calulated amount to "0" when pool in no longer there
             if (!(prevPoolAdd === unhandled || prevPoolAdd === "")) {
                 ABAmounts.value = ABAmounts.value.map((el, index) => (index !== state.lastChangedToken ? "" : el))
             }
             resetPool()
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
-// SETS UP LISTENERS OR SETS POOL BASED ON CONNECTED WALLET
-watch(
-    () => stepStore.connectedAccount,
-    (wallet, prevWallet) => {
-        if (wallet !== prevWallet && wallet) {
-            setupPoolCreated(stepStore.connectedWallet.provider)
-            if (!(poolAddress.value === unhandled || poolAddress.value === "")) {
-                setupPool(
-                    poolAddress.value,
-                    stepStore.bothPoolTokenAddresses,
-                    stepStore.connectedWallet.provider,
-                    stepStore.connectedAccount
-                )
-            }
-            return
-        }
-        if (!wallet) {
-            setPoolCreationListener(false)
-            setLiquidityChangeListener(false)
         }
     },
     {
@@ -713,17 +680,11 @@ watch(
 )
 
 //maybe only needed in development to find pool on code reload
-onMounted(() => {
-    if (stepStore.connectedWallet && stepStore.bothPoolTokensThere) {
-        findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
-    }
-})
-
-//TURNS OFF LISTENERS
-onUnmounted(() => {
-    setPoolCreationListener(false)
-    setLiquidityChangeListener(false)
-})
+// onMounted(() => {
+//     if (stepStore.connectedWallet && stepStore.bothPoolTokensThere) {
+//         findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+//     }
+// })
 </script>
 
 <style lang="scss">

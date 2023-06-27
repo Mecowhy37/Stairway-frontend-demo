@@ -78,54 +78,44 @@ const filteredTokenList = computed(
         )
     // () => tokenList.value.filter((el) => el.chainId === 31337)
 )
-async function checkTokens() {
-    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
-    const foundry = new Contract(stepStore.foundryAddress, FoundryABI, provider)
-    const tokens = await foundry.getAllTokens()
-    const tokenMap = []
-    await Promise.all(
-        tokens.map(async (tknAdd) => {
-            const tkn = new Contract(tknAdd, TokenABI, provider)
-            const symbol = await tkn.symbol()
-            tokenMap.push({
-                address: tknAdd,
-                symbol,
-                name: symbol,
-                decimals: 18,
-                chainId: parseInt(stepStore.connectedChain.id, 16),
-            })
-        })
-    )
+async function getTokenList() {
+    console.log("getTokenList()")
+    // const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+    // const foundry = new Contract(stepStore.foundryAddress, FoundryABI, provider)
+    // const tokens = await foundry.getAllTokens()
+    // const tokenMap = []
+    // await Promise.all(
+    //     tokens.map(async (tknAdd) => {
+    //         const tkn = new Contract(tknAdd, TokenABI, provider)
+    //         const symbol = await tkn.symbol()
+    //         tokenMap.push({
+    //             address: tknAdd,
+    //             symbol,
+    //             name: symbol,
+    //             decimals: 18,
+    //             chainId: parseInt(stepStore.connectedChain.id, 16),
+    //         })
+    //     })
+    // )
 
-    tokenMap.forEach((el) => {
-        if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {
-            tokenList.value.push(el)
-        }
-    })
+    // tokenMap.forEach((el) => {
+    //     if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {
+    //         tokenList.value.push(el)
+    //     }
+    // })
 }
-watch(
-    () => stepStore.connectedAccount,
-    (wallet, prevWallet) => {
-        if (wallet !== prevWallet && wallet) {
-            checkTokens()
-        }
-    },
-    {
-        immediate: true,
-    }
-)
+
 function setToken(token) {
     toggleModal()
     callbackRef.value.call(this, token)
 }
 
 const tokenListRef = ref()
-watch(showModal, (isOpen, newIsOpen) => {
-    if (newIsOpen === true) {
+watch(showModal, (isOpen) => {
+    if (isOpen) {
+        getTokenList()
+    } else {
         tokenListRef.value.scrollTop = 0
-    }
-    if (stepStore.connectedWallet && isOpen) {
-        checkTokens()
     }
 })
 

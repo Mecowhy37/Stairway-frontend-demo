@@ -25,20 +25,12 @@ export function getToken(symb) {
 }
 
 export function useBalances() {
-    async function getTokenBalance(token, wallet, providerArg) {
-        const provider = new BrowserProvider(providerArg)
-        const tokenContract = new Contract(token.address, TokenABI, provider)
-        const balance = await tokenContract.balanceOf(wallet)
-        const formatedBalance = formatUnits(balance, token.decimals)
-        return formatedBalance
+    async function getTokenBalance() {
+        console.log("getTokenBalance()")
     }
 
     async function getTotalSupply(address, providerArg) {
-        const provider = new BrowserProvider(providerArg)
-        const tokenContract = new Contract(address, TokenABI, provider)
-        const totalSupply = await tokenContract.totalSupply()
-        const formatedTotalSupply = formatEther(totalSupply)
-        return formatedTotalSupply
+        console.log("getTotalSupply()")
     }
 
     return { getTokenBalance, getTotalSupply }
@@ -68,37 +60,18 @@ export function usePools(routerAddress) {
             ? bidAskFormat.value.map((el) => (el >= 1 ? el.toFixed(2) : el < 0.0001 ? "<0.0001" : el.toPrecision(3)))
             : []
     })
-    const bidAskDisplayReverse = computed(() => {
-        return bidAskFormat
-            ? bidAskFormat.value.map((el) =>
-                  Number(1 / el) >= 1
-                      ? Number(1 / el).toFixed(2)
-                      : Number(1 / el) < 0.0001
-                      ? "<0.0001"
-                      : Number(1 / el).toPrecision(3)
-              )
-            : []
-    })
 
-    async function getBidAsk(tokenAddresses, providerArg) {
-        const provider = new BrowserProvider(providerArg)
-        const router = new Contract(routerAddress, RouterABI, provider)
-        const bidAskVar = await router.getBidAsk(...tokenAddresses)
-        const depth = formatEther(await router.getDepth(...tokenAddresses))
-        bidAsk.value = bidAskVar
-        poolDepth.value = depth
-        return
+    async function getBidAsk() {
+        console.log("getting bidAsk")
+        // bidAsk.value = bidAskVar
+        // poolDepth.value = depth
     }
-    async function findPool(addressA, addressB, providerArg) {
-        const provider = new BrowserProvider(providerArg)
-        const router = new Contract(routerAddress, RouterABI, provider)
-        const factoryAdd = await router.factory()
-        const factory = new Contract(factoryAdd, FactoryABI, provider)
-        const poolAdd = await factory.getPool(addressA, addressB)
+    async function findPool(addressA, addressB) {
+        console.log("findPool()")
+        // poolAddress.value = poolAdd
+        // return poolAdd
+    }
 
-        poolAddress.value = poolAdd
-        return poolAdd
-    }
     // async function findPool(addressA, addressB) {
     //     console.log("find pool")
 
@@ -248,126 +221,58 @@ export function usePools(routerAddress) {
     }
 
     async function redeemLiquidity(tokenA, tokenB, redeemPercent, connectedAccount, deadline, providerArg) {
-        await setupPool(poolAddress.value, [tokenA, tokenB], providerArg, connectedAccount)
-        if (poolShare.value) {
-            try {
-                const provider = new BrowserProvider(providerArg)
-                const signer = await provider.getSigner()
-                const router = new Contract(routerAddress, RouterABI, signer)
+        console.log("redeemLiquidity()")
 
-                const tokenList = [tokenA, tokenB]
-                const orderedTokens = tokenA === thisTokenAddress.value ? tokenList : tokenList.reverse()
+        // await setupPool(poolAddress.value, [tokenA, tokenB], providerArg, connectedAccount)
+        // if (poolShare.value) {
+        //     try {
+        //         const provider = new BrowserProvider(providerArg)
+        //         const signer = await provider.getSigner()
+        //         const router = new Contract(routerAddress, RouterABI, signer)
 
-                const amount0 = parseEther(String((thisReserve.value * poolShare.value * redeemPercent) / 10000))
-                const amount1 = parseEther(String((thatReserve.value * poolShare.value * redeemPercent) / 10000))
-                const lqAmount = parseEther(String((liquidityTokenBalance.value * redeemPercent) / 100))
+        //         const tokenList = [tokenA, tokenB]
+        //         const orderedTokens = tokenA === thisTokenAddress.value ? tokenList : tokenList.reverse()
 
-                const blockTimestamp = (await provider.getBlock("latest")).timestamp
-                const deadlineStamp = blockTimestamp + deadline * 60
+        //         const amount0 = parseEther(String((thisReserve.value * poolShare.value * redeemPercent) / 10000))
+        //         const amount1 = parseEther(String((thatReserve.value * poolShare.value * redeemPercent) / 10000))
+        //         const lqAmount = parseEther(String((liquidityTokenBalance.value * redeemPercent) / 100))
 
-                await approveSpending(lpTokenAddress.value, providerArg, lqAmount)
-                await router.redeemLiquidity(
-                    ...orderedTokens,
-                    amount0,
-                    amount1,
-                    lqAmount,
-                    connectedAccount,
-                    deadlineStamp
-                )
-            } catch (err) {
-                console.log("failed to redeem liquidity: ", err)
-            }
-        }
+        //         const blockTimestamp = (await provider.getBlock("latest")).timestamp
+        //         const deadlineStamp = blockTimestamp + deadline * 60
+
+        //         await approveSpending(lpTokenAddress.value, providerArg, lqAmount)
+        //         await router.redeemLiquidity(
+        //             ...orderedTokens,
+        //             amount0,
+        //             amount1,
+        //             lqAmount,
+        //             connectedAccount,
+        //             deadlineStamp
+        //         )
+        //     } catch (err) {
+        //         console.log("failed to redeem liquidity: ", err)
+        //     }
+        // }
     }
 
     async function swap(tokens, amounts, maxPrice, account, deadline, providerArg) {
         // address, address, desiredAmount, maxPrice, recepient, deadline
-        const provider = new BrowserProvider(providerArg)
-        const signer = await provider.getSigner()
-        const router = new Contract(routerAddress, RouterABI, signer)
+        console.log("swap()")
+        // const provider = new BrowserProvider(providerArg)
+        // const signer = await provider.getSigner()
+        // const router = new Contract(routerAddress, RouterABI, signer)
 
-        const blockTimestamp = (await provider.getBlock("latest")).timestamp
-        const deadlineStamp = blockTimestamp + deadline * 60
+        // const blockTimestamp = (await provider.getBlock("latest")).timestamp
+        // const deadlineStamp = blockTimestamp + deadline * 60
 
-        const allowance = await checkAllowance(tokens[1], signer.address, routerAddress, providerArg)
-        const needApproval = allowance < amounts[0]
-        if (needApproval) {
-            await approveSpending(tokens[1], providerArg, amounts[0])
-        }
+        // const allowance = await checkAllowance(tokens[1], signer.address, routerAddress, providerArg)
+        // const needApproval = allowance < amounts[0]
+        // if (needApproval) {
+        //     await approveSpending(tokens[1], providerArg, amounts[0])
+        // }
 
-        await router.buy(...tokens, amounts[1], maxPrice, account, deadlineStamp)
+        // await router.buy(...tokens, amounts[1], maxPrice, account, deadlineStamp)
     }
-
-    let currentFactoryContract = null
-    async function setPoolCreationListener(providerArg) {
-        if (providerArg === false) {
-            if (currentFactoryContract) {
-                console.log("FACTORY - turn off 'poolCreated'")
-                currentFactoryContract.off("PoolCreated")
-                currentFactoryContract = null
-            }
-            return
-        }
-        const provider = new BrowserProvider(providerArg)
-        const router = new Contract(routerAddress, RouterABI, provider)
-        const factoryAdd = await router.factory()
-        const newFactoryContract = new Contract(factoryAdd, FactoryABI, provider)
-        return new Promise((resolve, reject) => {
-            if (currentFactoryContract) {
-                console.log("FACTORY - removing 'poolCreated'")
-                currentFactoryContract.off("PoolCreated", creationHandler)
-            }
-
-            console.log("FACTORY - listening for 'poolCreated'")
-            newFactoryContract.on("PoolCreated", creationHandler)
-
-            function creationHandler(thisToken, thatToken, newPoolAddress) {
-                console.log("FACTORY - pool created:", newPoolAddress)
-
-                newFactoryContract.off("PoolCreated", creationHandler)
-                currentFactoryContract = null
-
-                resolve([thisToken, thatToken, newPoolAddress])
-            }
-            currentFactoryContract = newFactoryContract
-        })
-    }
-
-    let currentPoolContracts = []
-    function setLiquidityChangeListener(providerArg, poolAdd = false) {
-        if (providerArg === false) {
-            console.log("POOL - turn off all listeners")
-            currentPoolContracts.forEach((el) => el.off("LiquidityChange"))
-            currentPoolContracts = []
-            return
-        }
-        const provider = new BrowserProvider(providerArg)
-        const addressToContract = !poolAdd ? poolAddress.value : poolAdd
-        const newPoolContract = new Contract(addressToContract, PoolABI, provider)
-        const currentPoolMap = currentPoolContracts.map((el) => el && el.target)
-
-        return new Promise((resolve, reject) => {
-            if (currentPoolMap.includes(newPoolContract.target)) {
-                console.log("POOL - pool already listening")
-                return
-            }
-
-            console.log("POOL - listening for 'liquidityChange'")
-            newPoolContract.on("LiquidityChange", liquidityHandler)
-            currentPoolContracts.push(newPoolContract)
-
-            function liquidityHandler(beneficiary, thisIn, thatIn, thisOut, thatOut, contract) {
-                const poolAdd = contract.emitter.target
-                console.log("POOL - liqudity changed in: ", poolAdd)
-
-                newPoolContract.off("LiquidityChange", liquidityHandler)
-                currentPoolContracts = currentPoolContracts.filter((el) => el.target !== newPoolContract.target)
-
-                resolve([beneficiary, thisIn, thatIn, thisOut, thatOut, poolAdd])
-            }
-        })
-    }
-
     function resetPool() {
         bidAsk.value = null
         thisTokenAddress.value = ""
@@ -400,14 +305,11 @@ export function usePools(routerAddress) {
         redeemLiquidity,
         bidAskFormat,
         bidAskDisplay,
-        bidAskDisplayReverse,
         waitingForAdding,
         approveSpending,
         iterations,
         resetPool,
         redeemLiquidity,
-        setPoolCreationListener,
-        setLiquidityChangeListener,
         listenForTransactionMine,
     }
 }

@@ -6,13 +6,12 @@
                 is="h4"
                 reverse
                 cta
-                @click="start()"
             >
                 New postition
                 <template #icon>
                     <Icon
                         name="plus"
-                        :size="25"
+                        :size="16"
                     />
                 </template>
             </Btn>
@@ -70,31 +69,12 @@
 <script setup lang="ts">
 import type { Ref } from "vue"
 
-import { BrowserProvider, Contract, parseEther } from "ethers"
 import { useStepStore } from "@/stores/step"
-import { useBalances, usePools } from "../helpers/index"
-
-import * as Router from "../ABIs/DEX.json"
-const RouterABI = Router.default
-
-import * as Factory from "../ABIs/Factory.json"
-const FactoryABI = Factory.default
-
-import * as Pool from "../ABIs/Pool.json"
-const PoolABI = Pool.default
 
 const stepStore = useStepStore()
-const { getTokenBalance, getTotalSupply } = useBalances()
-const { setPoolCreationListener } = usePools(stepStore.routerAddress)
-
-// const activePositions: Ref<>
-// {
-//     "address": {
-//         data
-//     }
-// }
 
 const openedIndex: Ref<number | null> = ref(null)
+
 function toggle(index: number) {
     if (openedIndex.value === index) {
         openedIndex.value = null
@@ -103,63 +83,9 @@ function toggle(index: number) {
     openedIndex.value = index
 }
 
-async function getAllPositions(providerArg) {
-    const provider = new BrowserProvider(providerArg)
-    const router = new Contract(stepStore.routerAddress, RouterABI, provider)
-    const factoryAdd = await router.factory()
-    const factory = new Contract(factoryAdd, FactoryABI, provider)
-    const allPools = await factory.getAllPools()
-
-    let allLpTokens = []
-    await Promise.all(
-        allPools.map(async (poolAdd) => {
-            const pool = new Contract(poolAdd, PoolABI, provider)
-            const lpToken = await pool.lpToken()
-            console.log("lpToken:", lpToken)
-            allLpTokens.push(lpToken)
-        })
-    )
-    console.log("allLpTokens:", allLpTokens)
-
-    let allPositions = []
-    await Promise.all(
-        allLpTokens.map(async (lp) => {
-            const lpBalance = await getTokenBalance(
-                { address: lp, decimals: 18 },
-                stepStore.connectedAccount,
-                providerArg
-            )
-            console.log("lpBalance:", lpBalance)
-        })
-    )
+async function getAllPositions() {
+    console.log("getting positions")
 }
-function setupPoolCreated(providerArg) {
-    if (providerArg === false) {
-        setPoolCreationListener(false)
-        return
-    }
-    setPoolCreationListener(providerArg).then(([thisToken, thatToken, newPoolAddress]) => {
-        // working with store and ready addresses
-        setupPoolCreated(stepStore.connectedWallet.provider)
-    })
-}
-
-watch(
-    () => stepStore.connectedAccount,
-    (wallet, prevWallet) => {
-        if (wallet !== prevWallet && wallet) {
-            setupPoolCreated(stepStore.connectedWallet.provider)
-            getAllPositions(stepStore.connectedWallet.provider)
-            return
-        }
-        if (!wallet) {
-            setPoolCreationListener(false)
-        }
-    },
-    {
-        immediate: true,
-    }
-)
 </script>
 
 <style lang="scss" scoped>

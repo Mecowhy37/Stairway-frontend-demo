@@ -113,61 +113,63 @@ defineExpose({
     toggleModal,
 })
 
-async function checkTokens() {
-    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
-    const foundry = new Contract(stepStore.foundryAddress, FoundryABI, provider)
-    const tokens = await foundry.getAllTokens()
-    const tokenMap = []
-    await Promise.all(
-        tokens.map(async (tknAdd) => {
-            const tkn = new Contract(tknAdd, TokenABI, provider)
-            const symbol = await tkn.symbol()
-            tokenMap.push({
-                address: tknAdd,
-                symbol,
-                name: symbol,
-                decimals: 18,
-                chainId: parseInt(stepStore.connectedChain.id, 16),
-            })
-        })
-    )
-    tokenMap.forEach((el) => {
-        if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {
-            tokenList.value.push(el)
-        }
-    })
+async function getTokenList() {
+    console.log("getTokenList()")
+    // const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+    // const foundry = new Contract(stepStore.foundryAddress, FoundryABI, provider)
+    // const tokens = await foundry.getAllTokens()
+    // const tokenMap = []
+    // await Promise.all(
+    //     tokens.map(async (tknAdd) => {
+    //         const tkn = new Contract(tknAdd, TokenABI, provider)
+    //         const symbol = await tkn.symbol()
+    //         tokenMap.push({
+    //             address: tknAdd,
+    //             symbol,
+    //             name: symbol,
+    //             decimals: 18,
+    //             chainId: parseInt(stepStore.connectedChain.id, 16),
+    //         })
+    //     })
+    // )
+    // tokenMap.forEach((el) => {
+    //     if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {
+    //         tokenList.value.push(el)
+    //     }
+    // })
 }
 async function getTokens() {
-    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
-    const signer = await provider.getSigner()
-    const foundry = new Contract(stepStore.foundryAddress, FoundryABI, signer)
-    try {
-        await foundry
-            .createToken(tokenSymbol.value)
-            .then(async (res) => {
-                //token doesnt exist
-                console.log(res)
-                await res.wait(1)
-                await listenForTransactionMine(res, provider)
-                await mintTokens()
-            })
-            .catch(async (err) => {
-                console.log("token exists")
-                await mintTokens()
-            })
-            .finally(async () => {
-                // tokenAmount.value = ""
-                claimed.value = true
-                checkTokens()
-            })
-    } catch (err) {
-        console.log("failed to get tokens: ", err)
-    }
-    async function mintTokens() {
-        const tx = await foundry.mint(tokenSymbol.value, parseEther(String(tokenAmount.value)))
-        const res = await tx.wait(1)
-        await listenForTransactionMine(res, provider)
-    }
+    console.log("getTokens()")
+    // const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+    // const signer = await provider.getSigner()
+    // const foundry = new Contract(stepStore.foundryAddress, FoundryABI, signer)
+    // try {
+    //     await foundry
+    //         .createToken(tokenSymbol.value)
+    //         .then(async (res) => {
+    //             //token doesnt exist
+    //             console.log(res)
+    //             await res.wait(1)
+    //             await listenForTransactionMine(res, provider)
+    //             await mintTokens()
+    //         })
+    //         .catch(async (err) => {
+    //             console.log("token exists")
+    //             await mintTokens()
+    //         })
+    //         .finally(async () => {
+    //             // tokenAmount.value = ""
+    //             claimed.value = true
+    //             getTokenList()
+    //         })
+    // } catch (err) {
+    //     console.log("failed to get tokens: ", err)
+    // }
+    // async function mintTokens() {
+    //     const tx = await foundry.mint(tokenSymbol.value, parseEther(String(tokenAmount.value)))
+    //     const res = await tx.wait(1)
+    //     await listenForTransactionMine(res, provider)
+    // }
 }
 function copyAddress() {
     copied.value = true
@@ -199,24 +201,14 @@ function setToken(token) {
     tokenSymbol.value = token?.symbol ? token.symbol : ""
 }
 // SELECT TOKEN MODAL -----------
-watch(tokenSymbol, (newVal) => {
+watch(tokenSymbol, (newVal, oldVal) => {
     newVal = newVal.replace(/[^a-zA-Z]/g, "")
     if (newVal.length > 5) {
-        newVal = newVal.slice(0, 5)
+        newVal = oldVal
     }
     tokenSymbol.value = newVal.toUpperCase()
 })
-watch(
-    () => stepStore.connectedAccount,
-    (wallet, prevWallet) => {
-        if (wallet !== prevWallet && wallet) {
-            checkTokens()
-        }
-    },
-    {
-        immediate: true,
-    }
-)
+
 watch(copied, (newVal) => {
     if (newVal) {
         setTimeout(() => {

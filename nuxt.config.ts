@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   target: 'static',
   modules: [
       "@pinia/nuxt",
+      "@nuxt/devtools"
   ],
   build: {
     standalone: true,

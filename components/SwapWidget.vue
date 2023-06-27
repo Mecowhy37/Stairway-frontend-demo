@@ -80,7 +80,8 @@
                         />
                     </div>
                     <div class="window__lower row flex-end align-center">
-                        <p class="caption">{{ Number(switchedBalances[x]) }}</p>
+                        <!-- <p class="caption">{{ Number(switchedBalances[x]) }}</p> -->
+                        <p class="caption">5591</p>
                         <Icon
                             name="wallet"
                             :size="13"
@@ -107,24 +108,21 @@
                 </div>
             </div>
 
-            <div
-                class="infos"
-                v-if="!(poolAddress === '' || poolAddress === unhandled)"
-            >
-                <div
-                    class="infos__info row"
-                    v-if="Number(poolDepth) < Number(switchedAmounts[1])"
-                >
+            <!-- v-if="!(poolAddress === '' || poolAddress === unhandled)" -->
+            <div class="infos">
+                <!-- v-if="Number(poolDepth) < Number(switchedAmounts[1])" -->
+                <div class="infos__info row">
                     <Icon
                         name="warrning"
                         :size="25"
                     />
-                    <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p>
+                    <!-- <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p> -->
+                    <p>you will only receive 20 fETH at this price</p>
                 </div>
             </div>
             <div class="buttons">
+                <!-- v-if="stepStore.connectedWallet" -->
                 <Btn
-                    v-if="stepStore.connectedWallet"
                     @click="callSwap"
                     is="h4"
                     wide
@@ -134,8 +132,8 @@
                     Swap
                 </Btn>
 
+                <!-- v-if="!stepStore.connectedWallet" -->
                 <Btn
-                    v-if="!stepStore.connectedWallet"
                     is="h4"
                     wide
                     bulky
@@ -144,14 +142,15 @@
                     Connect wallet
                 </Btn>
             </div>
-            <div
-                v-if="bidAsk"
-                class="sum-up grey-text caption"
-            >
-                <p>1 {{ switchedTokens[1].symbol }} = {{ rate }} {{ switchedTokens[0].symbol }}</p>
+            <!-- v-if="bidAsk" -->
+            <div class="sum-up grey-text caption">
+                <!-- <p>1 {{ switchedTokens[1].symbol }} = {{ rate }} {{ switchedTokens[0].symbol }}</p> -->
+                <p>1 fETH = 20 000 fUSD</p>
                 <div class="row space-between">
-                    <p>Volume available at this price ({{ rate }} {{ switchedTokens[0].symbol }})</p>
-                    <p>{{ displayDepth }} {{ switchedTokens[1].symbol }}</p>
+                    <!-- <p>Volume available at this price ({{ rate }} {{ switchedTokens[0].symbol }})</p> -->
+                    <p>Volume available at this price (20 000 fUSD)</p>
+                    <!-- <p>{{ displayDepth }} {{ switchedTokens[1].symbol }}</p> -->
+                    <p>20 fETH</p>
                 </div>
                 <!-- <div class="row space-between">
                     <p>Gas price</p>
@@ -196,7 +195,6 @@ const {
     setupPool,
     bidAskFormat,
     bidAskDisplay,
-    bidAskDisplayReverse,
     swap,
     waitingForAdding,
     resetPool,
@@ -283,7 +281,7 @@ function setToken(token) {
 function switchOrder() {
     state.order = state.order === 0 ? 1 : 0
     if (!(poolAddress.value === "" || poolAddress.value === unhandled)) {
-        getBidAsk(baseQuoteAddresses.value, stepStore.connectedWallet.provider)
+        getBidAsk()
     }
 }
 
@@ -387,28 +385,6 @@ watch(
 // AMOUNTS -----------------
 
 // BALANCES ----------------
-async function getBalance(token, both = false) {
-    if (stepStore.connectedWallet) {
-        if (both) {
-            getBalance(swapTokens.value.A)
-            getBalance(swapTokens.value.B)
-            return
-        }
-        if (!token) {
-            return
-        }
-        const formatedBalance = await getTokenBalance(
-            token,
-            stepStore.connectedAccount,
-            stepStore.connectedWallet.provider
-        )
-        if (ABTokens.value.indexOf(token) === 0) {
-            state.balanceA = formatedBalance
-        } else {
-            state.balanceB = formatedBalance
-        }
-    }
-}
 const switchedBalances = computed({
     get() {
         const list = [state.balanceA, state.balanceB]
@@ -437,66 +413,14 @@ function openNewTokenModal() {
 const settings = ref()
 //SETTINGS--------------
 
-// sets up liquidity chage listners with callback and turn offs
-function setupLiquidityChange(providerArg, poolAdd = false) {
-    if (providerArg === false) {
-        setLiquidityChangeListener(false)
-        return
-    }
-    setLiquidityChangeListener(providerArg, poolAdd).then(
-        ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
-            if (poolContractAddress === poolAddress.value) {
-                setupPool(
-                    poolContractAddress,
-                    baseQuoteAddresses.value,
-                    stepStore.connectedWallet.provider,
-                    stepStore.connectedAccount
-                )
-            }
-            setupLiquidityChange(stepStore.connectedWallet.provider, poolContractAddress)
-            getBalance(null, true)
-        }
-    )
-}
-
-//sets up pool created listener with callback and turn offs
-function setupPoolCreated(providerArg) {
-    if (providerArg === false) {
-        setPoolCreationListener(false)
-        return
-    }
-    setPoolCreationListener(providerArg).then(([thisToken, thatToken, newPoolAddress]) => {
-        const incoming = [thisToken, thatToken]
-        const current = stepStore.bothSwapTokenAddresses
-        if (current?.every((el) => incoming.includes(el))) {
-            console.log("setting new pool")
-            poolAddress.value = newPoolAddress
-        }
-        setupPoolCreated(stepStore.connectedWallet.provider)
-        getBalance(null, true)
-    })
-}
-
 // FINDS POOL OR GETS BID ASK BY TOKEN ADDRESSES
 watch(
-    () => [stepStore.bothSwapTokenAddresses, stepStore.connectedWallet],
-    (newVal, oldVal) => {
-        const [bothTokens, wallet] = [...newVal]
-        const [prevBothTokens, prevWallet] = oldVal ? [...oldVal] : [[null, null], null]
+    () => stepStore.bothSwapTokenAddresses,
+    (bothTokens) => {
         if (bothTokens) {
-            // if (bothTokens && wallet) {
-            //     if (
-            //         (prevBothTokens !== bothTokens && prevWallet === wallet) ||
-            //         (prevBothTokens === bothTokens && prevWallet !== wallet)
-            //     ) {
-            // findPool(...baseQuoteAddresses.value, stepStore.connectedWallet.provider)
             findPool(...baseQuoteAddresses.value)
+            return
         }
-        // return
-        // }
-        // if ((!bothTokens && prevBothTokens && wallet) || (!wallet && prevWallet && bothTokens)) {
-        //     poolAddress.value = ""
-        // }
     },
     {
         immediate: true,
@@ -508,8 +432,7 @@ watch(
     poolAddress,
     (poolAdd, prevPoolAdd) => {
         if (!(poolAdd === unhandled || poolAdd === "")) {
-            // setupPool(poolAdd, baseQuoteAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
-            // setupLiquidityChange(stepStore.connectedWallet.provider)
+            setupPool(poolAdd, baseQuoteAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
         } else {
             //resets previous calulated amount to "0" when pool in no longer there
             switchedAmounts.value = switchedAmounts.value.map((el, index) =>
@@ -540,43 +463,11 @@ watch(
     }
 )
 
-// SETS UP LISTENERS OR SETS POOL BASED ON CONNECTED WALLET
-watch(
-    () => stepStore.connectedAccount,
-    (wallet, prevWallet) => {
-        if (wallet !== prevWallet && wallet) {
-            // setupPoolCreated(stepStore.connectedWallet.provider)
-            if (!(poolAddress.value === unhandled || poolAddress.value === "")) {
-                // setupPool(
-                //     poolAddress.value,
-                //     baseQuoteAddresses.value,
-                //     stepStore.connectedWallet.provider,
-                //     stepStore.connectedAccount
-                // )
-            }
-            return
-        }
-        if (!wallet) {
-            setPoolCreationListener(false)
-            setLiquidityChangeListener(false)
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
 //maybe only needed in development to find pool on code reload
-onMounted(() => {
-    state.alreadyMounted = true
-    if (stepStore.connectedWallet && stepStore.bothSwapTokensThere) {
-        findPool(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
-    }
-})
-
-//TURNS OFF LISTENERS
-onUnmounted(() => {
-    setPoolCreationListener(false)
-    setLiquidityChangeListener(false)
-})
+// onMounted(() => {
+//     state.alreadyMounted = true
+//     if (stepStore.connectedWallet && stepStore.bothSwapTokensThere) {
+//         findPool(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
+//     }
+// })
 </script>

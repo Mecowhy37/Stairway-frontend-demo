@@ -12,11 +12,11 @@
                 class="navigation__link"
                 ><h4>pool</h4></NuxtLink
             >
-            <!-- <NuxtLink
+            <NuxtLink
                 to="/pools"
                 class="navigation__link"
                 ><h4>pools</h4></NuxtLink
-            > -->
+            >
             <NuxtLink
                 to="/buttons"
                 class="navigation__link"
