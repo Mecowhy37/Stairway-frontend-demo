@@ -2,16 +2,16 @@
 set -e
 
 echo "PULLING"
-git -C /root/stepswap-frontend pull
+git -C /root/frontend pull
 
 echo "BUILDING"
 NAME=stepswap-frontend
-docker build /root/stepswap-frontend/docker -t stepswap-frontend
-docker run --rm -it -v /root/stepswap-frontend:/mnt -w /mnt --name stepswap-frontend stepswap-frontend bash -c "/mnt/node_modules/.bin/nuxt generate" 
+docker build /root/frontend/docker -t stepswap-frontend
+docker run --rm -it -v /root/frontend:/mnt -w /mnt --name stepswap-frontend stepswap-frontend bash -c "npm i && /mnt/node_modules/.bin/nuxt generate" 
 
 
 echo "DEPLOYING"
-rsync -a --delete /root/stepswap-frontend/.output/public/ /root/html/app/
+rsync -a --delete /root/frontend/.output/public/ /root/html/app/
 
 
 echo "DONE"
