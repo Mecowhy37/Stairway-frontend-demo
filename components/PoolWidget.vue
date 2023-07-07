@@ -300,7 +300,7 @@ const PoolABI = Pool.default
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
-const { poolTokens } = storeToRefs(stepStore)
+const { pools } = storeToRefs(stepStore)
 const {
     approveSpending,
     bidAsk,
@@ -329,6 +329,10 @@ const {
 const { getTokenBalance } = useBalances()
 
 const state = reactive({
+    tokens: {
+        A: null,
+        B: null,
+    },
     amountA: "",
     amountB: "",
     approvalA: "",
@@ -342,12 +346,12 @@ const state = reactive({
 
 // WIDGET ---------------
 const canCreatePool = computed(() => {
-    return stepStore.connectedWallet && stepStore.bothPoolTokensThere
+    return stepStore.connectedWallet && bothTokensThere.value
 })
 const canAddLiquidity = computed(() => {
     return (
         stepStore.connectedWallet &&
-        stepStore.bothPoolTokensThere &&
+        bothTokensThere.value &&
         !(poolAddress.value === "" || poolAddress.value === unhandled)
     )
 })
@@ -357,7 +361,7 @@ const bothAmountsIn = computed(() => {
 
 function callAddLiquidity() {
     addLiquidity(
-        ...stepStore.bothPoolTokenAddresses,
+        ...bothTokenAddresses.value,
         ...ABAmounts.value,
         settingsAdd.value.slippage,
         settingsAdd.value.deadline,
@@ -373,16 +377,22 @@ function callAddLiquidity() {
 // TOKENS ---------------
 const ABTokens = computed({
     get() {
-        return [poolTokens.value.A, poolTokens.value.B]
+        return [state.tokens.A, state.tokens.B]
+        // return [poolTokens.value.A, poolTokens.value.B]
     },
     set(newValue) {
-        poolTokens.value.A = newValue[0]
-        poolTokens.value.B = newValue[1]
+        // poolTokens.value.A = newValue[0]
+        // poolTokens.value.B = newValue[1]
+
+        state.tokens.A = newValue[0]
+        state.tokens.B = newValue[1]
     },
 })
+const bothTokensThere = computed(() => !ABTokens.value.some((el) => el === null))
+const bothTokenAddresses = computed(() => (bothTokensThere.value ? ABTokens.value.map((el) => el.address) : null))
 
 const thisTokenIndex = computed(() => {
-    if (stepStore.bothPoolTokensThere && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
+    if (bothTokensThere.value && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
         return ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == thisTokenAddress.value))
     } else {
         return null
@@ -412,7 +422,7 @@ const ABAmounts = computed({
             amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
             return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
         }
-        if (poolRatio.value && stepStore.bothPoolTokensThere) {
+        if (poolRatio.value && bothTokensThere.value) {
             // this if() cleans up other input when prior is set to 0
             if (
                 (state.lastChangedToken === 0 && String(state.amountA).length === 0) ||
@@ -518,8 +528,8 @@ const ABBalance = computed({
 async function getBalance(token, both = false) {
     if (stepStore.connectedWallet) {
         if (both) {
-            getBalance(poolTokens.value.A)
-            getBalance(poolTokens.value.B)
+            getBalance(state.tokens.A)
+            getBalance(state.tokens.B)
             return
         }
         if (!token) {
@@ -575,7 +585,7 @@ function redeemLiquidityCall() {
     console.log("redeemLiquidityCall()")
 
     // redeemLiquidity(
-    //     ...stepStore.bothPoolTokenAddresses,
+    //     ...bothTokenAddresses.value,
     //     state.redeemPercent,
     //     stepStore.connectedAccount,
     //     settingsRedeem.value.deadline,
@@ -595,7 +605,7 @@ function redeemLiquidityCall() {
 //             if (poolContractAddress === poolAddress.value) {
 //                 setupPool(
 //                     poolContractAddress,
-//                     stepStore.bothPoolTokenAddresses,
+//                     bothTokenAddresses.value,
 //                     stepStore.connectedWallet.provider,
 //                     stepStore.connectedAccount
 //                 )
@@ -614,7 +624,7 @@ function redeemLiquidityCall() {
 //     }
 //     setPoolCreationListener(providerArg).then(([thisToken, thatToken, newPoolAddress]) => {
 //         const incoming = [thisToken, thatToken]
-//         const current = stepStore.bothPoolTokenAddresses
+//         const current = bothTokenAddresses.value
 //         if (current?.every((el) => incoming.includes(el))) {
 //             console.log("setting new pool")
 //             poolAddress.value = newPoolAddress
@@ -624,31 +634,12 @@ function redeemLiquidityCall() {
 //     })
 // }
 
-// FINDS POOL BY TOKEN ADDRESSES
-watch(
-    () => stepStore.bothPoolTokenAddresses,
-    (bothTokens) => {
-        if (bothTokens) {
-            findPool(...bothTokens, stepStore.connectedWallet.provider)
-            return
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
 //SETS UP POOL OR RESETS BY POOL ADDRESS
 watch(
     poolAddress,
     (poolAdd, prevPoolAdd) => {
         if (!(poolAdd === unhandled || poolAdd === "")) {
-            setupPool(
-                poolAdd,
-                stepStore.bothPoolTokenAddresses,
-                stepStore.connectedWallet.provider,
-                stepStore.connectedAccount
-            )
+            setupPool(poolAdd, bothTokenAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
         } else {
             //resets previous calulated amount to "0" when pool in no longer there
             if (!(prevPoolAdd === unhandled || prevPoolAdd === "")) {
@@ -661,6 +652,21 @@ watch(
         immediate: true,
     }
 )
+
+const poolAdd = computed(() => {
+    if (bothTokensThere.value) {
+        return pools.value.find((obj) => {
+            const tokens = [obj.this_token.address, obj.that_token.address]
+            if (ABTokens.value.every((el) => tokens.includes(el?.address))) {
+                return true
+            } else {
+                return false
+            }
+        })
+    } else {
+        return null
+    }
+})
 
 //GETS BALANCES BY TOKENS AND WALLET
 watch(
@@ -678,11 +684,24 @@ watch(
         immediate: true,
     }
 )
+// FINDS POOL BY TOKEN ADDRESSES
+watch(
+    () => bothTokenAddresses.value,
+    (bothTokens) => {
+        if (bothTokens) {
+            // findPool(...bothTokens, stepStore.connectedWallet.provider)
+            return
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 
 //maybe only needed in development to find pool on code reload
 // onMounted(() => {
-//     if (stepStore.connectedWallet && stepStore.bothPoolTokensThere) {
-//         findPool(...stepStore.bothPoolTokenAddresses, stepStore.connectedWallet.provider)
+//     if (stepStore.connectedWallet && bothTokensThere.value) {
+//         findPool(...bothTokenAddresses.value, stepStore.connectedWallet.provider)
 //     }
 // })
 </script>
@@ -777,11 +796,11 @@ watch(
     #mid-symbol {
         display: flex;
         justify-content: center;
+        svg {
+            fill: red;
+        }
         &.plus {
             margin: 12px 0;
-            .icon {
-                margin: 0 6px;
-            }
         }
         &.button {
             margin: 5px;

@@ -6,6 +6,7 @@
         :class="[
             {
                 'btn--primary': !props.plain && !props.opaque && !props.transparent,
+                'btn--cta': props.cta,
                 'btn--plain': props.plain,
                 'btn--opaque': props.opaque,
                 'btn--transparent': props.transparent,
@@ -55,6 +56,7 @@ export interface Props {
     thin?: boolean
     wide?: boolean
     bulky?: boolean
+    cta?: boolean
     transparent?: boolean
     plain?: boolean
     opaque?: boolean
@@ -208,6 +210,9 @@ $horiz-padd: 1.3rem;
         &:hover {
         }
     }
+    &--cta {
+        background-color: var(--cta-bg);
+    }
     &--wide {
         width: 100%;
     }
@@ -240,14 +245,17 @@ $horiz-padd: 1.3rem;
         flex-direction: row-reverse;
         #icon-slot {
             margin-left: -0.3rem !important;
-            margin-right: 0 !important;
+            margin-right: 0.3rem !important;
         }
     }
     &--w-icon {
         gap: 0.2rem;
         #icon-slot {
             margin-right: -0.3rem;
-            margin-left: 0;
+            margin-left: 0.3rem;
+            svg {
+                fill: red;
+            }
         }
     }
 }

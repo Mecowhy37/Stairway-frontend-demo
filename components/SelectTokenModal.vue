@@ -22,11 +22,17 @@
                 ref="tokenListRef"
             >
                 <p
-                    v-for="token in filteredTokenList"
+                    v-for="token in featuredTokens"
                     @click="setToken(token)"
                 >
                     {{ token.name }}
                 </p>
+                <!-- <p
+                            v-for="token in filteredTokenList"
+                            @click="setToken(token)"
+                        >
+                            {{ token.name }}
+                        </p> -->
                 <p @click="setToken(null)">deselect</p>
             </div>
         </div>
@@ -47,12 +53,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { tokenList } = storeToRefs(stepStore)
-
-// const tokenList = ref(allTokens)
-
-// const { data, error, refresh } = await useFetch("https://gateway.ipfs.io/ipns/tokens.uniswap.org")
-// tokenList.value = data.value?.tokens
+const { featuredTokens } = storeToRefs(stepStore)
 
 const showModal = ref(false)
 const callbackRef = ref()
@@ -67,43 +68,17 @@ function toggleModal(tokens = false, callback = false) {
         ABTokens.value = tokens
     }
 }
-const filteredTokenList = computed(
-    () =>
-        tokenList.value.filter(
-            (el) =>
-                // el.chainId === 31337 &&
-                el.chainId === parseInt(stepStore.connectedChain.id, 16)
-            // !ABTokens.value?.find((tkn) => tkn?.address === el.address)
-            // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
-        )
-    // () => tokenList.value.filter((el) => el.chainId === 31337)
-)
-async function getTokenList() {
-    console.log("getTokenList()")
-    // const provider = new BrowserProvider(stepStore.connectedWallet.provider)
-    // const foundry = new Contract(stepStore.foundryAddress, FoundryABI, provider)
-    // const tokens = await foundry.getAllTokens()
-    // const tokenMap = []
-    // await Promise.all(
-    //     tokens.map(async (tknAdd) => {
-    //         const tkn = new Contract(tknAdd, TokenABI, provider)
-    //         const symbol = await tkn.symbol()
-    //         tokenMap.push({
-    //             address: tknAdd,
-    //             symbol,
-    //             name: symbol,
-    //             decimals: 18,
-    //             chainId: parseInt(stepStore.connectedChain.id, 16),
-    //         })
-    //     })
-    // )
-
-    // tokenMap.forEach((el) => {
-    //     if (!tokenList.value.find((tkn) => tkn?.address === el.address)) {
-    //         tokenList.value.push(el)
-    //     }
-    // })
-}
+// const filteredTokenList = computed(
+//     () =>
+//         tokenList.value.filter(
+//             (el) =>
+//                 // el.chainId === 31337 &&
+//                 el.chainId === parseInt(stepStore.connectedChain.id, 16)
+//             // !ABTokens.value?.find((tkn) => tkn?.address === el.address)
+//             // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
+//         )
+//     // () => tokenList.value.filter((el) => el.chainId === 31337)
+// )
 
 function setToken(token) {
     toggleModal()
@@ -112,9 +87,7 @@ function setToken(token) {
 
 const tokenListRef = ref()
 watch(showModal, (isOpen) => {
-    if (isOpen) {
-        getTokenList()
-    } else {
+    if (!isOpen) {
         tokenListRef.value.scrollTop = 0
     }
 })

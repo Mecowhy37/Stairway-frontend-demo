@@ -20,7 +20,7 @@
             <h3>Your positions <span>3</span></h3>
             <div class="pools">
                 <div
-                    v-for="(i, x) in new Array(8)"
+                    v-for="(position, i) in positions"
                     class="pool"
                 >
                     <div>
@@ -28,7 +28,7 @@
                             <h4>ETH / SUSHI</h4>
                             <Btn
                                 opaque
-                                @click="toggle(x)"
+                                @click="toggle(i)"
                             >
                                 Manage
                                 <template #icon>
@@ -40,19 +40,19 @@
                             </Btn>
                         </div>
                         <div
-                            v-if="openedIndex === x"
+                            v-if="openedIndex === i"
                             class="pool__heading_ext"
                         ></div>
                     </div>
                     <div class="pool__stats prices-share">
                         <div class="table row">
                             <div>
-                                <p>akdshfkajsh</p>
-                                <p class="caption grey-text">ETH per BTC (bid/ask)</p>
+                                <p>{{ formatUnits(position.this_amount, position.pool.this_token.decimalas) }}</p>
+                                <p class="caption grey-text">{{ position.pool.this_token.symbol }} pooled</p>
                             </div>
                             <div>
-                                <p>akdshfkajsh</p>
-                                <p class="caption grey-text">ETH per BTC (bid/ask)</p>
+                                <p>{{ formatUnits(position.that_amount, position.pool.that_token.decimalas) }}</p>
+                                <p class="caption grey-text">{{ position.pool.that_token.symbol }} pooled</p>
                             </div>
                             <div>
                                 <p>100%</p>
@@ -69,9 +69,12 @@
 <script setup lang="ts">
 import type { Ref } from "vue"
 
+import { formatUnits } from "ethers"
+
 import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
+const { getUrl } = stepStore
 
 const openedIndex: Ref<number | null> = ref(null)
 
@@ -83,23 +86,21 @@ function toggle(index: number) {
     openedIndex.value = index
 }
 
-async function getAllPositions() {
-    console.log("getting positions")
-}
+const { data: positions } = useFetch(getUrl("/chain/80001/user/12345/positions"))
 </script>
 
 <style lang="scss" scoped>
 .positions {
-    width: 40vw;
+    width: 80vw;
     &__top {
         justify-content: space-between;
         align-items: center;
         border-bottom: 2px solid var(--swap-windows);
-        padding-bottom: 16px;
+        padding-bottom: 25px;
     }
     &__list {
         h3 {
-            padding: 20px 0;
+            padding: 25px 0;
             span {
                 color: var(--text-color-reverse);
                 background-color: var(--swap-windows);

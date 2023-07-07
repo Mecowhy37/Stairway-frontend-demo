@@ -3,6 +3,7 @@
         <div class="row">
             <div>
                 <Btn>Button</Btn>
+                <Btn cta>call to action</Btn>
                 <Btn transparent>transparent</Btn>
                 <Btn plain>plain</Btn>
                 <Btn opaque>opaque</Btn>

@@ -54,47 +54,43 @@
                 v-if="!stepStore.connectedWallet"
                 class="cta-dd"
                 > -->
-            <span
-                @mouseover="showDisconnect"
-                @mouseout="hideDisconnect"
+            <Btn
+                v-if="!stepStore.connectedWallet"
+                ref="ctaDropDown"
+                plain
+                @click="stepStore.connectWallet()"
+                >Connect</Btn
             >
-                <Btn
-                    v-if="!stepStore.connectedWallet"
-                    ref="ctaDropDown"
-                    @click="stepStore.connectWallet()"
-                    >connect</Btn
-                >
-                <!-- <div class="divider"></div> -->
-                <!-- <Dropdown>
-                    <template #dropdown-activator="{ on }">
-                        <Btn transparent>
-                            <template #icon>
-                                <p>
-                                    <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
-                                </p>
-                            </template>
-                        </Btn>
-                    </template>
-                    <template #dropdown>
-                        <Btn
-                            secondary
-                            thin
-                        >
-                            <span>some actions</span>
-                        </Btn>
-                    </template>
-                </Dropdown> -->
-                <!-- </span> -->
-                <!-- <Dropdown v-else> -->
-                <!-- <template #dropdown-activator="{ on }"> -->
-                <Btn
-                    v-else
+            <!-- <div class="divider"></div> -->
+            <Dropdown v-else>
+                <template #dropdown-activator="{ on }">
+                    <Btn plain>
+                        {{ getTruncatedWalletAddress }}
+                        <template #icon>
+                            <Icon
+                                name="chevron"
+                                :size="16"
+                            />
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown>
+                    <Btn
+                        wide
+                        @click="stepStore.disconnectConnectedWallet()"
+                        >Disconnect</Btn
+                    >
+                </template>
+            </Dropdown>
+            <!-- </span> -->
+            <!-- <Dropdown v-else> -->
+            <!-- <template #dropdown-activator="{ on }"> -->
+            <!-- <Btn
                     plain
                     @click="stepStore.disconnectConnectedWallet()"
                 >
                     {{ !disconnectText ? stepStore.getTruncatedWalletAddress : "disconnect" }}
-                </Btn>
-            </span>
+                </Btn> -->
 
             <!-- </template> -->
             <!-- <template #dropdown> -->
@@ -114,17 +110,10 @@
 import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
+const { getTruncatedWalletAddress } = stepStore
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
-}
-
-const disconnectText = ref(false)
-function showDisconnect() {
-    disconnectText.value = true
-}
-function hideDisconnect() {
-    disconnectText.value = false
 }
 </script>
 

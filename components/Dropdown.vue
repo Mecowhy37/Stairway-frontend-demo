@@ -81,6 +81,7 @@ onClickOutside(toActivate, (event) => {
         z-index: 150;
         top: 100%;
         margin-top: 0.8rem;
+        padding: 0.5rem;
         width: 250px;
         border-radius: var(--semi-wdg-radius);
 

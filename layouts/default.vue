@@ -21,28 +21,14 @@
 
 <script setup>
 import { provide } from "vue"
+
 import { useStepStore } from "@/stores/step"
+import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-watch(
-    () => stepStore.connectedAccount,
-    async (newVal) => {
-        if (newVal) {
-            // await stepStore.onboard.setChain({ chainId: "0x13881" })
-            // console.log("onboard:", stepStore.connectedChain)
-        }
-    }
-)
+const { featuredTokens, pools } = storeToRefs(stepStore)
 
-const nav = ref(null)
-const navHeight = ref("")
-onMounted(() => {
-    const navbar = nav.value
-    if (navbar) {
-        navHeight.value = navbar.$el.offsetHeight + "px"
-    }
-})
-
+// MODAL STUFF ------------------
 const selectTokenModal = ref()
 function toggleSelectTokenModal(...args) {
     selectTokenModal.value.toggleModal(...args)
@@ -54,6 +40,23 @@ function toggleNewTokenModal() {
     newTokenModal.value.toggleModal()
 }
 provide("newTokenModal", toggleNewTokenModal)
+// MODAL STUFF ------------------
+
+const nav = ref(null)
+const navHeight = ref("")
+onMounted(() => {
+    const navbar = nav.value
+    if (navbar) {
+        navHeight.value = navbar.$el.offsetHeight + "px"
+    }
+})
+
+if (!featuredTokens.value) {
+    useAsyncData("tokens", () => stepStore.fetchTokens())
+}
+if (!pools.value) {
+    useAsyncData("pools", () => stepStore.fetchPools())
+}
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>

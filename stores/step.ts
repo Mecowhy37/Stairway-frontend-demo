@@ -28,7 +28,6 @@ declare global {
 //   }
 
 export const useStepStore = defineStore("step", (): any => {
-    const tokenList = ref([])
     const isDark: Ref<boolean> = ref(false)
     const chainId: Ref<number | null> = ref(31337)
     const activeWallet: Ref<string | null> = ref(null)
@@ -81,48 +80,31 @@ export const useStepStore = defineStore("step", (): any => {
         A: null,
         B: null
     })
-    const poolTokens = reactive({
-        A: null,
-        B: null
-    })
-
-    const allTokens = computed(() => {
-        return [swapTokens.A, swapTokens.B, poolTokens.A, poolTokens.B]
-    })
-    const poolTokensCmp = computed(() => {
-        return [poolTokens.A, poolTokens.B]
-    })
 
     const swapTokensCmp = computed(() => {
         return [swapTokens.A, swapTokens.B]
     })
 
     const bothSwapTokensThere = computed(() => !swapTokensCmp.value.some(el => el === null) ? true : false)
-    const bothPoolTokensThere = computed(() => !poolTokensCmp.value.some(el => el === null) ? true : false)
 
 
     const bothSwapTokenAddresses = computed(() => bothSwapTokensThere.value ? swapTokensCmp.value.map(el => el.address) : null)
-    const bothPoolTokenAddresses = computed(() => bothPoolTokensThere.value ? poolTokensCmp.value.map(el => el.address) : null)
     
 
     // const { updateBalance } = useBalances()
     // const { getBidAsk } = usePools(routerAddress)
 
-    // watch(allTokens, (newValue, oldValue) => {
-    //     updateBalance(newValue, oldValue)
-    // })
 
 
     const connectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null)
     const getTruncatedWalletAddress = computed(() => {
-        if (connectedAccount.value !== null) {
-            const toTruncate = connectedAccount.value.split("")
-            const start = toTruncate.splice(0, 5).join("")
-            const end = toTruncate.splice(-4).join("")
-            return start + "..." + end
-        } else {
+        if (connectedAccount.value === null) { 
             return null
         }
+        const toTruncate = connectedAccount.value.split("")
+        const start = toTruncate.splice(0, 5).join("")
+        const end = toTruncate.splice(-4).join("")
+        return start + "..." + end
     })
 
 
@@ -148,6 +130,34 @@ export const useStepStore = defineStore("step", (): any => {
 
     // remember to unsubscribe when updates are no longer needed
     // unsubscribe()
+    const api = "https://api.stairway.fi"
+    function getUrl(endpoint: string) {
+        return api + endpoint
+    }
+    // TOKENS ---------------
+    const featuredTokens = ref()
+
+    async function fetchTokens() {
+        console.log('fetchTokens()')
+        const { data } = await useFetch(getUrl("/chain/80001/tokens/featured"))
+        if (data.value) {
+            featuredTokens.value = data.value
+        }
+    }
+    // TOKENS ---------------
+
+    // POOLS ----------------
+    const pools = ref()
+
+    async function fetchPools() {
+        console.log('fetchPools()')
+        const { data } = await useFetch(getUrl("/chain/80001/pools/featured"))
+        if (data.value) {
+            pools.value = data.value
+        }
+    }
+    // POOLS ----------------
+
 
     return {
         onboard,
@@ -156,13 +166,14 @@ export const useStepStore = defineStore("step", (): any => {
         foundryAddress,
         isDark,
         swapTokens,
-        poolTokens,
-        allTokens,
-        tokenList,
 
-        poolTokensCmp,
-        bothPoolTokensThere,
-        bothPoolTokenAddresses,
+        getUrl,
+        
+        featuredTokens,
+        fetchTokens,
+
+        pools,
+        fetchPools,
 
         bothSwapTokensThere,
         bothSwapTokenAddresses,
@@ -183,7 +194,7 @@ export const useStepStore = defineStore("step", (): any => {
         getTruncatedWalletAddress,
     }
 })
-// tokenList,
+// featuredTokens,
 
 // logic of a wallet
 //
