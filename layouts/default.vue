@@ -133,6 +133,9 @@ p {
     &.align-center {
         align-items: center;
     }
+    &.center {
+        justify-content: center;
+    }
 }
 
 .centerize {

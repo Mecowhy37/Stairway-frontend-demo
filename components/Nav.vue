@@ -8,9 +8,14 @@
                 ><h4>swap</h4></NuxtLink
             >
             <NuxtLink
-                to="/pool"
+                to="/liquidity"
                 class="navigation__link"
-                ><h4>pool</h4></NuxtLink
+                ><h4>liquidity</h4></NuxtLink
+            >
+            <NuxtLink
+                to="/redeem"
+                class="navigation__link"
+                ><h4>redeem</h4></NuxtLink
             >
             <NuxtLink
                 to="/pools"

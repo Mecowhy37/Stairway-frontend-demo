@@ -14,6 +14,7 @@
         <div
             v-show="isDropdownActive"
             class="dropdown__box base-box"
+            :class="{ 'no-padding': props.noPadding }"
             ref="toActivate"
         >
             <slot
@@ -29,6 +30,7 @@ import { onClickOutside } from "@vueuse/core"
 
 const props = defineProps({
     settingsRef: Object,
+    noPadding: Boolean,
 })
 
 const toActivate = ref(null)
@@ -81,9 +83,12 @@ onClickOutside(toActivate, (event) => {
         z-index: 150;
         top: 100%;
         margin-top: 0.8rem;
-        padding: 0.5rem;
         width: 250px;
         border-radius: var(--semi-wdg-radius);
+        padding: 0.5rem;
+        &.no-padding {
+            padding: 0;
+        }
 
         /* background-color: transparent; */
     }

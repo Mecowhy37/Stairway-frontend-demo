@@ -2,21 +2,25 @@
     <div class="icon">
         <div
             :alt="props.name"
+            :class="{ rotate: props.rotate }"
             v-html="svgContent"
         ></div>
     </div>
 </template>
 
-<script setup lang="ts">
-export interface Props {
-    name: string
-    size?: number
-}
-
-const props = withDefaults(defineProps<Props>(), {
-    size: 25,
+<script setup>
+const props = defineProps({
+    size: {
+        type: Number,
+        default: 25,
+    },
+    name: {
+        type: String,
+    },
+    rotate: {
+        type: Boolean,
+    },
 })
-
 const iconSize = ref(props.size)
 const sizeWithPx = computed(() => {
     return iconSize.value + "px"
@@ -40,10 +44,9 @@ loadSvgAsString(getIconPath())
 function getIconPath() {
     return `/icons/${props.name}.svg`
 }
-async function loadSvgAsString(filePath: string) {
+async function loadSvgAsString(filePath) {
     try {
         const response = await $fetch(filePath)
-        console.log("response:", response)
         const svgString = await response.text()
         return svgString
     } catch (error) {
@@ -55,6 +58,9 @@ async function loadSvgAsString(filePath: string) {
 <style lang="scss" scoped>
 .icon {
     width: v-bind(sizeWithPx);
+    div.rotate {
+        transform: rotate(180deg);
+    }
     img {
         display: block;
     }

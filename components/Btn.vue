@@ -253,9 +253,6 @@ $horiz-padd: 1.3rem;
         #icon-slot {
             margin-right: -0.3rem;
             margin-left: 0.3rem;
-            svg {
-                fill: red;
-            }
         }
     }
 }

@@ -3,7 +3,10 @@
         <div class="widget base-box">
             <div class="top-bar row">
                 <h3>Trade</h3>
-                <Dropdown :settings-ref="settings">
+                <Dropdown
+                    :settings-ref="settings"
+                    no-padding
+                >
                     <template #dropdown-activator="{ on }">
                         <Btn
                             transparent
