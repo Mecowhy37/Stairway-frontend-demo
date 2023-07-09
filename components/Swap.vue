@@ -57,10 +57,7 @@
                 >
                     <div class="window layer-wdg-box">
                         <div class="window__upper">
-                            <label
-                                for="amount_1"
-                                @click="openTokenSelectModal(x)"
-                            >
+                            <label @click="openTokenSelectModal(x)">
                                 <p v-if="switchedTokens[x] !== null">
                                     {{ switchedTokens[x]?.symbol }}
                                 </p>
@@ -71,9 +68,7 @@
                                 />
                             </label>
                             <input
-                                id="amount_1"
                                 type="text"
-                                name="amount_1"
                                 placeholder="0"
                                 spellcheck="false"
                                 autocomplete="off"
