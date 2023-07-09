@@ -1,3 +1,3 @@
 <template>
-    <SwapWidget />
+    <Swap />
 </template>

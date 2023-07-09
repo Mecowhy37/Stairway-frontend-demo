@@ -4,78 +4,85 @@
         @click.self.prevent="toggleModal"
         class="modal modal--lower modal--focus"
     >
-        <div class="getTokens widget base-box">
-            <div class="token-part">
-                <div class="token-part__wrap token-part__wrap__symbol">
-                    <div class="row space-between">
-                        <h4 class="grey-text">symbol</h4>
-                        <span
-                            v-if="truncatedTokenAddress"
-                            class="address row"
-                            @click="copyAddress"
-                            @mouseover="hoverIn"
-                            @mouseout="hoverOut"
-                        >
-                            <p v-if="!copied">
-                                {{ truncatedTokenAddress }}
-                            </p>
-                            <p v-else-if="copied">copied!</p>
-                        </span>
+        <!-- <div class="base-box"> -->
+        <Widget
+            no-return
+            no-bar
+            class="get-tokens"
+        >
+            <template #widget-content>
+                <div class="token-part">
+                    <div class="token-picker">
+                        <div class="row space-between">
+                            <p class="grey-text">symbol</p>
+                            <span
+                                v-if="truncatedTokenAddress"
+                                class="address row"
+                                @click="copyAddress"
+                                @mouseover="hoverIn"
+                                @mouseout="hoverOut"
+                            >
+                                <p v-if="!copied">
+                                    {{ truncatedTokenAddress }}
+                                </p>
+                                <p v-else-if="copied">copied!</p>
+                            </span>
+                        </div>
+                        <div class="layer-wdg-box row">
+                            <Btn
+                                transparent
+                                icon-contrast
+                                @click="openTokenSelectModal()"
+                            >
+                                <template #icon>
+                                    <Icon
+                                        name="chevron"
+                                        :size="16"
+                                    />
+                                </template>
+                            </Btn>
+                            <div class="divider"></div>
+                            <input
+                                v-model="tokenSymbol"
+                                type="text"
+                                placeholder="STRVY"
+                            />
+                        </div>
                     </div>
-                    <div class="layer-wdg-box row">
-                        <Btn
-                            transparent
-                            icon-contrast
-                            @click="openTokenSelectModal()"
-                        >
-                            <template #icon>
-                                <Icon
-                                    name="chevron"
-                                    :size="16"
-                                />
-                            </template>
-                        </Btn>
-                        <div class="divider"></div>
-                        <input
-                            v-model="tokenSymbol"
-                            type="text"
-                            placeholder="STRVY"
-                        />
+                    <div>
+                        <p class="grey-text">amount</p>
+                        <div class="layer-wdg-box">
+                            <input
+                                v-model="tokenAmount"
+                                type="number"
+                                placeholder="0"
+                            />
+                        </div>
                     </div>
                 </div>
-                <div class="token-part__wrap">
-                    <h4 class="grey-text">amount</h4>
-                    <div class="layer-wdg-box">
-                        <input
-                            v-model="tokenAmount"
-                            type="number"
-                            placeholder="0"
-                        />
-                    </div>
+                <div class="buttons">
+                    <Btn
+                        v-if="stepStore.connectedWallet"
+                        @click="getTokens"
+                        is="h4"
+                        wide
+                        bulky
+                        :disabled="!canGetTokens"
+                    >
+                        {{ claimed ? "Tokens claimed!" : "Get Tokens" }}
+                    </Btn>
+                    <Btn
+                        v-if="!stepStore.connectedWallet"
+                        is="h4"
+                        wide
+                        bulky
+                        @click="stepStore.connectWallet()"
+                    >
+                        Connect wallet
+                    </Btn>
                 </div>
-            </div>
-            <div class="buttons">
-                <Btn
-                    v-if="stepStore.connectedWallet"
-                    @click="getTokens"
-                    is="h4"
-                    wide
-                    bulky
-                    :disabled="!canGetTokens"
-                >
-                    {{ claimed ? "Tokens claimed!" : "Get Tokens" }}
-                </Btn>
-                <Btn
-                    v-if="!stepStore.connectedWallet"
-                    is="h4"
-                    wide
-                    bulky
-                    @click="stepStore.connectWallet()"
-                >
-                    Connect wallet
-                </Btn>
-            </div>
-        </div>
+            </template>
+        </Widget>
     </div>
 </template>
 
@@ -170,70 +177,8 @@ watch(claimed, (newVal) => {
 </script>
 
 <style lang="scss" scoped>
-.getTokens {
-    width: 450px;
+.get-tokens {
     place-self: center;
-    padding-top: 15px;
     z-index: 3;
-    .token-part {
-        width: 100%;
-        gap: 12px;
-        margin-bottom: 15px;
-        .token-part__wrap {
-            flex-grow: 1;
-            overflow: hidden;
-            h4 {
-                margin-bottom: 12px;
-            }
-            input {
-                color: var(--text-color-reverse);
-                width: 100%;
-                height: 100%;
-                background: transparent;
-                border: none;
-                outline: none;
-                text-align: right;
-                font-size: 2rem;
-                padding: 8px;
-
-                &::placeholder {
-                    color: var(--text-grey);
-                    opacity: 0.5;
-                }
-                // hiding browser default arrows
-                &::-webkit-outer-spin-button,
-                &::-webkit-inner-spin-button {
-                    -webkit-appearance: none;
-                    margin: 0;
-                }
-                &[type="number"] {
-                    -moz-appearance: textfield;
-                }
-            }
-            &__symbol {
-                .address {
-                    * {
-                        transition: color 0.1s;
-                        &:hover {
-                            cursor: pointer;
-                            transition: color 0.1s;
-                            color: var(--primary-btn-bg);
-                        }
-                    }
-                    .mdi:hover {
-                        color: var(--text-color-reverse);
-                    }
-                }
-                .divider {
-                    margin: 7px 0;
-                    width: 1px;
-                    background-color: var(--text-color-reverse);
-                }
-            }
-            &:last-of-type {
-                margin-top: 12px;
-            }
-        }
-    }
 }
 </style>

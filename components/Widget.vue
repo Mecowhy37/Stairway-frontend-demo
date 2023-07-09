@@ -1,6 +1,7 @@
 <template>
     <main class="widget">
         <TopBar
+            v-if="!noBar"
             :compact="props.compactBar"
             :no-return="props.noReturn"
         >
@@ -21,6 +22,7 @@
 const props = defineProps({
     compactBar: Boolean,
     noReturn: Boolean,
+    noBar: Boolean,
 })
 </script>
 
@@ -160,6 +162,60 @@ const props = defineProps({
         margin-top: -5px;
         p {
             white-space: nowrap;
+        }
+    }
+    .token-part {
+        .token-picker {
+            margin-bottom: 12px;
+            .address {
+                * {
+                    transition: color 0.1s;
+                    &:hover {
+                        cursor: pointer;
+                        transition: color 0.1s;
+                        color: var(--primary-btn-bg);
+                    }
+                }
+                .mdi:hover {
+                    color: var(--text-color-reverse);
+                }
+            }
+            .icon {
+                color: var(--text-color-reverse);
+            }
+            .divider {
+                margin: 7px 0;
+                width: 1px;
+                background-color: var(--text-color-reverse);
+            }
+        }
+        p {
+            margin-bottom: 8px;
+        }
+        input {
+            color: var(--text-color-reverse);
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            text-align: right;
+            font-size: 2rem;
+            padding: 8px;
+
+            &::placeholder {
+                color: var(--text-grey);
+                opacity: 0.5;
+            }
+            // hiding browser default arrows
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            &[type="number"] {
+                -moz-appearance: textfield;
+            }
         }
     }
 }
