@@ -218,9 +218,11 @@ $horiz-padd: 1.3rem;
     }
     &--compact {
         border-radius: 3px;
-
         padding-right: 10px;
         padding-left: 10px;
+        @media (max-width: 447px) {
+            padding: 5px;
+        }
     }
     &--reverse {
         flex-direction: row-reverse;

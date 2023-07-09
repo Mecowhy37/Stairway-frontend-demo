@@ -17,18 +17,22 @@
             </Btn>
         </div>
         <div class="positions__list">
-            <h3>Your positions <span>3</span></h3>
+            <h3>Your positions <span>9</span></h3>
             <div class="pools">
+                <!--
+                v-for="(position, i) in positions"
+                -->
                 <div
-                    v-for="(position, i) in positions"
+                    v-for="(position, i) in new Array(9)"
                     class="pool"
                 >
                     <div>
                         <div class="pool__heading row space-between">
-                            <h4>{{ position.pool.this_token.symbol }} / {{ position.pool.that_token.symbol }}</h4>
+                            <h4>fUSD / fBTC</h4>
+                            <!-- <h4>{{ position.pool.this_token.symbol }} / {{ position.pool.that_token.symbol }}</h4> -->
                             <div class="row">
-                                <Btn>Add liquidity</Btn>
-                                <Btn>Redeem liquidity</Btn>
+                                <Btn opaque>Add liquidity</Btn>
+                                <Btn opaque>Redeem liquidity</Btn>
                             </div>
                             <!-- <Btn
                                 opaque
@@ -52,19 +56,33 @@
                             <Btn>Redeem liquidity</Btn>
                         </div> -->
                     </div>
-                    <div class="pool__stats prices-share">
-                        <div class="table row">
-                            <div>
-                                <p>{{ formatUnits(position.this_amount, position.pool.this_token.decimalas) }}</p>
-                                <p class="caption grey-text">{{ position.pool.this_token.symbol }} pooled</p>
-                            </div>
-                            <div>
-                                <p>{{ formatUnits(position.that_amount, position.pool.that_token.decimalas) }}</p>
-                                <p class="caption grey-text">{{ position.pool.that_token.symbol }} pooled</p>
-                            </div>
-                            <div>
-                                <p>100%</p>
-                                <p class="caption grey-text">pool share</p>
+                    <div class="pool__stats">
+                        <div class="table">
+                            <div class="columns row">
+                                <div>
+                                    <p>54215.25</p>
+                                    <!-- <p>
+                                        {{
+                                            Round(formatUnits(position.this_amount, position.pool.this_token.decimalas))
+                                        }}
+                                    </p> -->
+                                    <!-- <p class="caption grey-text">{{ position.pool.this_token.symbol }} pooled</p> -->
+                                    <p class="caption grey-text">fUSD pooled</p>
+                                </div>
+                                <div>
+                                    <p>89765487.86</p>
+                                    <!-- <p>
+                                        {{
+                                            Round(formatUnits(position.that_amount, position.pool.that_token.decimalas))
+                                        }}
+                                    </p> -->
+                                    <!-- <p class="caption grey-text">{{ position.pool.that_token.symbol }} pooled</p> -->
+                                    <p class="caption grey-text">fBTX pooled</p>
+                                </div>
+                                <div>
+                                    <p>100%</p>
+                                    <p class="caption grey-text">pool share</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -74,9 +92,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import type { Ref } from "vue"
-
+<script setup>
 import { formatUnits } from "ethers"
 
 import { useStepStore } from "@/stores/step"
@@ -84,9 +100,9 @@ import { useStepStore } from "@/stores/step"
 const stepStore = useStepStore()
 const { getUrl } = stepStore
 
-const openedIndex: Ref<number | null> = ref(null)
+const openedIndex = ref(null)
 
-function toggle(index: number) {
+function toggle(index) {
     if (openedIndex.value === index) {
         openedIndex.value = null
         return
@@ -94,12 +110,18 @@ function toggle(index: number) {
     openedIndex.value = index
 }
 
+function Round(amt) {
+    let amount = Number(amt)
+    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+    return String(parseFloat(amount))
+}
+
 const { data: positions } = useFetch(getUrl("/chain/80001/user/12345/positions"))
 </script>
 
 <style lang="scss" scoped>
 .positions {
-    width: 60vw;
+    width: var(--list-width);
     &__top {
         justify-content: space-between;
         align-items: center;
@@ -135,6 +157,7 @@ const { data: positions } = useFetch(getUrl("/chain/80001/user/12345/positions")
                 &__heading {
                     padding: 10px 20px;
                     align-items: center;
+                    white-space: nowrap;
                     div.row {
                         gap: 1rem;
                     }
@@ -143,8 +166,18 @@ const { data: positions } = useFetch(getUrl("/chain/80001/user/12345/positions")
                     height: 4rem;
                 }
                 &__stats {
-                    padding: 10px 0;
+                    padding: 10px;
                     background-color: var(--swap-windows);
+                    .columns {
+                        justify-content: space-between;
+                        & > div {
+                            text-align: center;
+                            flex-basis: 25%;
+                            p {
+                                white-space: nowrap;
+                            }
+                        }
+                    }
                 }
             }
         }

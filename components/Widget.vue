@@ -119,11 +119,6 @@ const props = defineProps({
         }
         &.button {
             margin: 5px;
-            transform: rotate(0);
-            transition: transform 0.2s;
-            &.rotate {
-                transform: rotate(-180deg);
-            }
         }
     }
     .tables {
@@ -166,19 +161,6 @@ const props = defineProps({
         p {
             white-space: nowrap;
         }
-    }
-}
-.base-box {
-    color: var(--text-color-reverse);
-    background-color: var(--widget-bg);
-    backdrop-filter: var(--backdrop-blur);
-}
-.layer-wdg-box {
-    background-color: var(--swap-windows);
-    transition: background-color var(--transition);
-    border-radius: var(--inner-wdg-radius);
-    &--padded {
-        padding: 1rem;
     }
 }
 </style>

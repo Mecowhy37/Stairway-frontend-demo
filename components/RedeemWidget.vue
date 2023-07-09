@@ -167,6 +167,12 @@ const settingsRedeem = ref()
     .percents {
         align-items: center;
         justify-content: space-between;
+        h1 {
+            padding-right: 5px;
+            @media (max-width: 447px) {
+                font-size: 2.75rem;
+            }
+        }
         .options {
             justify-content: flex-end;
             gap: 5px;

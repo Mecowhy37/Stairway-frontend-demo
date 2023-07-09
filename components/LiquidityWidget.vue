@@ -32,13 +32,15 @@
         </template>
         <template #widget-content>
             <div class="tips">
-                <span class="text-highlight">Tip: </span>
-                <p>To try out the interface you'll need some tokens, you can get them</p>
-                <span
-                    @click="openNewTokenModal"
-                    class="activator-link text-highlight"
-                    >here</span
-                >
+                <p>
+                    <span class="text-highlight">Tip: </span>
+                    To try out the interface you'll need some tokens, you can get them
+                    <span
+                        @click="openNewTokenModal"
+                        class="activator-link text-highlight"
+                        >here</span
+                    >
+                </p>
             </div>
             <div class="windows">
                 <div
