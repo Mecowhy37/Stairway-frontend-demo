@@ -74,30 +74,6 @@ const props = withDefaults(defineProps<Props>(), {
     is: "p",
 })
 
-// const {
-//     is = "p",
-//     thin,
-//     wide,
-//     bulky,
-//     transparent = false,
-//     plain,
-//     disabled,
-//     loading,
-//     tiny,
-//     iconContrast,
-// } = defineProps<{
-//     is?: String
-//     thin?: Boolean
-//     wide?: Boolean
-//     bulky?: Boolean
-//     transparent?: Boolean
-//     plain?: Boolean
-//     disabled?: Boolean
-//     loading?: Boolean
-//     tiny?: Boolean
-//     iconContrast?: Boolean
-// }>()
-
 const emits = defineEmits([])
 const slots = useSlots()
 const attrs = useAttrs()
@@ -144,9 +120,7 @@ $horiz-padd: 1.3rem;
     }
     .slot {
         &.contrast {
-            * {
-                color: var(--text-color-reverse);
-            }
+            /* color: var(--text-color-reverse); */
         }
     }
     &--plain {
@@ -220,6 +194,13 @@ $horiz-padd: 1.3rem;
         background: var(--swap-windows);
         border-radius: 9999px;
         padding: 5px;
+        #icon-slot {
+            width: 23.22px;
+            aspect-ratio: 1/1;
+            .icon {
+                margin: 0 auto;
+            }
+        }
     }
     &--bulky {
         $height: 3rem;

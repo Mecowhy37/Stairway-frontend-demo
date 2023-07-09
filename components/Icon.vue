@@ -1,11 +1,10 @@
 <template>
-    <div class="icon">
-        <div
-            :alt="props.name"
-            :class="{ rotate: props.rotate }"
-            v-html="svgContent"
-        ></div>
-    </div>
+    <div
+        class="icon"
+        :alt="props.name"
+        :class="{ rotate: props.rotate }"
+        v-html="svgContent"
+    ></div>
 </template>
 
 <script setup>
@@ -18,7 +17,8 @@ const props = defineProps({
         type: String,
     },
     rotate: {
-        type: Boolean,
+        type: Number,
+        default: 0,
     },
 })
 const iconSize = ref(props.size)
@@ -26,12 +26,11 @@ const sizeWithPx = computed(() => {
     return iconSize.value + "px"
 })
 
-// const { data: svgContent } = await useFetch(getIconPath(), {
-//     onResponse({ response }) {
-//         console.log("response._data.text():", response._data.text())
-//         return response._data.text()
-//     },
-// })
+const rotateDeg = computed(() => {
+    return props.rotate + "deg"
+})
+
+//icons can be placed as svg strings
 const svgContent = ref("")
 loadSvgAsString(getIconPath())
     .then((svgString) => {
@@ -57,12 +56,7 @@ async function loadSvgAsString(filePath) {
 
 <style lang="scss" scoped>
 .icon {
+    transform: rotate(v-bind(rotateDeg));
     width: v-bind(sizeWithPx);
-    div.rotate {
-        transform: rotate(180deg);
-    }
-    img {
-        display: block;
-    }
 }
 </style>

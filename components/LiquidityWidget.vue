@@ -1,7 +1,7 @@
 <template>
-    <div class="widget base-box">
-        <div class="top-bar row">
-            <h3>Add Liquidity</h3>
+    <Widget>
+        <template #widget-title>Add Liquidity</template>
+        <template #right-icon>
             <Dropdown
                 :settings-ref="settingsAdd"
                 no-padding
@@ -29,126 +29,128 @@
                     ></Settings>
                 </template>
             </Dropdown>
-        </div>
-        <div class="tips">
-            <p>
-                <span class="text-highlight">Tip: </span>To try out the interface you'll need some tokens, you can get
-                them
+        </template>
+        <template #widget-content>
+            <div class="tips">
+                <span class="text-highlight">Tip: </span>
+                <p>To try out the interface you'll need some tokens, you can get them</p>
                 <span
                     @click="openNewTokenModal"
                     class="activator-link text-highlight"
                     >here</span
-                >.
-            </p>
-        </div>
-        <div
-            class="contents"
-            v-for="(i, x) in new Array(2)"
-        >
-            <div class="window layer-wdg-box">
-                <div class="window__upper">
-                    <label
-                        for="amount_1"
-                        @click="openTokenSelectModal(x)"
+                >
+            </div>
+            <div class="windows">
+                <div
+                    class="contents"
+                    v-for="(i, x) in new Array(2)"
+                >
+                    <div class="window layer-wdg-box">
+                        <div class="window__upper">
+                            <label
+                                for="amount_1"
+                                @click="openTokenSelectModal(x)"
+                            >
+                                <p v-if="ABTokens[x] !== null">
+                                    {{ ABTokens[x]?.symbol }}
+                                </p>
+                                <p v-else>select token</p>
+                                <Icon
+                                    name="chevron"
+                                    :size="16"
+                                />
+                            </label>
+                            <input
+                                id="amount_1"
+                                type="text"
+                                name="amount_1"
+                                placeholder="0"
+                                spellcheck="false"
+                                autocomplete="off"
+                                autocorrect="off"
+                                :disabled="waitingForAdding"
+                                :value="ABAmounts[x]"
+                                @input="setTokenAmount($event, x)"
+                            />
+                            <!-- :value="ABAmounts[x]" -->
+                        </div>
+                        <div class="window__lower row flex-end align-center">
+                            <!-- <p class="caption">{{ Number(ABBalance[x]) }}</p> -->
+                            <p class="caption">1478</p>
+                            <Icon
+                                name="wallet"
+                                :size="13"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        v-if="x === 0"
+                        id="mid-symbol"
+                        class="plus grey-text"
                     >
-                        <p v-if="ABTokens[x] !== null">
-                            {{ ABTokens[x]?.symbol }}
-                        </p>
-                        <p v-else>select token</p>
                         <Icon
-                            name="chevron"
+                            name="plus"
                             :size="16"
                         />
-                    </label>
-                    <input
-                        id="amount_1"
-                        type="text"
-                        name="amount_1"
-                        placeholder="0"
-                        spellcheck="false"
-                        autocomplete="off"
-                        autocorrect="off"
-                        :disabled="waitingForAdding"
-                        :value="ABAmounts[x]"
-                        @input="setTokenAmount($event, x)"
-                    />
-                    <!-- :value="ABAmounts[x]" -->
-                </div>
-                <div class="window__lower row flex-end align-center">
-                    <!-- <p class="caption">{{ Number(ABBalance[x]) }}</p> -->
-                    <p class="caption">1478</p>
-                    <Icon
-                        name="wallet"
-                        :size="13"
-                    />
+                    </div>
                 </div>
             </div>
-            <div
-                v-if="x === 0"
-                id="mid-symbol"
-                class="plus grey-text"
-            >
-                <Icon
-                    name="plus"
-                    :size="16"
-                />
-            </div>
-        </div>
-        <!-- v-if="poolShare" -->
-        <div class="tables">
-            <div class="prices-share">
-                <p>Pool share</p>
-                <div class="table row">
-                    <div v-for="(token, x) in ABTokens">
-                        <!-- <p v-if="x === thisTokenIndex">{{ (thisReserve * poolShare) / 100 }}</p>
+            <!-- v-if="poolShare" -->
+            <div class="tables">
+                <div class="table">
+                    <p>Pool share</p>
+                    <div class="columns row">
+                        <div v-for="(token, x) in ABTokens">
+                            <!-- <p v-if="x === thisTokenIndex">{{ (thisReserve * poolShare) / 100 }}</p>
                             <p v-else>{{ (thatReserve * poolShare) / 100 }}</p> -->
-                        <!-- <p class="caption grey-text">Pooled {{ token.symbol }}</p> -->
-                        <p>8845</p>
-                        <p class="caption grey-text">Pooled fETH</p>
-                    </div>
-                    <div>
-                        <!-- <p>{{ poolShare }}%</p> -->
-                        <p>78%</p>
-                        <p class="caption grey-text">Pool share</p>
+                            <!-- <p class="caption grey-text">Pooled {{ token.symbol }}</p> -->
+                            <p>8845</p>
+                            <p class="caption grey-text">Pooled fETH</p>
+                        </div>
+                        <div>
+                            <!-- <p>{{ poolShare }}%</p> -->
+                            <p>78%</p>
+                            <p class="caption grey-text">Pool share</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="buttons">
-            <!-- v-if="stepStore.connectedWallet && (poolAddress === unhandled || poolAddress === '')" -->
-            <Btn
-                @click="callAddLiquidity()"
-                is="h4"
-                wide
-                bulky
-                :loading="waitingForAdding"
-                :disabled="!canCreatePool || !bothAmountsIn"
-            >
-                Create Pool
-            </Btn>
-            <!-- @click="addLiquidity()" -->
-            <!-- v-if="stepStore.connectedWallet && !(poolAddress === unhandled || poolAddress === '')" -->
-            <Btn
-                wide
-                is="h4"
-                bulky
-                @click="callAddLiquidity()"
-                :loading="waitingForAdding"
-                :disabled="!canAddLiquidity || !bothAmountsIn"
-            >
-                Add Liquidity
-            </Btn>
-            <!-- v-if="!stepStore.connectedWallet" -->
-            <Btn
-                is="h4"
-                wide
-                bulky
-                @click="stepStore.connectWallet()"
-            >
-                Connect wallet
-            </Btn>
-        </div>
-    </div>
+            <div class="buttons">
+                <!-- v-if="stepStore.connectedWallet && (poolAddress === unhandled || poolAddress === '')" -->
+                <Btn
+                    @click="callAddLiquidity()"
+                    is="h4"
+                    wide
+                    bulky
+                    :loading="waitingForAdding"
+                    :disabled="!canCreatePool || !bothAmountsIn"
+                >
+                    Create Pool
+                </Btn>
+                <!-- @click="addLiquidity()" -->
+                <!-- v-if="stepStore.connectedWallet && !(poolAddress === unhandled || poolAddress === '')" -->
+                <Btn
+                    wide
+                    is="h4"
+                    bulky
+                    @click="callAddLiquidity()"
+                    :loading="waitingForAdding"
+                    :disabled="!canAddLiquidity || !bothAmountsIn"
+                >
+                    Add Liquidity
+                </Btn>
+                <!-- v-if="!stepStore.connectedWallet" -->
+                <Btn
+                    is="h4"
+                    wide
+                    bulky
+                    @click="stepStore.connectWallet()"
+                >
+                    Connect wallet
+                </Btn>
+            </div>
+        </template>
+    </Widget>
 </template>
 
 <script setup>
@@ -554,186 +556,3 @@ watch(
 //     }
 // })
 </script>
-
-<style lang="scss">
-.widget {
-    width: 450px;
-    transition: background-color var(--transition);
-    border-radius: var(--outer-wdg-radius);
-    filter: var(--drop-shadow);
-    padding: 0 20px;
-    .tips {
-        margin-bottom: 20px;
-        p {
-            margin-bottom: 12px;
-            &:last-of-type {
-                margin-bottom: 0px;
-            }
-        }
-    }
-    .window {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        &.transitions {
-            &,
-            * {
-                transition-property: all;
-                transition-duration: var(--transition);
-            }
-        }
-        &:last-of-type {
-            margin-bottom: 15px;
-        }
-        &__upper {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            position: relative;
-            width: 100%;
-
-            label {
-                position: relative;
-                display: flex;
-                align-items: center;
-                flex-shrink: 0;
-                margin: 8px;
-                padding: 10px 20px;
-                padding-right: 10px;
-                border-radius: var(--small-wdg-radius);
-                background-color: var(--primary-disabled-bg);
-                .icon {
-                    margin-left: 6px;
-                }
-                cursor: pointer;
-                p {
-                    white-space: nowrap;
-                    line-height: 1.5rem;
-                }
-            }
-            input {
-                color: var(--text-color-reverse);
-                width: 100%;
-                height: 100%;
-                background: transparent;
-                border: none;
-                outline: none;
-                text-align: right;
-                font-size: 2rem;
-                padding-right: 8px;
-
-                &::placeholder {
-                    color: var(--text-grey);
-                    /* opacity: 0.8; */
-                }
-            }
-        }
-        &__lower {
-            gap: 5px;
-            padding: 5px 8px;
-            text-align: end;
-            background-color: var(--swap-windows);
-            color: var(--text-grey);
-        }
-    }
-    #mid-symbol {
-        display: flex;
-        justify-content: center;
-        &.plus {
-            margin: 12px 0;
-        }
-        &.button {
-            margin: 5px;
-            transform: rotate(0);
-            transition: transform 0.2s;
-            &.rotate {
-                transform: rotate(-180deg);
-            }
-        }
-    }
-    .tables {
-        margin: 20px 0;
-        .prices-share {
-            &:nth-child(2) {
-                margin-top: 5px;
-            }
-            .table {
-                margin-top: 7px;
-                padding-top: 7px;
-                border-top: 2px solid var(--primary-disabled-bg);
-            }
-        }
-    }
-    .buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        > .btn:last-of-type {
-            margin-bottom: 20px;
-        }
-    }
-    .infos {
-        &__info {
-            padding: 10px;
-            border-radius: var(--inner-wdg-radius);
-            align-items: center;
-            &:last-of-type {
-                background-color: var(--info-bg-opaque);
-                margin-bottom: 20px;
-            }
-            .icon {
-                margin-right: 10px;
-            }
-        }
-    }
-}
-.table {
-    justify-content: space-between;
-    & > div {
-        &.left {
-            p {
-                text-align: left;
-                margin-left: 10%;
-            }
-        }
-        text-align: center;
-        /* text-align: left; */
-        flex-basis: 25%;
-        p {
-            /* margin-bottom: 2px; */
-            white-space: nowrap;
-        }
-        p:last-of-type {
-            margin-bottom: 0px;
-        }
-    }
-}
-.sum-up {
-    margin-top: -5px;
-    padding-bottom: 20px;
-    p {
-        white-space: nowrap;
-    }
-}
-
-.top-bar {
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--text-color-reverse);
-    padding: 20px 0;
-    margin-bottom: 20px;
-}
-.base-box {
-    color: var(--text-color-reverse);
-    background-color: var(--widget-bg);
-    backdrop-filter: var(--backdrop-blur);
-}
-.layer-wdg-box {
-    background-color: var(--swap-windows);
-    transition: background-color var(--transition);
-    border-radius: var(--inner-wdg-radius);
-    &--padded {
-        padding: 1rem;
-    }
-}
-</style>

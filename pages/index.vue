@@ -1,5 +1,3 @@
 <template>
-    <div class="centerize">
-        <SwapWidget />
-    </div>
+    <SwapWidget />
 </template>

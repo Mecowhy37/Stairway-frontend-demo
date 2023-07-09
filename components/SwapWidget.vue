@@ -1,37 +1,37 @@
 <template>
-    <div class="wrap">
-        <div class="widget base-box">
-            <div class="top-bar row">
-                <h3>Trade</h3>
-                <Dropdown
-                    :settings-ref="settings"
-                    no-padding
-                >
-                    <template #dropdown-activator="{ on }">
-                        <Btn
-                            transparent
-                            tiny
-                            icon-contrast
-                        >
-                            <template #icon>
-                                <Icon
-                                    name="cog"
-                                    :size="20"
-                                />
-                            </template>
-                        </Btn>
-                    </template>
-                    <template #dropdown="{ toggleDropdown }">
-                        <Settings
-                            ref="settings"
-                            :default-slippage="0.5"
-                            :default-deadline="30"
-                            :toggle-dropdown="toggleDropdown"
-                            no-slippage
-                        ></Settings>
-                    </template>
-                </Dropdown>
-            </div>
+    <Widget>
+        <template #widget-title>Trade</template>
+        <template #right-icon>
+            <Dropdown
+                :settings-ref="settings"
+                no-padding
+            >
+                <template #dropdown-activator="{ on }">
+                    <Btn
+                        transparent
+                        tiny
+                        icon-contrast
+                    >
+                        <template #icon>
+                            <Icon
+                                name="cog"
+                                :size="20"
+                            />
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown="{ toggleDropdown }">
+                    <Settings
+                        ref="settings"
+                        :default-slippage="0.5"
+                        :default-deadline="30"
+                        :toggle-dropdown="toggleDropdown"
+                        no-slippage
+                    ></Settings>
+                </template>
+            </Dropdown>
+        </template>
+        <template #widget-content>
             <div
                 v-if="true"
                 class="tips"
@@ -50,75 +50,79 @@
                     <span class="text-highlight">create it.</span>
                 </p>
             </div>
-            <div
-                class="contents"
-                v-for="(i, x) in new Array(2)"
-            >
-                <div class="window layer-wdg-box">
-                    <div class="window__upper">
-                        <label
-                            for="amount_1"
-                            @click="openTokenSelectModal(x)"
-                        >
-                            <p v-if="switchedTokens[x] !== null">
-                                {{ switchedTokens[x]?.symbol }}
-                            </p>
-                            <p v-else>select token</p>
-                            <Icon
-                                name="chevron"
-                                :size="16"
-                            />
-                        </label>
-                        <input
-                            id="amount_1"
-                            type="text"
-                            name="amount_1"
-                            placeholder="0"
-                            spellcheck="false"
-                            autocomplete="off"
-                            autocorrect="off"
-                            :disabled="waitingForAdding"
-                            :value="switchedAmounts[x]"
-                            @input="setTokenAmount($event, x)"
-                        />
-                    </div>
-                    <div class="window__lower row flex-end align-center">
-                        <!-- <p class="caption">{{ Number(switchedBalances[x]) }}</p> -->
-                        <p class="caption">5591</p>
-                        <Icon
-                            name="wallet"
-                            :size="13"
-                        />
-                    </div>
-                </div>
+            <div class="windows">
                 <div
-                    v-if="x === 0"
-                    id="mid-symbol"
-                    class="button plus"
+                    class="contents"
+                    v-for="(i, x) in new Array(2)"
                 >
-                    <Btn
-                        circle
-                        plain
-                        @click="switchOrder()"
-                    >
-                        <template #icon>
-                            <Icon
-                                name="arrow"
-                                :size="11"
+                    <div class="window layer-wdg-box">
+                        <div class="window__upper">
+                            <label
+                                for="amount_1"
+                                @click="openTokenSelectModal(x)"
+                            >
+                                <p v-if="switchedTokens[x] !== null">
+                                    {{ switchedTokens[x]?.symbol }}
+                                </p>
+                                <p v-else>select token</p>
+                                <Icon
+                                    name="chevron"
+                                    :size="16"
+                                />
+                            </label>
+                            <input
+                                id="amount_1"
+                                type="text"
+                                name="amount_1"
+                                placeholder="0"
+                                spellcheck="false"
+                                autocomplete="off"
+                                autocorrect="off"
+                                :disabled="waitingForAdding"
+                                :value="switchedAmounts[x]"
+                                @input="setTokenAmount($event, x)"
                             />
-                        </template>
-                    </Btn>
+                        </div>
+                        <div class="window__lower row flex-end align-center">
+                            <!-- <p class="caption">{{ Number(switchedBalances[x]) }}</p> -->
+                            <p class="caption">5591</p>
+                            <Icon
+                                name="wallet"
+                                :size="13"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        v-if="x === 0"
+                        id="mid-symbol"
+                        class="button plus"
+                    >
+                        <Btn
+                            circle
+                            plain
+                            @click="switchOrder()"
+                        >
+                            <template #icon>
+                                <Icon
+                                    name="arrow"
+                                    :size="11"
+                                />
+                            </template>
+                        </Btn>
+                    </div>
                 </div>
             </div>
-
             <!-- v-if="!(poolAddress === '' || poolAddress === unhandled)" -->
             <div class="infos">
                 <!-- v-if="Number(poolDepth) < Number(switchedAmounts[1])" -->
-                <div class="infos__info row">
-                    <Icon
-                        name="warrning"
-                        :size="25"
-                    />
+                <div class="info row">
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warrning"
+                            :size="25"
+                        />
+                    </div>
                     <!-- <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p> -->
                     <p>you will only receive 20 fETH at this price</p>
                 </div>
@@ -160,8 +164,8 @@
                     <p>$0.00021</p>
                 </div> -->
             </div>
-        </div>
-    </div>
+        </template>
+    </Widget>
 </template>
 
 <script setup>
@@ -456,7 +460,7 @@ watch(
     (newValue) => {
         const wallet = newValue[1]
         if (wallet) {
-            getBalance(null, true)
+            // getBalance(null, true)
         } else {
             switchedBalances.value = ["", ""]
         }

@@ -1,18 +1,12 @@
 <template>
-    <div
-        id="base"
-        :class="[stepStore.isDark ? themes.dark : themes.light]"
-    >
-        <div class="bg-gradient"></div>
-        <Nav ref="nav" />
-        <div
-            class="page-slot"
-            id="slot-wrap"
-        >
+    <div :class="[stepStore.isDark ? themes.dark : themes.light]">
+        <Nav />
+        <div class="page-slot">
             <slot />
         </div>
+        <div class="bg-gradient"></div>
 
-        <div class="page-slot">
+        <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <NewToken ref="newTokenModal"></NewToken>
         </div>
@@ -41,15 +35,6 @@ function toggleNewTokenModal() {
 }
 provide("newTokenModal", toggleNewTokenModal)
 // MODAL STUFF ------------------
-
-const nav = ref(null)
-const navHeight = ref("")
-onMounted(() => {
-    const navbar = nav.value
-    if (navbar) {
-        navHeight.value = navbar.$el.offsetHeight + "px"
-    }
-})
 
 if (!featuredTokens.value) {
     useAsyncData("tokens", () => stepStore.fetchTokens())
@@ -80,14 +65,25 @@ html {
     font-size: calc($size + 0 * ((100vw - 300px) / (1600 - 300)));
     font-weight: 500;
 }
-body #base {
-    height: 100vh;
-    /* height: 150vh; */
-    position: relative;
-}
+
 .page-slot {
-    display: contents;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    padding: var(--nav-height) 0px 5rem;
+    -webkit-box-align: center;
+    align-items: center;
+    flex: 1 1 0%;
+
+    &--modals {
+        display: contents;
+    }
+    & > div {
+        margin: auto 0;
+    }
 }
+
 h1 {
     font-size: 3.5rem;
 }
@@ -96,11 +92,12 @@ h2 {
 }
 h3 {
     font-size: 1.5rem;
-    line-height: 1.7rem;
+    /* line-height: 1.5rem; */
 }
 h4 {
     font-size: 1.25rem;
 }
+
 p {
     font-size: 1rem;
     line-height: 1.2rem;
@@ -120,6 +117,9 @@ p {
 }
 .grey-text {
     color: var(--text-grey);
+    * {
+        color: var(--text-grey);
+    }
 }
 
 .row {
@@ -138,18 +138,6 @@ p {
     }
 }
 
-.centerize {
-    width: 100%;
-    display: grid;
-    place-content: center;
-    height: calc(100vh - v-bind(navHeight));
-    padding-bottom: v-bind(navHeight);
-}
-
-.main {
-    padding-top: 50px;
-}
-
 .inset {
     box-shadow: var(--inset-shadow);
     transition: box-shadow var(--transition);
@@ -161,6 +149,7 @@ p {
 
 .bg-gradient {
     position: absolute;
+    top: 0;
     width: 100%;
     height: 100%;
     z-index: -2;

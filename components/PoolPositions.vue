@@ -26,7 +26,11 @@
                     <div>
                         <div class="pool__heading row space-between">
                             <h4>{{ position.pool.this_token.symbol }} / {{ position.pool.that_token.symbol }}</h4>
-                            <Btn
+                            <div class="row">
+                                <Btn>Add liquidity</Btn>
+                                <Btn>Redeem liquidity</Btn>
+                            </div>
+                            <!-- <Btn
                                 opaque
                                 @click="toggle(i)"
                             >
@@ -38,17 +42,15 @@
                                         :rotate="openedIndex === i"
                                     />
                                 </template>
-                            </Btn>
+                            </Btn> -->
                         </div>
-                        <div
+                        <!-- <div
                             v-if="openedIndex === i"
                             class="pool__heading_ext row align-center center"
                         >
-                            <!-- <div class="row"> -->
                             <Btn>Add liquidity</Btn>
                             <Btn>Redeem liquidity</Btn>
-                            <!-- </div> -->
-                        </div>
+                        </div> -->
                     </div>
                     <div class="pool__stats prices-share">
                         <div class="table row">
@@ -97,7 +99,7 @@ const { data: positions } = useFetch(getUrl("/chain/80001/user/12345/positions")
 
 <style lang="scss" scoped>
 .positions {
-    width: 80vw;
+    width: 60vw;
     &__top {
         justify-content: space-between;
         align-items: center;
@@ -133,10 +135,12 @@ const { data: positions } = useFetch(getUrl("/chain/80001/user/12345/positions")
                 &__heading {
                     padding: 10px 20px;
                     align-items: center;
+                    div.row {
+                        gap: 1rem;
+                    }
                 }
                 &__heading_ext {
                     height: 4rem;
-                    gap: 1rem;
                 }
                 &__stats {
                     padding: 10px 0;

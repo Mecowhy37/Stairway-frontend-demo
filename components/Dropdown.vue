@@ -89,8 +89,6 @@ onClickOutside(toActivate, (event) => {
         &.no-padding {
             padding: 0;
         }
-
-        /* background-color: transparent; */
     }
 }
 </style>

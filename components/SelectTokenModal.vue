@@ -5,18 +5,26 @@
         @click.self.prevent="toggleModal"
     >
         <div class="modal__window base-box">
-            <div class="topbar">
-                <h3>Select a token</h3>
-                <h3
-                    @click="toggleModal"
-                    class="topbar__close"
-                >
-                    <Icon
-                        name="cross"
-                        :size="13"
-                    />
-                </h3>
-            </div>
+            <TopBar
+                no-return
+                compact
+                thin-line
+                is="h4"
+            >
+                <template #widget-title>Select a token</template>
+                <template #right-icon>
+                    <Btn
+                        @click="toggleModal"
+                        tiny
+                        transparent
+                    >
+                        <Icon
+                            name="cross"
+                            :size="13"
+                        />
+                    </Btn>
+                </template>
+            </TopBar>
             <div
                 class="token-list"
                 ref="tokenListRef"
@@ -114,7 +122,7 @@ defineExpose({
     }
 
     &__window {
-        width: 400px;
+        width: 300px;
         height: 50%;
         place-self: center;
         border-radius: var(--semi-wdg-radius);

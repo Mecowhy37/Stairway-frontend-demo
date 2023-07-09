@@ -1,36 +1,36 @@
 <template>
-    <header class="navbar">
+    <nav class="navbar">
         <h4 class="navbar__logo">Stairway</h4>
-        <nav class="navigation">
+        <div class="navigation">
             <NuxtLink
                 to="/"
                 class="navigation__link"
-                ><h4>swap</h4></NuxtLink
+                ><p>swap</p></NuxtLink
             >
             <NuxtLink
-                to="/liquidity"
+                to="/add"
                 class="navigation__link"
-                ><h4>liquidity</h4></NuxtLink
+                ><p>add</p></NuxtLink
             >
             <NuxtLink
-                to="/redeem"
+                to="/remove"
                 class="navigation__link"
-                ><h4>redeem</h4></NuxtLink
+                ><p>remove</p></NuxtLink
             >
             <NuxtLink
                 to="/pools"
                 class="navigation__link"
-                ><h4>pools</h4></NuxtLink
+                ><p>pools</p></NuxtLink
             >
             <NuxtLink
                 to="/buttons"
                 class="navigation__link"
-                ><h4>buttons</h4></NuxtLink
+                ><p>buttons</p></NuxtLink
             >
 
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->
-        </nav>
+        </div>
         <div class="nav-actions">
             <!-- <Btn
                 plain
@@ -70,7 +70,7 @@
             <Dropdown v-else>
                 <template #dropdown-activator="{ on }">
                     <Btn plain>
-                        {{ getTruncatedWalletAddress }}
+                        {{ stepStore.getTruncatedWalletAddress }}
                         <template #icon>
                             <Icon
                                 name="chevron"
@@ -82,6 +82,7 @@
                 <template #dropdown>
                     <Btn
                         wide
+                        cta
                         @click="stepStore.disconnectConnectedWallet()"
                         >Disconnect</Btn
                     >
@@ -108,14 +109,13 @@
             <!-- </template> -->
             <!-- </Dropdown> -->
         </div>
-    </header>
+    </nav>
 </template>
 
 <script setup>
 import { useStepStore } from "@/stores/step"
 
 const stepStore = useStepStore()
-const { getTruncatedWalletAddress } = stepStore
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
@@ -123,13 +123,13 @@ function revertTheme() {
 </script>
 
 <style lang="scss" scoped>
-/* $nav-height: 75px; */
 .navbar {
-    /* position: absolute; */
+    position: fixed;
+    top: 0px;
+    height: var(--nav-height);
+    width: 100%;
     display: flex;
     align-items: center;
-    width: 100%;
-    /* height: $nav-height; */
     padding: 1rem 1.6rem;
     .navigation {
         display: flex;
@@ -150,7 +150,7 @@ function revertTheme() {
                 content: "";
                 position: absolute;
                 opacity: 0;
-                bottom: -17%;
+                bottom: -10%;
                 left: 50%;
                 height: 2px;
                 /* padding: 0 5%; */
@@ -175,20 +175,6 @@ function revertTheme() {
         display: flex;
         gap: 0.8rem;
         margin-left: auto;
-
-        .cta-dd {
-            display: flex;
-            background-color: var(--cta-bg);
-            border-radius: 9999px;
-            .divider {
-                align-self: center;
-                height: 70%;
-                width: 1px;
-                background-color: rgba(255, 255, 255, 0.7);
-                /* margin-left: -0.5rem; */
-                /* margin-right: -1.2rem; */
-            }
-        }
         .networks-dd {
             display: flex;
             flex-wrap: wrap;

@@ -1,17 +1,25 @@
 <template>
     <div class="settings">
-        <div class="topbar row space-between">
-            <h4>Settings</h4>
-            <h4
-                class="topbar__close"
-                @click="toggleDropdown"
-            >
-                <Icon
-                    name="cross"
-                    :size="13"
-                />
-            </h4>
-        </div>
+        <TopBar
+            no-return
+            compact
+            thin-line
+            is="h4"
+        >
+            <template #widget-title>Settings</template>
+            <template #right-icon>
+                <Btn
+                    tiny
+                    transparent
+                    @click="toggleDropdown"
+                >
+                    <Icon
+                        name="cross"
+                        :size="13"
+                    />
+                </Btn>
+            </template>
+        </TopBar>
         <div
             class="setting"
             v-if="!noSlippage"
@@ -177,6 +185,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 .settings {
+    color: var(--text-color-reverse);
     .topbar {
         padding: 12px;
         border-bottom: 1px solid var(--text-color-reverse);

@@ -1,0 +1,3 @@
+<template>
+    <LiquidityWidget />
+</template>
