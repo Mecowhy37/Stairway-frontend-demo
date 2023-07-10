@@ -11,7 +11,7 @@
                 thin-line
                 is="h4"
             >
-                <template #widget-title>Select a token</template>
+                <template #widget-title>Select token</template>
                 <template #right-icon>
                     <Btn
                         @click="toggleModal"
