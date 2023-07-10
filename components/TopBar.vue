@@ -3,20 +3,25 @@
         class="top-bar row"
         :class="[{ compact: props.compact, 'thin-line': props.thinLine }]"
     >
-        <Btn
-            tiny
-            transparent
-            class="back-btn"
+        <NuxtLink
             v-if="!noReturn"
+            to="/pools"
+            class="link"
         >
-            <template #icon>
-                <Icon
-                    name="arrow"
-                    :size="15"
-                    :rotate="90"
-                ></Icon>
-            </template>
-        </Btn>
+            <Btn
+                tiny
+                transparent
+                class="back-btn"
+            >
+                <template #icon>
+                    <Icon
+                        name="arrow"
+                        :size="15"
+                        :rotate="90"
+                    ></Icon>
+                </template>
+            </Btn>
+        </NuxtLink>
         <component
             :is="props.is"
             class="widget-title"

@@ -24,9 +24,31 @@ export function getToken(symb) {
     return TokenList.find((el) => el.symbol === symb)
 }
 
+const api = "https://api.stairway.fi"
+function getUrl(endpoint) {
+    return api + endpoint
+}
+export function basicRound(amt) {
+    let amount = Number(amt)
+    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+    return String(parseFloat(amount))
+}
+
 export function useBalances() {
-    async function getTokenBalance() {
-        console.log("getTokenBalance()")
+    async function getTokenBalance(token, account, chainId) {
+        if (token === null) {
+            return ""
+        }
+        const { data: balance, error } = await useFetch(
+            getUrl(`/chain/${chainId}/user/${account}/balance/${token.address}`)
+        )
+        if (balance.value) {
+            return balance.value
+        }
+        if (error.value) {
+            console.error("failed to fetch balance", error.value)
+            return ""
+        }
     }
 
     async function getTotalSupply(address, providerArg) {
@@ -37,57 +59,28 @@ export function useBalances() {
 }
 
 export function usePools(routerAddress) {
-    const bidAsk = ref(null)
-    const poolAddress = ref("")
-    const thisTokenAddress = ref(null)
-    const thisReserve = ref(null)
-    const thatReserve = ref(null)
-    const poolRatio = ref(null)
-    const poolDepth = ref(null)
-    const lpTokenAddress = ref(null)
-    const liquidityTokenBalance = ref(null)
-    const lpTotalSupply = ref(null)
-    const interval = ref()
-    const iterations = ref(0)
-    const waitingForAdding = ref(false)
-    const waitingBidAsk = ref(false)
+    const pool = ref(null)
 
-    const bidAskFormat = computed(() => {
-        return bidAsk.value !== null ? bidAsk.value.map((el) => Number(formatEther(el))) : []
-    })
-    const bidAskDisplay = computed(() => {
-        return bidAskFormat
-            ? bidAskFormat.value.map((el) => (el >= 1 ? el.toFixed(2) : el < 0.0001 ? "<0.0001" : el.toPrecision(3)))
-            : []
-    })
-
-    async function getBidAsk() {
-        console.log("getting bidAsk")
-        // bidAsk.value = bidAskVar
-        // poolDepth.value = depth
-    }
-    async function findPool(addressA, addressB) {
-        console.log("findPool()")
-        // poolAddress.value = poolAdd
-        // return poolAdd
+    async function findPool(tokens) {
+        const { data, error } = await useFetch(getUrl(`/chain/80001/pool/${tokens[0].address}/${tokens[1].address}`))
+        if (data.value) {
+            pool.value = data.value
+        }
+        if (error.value) {
+            pool.value = null
+            console.error("error finding pool: ", error.value)
+        }
     }
 
-    // async function findPool(addressA, addressB) {
-    //     console.log("find pool")
-
-    //     const url = `https://api.stairway.fi/pool/${addressA}/${addressB}`
-    //     // const url = `https://api.stairway.fi/pool/0x70997970C51812dc3A010C7d01b50e0d17dc79C8/0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
-    //     const response = await $fetch(url)
-    //     console.log("response:", response)
-    //     const data = await response.json()
-    //     console.log("data:", data)
-    // }
-
-    //     const url = `https://api.stairway.fi/pool/${tokenAddresses[0]}/${tokenAddresses[1]}`
-    //     const response = await $fetch(url)
-    //     console.log("response:", response)
-    //     const data = await response.json()
-    //     console.log("data:", data)
+    const poolRatio = computed(() => {
+        if (!pool.value) {
+            return null
+        }
+        return (
+            Number(formatUnits(pool.value.this_reserves, pool.value.this_token.decimals)) /
+            Number(formatUnits(pool.value.that_reserves, pool.value.that_token.decimals))
+        )
+    })
 
     async function setupPool(poolAdd, tokenAddresses, providerArg, wallet) {
         console.log("setup")
@@ -128,6 +121,26 @@ export function usePools(routerAddress) {
         liquidityTokenBalance.value = bal
         lpTotalSupply.value = totalSupply
     }
+
+    // ------------------------------
+    const bidAsk = ref(null)
+    const poolAddress = ref("")
+    const thisTokenAddress = ref(null)
+    const thisReserve = ref(null)
+    const thatReserve = ref(null)
+    const poolDepth = ref(null)
+    const lpTokenAddress = ref(null)
+    const liquidityTokenBalance = ref(null)
+    const lpTotalSupply = ref(null)
+
+    const bidAskFormat = computed(() => {
+        return bidAsk.value !== null ? bidAsk.value.map((el) => Number(formatEther(el))) : []
+    })
+    const bidAskDisplay = computed(() => {
+        return bidAskFormat
+            ? bidAskFormat.value.map((el) => (el >= 1 ? el.toFixed(2) : el < 0.0001 ? "<0.0001" : el.toPrecision(3)))
+            : []
+    })
 
     const poolShare = computed(() => {
         return liquidityTokenBalance.value && lpTotalSupply.value
@@ -223,7 +236,6 @@ export function usePools(routerAddress) {
     async function redeemLiquidity(tokenA, tokenB, redeemPercent, connectedAccount, deadline, providerArg) {
         console.log("redeemLiquidity()")
 
-        // await setupPool(poolAddress.value, [tokenA, tokenB], providerArg, connectedAccount)
         // if (poolShare.value) {
         //     try {
         //         const provider = new BrowserProvider(providerArg)
@@ -273,30 +285,19 @@ export function usePools(routerAddress) {
 
         // await router.buy(...tokens, amounts[1], maxPrice, account, deadlineStamp)
     }
-    function resetPool() {
-        bidAsk.value = null
-        thisTokenAddress.value = ""
-        thisReserve.value = null
-        thatReserve.value = null
-        poolRatio.value = null
-        lpTokenAddress.value = null
-        liquidityTokenBalance.value = null
-        lpTotalSupply.value = null
-    }
 
     return {
+        pool,
+        findPool,
+        poolRatio,
+
         bidAsk,
-        getBidAsk,
         poolAddress,
         thisReserve,
         thatReserve,
         thisTokenAddress,
         lpTokenAddress,
-        poolRatio,
         poolDepth,
-        findPool,
-        poolShare,
-        setupPool,
         checkAllowance,
         lpTotalSupply,
         liquidityTokenBalance,
@@ -305,11 +306,7 @@ export function usePools(routerAddress) {
         redeemLiquidity,
         bidAskFormat,
         bidAskDisplay,
-        waitingForAdding,
         approveSpending,
-        iterations,
-        resetPool,
         redeemLiquidity,
-        listenForTransactionMine,
     }
 }

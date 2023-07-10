@@ -61,7 +61,7 @@
                                 <p v-if="switchedTokens[x] !== null">
                                     {{ switchedTokens[x]?.symbol }}
                                 </p>
-                                <p v-else>select token</p>
+                                <p v-else>Select token</p>
                                 <Icon
                                     name="chevron"
                                     :size="16"
@@ -114,12 +114,12 @@
                     <div>
                         <Icon
                             class="icon"
-                            name="warrning"
+                            name="warning"
                             :size="25"
                         />
                     </div>
                     <!-- <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p> -->
-                    <p>you will only receive 20 fETH at this price</p>
+                    <p>You will only receive 20 fETH at this price.</p>
                 </div>
             </div>
             <div class="buttons">
@@ -194,7 +194,6 @@ const {
     poolAddress,
     findPool,
     getBidAsk,
-    setupPool,
     bidAskFormat,
     bidAskDisplay,
     swap,
@@ -414,39 +413,6 @@ function openNewTokenModal() {
 //SETTINGS--------------
 const settings = ref()
 //SETTINGS--------------
-
-// FINDS POOL OR GETS BID ASK BY TOKEN ADDRESSES
-watch(
-    () => stepStore.bothSwapTokenAddresses,
-    (bothTokens) => {
-        if (bothTokens) {
-            findPool(...baseQuoteAddresses.value)
-            return
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
-//SETS UP POOL OR RESETS BY POOL ADDRESS
-watch(
-    poolAddress,
-    (poolAdd, prevPoolAdd) => {
-        if (!(poolAdd === unhandled || poolAdd === "")) {
-            setupPool(poolAdd, baseQuoteAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
-        } else {
-            //resets previous calulated amount to "0" when pool in no longer there
-            switchedAmounts.value = switchedAmounts.value.map((el, index) =>
-                index !== state.lastChangedToken ? "" : el
-            )
-            resetPool()
-        }
-    },
-    {
-        immediate: true,
-    }
-)
 
 //GETS BALANCES BY TOKENS AND WALLET
 watch(

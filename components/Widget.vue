@@ -131,7 +131,7 @@ const props = defineProps({
             border-top: 2px solid var(--primary-disabled-bg);
             & > div {
                 text-align: center;
-                flex-basis: 25%;
+                flex-basis: 50%;
                 p {
                     white-space: nowrap;
                 }

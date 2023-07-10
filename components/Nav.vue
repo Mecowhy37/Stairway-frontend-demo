@@ -8,25 +8,15 @@
                 ><p>swap</p></NuxtLink
             >
             <NuxtLink
-                to="/add"
-                class="navigation__link"
-                ><p>add</p></NuxtLink
-            >
-            <NuxtLink
-                to="/remove"
-                class="navigation__link"
-                ><p>remove</p></NuxtLink
-            >
-            <NuxtLink
                 to="/pools"
                 class="navigation__link"
                 ><p>pools</p></NuxtLink
             >
-            <NuxtLink
+            <!-- <NuxtLink
                 to="/buttons"
                 class="navigation__link"
                 ><p>buttons</p></NuxtLink
-            >
+            > -->
 
             <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
             <!-- <div class="navigation__underline"></div> -->

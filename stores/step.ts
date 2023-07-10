@@ -36,6 +36,7 @@ export const useStepStore = defineStore("step", (): any => {
     
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
+    const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
     const routerAddress = "0x68B1D87F95878fE05B998F19b66F4baba5De1aed"
     const foundryAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
 
@@ -46,10 +47,10 @@ export const useStepStore = defineStore("step", (): any => {
         wallets: [injected],
         chains: [
             {
-                id: "0x1",
-                token: "ETH",
-                label: "Ethereum Mainnet",
-                rpcUrl: MAINNET_RPC_URL,
+                id: "0x13881",
+                token: "MATIC",
+                label: "Polygon Mumbai",
+                rpcUrl: MUMBAI_RPC_URL,
             },
             {
                 id: "0x7a69",
@@ -135,7 +136,7 @@ export const useStepStore = defineStore("step", (): any => {
         return api + endpoint
     }
     // TOKENS ---------------
-    const featuredTokens = ref()
+    const featuredTokens = ref(null)
 
     async function fetchTokens() {
         console.log('fetchTokens()')
@@ -145,13 +146,14 @@ export const useStepStore = defineStore("step", (): any => {
             featuredTokens.value = data.value
         }
         if (error.value) {
-            console.error(error.value)
+            featuredTokens.value = null
+            console.error("failed fetching tokens", error.value)
         }
     }
     // TOKENS ---------------
     
     // POOLS ----------------
-    const pools = ref()
+    const pools = ref(null)
     
     async function fetchPools() {
         console.log('fetchPools()')
@@ -161,10 +163,27 @@ export const useStepStore = defineStore("step", (): any => {
             pools.value = data.value
         }
         if (error.value) {
-            console.error(error.value)
+            pools.value = null
+            console.error("failed fetching pools: ", error.value)
         }
     }
     // POOLS ----------------
+    
+    // POSITIONS ----------------
+    const positions = ref(null)
+
+    async function fetchPositions(account) {
+        console.log('fetchPositions()')
+        const { data, error } = useFetch(getUrl(`/chain/80001/user/${account}/positions`))
+        if (data.value) {
+            positions.value = data.value 
+        }
+        if (error.value) {
+            console.error("failed fetching positions: ", error.value)
+        }
+    }   
+    // POSITIONS ----------------
+    
 
 
     return {
@@ -182,6 +201,9 @@ export const useStepStore = defineStore("step", (): any => {
 
         pools,
         fetchPools,
+
+        positions,
+        fetchPositions,
 
         bothSwapTokensThere,
         bothSwapTokenAddresses,

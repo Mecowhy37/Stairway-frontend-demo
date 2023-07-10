@@ -8,6 +8,7 @@
 </template>
 
 <script setup>
+import icons from "~/helpers/icons"
 const props = defineProps({
     size: {
         type: Number,
@@ -29,29 +30,9 @@ const sizeWithPx = computed(() => {
 const rotateDeg = computed(() => {
     return props.rotate + "deg"
 })
-
-//icons can be placed as svg strings
-const svgContent = ref("")
-loadSvgAsString(getIconPath())
-    .then((svgString) => {
-        svgContent.value = svgString
-    })
-    .catch((error) => {
-        console.error("Error loading SVG:", error)
-    })
-
-function getIconPath() {
-    return `/icons/${props.name}.svg`
-}
-async function loadSvgAsString(filePath) {
-    try {
-        const response = await $fetch(filePath)
-        const svgString = await response.text()
-        return svgString
-    } catch (error) {
-        return ""
-    }
-}
+const svgContent = computed(() => {
+    return icons[props.name]
+})
 </script>
 
 <style lang="scss" scoped>

@@ -20,7 +20,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, pools } = storeToRefs(stepStore)
+const { featuredTokens, pools, positions, connectedAccount } = storeToRefs(stepStore)
 
 // MODAL STUFF ------------------
 const selectTokenModal = ref()
@@ -40,8 +40,24 @@ if (!featuredTokens.value) {
     useAsyncData("tokens", () => stepStore.fetchTokens())
 }
 if (!pools.value) {
-    useAsyncData("pools", () => stepStore.fetchPools())
+    // useAsyncData("pools", () => stepStore.fetchPools())
 }
+if (!positions.value) {
+    if (stepStore.connectedAccount) {
+        useAsyncData("positions", () => stepStore.fetchPositions())
+    }
+}
+watch(
+    () => connectedAccount,
+    (account) => {
+        if (account) {
+            useAsyncData("positions", () => stepStore.fetchPositions(account))
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>

@@ -1,6 +1,6 @@
 <template>
-    <Widget>
-        <template #widget-title>Redeem Liquidity</template>
+    <Widget v-if="pool">
+        <template #widget-title>Redeem liquidity</template>
         <template #right-icon>
             <!-- :settings-ref="settingsAdd" -->
             <Dropdown no-padding>
@@ -30,8 +30,7 @@
         </template>
         <template #widget-content>
             <div>
-                <!-- <p>{{ ABTokens[0].symbol }} / {{ ABTokens[1].symbol }}</p> -->
-                <p>fBTC / fUSD</p>
+                <p>{{ pool.this_token.symbol }} / {{ pool.that_token.symbol }}</p>
             </div>
             <div class="amount">
                 <p class="grey-text">Amount</p>
@@ -90,35 +89,54 @@
             <!-- <p>procent to redeem: {{ state.redeemPercent }}%</p> -->
             <div class="summary">
                 <div class="row">
-                    <!-- <p class="grey-text">pooled {{ ABTokens[0]?.symbol }}:</p> -->
-                    <p class="grey-text">pooled fUSD:</p>
-                    <!-- <p>
-                {{
-                    ABTokens[0]?.address === thisTokenAddress
-                        ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
-                        : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
-                }}
-            </p> -->
-                    7593
+                    <p class="grey-text">Pooled {{ pool.this_token.symbol }}:</p>
+                    <p>
+                        {{
+                            ownedPosition
+                                ? basicRound(
+                                      (Number(
+                                          formatUnits(ownedPosition.this_amount, ownedPosition.pool.this_token.decimals)
+                                      ) *
+                                          state.redeemPercent) /
+                                          100
+                                  )
+                                : 0
+                        }}
+                    </p>
                 </div>
                 <div class="row">
-                    <!-- <p class="grey-text">pooled {{ ABTokens[1]?.symbol }}:</p> -->
-                    <p class="grey-text">pooled fBTC:</p>
-                    <!-- <p>
-                {{
-                    ABTokens[1]?.address === thisTokenAddress
-                        ? (((thisReserve * poolShare) / 100) * state.redeemPercent) / 100
-                        : (((thatReserve * poolShare) / 100) * state.redeemPercent) / 100
-                }}
-            </p> -->
-                    7593
+                    <p class="grey-text">Pooled {{ pool.that_token.symbol }}:</p>
+                    <p>
+                        {{
+                            ownedPosition
+                                ? basicRound(
+                                      (Number(
+                                          formatUnits(ownedPosition.that_amount, ownedPosition.pool.that_token.decimals)
+                                      ) *
+                                          state.redeemPercent) /
+                                          100
+                                  )
+                                : 0
+                        }}
+                    </p>
                 </div>
             </div>
             <div class="buttons">
                 <Btn
+                    v-if="!stepStore.connectedWallet"
                     is="h4"
                     wide
                     bulky
+                    @click="stepStore.connectWallet()"
+                >
+                    Connect wallet
+                </Btn>
+                <Btn
+                    v-else
+                    is="h4"
+                    wide
+                    bulky
+                    :disabled="!ownedPosition"
                     @click="redeemLiquidityCall()"
                 >
                     Remove Liquidity
@@ -129,6 +147,16 @@
 </template>
 
 <script setup>
+import { formatUnits } from "ethers"
+import { useStepStore } from "@/stores/step"
+import { storeToRefs } from "pinia"
+import { usePools, basicRound } from "~/helpers/index"
+
+const stepStore = useStepStore()
+const { featuredTokens, positions } = storeToRefs(stepStore)
+
+const { pool, findPool } = usePools(stepStore.routerAddress)
+
 const state = reactive({
     redeemPercent: 100,
 })
@@ -157,9 +185,26 @@ function redeemLiquidityCall() {
     // )
 }
 
+const ownedPosition = computed(() => {
+    if (!pool.value || !positions.value) {
+        return null
+    }
+    const matchedPosition = positions.value.find((el) => el.pool.address === pool.value.address)
+    if (!matchedPosition) {
+        return null
+    }
+    return matchedPosition
+})
+
 //SETTINGS--------------
 const settingsRedeem = ref()
 //SETTINGS--------------
+
+// ROUTES ----------------
+const route = useRoute()
+findPool([featuredTokens.value[0], featuredTokens.value[1]])
+
+// ROUTES ----------------
 </script>
 
 <style lang="scss" scoped>

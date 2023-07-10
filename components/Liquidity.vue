@@ -1,6 +1,6 @@
 <template>
     <Widget>
-        <template #widget-title>Add Liquidity</template>
+        <template #widget-title>Add liquidity</template>
         <template #right-icon>
             <Dropdown
                 :settings-ref="settingsAdd"
@@ -31,7 +31,7 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <div class="tips">
+            <!-- <div class="tips">
                 <p>
                     <span class="text-highlight">Tip: </span>
                     To try out the interface you'll need some tokens, you can get them
@@ -41,7 +41,7 @@
                         >here</span
                     >
                 </p>
-            </div>
+            </div> -->
             <div class="windows">
                 <div
                     class="contents"
@@ -53,7 +53,7 @@
                                 <p v-if="ABTokens[x] !== null">
                                     {{ ABTokens[x]?.symbol }}
                                 </p>
-                                <p v-else>select token</p>
+                                <p v-else>Select token</p>
                                 <Icon
                                     name="chevron"
                                     :size="16"
@@ -65,15 +65,13 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :disabled="waitingForAdding"
                                 :value="ABAmounts[x]"
                                 @input="setTokenAmount($event, x)"
                             />
                             <!-- :value="ABAmounts[x]" -->
                         </div>
                         <div class="window__lower row flex-end align-center">
-                            <!-- <p class="caption">{{ Number(ABBalance[x]) }}</p> -->
-                            <p class="caption">1478</p>
+                            <p class="caption">{{ Number(ABBalance[x]) }}</p>
                             <Icon
                                 name="wallet"
                                 :size="13"
@@ -92,58 +90,60 @@
                     </div>
                 </div>
             </div>
-            <!-- v-if="poolShare" -->
-            <div class="tables">
-                <div class="table">
+            <div
+                v-if="ownedPosition"
+                class="tables"
+            >
+                <div>
                     <p>Pool share</p>
                     <div class="columns row">
-                        <div v-for="(token, x) in ABTokens">
-                            <!-- <p v-if="x === thisTokenIndex">{{ (thisReserve * poolShare) / 100 }}</p>
-                            <p v-else>{{ (thatReserve * poolShare) / 100 }}</p> -->
-                            <!-- <p class="caption grey-text">Pooled {{ token.symbol }}</p> -->
-                            <p>8845</p>
-                            <p class="caption grey-text">Pooled fETH</p>
+                        <div>
+                            <p>
+                                {{
+                                    basicRound(
+                                        formatUnits(ownedPosition.this_amount, ownedPosition.pool.this_token.decimals)
+                                    )
+                                }}
+                            </p>
+                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.this_token.symbol }}</p>
                         </div>
                         <div>
-                            <!-- <p>{{ poolShare }}%</p> -->
+                            <p>
+                                {{
+                                    basicRound(
+                                        formatUnits(ownedPosition.that_amount, ownedPosition.pool.that_token.decimals)
+                                    )
+                                }}
+                            </p>
+                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.that_token.symbol }}</p>
+                        </div>
+
+                        <!-- <div>
                             <p>78%</p>
                             <p class="caption grey-text">Pool share</p>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
             <div class="buttons">
-                <!-- v-if="stepStore.connectedWallet && (poolAddress === unhandled || poolAddress === '')" -->
                 <Btn
-                    @click="callAddLiquidity()"
-                    is="h4"
-                    wide
-                    bulky
-                    :loading="waitingForAdding"
-                    :disabled="!canCreatePool || !bothAmountsIn"
-                >
-                    Create Pool
-                </Btn>
-                <!-- @click="addLiquidity()" -->
-                <!-- v-if="stepStore.connectedWallet && !(poolAddress === unhandled || poolAddress === '')" -->
-                <Btn
-                    wide
-                    is="h4"
-                    bulky
-                    @click="callAddLiquidity()"
-                    :loading="waitingForAdding"
-                    :disabled="!canAddLiquidity || !bothAmountsIn"
-                >
-                    Add Liquidity
-                </Btn>
-                <!-- v-if="!stepStore.connectedWallet" -->
-                <Btn
+                    v-if="!stepStore.connectedWallet"
                     is="h4"
                     wide
                     bulky
                     @click="stepStore.connectWallet()"
                 >
                     Connect wallet
+                </Btn>
+                <Btn
+                    v-else
+                    @click="callAddLiquidity()"
+                    is="h4"
+                    wide
+                    bulky
+                    :disabled="!bothAmountsIn || !bothTokensThere"
+                >
+                    Add liquidity
                 </Btn>
             </div>
         </template>
@@ -153,12 +153,12 @@
 <script setup>
 import { inject } from "vue"
 
-import { BrowserProvider, Contract, parseEther } from "ethers"
+import { BrowserProvider, Contract, parseEther, formatUnits } from "ethers"
 
-import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
+import { storeToRefs } from "pinia"
 
-import { getToken, useBalances, usePools } from "~/helpers/index"
+import { getToken, useBalances, usePools, basicRound } from "~/helpers/index"
 
 import * as Router from "../ABIs/DEX.json"
 const RouterABI = Router.default
@@ -175,30 +175,23 @@ const PoolABI = Pool.default
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
-const { pools } = storeToRefs(stepStore)
+const { featuredTokens, positions } = storeToRefs(stepStore)
+const { getUrl } = stepStore
 const {
+    pool,
+    findPool,
+    poolRatio,
     approveSpending,
     bidAsk,
     thisTokenAddress,
-    poolRatio,
-    thisReserve,
-    thatReserve,
     poolAddress,
     poolShare,
-    findPool,
-    setupPool,
     lpTotalSupply,
     liquidityTokenBalance,
-    waitingBidAsk,
     bidAskFormat,
     lpTokenAddress,
     bidAskDisplay,
     addLiquidity,
-    waitingForAdding,
-    resetPool,
-    redeemLiquidity,
-    setPoolCreationListener,
-    setLiquidityChangeListener,
 } = usePools(stepStore.routerAddress)
 
 const { getTokenBalance } = useBalances()
@@ -220,20 +213,19 @@ const state = reactive({
 })
 
 // WIDGET ---------------
-const canCreatePool = computed(() => {
-    return stepStore.connectedWallet && bothTokensThere.value
-})
-const canAddLiquidity = computed(() => {
-    return (
-        stepStore.connectedWallet &&
-        bothTokensThere.value &&
-        !(poolAddress.value === "" || poolAddress.value === unhandled)
-    )
-})
 const bothAmountsIn = computed(() => {
     return ABAmounts.value.every((el) => el !== "")
 })
-
+const ownedPosition = computed(() => {
+    if (!pool.value || !positions.value) {
+        return null
+    }
+    const matchedPosition = positions.value.find((el) => el.pool.address === pool.value.address)
+    if (!matchedPosition) {
+        return null
+    }
+    return matchedPosition
+})
 function callAddLiquidity() {
     addLiquidity(
         ...bothTokenAddresses.value,
@@ -331,19 +323,6 @@ const ABAmounts = computed({
         state.amountB = newValue[1]
     },
 })
-// amounts formated to uint256
-const ABAmountsUint = computed(() => {
-    return ABAmounts.value.map((el, index) => {
-        if (!el || el === ".") {
-            return 0
-        }
-        const regex = /[<>]/
-        if (regex.test(el)) {
-            return parseEther("0.00001")
-        }
-        return parseEther(el)
-    })
-})
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
     ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
@@ -400,29 +379,6 @@ const ABBalance = computed({
         state.balanceB = newVal[1]
     },
 })
-async function getBalance(token, both = false) {
-    if (stepStore.connectedWallet) {
-        if (both) {
-            getBalance(state.tokens.A)
-            getBalance(state.tokens.B)
-            return
-        }
-        if (!token) {
-            return
-        }
-
-        const formatedBalance = await getTokenBalance(
-            token,
-            stepStore.connectedAccount,
-            stepStore.connectedWallet.provider
-        )
-        if (ABTokens.value.indexOf(token) === 0) {
-            state.balanceA = formatedBalance
-        } else {
-            state.balanceB = formatedBalance
-        }
-    }
-}
 // BALANCES -------------
 
 //MODAL STUFF----------
@@ -442,58 +398,51 @@ function openNewTokenModal() {
 const settingsAdd = ref()
 //SETTINGS--------------
 
-// sets up liquidity chage listners with callback and turn offs
-// function setupLiquidityChange(providerArg, poolAdd = false) {
-//     if (providerArg === false) {
-//         setLiquidityChangeListener(false)
-//         return
-//     }
-//     setLiquidityChangeListener(providerArg, poolAdd).then(
-//         ([beneficiary, thisIn, thatIn, thisOut, thatOut, poolContractAddress]) => {
-//             if (poolContractAddress === poolAddress.value) {
-//                 setupPool(
-//                     poolContractAddress,
-//                     bothTokenAddresses.value,
-//                     stepStore.connectedWallet.provider,
-//                     stepStore.connectedAccount
-//                 )
-//             }
-//             setupLiquidityChange(stepStore.connectedWallet.provider, poolContractAddress)
-//             getBalance(null, true)
-//         }
-//     )
-// }
+// ROUTES ----------------
+const router = useRouter()
+const route = useRoute()
+function findTokenByAddress(address) {
+    const token = featuredTokens.value.find((el) => el.address === address)
+    if (!token) {
+        return null
+    }
+    return token
+}
+if (route.query.tk1) {
+    state.tokens.A = findTokenByAddress(route.query.tk1)
+}
+if (route.query.tk2) {
+    state.tokens.B = findTokenByAddress(route.query.tk2)
+}
+// ROUTES ----------------
 
-//sets up pool created listener with callback and turn offs
-// function setupPoolCreated(providerArg) {
-//     if (providerArg === false) {
-//         setPoolCreationListener(false)
-//         return
-//     }
-//     setPoolCreationListener(providerArg).then(([thisToken, thatToken, newPoolAddress]) => {
-//         const incoming = [thisToken, thatToken]
-//         const current = bothTokenAddresses.value
-//         if (current?.every((el) => incoming.includes(el))) {
-//             console.log("setting new pool")
-//             poolAddress.value = newPoolAddress
-//         }
-//         setupPoolCreated(stepStore.connectedWallet.provider)
-//         getBalance(null, true)
-//     })
-// }
-
-//SETS UP POOL OR RESETS BY POOL ADDRESS
 watch(
-    poolAddress,
-    (poolAdd, prevPoolAdd) => {
-        if (!(poolAdd === unhandled || poolAdd === "")) {
-            setupPool(poolAdd, bothTokenAddresses.value, stepStore.connectedWallet.provider, stepStore.connectedAccount)
+    ABTokens,
+    async (tokens) => {
+        // adding query params to url
+        const obj = {}
+        tokens.map((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
+        router.replace({
+            query: {
+                ...obj,
+            },
+        })
+
+        // finding a pool
+        const bothThere = tokens.every((el) => el !== null)
+        if (bothThere) {
+            findPool(tokens)
         } else {
-            //resets previous calulated amount to "0" when pool in no longer there
-            if (!(prevPoolAdd === unhandled || prevPoolAdd === "")) {
-                ABAmounts.value = ABAmounts.value.map((el, index) => (index !== state.lastChangedToken ? "" : el))
+            pool.value = null
+        }
+
+        //getting balance
+        if (stepStore.connectedAccount) {
+            if (state.selectTokenIndex === 0) {
+                state.balanceA = await getTokenBalance(tokens[0], stepStore.connectedAccount, 80001)
+            } else {
+                state.balanceB = await getTokenBalance(tokens[1], stepStore.connectedAccount, 80001)
             }
-            resetPool()
         }
     },
     {
@@ -501,29 +450,13 @@ watch(
     }
 )
 
-const poolAdd = computed(() => {
-    if (bothTokensThere.value) {
-        return pools.value.find((obj) => {
-            const tokens = [obj.this_token.address, obj.that_token.address]
-            if (ABTokens.value.every((el) => tokens.includes(el?.address))) {
-                return true
-            } else {
-                return false
-            }
-        })
-    } else {
-        return null
-    }
-})
-
 //GETS BALANCES BY TOKENS AND WALLET
 watch(
-    () => [ABTokens.value, stepStore.connectedWallet],
-    (newValue, oldValue) => {
-        const newTokens = newValue.at(0)
-        const wallet = newValue.at(1)
+    () => stepStore.connectedAccount,
+    async (wallet) => {
         if (wallet) {
-            getBalance(null, true)
+            state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, 80001)
+            state.balanceA = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, 80001)
         } else {
             ABBalance.value = ["", ""]
         }
@@ -532,24 +465,4 @@ watch(
         immediate: true,
     }
 )
-// FINDS POOL BY TOKEN ADDRESSES
-watch(
-    () => bothTokenAddresses.value,
-    (bothTokens) => {
-        if (bothTokens) {
-            // findPool(...bothTokens, stepStore.connectedWallet.provider)
-            return
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
-//maybe only needed in development to find pool on code reload
-// onMounted(() => {
-//     if (stepStore.connectedWallet && bothTokensThere.value) {
-//         findPool(...bothTokenAddresses.value, stepStore.connectedWallet.provider)
-//     }
-// })
 </script>
