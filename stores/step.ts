@@ -139,21 +139,27 @@ export const useStepStore = defineStore("step", (): any => {
 
     async function fetchTokens() {
         console.log('fetchTokens()')
-        const { data } = await useFetch(getUrl("/chain/80001/tokens/featured"))
+        const { data, error } = await useFetch(getUrl("/chain/80001/tokens/featured"))
         if (data.value) {
             featuredTokens.value = data.value
         }
+        if (error.value) {
+            console.error(error.value)
+        }
     }
     // TOKENS ---------------
-
+    
     // POOLS ----------------
     const pools = ref()
-
+    
     async function fetchPools() {
         console.log('fetchPools()')
-        const { data } = await useFetch(getUrl("/chain/80001/pools/featured"))
+        const { data, error } = await useFetch(getUrl("/chain/80001/pools/featured"))
         if (data.value) {
             pools.value = data.value
+        }
+        if (error.value) {
+            console.error(error.value)
         }
     }
     // POOLS ----------------
