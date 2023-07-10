@@ -32,13 +32,13 @@ const rotateDeg = computed(() => {
 
 //icons can be placed as svg strings
 const svgContent = ref("")
-// loadSvgAsString(getIconPath())
-//     .then((svgString) => {
-//         svgContent.value = svgString
-//     })
-//     .catch((error) => {
-//         console.error("Error loading SVG:", error)
-//     })
+loadSvgAsString(getIconPath())
+    .then((svgString) => {
+        svgContent.value = svgString
+    })
+    .catch((error) => {
+        console.error("Error loading SVG:", error)
+    })
 
 function getIconPath() {
     return `/icons/${props.name}.svg`
