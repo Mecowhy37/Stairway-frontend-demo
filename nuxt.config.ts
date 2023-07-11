@@ -1,6 +1,6 @@
 // https://v3.nuxtjs.org/api/confsiguration/nuxt.config
 export default defineNuxtConfig({
-  ssr: true,
+  ssr: false,
   // nitro: {
   //   prerender: {
   //     crawlLinks: true
