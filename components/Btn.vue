@@ -9,9 +9,12 @@
                 'btn--cta': props.cta,
                 'btn--plain': props.plain,
                 'btn--opaque': props.opaque,
+                'btn--active': props.active,
+                'btn--selectable': props.selectable,
                 'btn--transparent': props.transparent,
                 'btn--wide': props.wide,
                 'btn--bulky': props.bulky,
+                'btn--custom': props.custom,
                 'btn--circle': props.circle,
                 'btn--unclickable': props.loading,
                 'btn--small': props.small,
@@ -56,10 +59,13 @@ export interface Props {
     thin?: boolean
     wide?: boolean
     bulky?: boolean
+    custom?: boolean
     cta?: boolean
     transparent?: boolean
     plain?: boolean
     opaque?: boolean
+    active?: boolean
+    selectable?: boolean
     circle?: boolean
     disabled?: boolean
     loading?: boolean
@@ -104,7 +110,7 @@ $horiz-padd: 1.3rem;
         }
     }
     &:disabled {
-        background-color: var(--primary-disabled-bg);
+        background-color: var(--grey-opaque);
         color: var(--text-grey);
     }
 
@@ -124,17 +130,42 @@ $horiz-padd: 1.3rem;
         }
     }
     &--plain {
-        background-color: var(--primary-disabled-bg-solid);
+        border: none;
+        background-color: var(--grey-solid);
         * {
             color: var(--text-color-reverse);
         }
     }
+
     &--opaque {
-        background-color: #3f4040;
+        background-color: var(--grey-opaque);
         border: 1px solid transparent;
         * {
             color: var(--text-color-reverse);
         }
+        &:disabled {
+            background-color: var(--selectors-disabled-bg);
+            * {
+                color: var(--selectors-disabled-color);
+            }
+        }
+    }
+    &--active {
+        &:not(:disabled)::before {
+            position: absolute;
+            content: "";
+            height: 100%;
+            width: 100%;
+            border-radius: var(--inner-wdg-radius);
+        }
+        &:not(:disabled):hover::before {
+            background-color: var(--blue-hover);
+        }
+        &:not(:disabled):active::before {
+            background-color: var(--blue-active);
+        }
+    }
+    &--selectable {
         &:not(:disabled)::before {
             position: absolute;
             content: "";
@@ -144,10 +175,8 @@ $horiz-padd: 1.3rem;
         &:not(:disabled):hover {
             border: 1px solid var(--list-click-stroke);
         }
-        &:not(:disabled):active {
-            &::before {
-                background-color: var(--list-click-bg-lighter);
-            }
+        &:not(:disabled):active::before {
+            background-color: var(--list-click-bg-lighter);
         }
         &:not(:disabled).selected:hover {
             border: 1px solid var(--primary-btn-bg);
@@ -169,12 +198,6 @@ $horiz-padd: 1.3rem;
                 &::before {
                     background-color: var(--opaque-active-btn-bg-selected);
                 }
-            }
-        }
-        &:disabled {
-            background-color: var(--selectors-disabled-bg);
-            * {
-                color: var(--selectors-disabled-color);
             }
         }
     }
@@ -206,6 +229,10 @@ $horiz-padd: 1.3rem;
         $height: 3rem;
         height: $height;
         border-radius: var(--inner-wdg-radius);
+    }
+    &--custom {
+        border-radius: var(--small-wdg-radius);
+        padding: 13px 15px;
     }
     &--unclickable {
         pointer-events: none;

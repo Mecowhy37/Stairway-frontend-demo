@@ -152,22 +152,6 @@ export const useStepStore = defineStore("step", (): any => {
     }
     // TOKENS ---------------
     
-    // POOLS ----------------
-    const pools = ref(null)
-    
-    async function fetchPools() {
-        console.log('fetchPools()')
-        const { data, error } = await useFetch(getUrl("/chain/80001/pools/featured"))
-        if (data.value) {
-            // console.log('pools: ', data.value)
-            pools.value = data.value
-        }
-        if (error.value) {
-            pools.value = null
-            console.error("failed fetching pools: ", error.value)
-        }
-    }
-    // POOLS ----------------
     
     // POSITIONS ----------------
     const positions = ref(null)
@@ -183,8 +167,6 @@ export const useStepStore = defineStore("step", (): any => {
         }
     }   
     // POSITIONS ----------------
-    
-
 
     return {
         onboard,
@@ -198,9 +180,6 @@ export const useStepStore = defineStore("step", (): any => {
         
         featuredTokens,
         fetchTokens,
-
-        pools,
-        fetchPools,
 
         positions,
         fetchPositions,

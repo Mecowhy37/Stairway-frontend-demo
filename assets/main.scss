@@ -26,8 +26,8 @@
     --swap-windows: rgba(0, 0, 0, 0.45);
 
     --primary-btn-bg: #45ffc5;
-    --primary-disabled-bg-solid: #323333;
-    --primary-disabled-bg: rgba(108, 108, 108, 0.3);
+    --grey-solid: #323333;
+    --grey-opaque: rgba(108, 108, 108, 0.3);
     --opaque-btn-bg: rgba(69, 255, 197, 0.1);
     --opaque-active-btn-bg-selected: rgba(69, 255, 197, 0.302);
 
@@ -39,6 +39,9 @@
     --flat-outline: var(--primary-btn-bg);
     --cta-bg: #00d2d4;
 
+    --blue-hover: rgba(57, 171, 219, 0.3);
+    --blue-active: rgb(57, 171, 219);
+
     --info-bg: rgb(255, 36, 245);
     --info-bg-opaque: rgba(255, 36, 245, 0.1);
 
@@ -48,7 +51,6 @@
     --list-click-bg: rgba(57, 171, 219, 0.6);
     --list-click-bg-lighter: rgba(57, 171, 219, 0.4);
     --list-click-stroke: rgb(57, 171, 219);
-
     --drop-shadow: drop-shadow(0px 10px 40px rgba(0, 0, 0, 0.5));
     --backdrop-blur: blur(15px);
     .light {

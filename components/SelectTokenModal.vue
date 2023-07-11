@@ -154,7 +154,7 @@ defineExpose({
                 border-top: 1px solid transparent;
                 border-right: 1px solid transparent;
                 border-left: 1px solid transparent;
-                border-bottom: 1px solid var(--primary-disabled-bg);
+                border-bottom: 1px solid var(--grey-opaque);
                 &:hover {
                     background-color: var(--list-hover-bg);
                     border: 1px solid var(--list-hover-stroke);

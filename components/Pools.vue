@@ -22,7 +22,9 @@
             </NuxtLink>
         </div>
         <div class="positions__list">
-            <h3>Your positions <span>9</span></h3>
+            <h3 v-if="positions">
+                Your positions <span>{{ positions.length }}</span>
+            </h3>
             <div class="pools">
                 <div
                     v-for="(position, i) in positions"
@@ -30,33 +32,37 @@
                 >
                     <div>
                         <div class="pool__heading row space-between">
-                            <h4>fUSD / fBTC</h4>
-                            <!-- <h4>{{ position.pool.this_token.symbol }} / {{ position.pool.that_token.symbol }}</h4> -->
-                            <div class="row">
-                                <Btn
-                                    opaque
-                                    @click="addRedirect(position.pool)"
-                                    >Add liquidity</Btn
-                                >
-                                <Btn
-                                    opaque
-                                    @click="removeRedirect(position.pool)"
-                                    >Redeem liquidity</Btn
-                                >
-                            </div>
-                            <!-- <Btn
-                                opaque
-                                @click="toggle(i)"
-                            >
-                                Manage
-                                <template #icon>
-                                    <Icon
-                                        name="chevron"
-                                        :size="16"
-                                        :rotate="openedIndex === i"
-                                    />
+                            <h4>{{ position.pool.this_token.symbol }} / {{ position.pool.that_token.symbol }}</h4>
+                            <Dropdown>
+                                <template #dropdown-activator="{ on }">
+                                    <Btn
+                                        opaque
+                                        selectable
+                                        @click="toggle(i)"
+                                    >
+                                        Manage
+                                        <template #icon>
+                                            <Icon
+                                                name="chevron"
+                                                :size="16"
+                                                :rotate="openedIndex === i"
+                                            />
+                                        </template>
+                                    </Btn>
                                 </template>
-                            </Btn> -->
+                                <template #dropdown>
+                                    <Btn
+                                        opaque
+                                        @click="addRedirect(position.pool)"
+                                        >Add liquidity</Btn
+                                    >
+                                    <Btn
+                                        opaque
+                                        @click="removeRedirect(position.pool)"
+                                        >Redeem liquidity</Btn
+                                    >
+                                </template>
+                            </Dropdown>
                         </div>
                         <!-- <div
                             v-if="openedIndex === i"
@@ -167,7 +173,6 @@ function Round(amt) {
                 background-color: var(--widget-bg);
                 border-radius: var(--semi-wdg-radius);
                 background-color: var(--widget-bg);
-                overflow: hidden;
                 margin-bottom: 20px;
                 /* .wrapper {
                     overflow: hidden;
@@ -186,6 +191,7 @@ function Round(amt) {
                 &__stats {
                     padding: 10px;
                     background-color: var(--swap-windows);
+                    border-radius: 0 0 var(--semi-wdg-radius) var(--semi-wdg-radius);
                     .columns {
                         justify-content: space-between;
                         & > div {

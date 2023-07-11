@@ -41,32 +41,32 @@
                         ref="options"
                     >
                         <Btn
-                            plain
                             opaque
+                            selectable
                             outline
                             compact
                             @click="setRedeemProc($event, 25)"
                             >25%</Btn
                         >
                         <Btn
-                            plain
                             opaque
+                            selectable
                             outline
                             compact
                             @click="setRedeemProc($event, 50)"
                             >50%</Btn
                         >
                         <Btn
-                            plain
                             opaque
+                            selectable
                             outline
                             compact
                             @click="setRedeemProc($event, 75)"
                             >75%</Btn
                         >
                         <Btn
-                            plain
                             opaque
+                            selectable
                             outline
                             compact
                             @click="setRedeemProc($event, 100)"
@@ -246,12 +246,12 @@ findPool([featuredTokens.value[0], featuredTokens.value[1]])
         &::-webkit-slider-runnable-track {
             -webkit-appearance: none;
             appearance: none;
-            background: var(--primary-disabled-bg);
+            background: var(--grey-opaque);
             border-radius: 500px;
             height: 6px;
         }
         &::-moz-range-track {
-            background: var(--primary-disabled-bg);
+            background: var(--grey-opaque);
             border-radius: 500px;
             height: 6px;
         }

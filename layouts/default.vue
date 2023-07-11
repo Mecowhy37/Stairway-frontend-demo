@@ -36,18 +36,20 @@ function toggleNewTokenModal() {
 provide("newTokenModal", toggleNewTokenModal)
 // MODAL STUFF ------------------
 
+// await Promise.all([
 if (!featuredTokens.value) {
-    useAsyncData("tokens", () => stepStore.fetchTokens())
+    await useAsyncData("tokens", () => stepStore.fetchTokens())
 }
-if (!pools.value) {
-    // useAsyncData("pools", () => stepStore.fetchPools())
+if (!positions.value && stepStore.connectedAccount) {
+    await useAsyncData("positions", () => stepStore.fetchPositions(stepStore.connectedAccount))
 }
+// ])
 
 watch(
     () => connectedAccount,
-    (account) => {
+    async (account) => {
         if (account) {
-            useAsyncData("positions", () => stepStore.fetchPositions(account))
+            await useAsyncData("positions", () => stepStore.fetchPositions(account))
         }
     },
     {

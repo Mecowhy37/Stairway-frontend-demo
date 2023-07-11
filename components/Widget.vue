@@ -68,26 +68,7 @@ const props = defineProps({
                 align-items: center;
                 position: relative;
                 width: 100%;
-
-                label {
-                    position: relative;
-                    display: flex;
-                    align-items: center;
-                    flex-shrink: 0;
-                    margin: 8px;
-                    padding: 10px 20px;
-                    padding-right: 10px;
-                    border-radius: var(--small-wdg-radius);
-                    background-color: var(--primary-disabled-bg);
-                    .icon {
-                        margin-left: 6px;
-                    }
-                    cursor: pointer;
-                    p {
-                        white-space: nowrap;
-                        line-height: 1.5rem;
-                    }
-                }
+                padding: 8px;
                 input {
                     color: var(--text-color-reverse);
                     width: 100%;
@@ -97,7 +78,6 @@ const props = defineProps({
                     outline: none;
                     text-align: right;
                     font-size: 2rem;
-                    padding-right: 8px;
 
                     &::placeholder {
                         color: var(--text-grey);
@@ -128,7 +108,7 @@ const props = defineProps({
             justify-content: space-between;
             margin-top: 7px;
             padding-top: 7px;
-            border-top: 2px solid var(--primary-disabled-bg);
+            border-top: 2px solid var(--grey-opaque);
             & > div {
                 text-align: center;
                 flex-basis: 50%;

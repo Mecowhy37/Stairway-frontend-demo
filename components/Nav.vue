@@ -53,13 +53,17 @@
                 v-if="!stepStore.connectedWallet"
                 ref="ctaDropDown"
                 plain
+                active
                 @click="stepStore.connectWallet()"
                 >Connect</Btn
             >
             <!-- <div class="divider"></div> -->
             <Dropdown v-else>
                 <template #dropdown-activator="{ on }">
-                    <Btn plain>
+                    <Btn
+                        plain
+                        active
+                    >
                         {{ stepStore.getTruncatedWalletAddress }}
                         <template #icon>
                             <Icon
@@ -72,7 +76,8 @@
                 <template #dropdown>
                     <Btn
                         wide
-                        cta
+                        opaque
+                        active
                         @click="stepStore.disconnectConnectedWallet()"
                         >Disconnect</Btn
                     >

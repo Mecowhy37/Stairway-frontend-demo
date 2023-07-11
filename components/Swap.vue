@@ -57,16 +57,20 @@
                 >
                     <div class="window layer-wdg-box">
                         <div class="window__upper">
-                            <label @click="openTokenSelectModal(x)">
-                                <p v-if="switchedTokens[x] !== null">
-                                    {{ switchedTokens[x]?.symbol }}
-                                </p>
-                                <p v-else>Select token</p>
-                                <Icon
-                                    name="chevron"
-                                    :size="16"
-                                />
-                            </label>
+                            <Btn
+                                @click="openTokenSelectModal(x)"
+                                opaque
+                                selectable
+                                custom
+                            >
+                                {{ ABTokens[x] !== null ? ABTokens[x]?.symbol : "Select token" }}
+                                <template #icon>
+                                    <Icon
+                                        name="chevron"
+                                        :size="16"
+                                    />
+                                </template>
+                            </Btn>
                             <input
                                 type="text"
                                 placeholder="0"

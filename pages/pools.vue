@@ -1,3 +1,3 @@
 <template>
-    <PoolPositions />
+    <Pools />
 </template>
