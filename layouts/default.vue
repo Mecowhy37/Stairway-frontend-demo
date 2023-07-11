@@ -44,7 +44,7 @@ if (!pools.value) {
 }
 if (!positions.value) {
     if (stepStore.connectedAccount) {
-        useAsyncData("positions", () => stepStore.fetchPositions())
+        useAsyncData("positions", () => stepStore.fetchPositions(stepStore.connectedAccount))
     }
 }
 watch(
