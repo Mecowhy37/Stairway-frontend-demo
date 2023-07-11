@@ -42,11 +42,7 @@ if (!featuredTokens.value) {
 if (!pools.value) {
     // useAsyncData("pools", () => stepStore.fetchPools())
 }
-if (!positions.value) {
-    if (stepStore.connectedAccount) {
-        useAsyncData("positions", () => stepStore.fetchPositions(stepStore.connectedAccount))
-    }
-}
+
 watch(
     () => connectedAccount,
     (account) => {

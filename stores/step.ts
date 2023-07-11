@@ -174,7 +174,7 @@ export const useStepStore = defineStore("step", (): any => {
 
     async function fetchPositions(account) {
         console.log('fetchPositions()')
-        const { data, error } = useFetch(getUrl(`/chain/80001/user/${account}/positions`))
+        const { data, error } = await useFetch(getUrl(`/chain/80001/user/${account}/positions`))
         if (data.value) {
             positions.value = data.value 
         }
