@@ -5,50 +5,15 @@
             <NuxtLink
                 to="/"
                 class="navigation__link"
-                ><p>swap</p></NuxtLink
+                ><p>Swap</p></NuxtLink
             >
             <NuxtLink
                 to="/pools"
                 class="navigation__link"
-                ><p>pools</p></NuxtLink
+                ><p>Add liquidity</p></NuxtLink
             >
-            <!-- <NuxtLink
-                to="/buttons"
-                class="navigation__link"
-                ><p>buttons</p></NuxtLink
-            > -->
-
-            <!-- <h2 @click="update">{{ stepStore.walletAdress }}</h2> -->
-            <!-- <div class="navigation__underline"></div> -->
         </div>
         <div class="nav-actions">
-            <!-- <Btn
-                plain
-                @click="revertTheme"
-                >. . .</Btn
-            > -->
-            <!-- <Dropdown>
-                <template #dropdown-activator="{ on }">
-                    <Btn plain>
-                        Ethereum
-                        <template #icon>
-                            <p>
-                                <mdicon :name="on ? 'chevron-up' : 'chevron-down'" />
-                            </p>
-                        </template>
-                    </Btn>
-                </template>
-                <template #dropdown>
-                    <div class="networks-dd">
-                        <p>1</p>
-                        <p>3</p>
-                    </div>
-                </template>
-            </Dropdown> -->
-            <!-- <span
-                v-if="!stepStore.connectedWallet"
-                class="cta-dd"
-                > -->
             <Btn
                 v-if="!stepStore.connectedWallet"
                 ref="ctaDropDown"
@@ -58,10 +23,7 @@
                 >Connect</Btn
             >
             <!-- <div class="divider"></div> -->
-            <Dropdown
-                v-else
-                no-padding
-            >
+            <Dropdown v-else>
                 <template #dropdown-activator="{ on }">
                     <Btn
                         plain
@@ -78,12 +40,20 @@
                     </Btn>
                 </template>
                 <template #dropdown>
-                    <p
+                    <!-- <p
                         @click="stepStore.disconnectConnectedWallet()"
-                        class="list-item list-item--padded list-item--centered list-item--all-rounded"
+                        class="list-item list-item--padded-sm list-item--centered list-item--all-rounded"
+                        >
+                        Disconnect
+                    </p> -->
+                    <Btn
+                        wide
+                        opaque
+                        active
+                        @click="stepStore.disconnectConnectedWallet()"
                     >
                         Disconnect
-                    </p>
+                    </Btn>
                 </template>
             </Dropdown>
             <!-- </span> -->

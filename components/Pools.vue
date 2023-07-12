@@ -57,13 +57,13 @@
                                 <template #dropdown>
                                     <p
                                         @click="addRedirect(position.pool)"
-                                        class="list-item"
+                                        class="list-item list-item--centered"
                                     >
                                         Add liquidity
                                     </p>
                                     <p
                                         @click="removeRedirect(position.pool)"
-                                        class="list-item"
+                                        class="list-item list-item--centered"
                                     >
                                         Redeem liquidity
                                     </p>

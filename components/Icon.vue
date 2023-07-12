@@ -39,5 +39,6 @@ const svgContent = computed(() => {
 .icon {
     transform: rotate(v-bind(rotateDeg));
     width: v-bind(sizeWithPx);
+    height: min-content;
 }
 </style>

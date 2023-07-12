@@ -229,6 +229,8 @@ findPool([featuredTokens.value[0], featuredTokens.value[1]])
 }
 .slider {
     position: relative;
+    margin-top: 8px;
+    margin-bottom: 20px;
     ::before {
         content: "";
         position: absolute;

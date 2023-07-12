@@ -1,8 +1,8 @@
 <template>
     <div
         v-if="showModal"
-        class="modal modal--focus"
         @click.self.prevent="toggleModal"
+        class="modal modal--focus"
     >
         <div class="modal__window base-box">
             <TopBar
@@ -29,20 +29,21 @@
                 class="token-list"
                 ref="tokenListRef"
             >
-                <p
+                <div
                     v-for="token in featuredTokens"
                     @click="setToken(token)"
-                    class="list-item list-item--padded"
+                    class="list-item list-item--padded row space-between align-center"
                 >
-                    {{ token.name }}
-                </p>
-                <!-- <p
-                            v-for="token in filteredTokenList"
-                            @click="setToken(token)"
-                        >
-                            {{ token.name }}
-                        </p> -->
-                <!-- <p @click="setToken(null)">deselect</p> -->
+                    <p>
+                        {{ token.name }}
+                    </p>
+                    <Icon
+                        v-if="ABTokensAddresses.includes(token.address)"
+                        class="tick-icon"
+                        name="tick"
+                        :size="9"
+                    ></Icon>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +72,13 @@ function toggleModal(tokens = false, callback = false) {
         ABTokens.value = tokens
     }
 }
+
+const ABTokensAddresses = computed(() => {
+    if (ABTokens.value.length === 0) {
+        return []
+    }
+    return ABTokens.value.map((el) => el.address)
+})
 // const filteredTokenList = computed(
 //     () =>
 //         tokenList.value.filter(
@@ -142,6 +150,10 @@ defineExpose({
             scrollbar-width: none;
             &::-webkit-scrollbar {
                 display: none;
+            }
+
+            .tick-icon {
+                color: var(--list-click-stroke);
             }
         }
     }

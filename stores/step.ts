@@ -133,7 +133,6 @@ export const useStepStore = defineStore("step", (): any => {
     const featuredTokens = ref(null)
 
     async function fetchTokens() {
-        console.log('fetchTokens()')
         const { data, error } = await useFetch(getUrl("/chain/80001/tokens/featured"))
         if (data.value) {
             // console.log('featuredTokens: ', data.value)
@@ -151,7 +150,6 @@ export const useStepStore = defineStore("step", (): any => {
     const positions = ref(null)
 
     async function fetchPositions(account) {
-        console.log('fetchPositions()')
         const { data, error } = await useFetch(getUrl(`/chain/80001/user/${account}/positions`))
         if (data.value) {
             positions.value = data.value 
