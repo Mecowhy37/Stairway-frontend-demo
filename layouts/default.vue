@@ -115,6 +115,20 @@ h4 {
 p {
     font-size: 1rem;
     line-height: 1.2rem;
+    &.list-item {
+        border-top: 1px solid transparent;
+        border-right: 1px solid transparent;
+        border-left: 1px solid transparent;
+        border-bottom: 1px solid var(--grey-opaque);
+        &:hover {
+            background-color: var(--list-hover-bg);
+            border: 1px solid var(--list-hover-stroke);
+        }
+        &:active {
+            background-color: var(--list-click-bg);
+            border: 1px solid var(--list-click-stroke);
+        }
+    }
 }
 .caption {
     &,
@@ -136,9 +150,13 @@ p {
     }
 }
 .base-box {
-    color: var(--text-color-reverse);
     background-color: var(--widget-bg);
     backdrop-filter: var(--backdrop-blur);
+    color: var(--text-color-reverse);
+
+    &--solid {
+        background-color: var(--widget-bg-solid);
+    }
 }
 .layer-wdg-box {
     background-color: var(--swap-windows);

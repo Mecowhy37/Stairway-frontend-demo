@@ -69,6 +69,7 @@
                             <Icon
                                 name="chevron"
                                 :size="16"
+                                :rotate="on ? 180 : 0"
                             />
                         </template>
                     </Btn>
@@ -126,6 +127,7 @@ function revertTheme() {
     display: flex;
     align-items: center;
     padding: 1rem 1.6rem;
+    z-index: 5;
     .navigation {
         display: flex;
         align-items: center;

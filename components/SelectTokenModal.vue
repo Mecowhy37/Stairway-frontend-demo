@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="showModal"
-        class="modal"
+        class="modal modal--focus"
         @click.self.prevent="toggleModal"
     >
         <div class="modal__window base-box">
@@ -32,6 +32,7 @@
                 <p
                     v-for="token in featuredTokens"
                     @click="setToken(token)"
+                    class="list-item"
                 >
                     {{ token.name }}
                 </p>
@@ -150,19 +151,7 @@ defineExpose({
             }
 
             p {
-                padding: 1rem 1rem;
-                border-top: 1px solid transparent;
-                border-right: 1px solid transparent;
-                border-left: 1px solid transparent;
-                border-bottom: 1px solid var(--grey-opaque);
-                &:hover {
-                    background-color: var(--list-hover-bg);
-                    border: 1px solid var(--list-hover-stroke);
-                }
-                &:active {
-                    background-color: var(--list-click-bg);
-                    border: 1px solid var(--list-click-stroke);
-                }
+                padding: 1rem;
             }
         }
     }

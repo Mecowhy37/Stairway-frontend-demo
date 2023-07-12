@@ -33,7 +33,10 @@
                     <div>
                         <div class="pool__heading row space-between">
                             <h4>{{ position.pool.this_token.symbol }} / {{ position.pool.that_token.symbol }}</h4>
-                            <Dropdown>
+                            <Dropdown
+                                solid
+                                no-padding
+                            >
                                 <template #dropdown-activator="{ on }">
                                     <Btn
                                         opaque
@@ -45,22 +48,25 @@
                                             <Icon
                                                 name="chevron"
                                                 :size="16"
-                                                :rotate="openedIndex === i"
+                                                :rotate="on ? 180 : 0"
                                             />
+                                            <!-- :rotate="openedIndex === i" -->
                                         </template>
                                     </Btn>
                                 </template>
                                 <template #dropdown>
-                                    <Btn
-                                        opaque
+                                    <p
                                         @click="addRedirect(position.pool)"
-                                        >Add liquidity</Btn
+                                        class="list-item"
                                     >
-                                    <Btn
-                                        opaque
+                                        Add liquidity
+                                    </p>
+                                    <p
                                         @click="removeRedirect(position.pool)"
-                                        >Redeem liquidity</Btn
+                                        class="list-item"
                                     >
+                                        Redeem liquidity
+                                    </p>
                                 </template>
                             </Dropdown>
                         </div>
@@ -172,17 +178,24 @@ function Round(amt) {
                 color: var(--text-color-reverse);
                 background-color: var(--widget-bg);
                 border-radius: var(--semi-wdg-radius);
-                background-color: var(--widget-bg);
                 margin-bottom: 20px;
-                /* .wrapper {
-                    overflow: hidden;
-                } */
                 &__heading {
                     padding: 10px 20px;
                     align-items: center;
                     white-space: nowrap;
                     div.row {
                         gap: 1rem;
+                    }
+                    .list-item {
+                        padding: 1rem;
+                        &:first-of-type {
+                            border-top-left-radius: inherit;
+                            border-top-right-radius: inherit;
+                        }
+                        &:last-of-type {
+                            border-bottom-left-radius: inherit;
+                            border-bottom-right-radius: inherit;
+                        }
                     }
                 }
                 &__heading_ext {

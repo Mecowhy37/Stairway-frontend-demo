@@ -5,6 +5,7 @@
             <Dropdown
                 :settings-ref="settingsAdd"
                 no-padding
+                solid
             >
                 <template #dropdown-activator="{ on }">
                     <Btn
