@@ -168,9 +168,6 @@ import { getToken, useBalances, usePools, basicRound } from "~/helpers/index"
 import * as Router from "../ABIs/DEX.json"
 const RouterABI = Router.default
 
-import * as Factory from "../ABIs/Factory.json"
-const FactoryABI = Factory.default
-
 import * as Token from "../ABIs/ERC20.json"
 const TokenABI = Token.default
 

@@ -7,9 +7,6 @@ import { getToken, useBalances, usePools } from "~/helpers/index"
 import * as Router from "../ABIs/DEX.json"
 const RouterABI = Router.default
 
-import * as Factory from "../ABIs/Factory.json"
-const FactoryABI = Factory.default
-
 import injectedModule from "@web3-onboard/injected-wallets"
 declare global {
     interface Window {

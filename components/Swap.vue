@@ -184,9 +184,6 @@ const RouterABI = Router.default
 import * as Pool from "../ABIs/Pool.json"
 const PoolABI = Pool.default
 
-import * as Factory from "../ABIs/Factory.json"
-const FactoryABI = Factory.default
-
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
