@@ -175,34 +175,25 @@ import { BrowserProvider, Contract, formatUnits, parseEther, formatEther } from 
 
 import { useBalances, usePools } from "~/helpers/index"
 
-import * as Token from "../ABIs/ERC20.json"
-const TokenABI = Token.default
-
-import * as Router from "../ABIs/DEX.json"
-const RouterABI = Router.default
-
-import * as Pool from "../ABIs/Pool.json"
-const PoolABI = Pool.default
-
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 
 const { swapTokens } = storeToRefs(stepStore)
 const {
-    approveSpending,
-    bidAsk,
-    poolDepth,
-    poolAddress,
+    pool,
     findPool,
-    getBidAsk,
-    bidAskFormat,
-    bidAskDisplay,
-    swap,
-    waitingForAdding,
-    resetPool,
-    setPoolCreationListener,
-    setLiquidityChangeListener,
+    poolRatio,
+
+    bidAsk,
+    poolAddress,
+    thisReserve,
+    thatReserve,
+    poolDepth,
+    thisTokenAddress,
+    lpTokenAddress,
+    liquidityTokenBalance,
+    lpTotalSupply,
 } = usePools(stepStore.routerAddress)
 
 const { getTokenBalance } = useBalances()

@@ -90,12 +90,6 @@
 import { BrowserProvider, Contract, parseEther } from "ethers"
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
-import * as Foundry from "../ABIs/TokenFoundry.json"
-const FoundryABI = Foundry.default
-
-import * as Token from "../ABIs/ERC20.json"
-const TokenABI = Token.default
-
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 const stepStore = useStepStore()

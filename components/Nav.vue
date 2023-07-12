@@ -58,7 +58,10 @@
                 >Connect</Btn
             >
             <!-- <div class="divider"></div> -->
-            <Dropdown v-else>
+            <Dropdown
+                v-else
+                no-padding
+            >
                 <template #dropdown-activator="{ on }">
                     <Btn
                         plain
@@ -75,13 +78,12 @@
                     </Btn>
                 </template>
                 <template #dropdown>
-                    <Btn
-                        wide
-                        opaque
-                        active
+                    <p
                         @click="stepStore.disconnectConnectedWallet()"
-                        >Disconnect</Btn
+                        class="list-item list-item--padded list-item--centered list-item--all-rounded"
                     >
+                        Disconnect
+                    </p>
                 </template>
             </Dropdown>
             <!-- </span> -->

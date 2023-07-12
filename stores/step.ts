@@ -4,9 +4,6 @@ import { BrowserProvider, Contract } from "ethers"
 import { init, useOnboard } from "@web3-onboard/vue"
 import { getToken, useBalances, usePools } from "~/helpers/index"
 
-import * as Router from "../ABIs/DEX.json"
-const RouterABI = Router.default
-
 import injectedModule from "@web3-onboard/injected-wallets"
 declare global {
     interface Window {

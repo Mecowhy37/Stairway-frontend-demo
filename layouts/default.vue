@@ -128,6 +128,15 @@ p {
             background-color: var(--list-click-bg);
             border: 1px solid var(--list-click-stroke);
         }
+        &--padded {
+            padding: 1rem;
+        }
+        &--centered {
+            text-align: center;
+        }
+        &--all-rounded {
+            border-radius: inherit;
+        }
     }
 }
 .caption {

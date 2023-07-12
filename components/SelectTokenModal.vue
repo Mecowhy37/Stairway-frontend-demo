@@ -32,7 +32,7 @@
                 <p
                     v-for="token in featuredTokens"
                     @click="setToken(token)"
-                    class="list-item"
+                    class="list-item list-item--padded"
                 >
                     {{ token.name }}
                 </p>
@@ -51,12 +51,6 @@
 <script setup>
 import { BrowserProvider, Contract, parseEther } from "ethers"
 import allTokens from "../constants/tokenList.json"
-
-import * as Token from "../ABIs/ERC20.json"
-const TokenABI = Token.default
-
-import * as Foundry from "../ABIs/TokenFoundry.json"
-const FoundryABI = Foundry.default
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -148,10 +142,6 @@ defineExpose({
             scrollbar-width: none;
             &::-webkit-scrollbar {
                 display: none;
-            }
-
-            p {
-                padding: 1rem;
             }
         }
     }

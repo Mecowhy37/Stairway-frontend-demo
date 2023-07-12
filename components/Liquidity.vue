@@ -165,15 +165,6 @@ import { storeToRefs } from "pinia"
 
 import { getToken, useBalances, usePools, basicRound } from "~/helpers/index"
 
-import * as Router from "../ABIs/DEX.json"
-const RouterABI = Router.default
-
-import * as Token from "../ABIs/ERC20.json"
-const TokenABI = Token.default
-
-import * as Pool from "../ABIs/Pool.json"
-const PoolABI = Pool.default
-
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 

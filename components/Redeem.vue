@@ -3,7 +3,10 @@
         <template #widget-title>Redeem liquidity</template>
         <template #right-icon>
             <!-- :settings-ref="settingsAdd" -->
-            <Dropdown no-padding>
+            <Dropdown
+                no-padding
+                solid
+            >
                 <template #dropdown-activator="{ on }">
                     <Btn
                         transparent
