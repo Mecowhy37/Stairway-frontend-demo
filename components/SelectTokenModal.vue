@@ -51,7 +51,6 @@
 
 <script setup>
 import { BrowserProvider, Contract, parseEther } from "ethers"
-import allTokens from "../constants/tokenList.json"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -74,10 +73,7 @@ function toggleModal(tokens = false, callback = false) {
 }
 
 const ABTokensAddresses = computed(() => {
-    if (ABTokens.value.length === 0) {
-        return []
-    }
-    return ABTokens.value.map((el) => el.address)
+    return ABTokens.value.map((el) => el?.address)
 })
 // const filteredTokenList = computed(
 //     () =>
@@ -100,6 +96,7 @@ const tokenListRef = ref()
 watch(showModal, (isOpen) => {
     if (!isOpen) {
         tokenListRef.value.scrollTop = 0
+        ABTokens.value = []
     }
 })
 

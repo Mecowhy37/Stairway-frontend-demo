@@ -20,7 +20,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, pools, positions, connectedAccount } = storeToRefs(stepStore)
+const { featuredTokens, addresses, positions, connectedAccount } = storeToRefs(stepStore)
 
 // MODAL STUFF ------------------
 const selectTokenModal = ref()
@@ -33,7 +33,15 @@ const newTokenModal = ref()
 function toggleNewTokenModal() {
     newTokenModal.value.toggleModal()
 }
-provide("newTokenModal", toggleNewTokenModal)
+const isNewTokenModalOpen = computed(() => {
+    if (!newTokenModal.value) {
+        return null
+    }
+    return newTokenModal.value.showModal
+})
+
+provide("newTokenModal", { toggleNewTokenModal, isNewTokenModalOpen })
+// provide("newTokenModalState", isNewTokenModalOpen)
 // MODAL STUFF ------------------
 
 // await Promise.all([
@@ -42,6 +50,9 @@ if (!featuredTokens.value) {
 }
 if (!positions.value && stepStore.connectedAccount) {
     await useAsyncData("positions", () => stepStore.fetchPositions(stepStore.connectedAccount))
+}
+if (!addresses.value && stepStore.connectedAccount) {
+    await useAsyncData("addresses", () => stepStore.fetchAddresses())
 }
 // ])
 

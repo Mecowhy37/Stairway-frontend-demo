@@ -31,8 +31,6 @@ export const useStepStore = defineStore("step", (): any => {
     const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
     const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
-    const routerAddress = "0x68B1D87F95878fE05B998F19b66F4baba5De1aed"
-    const foundryAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
 
     const unhandled = "0x0000000000000000000000000000000000000000"
 
@@ -159,12 +157,34 @@ export const useStepStore = defineStore("step", (): any => {
         }
     }   
     // POSITIONS ----------------
+    
+    // ADDRESSES ----------------
+    const addresses = ref(null)
+    
+    async function fetchAddresses() {
+        const { data, error } = await useFetch(getUrl("/chain/80001/addresses/local"))
+        if (data.value) {
+            console.log('data.value:', data.value)
+        }
+        if (error.value) {
+            console.error("failed fetching addresses: ", error.value)
+        }
+    }
+    
+    const routerAddress = computed(() => {
+        if (!addresses.value) {
+            return null
+        }
+        return addresses.value.DEX
+    })
+
+    
+    // ADDRESSES ----------------
 
     return {
         onboard,
 
         routerAddress,
-        foundryAddress,
         isDark,
         swapTokens,
 
@@ -175,6 +195,9 @@ export const useStepStore = defineStore("step", (): any => {
 
         positions,
         fetchPositions,
+
+        addresses,
+        fetchAddresses,
 
         bothSwapTokensThere,
         bothSwapTokenAddresses,

@@ -32,17 +32,17 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <!-- <div class="tips">
+            <div class="tips">
                 <p>
-                    <span class="text-highlight">Tip: </span>
-                    To try out the interface you'll need some tokens, you can get them
+                    <!-- <span class="text-highlight">Tip: </span> -->
+                    Get tokens for test
                     <span
                         @click="openNewTokenModal"
                         class="activator-link text-highlight"
                         >here</span
                     >
                 </p>
-            </div> -->
+            </div>
             <div class="windows">
                 <div
                     class="contents"
@@ -157,13 +157,13 @@
 
 <script setup>
 import { inject } from "vue"
-
 import { BrowserProvider, Contract, parseEther, formatUnits } from "ethers"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 import { getToken, useBalances, usePools, basicRound } from "~/helpers/index"
+import { textSpanIntersection } from "typescript"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
@@ -196,8 +196,6 @@ const state = reactive({
     },
     amountA: "",
     amountB: "",
-    approvalA: "",
-    approvalB: "",
     balanceA: "",
     balanceB: "",
     selectTokenIndex: 0,
@@ -380,11 +378,15 @@ function openTokenSelectModal(index) {
     toggleSelectTokenModal(ABTokens.value, setToken)
     state.selectTokenIndex = index
 }
-
-const toggleNewTokenModal = inject("newTokenModal")
+const { toggleNewTokenModal, isNewTokenModalOpen } = inject("newTokenModal")
 function openNewTokenModal() {
     toggleNewTokenModal()
 }
+watch(isNewTokenModalOpen, (newVal) => {
+    if (!newVal) {
+        getBothBalances()
+    }
+})
 //MODAL STUFF----------
 
 //SETTINGS--------------
@@ -442,14 +444,19 @@ watch(
         immediate: true,
     }
 )
+async function getBothBalances() {
+    state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, 80001)
+    state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, 80001)
+}
 
 //GETS BALANCES BY TOKENS AND WALLET
 watch(
     () => stepStore.connectedAccount,
     async (wallet) => {
         if (wallet) {
+            state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, 80001)
             state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, 80001)
-            state.balanceA = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, 80001)
+            // getBothBalances()
         } else {
             ABBalance.value = ["", ""]
         }

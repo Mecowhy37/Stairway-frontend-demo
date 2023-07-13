@@ -397,7 +397,7 @@ function openTokenSelectModal(index) {
     toggleSelectTokenModal(ABTokens.value, setToken)
     state.selectTokenIndex = index
 }
-const toggleNewTokenModal = inject("newTokenModal")
+const { toggleNewTokenModal } = inject("newTokenModal")
 function openNewTokenModal() {
     toggleNewTokenModal()
 }

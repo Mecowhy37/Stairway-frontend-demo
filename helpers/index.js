@@ -1,6 +1,12 @@
 import { ref } from "vue"
 import { BrowserProvider, Contract, parseEther, formatEther, formatUnits } from "ethers"
 
+import router from "@/ABIs/IDEX.json"
+const RouterABI = router.abi
+
+import token from "@/ABIs/ERC20.json"
+const TokenABI = token.abi
+
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 export function getToken(symb) {
@@ -26,7 +32,7 @@ export function useBalances() {
             getUrl(`/chain/${chainId}/user/${account}/balance/${token.address}`)
         )
         if (balance.value) {
-            return balance.value
+            return formatUnits(balance.value, token.decimals)
         }
         if (error.value) {
             console.error("failed to fetch balance", error.value)
@@ -131,90 +137,90 @@ export function usePools(routerAddress) {
     //         : null
     // })
 
-    // // async function approveSpending(tokenAddress, provider) {
-    // async function approveSpending(tokenAddress, providerArg, amount, callback = false) {
-    //     const provider = new BrowserProvider(providerArg)
-    //     const signer = await provider.getSigner()
-    //     const erc20 = new Contract(tokenAddress, TokenABI, signer)
-    //     const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-    //     const quantity = amount === 0 ? maxUint : amount
-    //     const tx = await erc20.approve(routerAddress, quantity)
-    //     await tx.wait(1)
-    //     return await listenForTransactionMine(tx, provider, callback)
-    // }
-    // function listenForTransactionMine(txRes, provider, callback = false) {
-    //     console.log(`Mining ${txRes.hash}...`)
-    //     return new Promise((resolve, reject) => {
-    //         provider.once(txRes.hash, async (txReciept) => {
-    //             if (callback !== false) {
-    //                 callback()
-    //             }
-    //             resolve()
-    //             console.log("Done!")
-    //         })
-    //     })
-    // }
-    // async function checkAllowance(tokenAddress, owner, spender, providerArg) {
-    //     try {
-    //         const provider = new BrowserProvider(providerArg)
-    //         const token = new Contract(tokenAddress, TokenABI, provider)
-    //         const allowance = await token.allowance(owner, spender)
-    //         return allowance
-    //     } catch (err) {
-    //         return err
-    //     }
-    // }
+    // async function approveSpending(tokenAddress, provider) {
+    async function approveSpending(tokenAddress, providerArg, amount, callback = false) {
+        const provider = new BrowserProvider(providerArg)
+        const signer = await provider.getSigner()
+        const erc20 = new Contract(tokenAddress, TokenABI, signer)
+        const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        const quantity = amount === 0 ? maxUint : amount
+        const tx = await erc20.approve(routerAddress, quantity)
+        await tx.wait(1)
+        return await listenForTransactionMine(tx, provider, callback)
+    }
+    function listenForTransactionMine(txRes, provider, callback = null) {
+        console.log(`Mining ${txRes.hash}...`)
+        return new Promise((resolve, reject) => {
+            provider.once(txRes.hash, async (txReciept) => {
+                if (typeof callback === "function") {
+                    callback()
+                }
+                resolve()
+                console.log("Done!")
+            })
+        })
+    }
+    async function checkAllowance(tokenAddress, owner, spender, providerArg) {
+        try {
+            const provider = new BrowserProvider(providerArg)
+            const token = new Contract(tokenAddress, TokenABI, provider)
+            const allowance = await token.allowance(owner, spender)
+            return allowance
+        } catch (err) {
+            return err
+        }
+    }
 
-    // async function addLiquidity(addressA, addressB, amountA, amountB, slippage, deadline, recipient, providerArg) {
-    //     const provider = new BrowserProvider(providerArg)
-    //     const signer = await provider.getSigner()
-    //     const router = new Contract(routerAddress, RouterABI, signer)
+    async function addLiquidity(addressA, addressB, amountA, amountB, slippage, deadline, recipient, providerArg) {
+        const provider = new BrowserProvider(providerArg)
+        const signer = await provider.getSigner()
+        const router = new Contract(routerAddress, RouterABI, signer)
 
-    //     const parsedAmountA = parseEther(amountA)
-    //     const parsedAmountB = parseEther(amountB)
-    //     const parsedMinAmountA = parseEther(String(amountA - (amountA * slippage) / 100))
-    //     const parsedMinAmountB = parseEther(String(amountB - (amountB * slippage) / 100))
+        const parsedAmountA = parseEther(amountA)
+        const parsedAmountB = parseEther(amountB)
+        const parsedMinAmountA = parseEther(String(amountA - (amountA * slippage) / 100))
+        const parsedMinAmountB = parseEther(String(amountB - (amountB * slippage) / 100))
 
-    //     const blockTimestamp = (await provider.getBlock("latest")).timestamp
-    //     const deadlineStamp = blockTimestamp + deadline * 60
+        const blockTimestamp = (await provider.getBlock("latest")).timestamp
+        const deadlineStamp = blockTimestamp + deadline * 60
 
-    //     try {
-    //         const allowanceA = await checkAllowance(addressA, signer.address, routerAddress, providerArg)
-    //         const needApprovalA = allowanceA < parsedAmountA
+        try {
+            const allowanceA = await checkAllowance(addressA, signer.address, routerAddress, providerArg)
+            const needApprovalA = allowanceA < parsedAmountA
 
-    //         const allowanceB = await checkAllowance(addressB, signer.address, routerAddress, providerArg)
-    //         const needApprovalB = allowanceB < parsedAmountB
+            const allowanceB = await checkAllowance(addressB, signer.address, routerAddress, providerArg)
+            const needApprovalB = allowanceB < parsedAmountB
 
-    //         if (needApprovalA || needApprovalB) {
-    //             const approvalPromises = []
+            if (needApprovalA || needApprovalB) {
+                const approvalPromises = []
 
-    //             if (needApprovalA) {
-    //                 approvalPromises.unshift(approveSpending(addressA, providerArg, 0))
-    //                 // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
-    //             }
+                if (needApprovalA) {
+                    approvalPromises.unshift(approveSpending(addressA, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
+                }
 
-    //             if (needApprovalB) {
-    //                 approvalPromises.unshift(approveSpending(addressB, providerArg, 0))
-    //                 // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
-    //             }
+                if (needApprovalB) {
+                    approvalPromises.unshift(approveSpending(addressB, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
+                }
 
-    //             await Promise.all(approvalPromises)
-    //         }
+                await Promise.all(approvalPromises)
+            }
 
-    //         await router.addLiquidity(
-    //             addressA,
-    //             addressB,
-    //             parsedMinAmountA,
-    //             parsedAmountA,
-    //             parsedMinAmountB,
-    //             parsedAmountB,
-    //             recipient,
-    //             deadlineStamp
-    //         )
-    //     } catch (error) {
-    //         console.log("Failed to add liquidity:", error)
-    //     }
-    // }
+            await router.addLiquidity(
+                addressA,
+                addressB,
+                parsedMinAmountA,
+                parsedAmountA,
+                parsedMinAmountB,
+                parsedAmountB,
+                recipient,
+                deadlineStamp
+            )
+        } catch (error) {
+            console.log("Failed to add liquidity:", error)
+        }
+    }
 
     // async function redeemLiquidity(tokenA, tokenB, redeemPercent, connectedAccount, deadline, providerArg) {
     //     console.log("redeemLiquidity()")
@@ -273,6 +279,8 @@ export function usePools(routerAddress) {
         pool,
         findPool,
         poolRatio,
+        listenForTransactionMine,
+        addLiquidity,
 
         bidAsk,
         poolAddress,
@@ -285,7 +293,6 @@ export function usePools(routerAddress) {
         lpTotalSupply,
         // checkAllowance,
         // swap,
-        // addLiquidity,
         // redeemLiquidity,
         // bidAskFormat,
         // bidAskDisplay,
