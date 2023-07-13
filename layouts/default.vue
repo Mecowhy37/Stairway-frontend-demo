@@ -81,7 +81,7 @@ watch(
     font-family: "DM Sans", sans-serif;
     line-height: 100%;
     font-weight: 500;
-    user-select: none;
+    /* user-select: none; */
 }
 html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
