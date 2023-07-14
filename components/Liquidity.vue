@@ -168,8 +168,8 @@ import { textSpanIntersection } from "typescript"
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
-const { featuredTokens, positions } = storeToRefs(stepStore)
-const { getUrl } = stepStore
+const { featuredTokens, positions, connectedAccount, chainId } = storeToRefs(stepStore)
+const { isSupportedChain } = stepStore
 const {
     pool,
     findPool,
@@ -410,7 +410,7 @@ if (route.query.tk2) {
     state.tokens.B = findTokenByAddress(route.query.tk2)
 }
 // ROUTES ----------------
-
+let intervalId = null
 watch(
     ABTokens,
     async (tokens) => {
@@ -425,9 +425,22 @@ watch(
 
         // finding a pool
         const bothThere = tokens.every((el) => el !== null)
-        if (bothThere) {
-            findPool(tokens)
+        if (bothThere && isSupportedChain(chainId.value)) {
+            // Stop the existing interval if it's running
+            clearInterval(intervalId)
+
+            // Call findPool immediately
+            await findPool(tokens, chainId.value)
+
+            // Start the loop to call findPool every second
+            intervalId = setInterval(async () => {
+                console.log("looping...", tokens[0].symbol, " / ", tokens[1].symbol)
+                await findPool(tokens, chainId.value)
+            }, 1000)
         } else {
+            // Stop the loop if any of the values is missing
+            clearInterval(intervalId)
+            intervalId = null
             pool.value = null
         }
 
@@ -444,19 +457,21 @@ watch(
         immediate: true,
     }
 )
-async function getBothBalances() {
-    state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, 80001)
-    state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, 80001)
-}
 
+async function getBothBalances() {
+    if (isSupportedChain(chainId.value)) {
+        state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, chainId.value)
+        state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, chainId.value)
+    }
+}
 //GETS BALANCES BY TOKENS AND WALLET
 watch(
-    () => stepStore.connectedAccount,
-    async (wallet) => {
-        if (wallet) {
-            state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, 80001)
-            state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, 80001)
-            // getBothBalances()
+    () => [connectedAccount.value, chainId.value],
+    async (newVal) => {
+        const [wallet, chain] = newVal
+        if (wallet && isSupportedChain(chain)) {
+            state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, chain)
+            state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, chain)
         } else {
             ABBalance.value = ["", ""]
         }

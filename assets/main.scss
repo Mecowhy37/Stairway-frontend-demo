@@ -29,8 +29,8 @@
     --widget-bg-solid: rgba(30, 30, 30, 0.9);
     --swap-windows: rgba(0, 0, 0, 0.45);
 
-    --primary-btn-bg: #45ffc5;
-    --grey-solid: #323333;
+    --primary-btn-bg: rgb(69, 255, 197);
+    --grey-solid: rgb(50, 51, 51);
     --grey-opaque: rgba(108, 108, 108, 0.3);
     --opaque-btn-bg: rgba(69, 255, 197, 0.1);
     --opaque-active-btn-bg-selected: rgba(69, 255, 197, 0.302);
@@ -39,9 +39,9 @@
     --selectors-disabled-color: rgba(255, 255, 255, 0.2);
 
     --flat-bg: var(--widget-bg);
-    --flat-bg-solid: #303332;
+    --flat-bg-solid: rgb(48, 51, 50);
     --flat-outline: var(--primary-btn-bg);
-    --cta-bg: #00d2d4;
+    --cta-bg: rgb(0, 210, 212);
 
     --blue-hover: rgba(57, 171, 219, 0.3);
     --blue-active: rgb(57, 171, 219);

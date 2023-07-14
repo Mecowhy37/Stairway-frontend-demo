@@ -50,15 +50,16 @@ export function useBalances() {
 export function usePools(routerAddress) {
     const pool = ref(null)
 
-    async function findPool(tokens) {
-        const { data, error } = await useFetch(getUrl(`/chain/80001/pool/${tokens[0].address}/${tokens[1].address}`))
-        if (data.value) {
-            pool.value = data.value
-        }
+    async function findPool(tokens, chainId) {
+        const { data, error } = await useFetch(
+            getUrl(`/chain/${chainId}/pool/${tokens[0].address}/${tokens[1].address}`)
+        )
         if (error.value) {
             pool.value = null
             console.error("error finding pool: ", error.value)
+            return
         }
+        pool.value = data.value
     }
 
     const poolRatio = computed(() => {

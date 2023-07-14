@@ -45,7 +45,7 @@
                             <input
                                 v-model="tokenSymbol"
                                 type="text"
-                                placeholder="STRVY"
+                                placeholder="SYMBOL"
                             />
                         </div>
                     </div>

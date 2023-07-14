@@ -20,7 +20,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, positions, connectedAccount } = storeToRefs(stepStore)
+const { featuredTokens, addresses, positions, connectedAccount, chainId } = storeToRefs(stepStore)
 
 // MODAL STUFF ------------------
 const selectTokenModal = ref()
@@ -41,27 +41,31 @@ const isNewTokenModalOpen = computed(() => {
 })
 
 provide("newTokenModal", { toggleNewTokenModal, isNewTokenModalOpen })
-// provide("newTokenModalState", isNewTokenModalOpen)
 // MODAL STUFF ------------------
 
-// await Promise.all([
 if (!featuredTokens.value) {
     await useAsyncData("tokens", () => stepStore.fetchTokens())
 }
-if (!positions.value && stepStore.connectedAccount) {
-    await useAsyncData("positions", () => stepStore.fetchPositions(stepStore.connectedAccount))
-}
-if (!addresses.value && stepStore.connectedAccount) {
+
+if (!addresses.value) {
     await useAsyncData("addresses", () => stepStore.fetchAddresses())
 }
-// ])
 
 watch(
-    () => connectedAccount,
-    async (account) => {
+    () => connectedAccount.value,
+    (account) => {
         if (account) {
-            await useAsyncData("positions", () => stepStore.fetchPositions(account))
+            useAsyncData("positions", () => stepStore.fetchPositions(account, chainId.value))
         }
+    },
+    {
+        immediate: true,
+    }
+)
+watch(
+    () => chainId.value,
+    (newVal) => {
+        console.log(newVal)
     },
     {
         immediate: true,
@@ -81,7 +85,6 @@ watch(
     font-family: "DM Sans", sans-serif;
     line-height: 100%;
     font-weight: 500;
-    /* user-select: none; */
 }
 html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */

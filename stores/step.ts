@@ -23,7 +23,6 @@ declare global {
 
 export const useStepStore = defineStore("step", (): any => {
     const isDark: Ref<boolean> = ref(false)
-    const chainId: Ref<number | null> = ref(31337)
     const activeWallet: Ref<string | null> = ref(null)
     const connectingWallet: Ref<boolean> = ref(false)
     const isConnectingText = computed((): string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
@@ -99,14 +98,15 @@ export const useStepStore = defineStore("step", (): any => {
         const end = toTruncate.splice(-4).join("")
         return start + "..." + end
     })
-
-
-    const isSupportedChain = computed(() => {
-        if (connectedChain.value) {
-            return connectedChain.value?.id === "0x7a69" || connectedChain.value?.id === "0x13881" 
-        } else {
-            return false
+    
+    function isSupportedChain(id: number) {
+        return id === 31337 || id === 80001
+    }
+    const chainId = computed(() => {
+        if (!connectedChain.value) {
+            return null
         }
+        return parseInt(connectedChain.value.id, 16)
     })
 
     function connectWalletAction() {
@@ -132,14 +132,12 @@ export const useStepStore = defineStore("step", (): any => {
 
     async function fetchTokens() {
         const { data, error } = await useFetch(getUrl("/chain/80001/tokens/featured"))
-        if (data.value) {
-            // console.log('featuredTokens: ', data.value)
-            featuredTokens.value = data.value
-        }
         if (error.value) {
             featuredTokens.value = null
             console.error("failed fetching tokens", error.value)
+            return
         }
+        featuredTokens.value = data.value
     }
     // TOKENS ---------------
     
@@ -147,14 +145,15 @@ export const useStepStore = defineStore("step", (): any => {
     // POSITIONS ----------------
     const positions = ref(null)
 
-    async function fetchPositions(account) {
-        const { data, error } = await useFetch(getUrl(`/chain/80001/user/${account}/positions`))
-        if (data.value) {
-            positions.value = data.value 
-        }
+    async function fetchPositions(account, chain) {
+        console.log(`/chain/${chain}/user/${account}/positions`)
+        const { data, error } = await useFetch(getUrl(`/chain/${chain}/user/${account}/positions`))
         if (error.value) {
+            positions.value = null 
             console.error("failed fetching positions: ", error.value)
+            return
         }
+        positions.value = data.value 
     }   
     // POSITIONS ----------------
     
@@ -163,12 +162,12 @@ export const useStepStore = defineStore("step", (): any => {
     
     async function fetchAddresses() {
         const { data, error } = await useFetch(getUrl("/chain/80001/addresses/local"))
-        if (data.value) {
-            console.log('data.value:', data.value)
-        }
         if (error.value) {
+            addresses.value = null
             console.error("failed fetching addresses: ", error.value)
+            return
         }
+        addresses.value = data.value
     }
     
     const routerAddress = computed(() => {
