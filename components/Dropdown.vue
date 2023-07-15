@@ -65,8 +65,7 @@ onClickOutside(toActivate, (event) => {
         toggleDropdown()
         event.stopPropagation()
         if (openner.value === event.target.parentNode) {
-            // not used anymore?
-            // when activator clicked
+            // when is open and actcivator is clicked
             event.stopPropagation()
         }
     }

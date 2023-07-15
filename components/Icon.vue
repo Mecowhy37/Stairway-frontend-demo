@@ -18,6 +18,7 @@ const props = defineProps({
         type: String,
     },
     rotate: {
+        required: false,
         type: Number,
         default: 0,
     },

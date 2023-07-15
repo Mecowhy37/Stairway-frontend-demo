@@ -106,6 +106,9 @@ $horiz-padd: 1.3rem; */
     box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.05);
     transform: rotate(v-bind(rotateDeg));
     cursor: pointer;
+    * {
+        pointer-events: none;
+    }
 
     &:disabled {
         background-color: var(--grey-opaque);
