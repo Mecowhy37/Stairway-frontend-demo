@@ -1,81 +1,98 @@
 <template>
     <nav class="navbar">
-        <h4 class="navbar__logo">Stairway</h4>
-        <div class="navigation">
-            <NuxtLink
-                to="/"
-                class="navigation__link"
-                ><p>Swap</p></NuxtLink
-            >
-            <NuxtLink
-                to="/pools"
-                class="navigation__link"
-                ><p>Add liquidity</p></NuxtLink
-            >
-        </div>
-        <div class="nav-actions">
-            <Btn
-                v-if="!stepStore.connectedWallet"
-                ref="ctaDropDown"
-                plain
-                active
-                @click="stepStore.connectWallet()"
-                >Connect</Btn
-            >
-            <!-- <div class="divider"></div> -->
-            <Dropdown v-else>
-                <template #dropdown-activator="{ on }">
-                    <Btn
-                        plain
-                        active
-                    >
-                        {{ stepStore.getTruncatedWalletAddress }}
-                        <template #icon>
-                            <Icon
-                                name="chevron"
-                                :size="16"
-                                :rotate="on ? 180 : 0"
-                            />
-                        </template>
-                    </Btn>
-                </template>
-                <template #dropdown>
-                    <!-- <p
-                        @click="stepStore.disconnectConnectedWallet()"
-                        class="list-item list-item--padded-sm list-item--centered list-item--all-rounded"
-                        >
-                        Disconnect
-                    </p> -->
-                    <Btn
-                        wide
-                        opaque
-                        active
-                        @click="stepStore.disconnectConnectedWallet()"
-                    >
-                        Disconnect
-                    </Btn>
-                </template>
-            </Dropdown>
-            <!-- </span> -->
-            <!-- <Dropdown v-else> -->
-            <!-- <template #dropdown-activator="{ on }"> -->
-            <!-- <Btn
-                    plain
-                    @click="stepStore.disconnectConnectedWallet()"
+        <div class="navbar__wrapper row space-between">
+            <img
+                class="navbar__logo"
+                src="/logox2.png"
+            />
+            <div class="navbar__navigation">
+                <NuxtLink
+                    to="/"
+                    class="link link--underlined"
+                    ><p>Swap</p></NuxtLink
                 >
-                    {{ !disconnectText ? stepStore.getTruncatedWalletAddress : "disconnect" }}
-                </Btn> -->
-
-            <!-- </template> -->
-            <!-- <template #dropdown> -->
-            <!-- <Btn
-                        wide
-                        @click="stepStore.disconnectConnectedWallet()"
-                    >
-                        <span>disconnect</span>
-                    </Btn> -->
-            <!-- </template> -->
-            <!-- </Dropdown> -->
+                <NuxtLink
+                    to="/pools"
+                    class="link link--underlined"
+                    ><p>Add liquidity</p></NuxtLink
+                >
+                <Btn
+                    v-if="!stepStore.connectedWallet"
+                    plain
+                    active
+                    @click="stepStore.connectWallet()"
+                >
+                    Connect
+                    <template #icon>
+                        <Icon
+                            name="chevron"
+                            :size="16"
+                        />
+                    </template>
+                </Btn>
+                <Dropdown
+                    v-else
+                    :width="180"
+                >
+                    <template #dropdown-activator="{ on }">
+                        <Btn
+                            plain
+                            active
+                        >
+                            {{ stepStore.getTruncatedWalletAddress }}
+                            <template #icon>
+                                <Icon
+                                    name="chevron"
+                                    :size="16"
+                                    :rotate="on ? 180 : 0"
+                                />
+                            </template>
+                        </Btn>
+                    </template>
+                    <template #dropdown>
+                        <Btn
+                            wide
+                            medium
+                            opaque
+                            active
+                            @click="stepStore.disconnectConnectedWallet()"
+                        >
+                            Disconnect
+                        </Btn>
+                    </template>
+                </Dropdown>
+                <Dropdown
+                    no-padding
+                    :width="140"
+                >
+                    <template #dropdown-activator="{ on }">
+                        <Btn
+                            circle
+                            transparent
+                            class="burger"
+                        >
+                            <template #icon>
+                                <Icon
+                                    name="burger"
+                                    :size="16"
+                                />
+                            </template>
+                        </Btn>
+                    </template>
+                    <template #dropdown>
+                        <NuxtLink
+                            to="/"
+                            class="link list-item list-item--padded-sm"
+                            ><p>Swap</p></NuxtLink
+                        >
+                        <NuxtLink
+                            to="/pools"
+                            class="link list-item list-item--padded-sm"
+                            ><p>Add liquidity</p></NuxtLink
+                        >
+                    </template>
+                </Dropdown>
+            </div>
         </div>
     </nav>
 </template>
@@ -92,50 +109,66 @@ function revertTheme() {
 
 <style lang="scss" scoped>
 .navbar {
-    position: fixed;
+    position: sticky;
     top: 0px;
     height: var(--nav-height);
     width: 100%;
     display: flex;
-    align-items: center;
-    padding: 1rem 1.6rem;
+    white-space: nowrap;
     z-index: 5;
-    .navigation {
+    &__wrapper {
+        margin-top: auto;
+        padding: 0 70px;
+        width: 100%;
+    }
+    &__logo {
+        display: block;
+        height: var(--logo-height);
+    }
+    &__navigation {
         display: flex;
         align-items: center;
-        position: relative;
-        margin-left: 8%;
+        gap: 30px;
 
-        &__link {
-            color: var(--text-color);
+        .link {
+            color: var(--text-color-reverse);
             position: relative;
-            padding: 0 0.8rem;
             text-decoration: none;
             box-sizing: content-box !important;
             display: flex;
-            justify-content: center;
             align-items: center;
-            &::before {
-                content: "";
-                position: absolute;
-                opacity: 0;
-                bottom: -10%;
-                left: 50%;
-                height: 2px;
-                /* padding: 0 5%; */
-                border-radius: 1px;
-                width: calc(100% - 1.6rem);
-                background-color: var(--text-color);
-                transition: opacity ease-in-out 0.15s, background-color var(--transition);
-                transform: translateX(-50%);
-            }
+            &--underlined {
+                color: var(--text-color);
+                /* &::before {
+                    content: "";
+                    position: absolute;
+                    opacity: 0;
+                    bottom: -30%;
+                    left: 50%;
+                    height: 2px;
+                    border-radius: 1px;
+                    width: 100%;
+                    background-color: var(--text-color);
+                    transition: opacity ease-in-out 0.15s, background-color var(--transition);
+                    transform: translateX(-50%);
+                } */
 
-            &:hover::before {
-                opacity: 0.2;
-            }
+                &:hover::before {
+                    opacity: 0.2;
+                }
 
-            &.router-link-exact-active::before {
-                opacity: 1;
+                &.router-link-exact-active::before {
+                    opacity: 1;
+                }
+            }
+        }
+        .burger {
+            margin: 0 -10px;
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.04);
+            }
+            .icon {
+                margin: 10px !important;
             }
         }
     }

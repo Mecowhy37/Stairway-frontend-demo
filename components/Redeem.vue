@@ -47,7 +47,7 @@
                             opaque
                             selectable
                             outline
-                            compact
+                            radio
                             @click="setRedeemProc($event, 25)"
                             >25%</Btn
                         >
@@ -55,7 +55,7 @@
                             opaque
                             selectable
                             outline
-                            compact
+                            radio
                             @click="setRedeemProc($event, 50)"
                             >50%</Btn
                         >
@@ -63,7 +63,7 @@
                             opaque
                             selectable
                             outline
-                            compact
+                            radio
                             @click="setRedeemProc($event, 75)"
                             >75%</Btn
                         >
@@ -71,7 +71,7 @@
                             opaque
                             selectable
                             outline
-                            compact
+                            radio
                             @click="setRedeemProc($event, 100)"
                             >Max</Btn
                         >

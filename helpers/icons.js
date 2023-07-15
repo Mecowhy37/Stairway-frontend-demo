@@ -4,6 +4,10 @@ export default {
     <path d="M5 3L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     `,
+    burger: `<svg viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block">
+    <path d="M1.5 3H20.5C21.33 3 22 2.33 22 1.5C22 0.67 21.33 0 20.5 0H1.5C0.67 0 0 0.67 0 1.5C0 2.33 0.67 3 1.5 3ZM20.5 9H1.5C0.67 9 0 9.67 0 10.5C0 11.33 0.67 12 1.5 12H20.5C21.33 12 22 11.33 22 10.5C22 9.67 21.33 9 20.5 9ZM20.5 18H1.5C0.67 18 0 18.67 0 19.5C0 20.33 0.67 21 1.5 21H20.5C21.33 21 22 20.33 22 19.5C22 18.67 21.33 18 20.5 18Z" fill="currentColor"/>
+    </svg>
+    `,
     chevron: `<svg viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block;">
     <path d="M1.5 1.5L6.5 6.5L11.5 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>

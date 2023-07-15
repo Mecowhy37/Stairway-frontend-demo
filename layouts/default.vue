@@ -1,8 +1,10 @@
 <template>
     <div :class="[stepStore.isDark ? themes.dark : themes.light]">
-        <Nav />
-        <div class="page-slot">
-            <slot />
+        <div class="wrapper">
+            <Nav />
+            <div class="page-slot">
+                <slot />
+            </div>
         </div>
         <div class="bg-gradient"></div>
 
@@ -76,13 +78,12 @@ watch(
 <style lang="scss" module="themes" src="assets/main.scss"></style>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500&display=swap");
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    /* transition: color var(--transition); */
-    font-family: "DM Sans", sans-serif;
+    font-family: "DM Sans";
     line-height: 100%;
     font-weight: 500;
 }
@@ -90,19 +91,23 @@ html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
     color: var(--text-color);
     $size: 16px;
-    font-size: calc($size + 0 * ((100vw - 300px) / (1600 - 300)));
-    font-weight: 500;
+    /* font-size: calc($size + 0 * ((100vw - 300px) / (1600 - 300))); */
+    font-size: $size;
 }
-
+.wrapper {
+    position: relative;
+    margin: 0 auto;
+    @media (min-width: 1536px) {
+        max-width: 1536px;
+    }
+}
 .page-slot {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    min-height: 100vh;
-    padding: var(--nav-height) 0px 5rem;
+    min-height: calc(100vh - var(--nav-height));
+    padding-bottom: var(--nav-height);
     -webkit-box-align: center;
     align-items: center;
-    flex: 1 1 0%;
 
     &--modals {
         display: contents;
@@ -135,6 +140,16 @@ p {
     border-right: 1px solid transparent;
     border-left: 1px solid transparent;
     border-bottom: 1px solid var(--grey-opaque);
+    cursor: pointer;
+
+    &:first-of-type {
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+    }
+    &:last-of-type {
+        border-bottom-left-radius: inherit;
+        border-bottom-right-radius: inherit;
+    }
     &:hover {
         background-color: var(--list-hover-bg);
         border: 1px solid var(--list-hover-stroke);

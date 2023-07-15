@@ -15,13 +15,15 @@
                 <template #right-icon>
                     <Btn
                         @click="toggleModal"
-                        tiny
+                        circle
                         transparent
                     >
-                        <Icon
-                            name="cross"
-                            :size="13"
-                        />
+                        <template #icon>
+                            <Icon
+                                name="cross"
+                                :size="13"
+                            />
+                        </template>
                     </Btn>
                 </template>
             </TopBar>

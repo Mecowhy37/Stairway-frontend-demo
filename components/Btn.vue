@@ -8,19 +8,20 @@
                 'btn--primary': !props.plain && !props.opaque && !props.transparent,
                 'btn--cta': props.cta,
                 'btn--plain': props.plain,
+                'btn--tiny': props.tiny,
+                'btn--radio': props.radio,
+                'btn--small': props.small,
+                'btn--wide': props.wide,
+                'btn--custom': props.custom,
+                'btn--bulky': props.bulky,
                 'btn--opaque': props.opaque,
                 'btn--active': props.active,
                 'btn--selectable': props.selectable,
                 'btn--transparent': props.transparent,
-                'btn--wide': props.wide,
-                'btn--bulky': props.bulky,
-                'btn--custom': props.custom,
                 'btn--circle': props.circle,
                 'btn--unclickable': props.loading,
-                'btn--small': props.small,
-                'btn--tiny': props.tiny,
-                'btn--compact': props.compact,
                 'btn--w-icon': slots.icon && slots.default,
+                'btn--icon': slots.icon && !slots.default,
                 'btn--reverse': props.reverse,
             },
         ]"
@@ -29,7 +30,6 @@
             :is="props.is"
             class="slot"
             id="default-slot"
-            :class="{ wicon: slots.icon && slots.default }"
         >
             <slot name="default"></slot>
         </component>
@@ -56,10 +56,12 @@ const stepStore = useStepStore()
 
 export interface Props {
     is?: string
-    thin?: boolean
-    wide?: boolean
+    tiny?: boolean
+    radio?: boolean
+    small?: boolean
     bulky?: boolean
     custom?: boolean
+    wide?: boolean
     cta?: boolean
     transparent?: boolean
     plain?: boolean
@@ -69,25 +71,28 @@ export interface Props {
     circle?: boolean
     disabled?: boolean
     loading?: boolean
-    small?: boolean
-    compact?: boolean
-    tiny?: boolean
     iconContrast?: boolean
     reverse?: boolean
+    rotate: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
     is: "p",
+    rotate: 0,
 })
 
-const emits = defineEmits([])
 const slots = useSlots()
-const attrs = useAttrs()
+
+const rotateDeg = computed(() => {
+    return props.rotate + "deg"
+})
 </script>
 
 <style lang="scss">
-$vert-padd: 0.6rem;
-$horiz-padd: 1.3rem;
+$vert-padd: 13px;
+$horiz-padd: 16px;
+/* $vert-padd: 0.6rem;
+$horiz-padd: 1.3rem; */
 .btn {
     position: relative;
     display: flex;
@@ -99,6 +104,19 @@ $horiz-padd: 1.3rem;
     white-space: nowrap;
     background-color: var(--primary-btn-bg);
     box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.05);
+    transform: rotate(v-bind(rotateDeg));
+    cursor: pointer;
+
+    &:disabled {
+        background-color: var(--grey-opaque);
+        color: var(--text-grey);
+    }
+
+    #default-slot {
+        position: relative;
+        line-height: 100%;
+    }
+
     &--primary {
         &:not(:disabled):hover {
             background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--primary-btn-bg);
@@ -109,24 +127,41 @@ $horiz-padd: 1.3rem;
             border: 1px solid #ffffff;
         }
     }
-    &:disabled {
-        background-color: var(--grey-opaque);
-        color: var(--text-grey);
-    }
 
-    cursor: pointer;
-    * {
-        pointer-events: none;
+    // SIZES ------------
+    &--tiny {
+        padding: 0;
     }
-    #default-slot {
-        position: relative;
-        line-height: 100%;
-        &.wicon {
+    &--radio {
+        border-radius: 3px;
+        padding-right: 10px;
+        padding-left: 10px;
+        @media (max-width: 447px) {
+            padding: 5px;
         }
     }
-    .slot {
-        &.contrast {
-            /* color: var(--text-color-reverse); */
+    &--small {
+        padding: 5px 10px;
+    }
+    &--wide {
+        width: 100%;
+    }
+    &--custom {
+        border-radius: var(--small-wdg-radius);
+        padding: 13px 15px;
+    }
+    &--bulky {
+        $height: 3rem;
+        height: $height;
+        border-radius: var(--inner-wdg-radius);
+    }
+    // SIZES ------------
+
+    &--w-icon {
+        gap: 0.2rem;
+        #icon-slot {
+            margin-right: -0.2rem;
+            margin-left: 0.3rem;
         }
     }
     &--plain {
@@ -136,7 +171,6 @@ $horiz-padd: 1.3rem;
             color: var(--text-color-reverse);
         }
     }
-
     &--opaque {
         background-color: var(--grey-opaque);
         border: 1px solid transparent;
@@ -205,64 +239,29 @@ $horiz-padd: 1.3rem;
         background-color: transparent;
         box-shadow: none;
         &:hover {
+            background-color: var(--trans-hover);
         }
     }
     &--cta {
         background-color: var(--cta-bg);
     }
-    &--wide {
-        width: 100%;
-    }
     &--circle {
-        background: var(--swap-windows);
         border-radius: 9999px;
-        padding: 5px;
+        padding: 0px;
         #icon-slot {
-            width: 23.22px;
-            aspect-ratio: 1/1;
             .icon {
-                margin: 0 auto;
+                margin: 3px;
             }
         }
     }
-    &--bulky {
-        $height: 3rem;
-        height: $height;
-        border-radius: var(--inner-wdg-radius);
-    }
-    &--custom {
-        border-radius: var(--small-wdg-radius);
-        padding: 13px 15px;
-    }
     &--unclickable {
         pointer-events: none;
-    }
-    &--small {
-        padding: 5px 10px;
-    }
-    &--tiny {
-        padding: 0;
-    }
-    &--compact {
-        border-radius: 3px;
-        padding-right: 10px;
-        padding-left: 10px;
-        @media (max-width: 447px) {
-            padding: 5px;
-        }
     }
     &--reverse {
         flex-direction: row-reverse;
         #icon-slot {
             margin-left: -0.3rem !important;
             margin-right: 0.3rem !important;
-        }
-    }
-    &--w-icon {
-        gap: 0.2rem;
-        #icon-slot {
-            margin-right: -0.3rem;
-            margin-left: 0.3rem;
         }
     }
 }

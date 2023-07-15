@@ -94,8 +94,7 @@
                     </div>
                     <div
                         v-if="x === 0"
-                        id="mid-symbol"
-                        class="button plus"
+                        class="mid-symbol arrow"
                     >
                         <Btn
                             circle

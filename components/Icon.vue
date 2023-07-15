@@ -27,18 +27,18 @@ const sizeWithPx = computed(() => {
     return iconSize.value + "px"
 })
 
-const rotateDeg = computed(() => {
-    return props.rotate + "deg"
-})
 const svgContent = computed(() => {
     return icons[props.name]
+})
+const rotateDeg = computed(() => {
+    return props.rotate + "deg"
 })
 </script>
 
 <style lang="scss" scoped>
 .icon {
-    transform: rotate(v-bind(rotateDeg));
     width: v-bind(sizeWithPx);
     height: min-content;
+    transform: rotate(v-bind(rotateDeg));
 }
 </style>

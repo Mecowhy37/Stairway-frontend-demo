@@ -9,8 +9,8 @@
             >
                 <template #dropdown-activator="{ on }">
                     <Btn
+                        circle
                         transparent
-                        tiny
                         icon-contrast
                     >
                         <template #icon>
@@ -85,8 +85,7 @@
                     </div>
                     <div
                         v-if="x === 0"
-                        id="mid-symbol"
-                        class="plus grey-text"
+                        class="mid-symbol plus grey-text"
                     >
                         <Icon
                             name="plus"

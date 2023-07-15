@@ -32,6 +32,10 @@ const props = defineProps({
     settingsRef: Object,
     noPadding: Boolean,
     solid: Boolean,
+    width: {
+        type: Number,
+        default: 250,
+    },
 })
 
 const toActivate = ref(null)
@@ -67,6 +71,10 @@ onClickOutside(toActivate, (event) => {
         }
     }
 })
+
+const boxWidth = computed(() => {
+    return props.width + "px"
+})
 </script>
 
 <style scoped lang="scss">
@@ -84,7 +92,7 @@ onClickOutside(toActivate, (event) => {
         z-index: 150;
         top: 100%;
         margin-top: 0.8rem;
-        width: 250px;
+        width: v-bind(boxWidth);
         border-radius: var(--semi-wdg-radius);
         padding: 0.5rem;
         border: 1px solid var(--grey-opaque);

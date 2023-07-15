@@ -9,15 +9,16 @@
             class="link"
         >
             <Btn
-                tiny
                 transparent
+                circle
                 class="back-btn"
+                tiny
+                :rotate="90"
             >
                 <template #icon>
                     <Icon
                         name="arrow"
                         :size="15"
-                        :rotate="90"
                     ></Icon>
                 </template>
             </Btn>
@@ -25,6 +26,7 @@
         <component
             :is="props.is"
             class="widget-title"
+            :class="{ 'widget-title--margin': !props.noReturn }"
             ><slot name="widget-title"></slot
         ></component>
         <div class="grey-text">
@@ -63,10 +65,16 @@ const props = defineProps({
     .widget-title {
         margin-right: auto;
         color: inherit;
+        &--margin {
+            margin-left: 10px;
+        }
     }
     .back-btn {
-        margin-right: 20px;
         color: var(--text-color-reverse);
+        margin-left: -4px;
+        .icon {
+            margin: 0 6.75px !important;
+        }
     }
 }
 </style>

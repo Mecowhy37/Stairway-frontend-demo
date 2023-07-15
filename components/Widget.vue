@@ -93,14 +93,23 @@ const props = defineProps({
             }
         }
     }
-    #mid-symbol {
+    .mid-symbol {
         display: flex;
         justify-content: center;
-        &.plus {
-            margin: 12px 0;
+        margin: 5px;
+        .btn {
+            background: var(--swap-windows);
         }
-        &.button {
-            margin: 5px;
+        &.arrow {
+            .btn {
+                padding: 5px;
+                .icon {
+                    margin: 0 4.95px !important;
+                }
+            }
+        }
+        &.plus .icon {
+            margin: 12px 0 !important;
         }
     }
     .tables {
@@ -140,7 +149,7 @@ const props = defineProps({
 
     .sum-up {
         margin-top: -5px;
-        p {
+        p:last-of-type {
             white-space: nowrap;
         }
     }

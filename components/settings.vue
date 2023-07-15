@@ -9,14 +9,16 @@
             <template #widget-title>Settings</template>
             <template #right-icon>
                 <Btn
-                    tiny
+                    circle
                     transparent
                     @click="toggleDropdown"
                 >
-                    <Icon
-                        name="cross"
-                        :size="13"
-                    />
+                    <template #icon>
+                        <Icon
+                            name="cross"
+                            :size="13"
+                        />
+                    </template>
                 </Btn>
             </template>
         </TopBar>
@@ -190,9 +192,6 @@ defineExpose({
     .topbar {
         padding: 12px;
         border-bottom: 1px solid var(--text-color-reverse);
-        &__close {
-            cursor: pointer;
-        }
     }
 
     .setting {

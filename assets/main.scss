@@ -7,7 +7,8 @@
 
     --list-width: 700px;
 
-    --nav-height: 70px;
+    --nav-height: 90px;
+    --logo-height: 49px;
 
     --transition: 0.2s;
     --outer-wdg-radius: 20px;
@@ -45,6 +46,8 @@
 
     --blue-hover: rgba(57, 171, 219, 0.3);
     --blue-active: rgb(57, 171, 219);
+
+    --trans-hover: var(--swap-windows);
 
     --info-bg: rgb(255, 36, 245);
     --info-bg-opaque: rgba(255, 36, 245, 0.1);
