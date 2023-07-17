@@ -1,21 +1,23 @@
 <template>
     <nav class="navbar">
-        <div class="navbar__wrapper row space-between">
+        <div class="navbar__wrapper row space-between align-center">
             <img
                 class="navbar__logo"
                 src="/logox2.png"
             />
             <div class="navbar__navigation">
-                <NuxtLink
-                    to="/"
-                    class="link link--underlined"
-                    ><p>Swap</p></NuxtLink
-                >
-                <NuxtLink
-                    to="/pools"
-                    class="link link--underlined"
-                    ><p>Add liquidity</p></NuxtLink
-                >
+                <div class="desktop contents">
+                    <NuxtLink
+                        to="/"
+                        class="link link--underlined"
+                        ><p>Swap</p></NuxtLink
+                    >
+                    <NuxtLink
+                        to="/pools"
+                        class="link link--underlined"
+                        ><p>Add liquidity</p></NuxtLink
+                    >
+                </div>
                 <Btn
                     v-if="!stepStore.connectedWallet"
                     plain
@@ -30,6 +32,7 @@
                         />
                     </template>
                 </Btn>
+
                 <Dropdown
                     v-else
                     :width="180"
@@ -64,12 +67,12 @@
                 <Dropdown
                     no-padding
                     :width="140"
+                    class="burger"
                 >
                     <template #dropdown-activator="{ on }">
                         <Btn
                             circle
                             transparent
-                            class="burger"
                         >
                             <template #icon>
                                 <Icon
@@ -116,10 +119,12 @@ function revertTheme() {
     display: flex;
     white-space: nowrap;
     z-index: 5;
+
     &__wrapper {
+        height: var(--logo-height);
+        width: 100%;
         margin-top: auto;
         padding: 0 70px;
-        width: 100%;
     }
     &__logo {
         display: block;
@@ -163,25 +168,40 @@ function revertTheme() {
             }
         }
         .burger {
-            margin: 0 -10px;
-            &:hover {
-                background-color: rgba(0, 0, 0, 0.04);
-            }
-            .icon {
-                margin: 10px !important;
+            display: none;
+            .btn {
+                margin: 0 -10px;
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.04);
+                }
+                .icon {
+                    margin: 10px !important;
+                }
             }
         }
     }
-
-    .nav-actions {
-        display: flex;
-        gap: 0.8rem;
-        margin-left: auto;
-        .networks-dd {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12%;
-            justify-content: space-evenly;
+    @media (max-width: 900px) {
+        &__wrapper {
+            padding: 0 30px;
+        }
+        &__wrapper {
+            padding: 0 30px;
+        }
+        .burger {
+            display: block;
+        }
+        .desktop {
+            display: none;
+        }
+    }
+    @media (max-width: 750px) {
+        &__logo {
+            height: var(--logo-small-height);
+        }
+    }
+    @media (max-width: 600px) {
+        &__wrapper {
+            padding-left: 15px;
         }
     }
 }

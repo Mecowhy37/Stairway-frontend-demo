@@ -32,7 +32,7 @@
                 >
                     <div>
                         <div class="pool__heading row space-between">
-                            <h4>{{ position.pool.this_token.symbol }} / {{ position.pool.that_token.symbol }}</h4>
+                            <h4>{{ position.pool.base_token.symbol }} / {{ position.pool.quote_token.symbol }}</h4>
                             <Dropdown
                                 solid
                                 no-padding
@@ -82,15 +82,15 @@
                         <div class="columns row">
                             <div>
                                 <p>
-                                    {{ Round(formatUnits(position.this_amount, position.pool.this_token.decimalas)) }}
+                                    {{ Round(formatUnits(position.base_amout, position.pool.base_token.decimals)) }}
                                 </p>
-                                <p class="caption grey-text">{{ position.pool.this_token.symbol }} pooled</p>
+                                <p class="caption grey-text">{{ position.pool.base_token.symbol }} pooled</p>
                             </div>
                             <div>
                                 <p>
-                                    {{ Round(formatUnits(position.that_amount, position.pool.that_token.decimalas)) }}
+                                    {{ Round(formatUnits(position.quote_amout, position.pool.quote_token.decimals)) }}
                                 </p>
-                                <p class="caption grey-text">{{ position.pool.that_token.symbol }} pooled</p>
+                                <p class="caption grey-text">{{ position.pool.quote_token.symbol }} pooled</p>
                             </div>
                             <div>
                                 <p>100%</p>
@@ -127,8 +127,8 @@ function addRedirect(pool) {
     router.push({
         path: "/add",
         query: {
-            tk1: pool.this_token.address,
-            tk2: pool.that_token.address,
+            tk1: pool.base_token.address,
+            tk2: pool.quote_token.address,
         },
     })
 }

@@ -73,7 +73,7 @@ export interface Props {
     loading?: boolean
     iconContrast?: boolean
     reverse?: boolean
-    rotate: number
+    rotate?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
