@@ -67,8 +67,8 @@ export function usePools(routerAddress) {
             return null
         }
         return (
-            Number(formatUnits(pool.value.this_reserves, pool.value.this_token.decimals)) /
-            Number(formatUnits(pool.value.that_reserves, pool.value.that_token.decimals))
+            Number(formatUnits(pool.value.base_reserves, pool.value.base_token.decimals)) /
+            Number(formatUnits(pool.value.quote_reserves, pool.value.quote_token.decimals))
         )
     })
 
