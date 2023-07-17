@@ -80,7 +80,6 @@ const boxWidth = computed(() => {
 .dropdown {
     display: flex;
     position: relative;
-    z-index: 100;
 
     &__activator {
         display: flex;

@@ -82,13 +82,13 @@
                         <div class="columns row">
                             <div>
                                 <p>
-                                    {{ Round(formatUnits(position.base_amout, position.pool.base_token.decimals)) }}
+                                    {{ Round(formatUnits(position.base_amount, position.pool.base_token.decimals)) }}
                                 </p>
                                 <p class="caption grey-text">{{ position.pool.base_token.symbol }} pooled</p>
                             </div>
                             <div>
                                 <p>
-                                    {{ Round(formatUnits(position.quote_amout, position.pool.quote_token.decimals)) }}
+                                    {{ Round(formatUnits(position.quote_amount, position.pool.quote_token.decimals)) }}
                                 </p>
                                 <p class="caption grey-text">{{ position.pool.quote_token.symbol }} pooled</p>
                             </div>

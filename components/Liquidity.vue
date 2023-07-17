@@ -105,17 +105,17 @@
                             <p>
                                 {{
                                     basicRound(
-                                        formatUnits(ownedPosition.this_amount, ownedPosition.pool.this_token.decimals)
+                                        formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
                                     )
                                 }}
                             </p>
-                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.this_token.symbol }}</p>
+                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
                         </div>
                         <div>
                             <p>
                                 {{
                                     basicRound(
-                                        formatUnits(ownedPosition.that_amount, ownedPosition.pool.that_token.decimals)
+                                        formatUnits(ownedPosition.quote_amount, ownedPosition.pool.that_token.decimals)
                                     )
                                 }}
                             </p>
