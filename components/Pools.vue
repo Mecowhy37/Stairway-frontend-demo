@@ -112,7 +112,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions } = storeToRefs(stepStore)
+const { positions, connectedAccount, chainId } = storeToRefs(stepStore)
 
 const openedIndex = ref(null)
 
@@ -123,6 +123,11 @@ function toggle(index) {
     }
     openedIndex.value = index
 }
+onMounted(() => {
+    if (connectedAccount.value) {
+        useAsyncData("positions", () => stepStore.fetchPositions(connectedAccount.value, chainId.value))
+    }
+})
 const router = useRouter()
 function addRedirect(pool) {
     router.push({

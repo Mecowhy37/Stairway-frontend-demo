@@ -22,6 +22,7 @@
                     v-if="!stepStore.connectedWallet"
                     plain
                     active
+                    compact
                     @click="stepStore.connectWallet()"
                 >
                     Connect
@@ -41,6 +42,7 @@
                         <Btn
                             plain
                             active
+                            compact
                         >
                             {{ stepStore.getTruncatedWalletAddress }}
                             <template #icon>
@@ -55,7 +57,7 @@
                     <template #dropdown>
                         <Btn
                             wide
-                            medium
+                            compact
                             opaque
                             active
                             @click="stepStore.disconnectConnectedWallet()"
@@ -196,12 +198,20 @@ function revertTheme() {
     }
     @media (max-width: 750px) {
         &__logo {
-            height: var(--logo-small-height);
+            height: var(--logo-md-height);
         }
     }
     @media (max-width: 600px) {
+        height: var(--nav-sm-height);
+
         &__wrapper {
-            padding-left: 15px;
+            padding: 15px;
+        }
+        &__logo {
+            height: var(--logo-sm-height);
+        }
+        &__navigation {
+            gap: 15px;
         }
     }
 }

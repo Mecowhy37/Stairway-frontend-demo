@@ -11,6 +11,7 @@
                 'btn--tiny': props.tiny,
                 'btn--radio': props.radio,
                 'btn--small': props.small,
+                'btn--compact': props.compact,
                 'btn--sm-radius': props.smRadius,
                 'btn--bulky': props.bulky,
                 'btn--custom': props.custom,
@@ -60,6 +61,7 @@ export interface Props {
     tiny?: boolean
     radio?: boolean
     small?: boolean
+    compact?: boolean
     smRadius?: boolean
     bulky?: boolean
     custom?: boolean
@@ -147,6 +149,9 @@ $horiz-padd: 1.3rem; */
     }
     &--small {
         padding: 5px 10px;
+    }
+    &--compact {
+        padding: 7px 15px;
     }
     &--sm-radius {
         border-radius: var(--small-wdg-radius);
