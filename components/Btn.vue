@@ -11,9 +11,10 @@
                 'btn--tiny': props.tiny,
                 'btn--radio': props.radio,
                 'btn--small': props.small,
-                'btn--wide': props.wide,
-                'btn--custom': props.custom,
+                'btn--sm-radius': props.smRadius,
                 'btn--bulky': props.bulky,
+                'btn--custom': props.custom,
+                'btn--wide': props.wide,
                 'btn--opaque': props.opaque,
                 'btn--active': props.active,
                 'btn--selectable': props.selectable,
@@ -59,6 +60,7 @@ export interface Props {
     tiny?: boolean
     radio?: boolean
     small?: boolean
+    smRadius?: boolean
     bulky?: boolean
     custom?: boolean
     wide?: boolean
@@ -146,17 +148,20 @@ $horiz-padd: 1.3rem; */
     &--small {
         padding: 5px 10px;
     }
-    &--wide {
-        width: 100%;
-    }
-    &--custom {
+    &--sm-radius {
         border-radius: var(--small-wdg-radius);
-        padding: 13px 15px;
     }
     &--bulky {
         $height: 3rem;
         height: $height;
         border-radius: var(--inner-wdg-radius);
+    }
+    &--custom {
+        border-radius: var(--small-wdg-radius);
+        padding: 13px 15px;
+    }
+    &--wide {
+        width: 100%;
     }
     // SIZES ------------
 

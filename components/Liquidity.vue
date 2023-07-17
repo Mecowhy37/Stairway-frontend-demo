@@ -1,6 +1,6 @@
 <template>
     <Widget>
-        <template #widget-title>Add liquidity</template>
+        <template #widget-title>Add iquidity</template>
         <template #right-icon>
             <Dropdown
                 :settings-ref="settingsAdd"

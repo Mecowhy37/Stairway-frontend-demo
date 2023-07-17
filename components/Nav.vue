@@ -15,7 +15,7 @@
                     <NuxtLink
                         to="/pools"
                         class="link link--underlined"
-                        ><p>Add liquidity</p></NuxtLink
+                        ><p>Liquidity</p></NuxtLink
                     >
                 </div>
                 <Btn

@@ -41,6 +41,7 @@
                                     <Btn
                                         opaque
                                         selectable
+                                        sm-radius
                                         @click="toggle(i)"
                                     >
                                         Manage
