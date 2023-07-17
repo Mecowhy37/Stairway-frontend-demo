@@ -432,10 +432,10 @@ watch(
             await findPool(tokens, chainId.value)
 
             // Start the loop to call findPool every second
-            intervalId = setInterval(async () => {
-                console.log("looping...", tokens[0].symbol, " / ", tokens[1].symbol)
-                await findPool(tokens, chainId.value)
-            }, 1000)
+            // intervalId = setInterval(async () => {
+            //     console.log("looping...", tokens[0].symbol, " / ", tokens[1].symbol)
+            //     await findPool(tokens, chainId.value)
+            // }, 5000)
         } else {
             // Stop the loop if any of the values is missing
             clearInterval(intervalId)
