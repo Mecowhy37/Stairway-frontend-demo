@@ -1,16 +1,16 @@
 <template>
-    <Widget v-if="pool">
+    <Widget>
         <template #widget-title>Redeem liquidity</template>
         <template #right-icon>
-            <!-- :settings-ref="settingsAdd" -->
             <Dropdown
+                :settings-ref="settingsRedeem"
                 no-padding
                 solid
             >
                 <template #dropdown-activator="{ on }">
                     <Btn
                         transparent
-                        tiny
+                        circle
                         icon-contrast
                     >
                         <template #icon>
@@ -23,7 +23,7 @@
                 </template>
                 <template #dropdown="{ toggleDropdown }">
                     <Settings
-                        ref="settingsAdd"
+                        ref="settingsRedeem"
                         :default-slippage="0.5"
                         :default-deadline="30"
                         :toggle-dropdown="toggleDropdown"
@@ -32,13 +32,34 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <div>
-                <p>{{ pool.this_token.symbol }} / {{ pool.that_token.symbol }}</p>
+            <div
+                v-if="pool"
+                class="icons-tokens row align-center"
+            >
+                <img
+                    class="token-icon"
+                    :src="pool.base_token.logo_uri"
+                />
+                <img
+                    class="token-icon"
+                    :src="pool.quote_token.logo_uri"
+                />
+                <p>{{ pool.base_token.symbol }} / {{ pool.quote_token.symbol }}</p>
+            </div>
+            <div
+                v-else
+                class="icons-tokens row align-center"
+            >
+                <div class="placeholder row">
+                    <div class="token-icon"></div>
+                    <div class="token-icon"></div>
+                </div>
+                <p class="placeholder">FETH / FBTC</p>
             </div>
             <div class="amount">
                 <p class="grey-text">Amount</p>
                 <div class="percents row">
-                    <h1>{{ state.redeemPercent }}%</h1>
+                    <h1>{{ !pool || !ownedPosition ? 0 : state.redeemPercent }}%</h1>
                     <div
                         class="options row"
                         ref="options"
@@ -48,6 +69,7 @@
                             selectable
                             outline
                             radio
+                            :disabled="!pool || !ownedPosition"
                             @click="setRedeemProc($event, 25)"
                             >25%</Btn
                         >
@@ -56,6 +78,7 @@
                             selectable
                             outline
                             radio
+                            :disabled="!pool || !ownedPosition"
                             @click="setRedeemProc($event, 50)"
                             >50%</Btn
                         >
@@ -64,6 +87,7 @@
                             selectable
                             outline
                             radio
+                            :disabled="!pool || !ownedPosition"
                             @click="setRedeemProc($event, 75)"
                             >75%</Btn
                         >
@@ -72,33 +96,41 @@
                             selectable
                             outline
                             radio
+                            :disabled="!pool || !ownedPosition"
                             @click="setRedeemProc($event, 100)"
                             >Max</Btn
                         >
                     </div>
                 </div>
             </div>
-            <div class="slider">
+            <div
+                class="slider"
+                :class="{ 'slider--disabled': !pool || !ownedPosition }"
+            >
                 <input
                     type="range"
                     min="0"
                     max="100"
                     step="1"
+                    :disabled="!pool || !ownedPosition"
                     v-model="state.redeemPercent"
                     @input="removeSelected()"
                 />
             </div>
             <!-- <p>your pool share: {{ poolShare }}%</p> -->
             <!-- <p>procent to redeem: {{ state.redeemPercent }}%</p> -->
-            <div class="summary">
+            <div
+                v-if="pool && ownedPosition"
+                class="summary"
+            >
                 <div class="row">
-                    <p class="grey-text">Pooled {{ pool.this_token.symbol }}:</p>
+                    <p class="grey-text">Pooled {{ pool.base_token.symbol }}:</p>
                     <p>
                         {{
                             ownedPosition
                                 ? basicRound(
                                       (Number(
-                                          formatUnits(ownedPosition.this_amount, ownedPosition.pool.this_token.decimals)
+                                          formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
                                       ) *
                                           state.redeemPercent) /
                                           100
@@ -108,13 +140,16 @@
                     </p>
                 </div>
                 <div class="row">
-                    <p class="grey-text">Pooled {{ pool.that_token.symbol }}:</p>
+                    <p class="grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
                     <p>
                         {{
                             ownedPosition
                                 ? basicRound(
                                       (Number(
-                                          formatUnits(ownedPosition.that_amount, ownedPosition.pool.that_token.decimals)
+                                          formatUnits(
+                                              ownedPosition.quote_amount,
+                                              ownedPosition.pool.quote_token.decimals
+                                          )
                                       ) *
                                           state.redeemPercent) /
                                           100
@@ -122,6 +157,37 @@
                                 : 0
                         }}
                     </p>
+                </div>
+            </div>
+            <div
+                v-else-if="pool && ownedPosition === false"
+                class="infos"
+            >
+                <div class="info row">
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <!-- <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p> -->
+                    <p>You dont have any liquidity at this position.</p>
+                </div>
+            </div>
+            <div
+                v-else-if="pending || ownedPosition === null"
+                class="infos"
+            >
+                <div class="info row placeholder">
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>You dont have any liquidity at this position.</p>
                 </div>
             </div>
             <div class="buttons">
@@ -156,9 +222,10 @@ import { storeToRefs } from "pinia"
 import { usePools, basicRound } from "~/helpers/index"
 
 const stepStore = useStepStore()
-const { featuredTokens, positions } = storeToRefs(stepStore)
+const { getUrl, isSupportedChain } = stepStore
+const { featuredTokens, positions, chainId } = storeToRefs(stepStore)
 
-const { pool, findPool } = usePools(stepStore.routerAddress)
+const { findPoolByIndex } = usePools(stepStore.routerAddress)
 
 const state = reactive({
     redeemPercent: 100,
@@ -192,9 +259,9 @@ const ownedPosition = computed(() => {
     if (!pool.value || !positions.value) {
         return null
     }
-    const matchedPosition = positions.value.find((el) => el.pool.address === pool.value.address)
+    const matchedPosition = positions.value.find((el) => el.pool.pool_index === pool.value.pool_index)
     if (!matchedPosition) {
-        return null
+        return false
     }
     return matchedPosition
 })
@@ -205,12 +272,32 @@ const settingsRedeem = ref()
 
 // ROUTES ----------------
 const route = useRoute()
-findPool([featuredTokens.value[0], featuredTokens.value[1]])
+const {
+    data: pool,
+    error,
+    status,
+    pending,
+} = useAsyncData(
+    "pool",
+    () => {
+        if (isSupportedChain(chainId.value)) {
+            return $fetch(getUrl(`/chain/${chainId.value}/pool/${route.params.address}`))
+        }
+    },
+    {
+        watch: [chainId],
+    }
+)
 
 // ROUTES ----------------
 </script>
 
 <style lang="scss" scoped>
+.icons-tokens {
+    p {
+        margin-left: 12px;
+    }
+}
 .amount {
     .percents {
         align-items: center;
@@ -234,7 +321,7 @@ findPool([featuredTokens.value[0], featuredTokens.value[1]])
     ::before {
         content: "";
         position: absolute;
-        top: 50%;
+        top: 45%;
         left: 0;
         height: 6px;
         border-radius: 500px;
@@ -261,12 +348,13 @@ findPool([featuredTokens.value[0], featuredTokens.value[1]])
             height: 6px;
         }
         &::-webkit-slider-thumb {
+            z-index: 5;
             -webkit-appearance: none;
             appearance: none;
             height: 36px;
             width: 36px;
             background-color: var(--primary-btn-bg);
-            margin-top: calc(3px - 18px);
+            margin-top: calc(4px - 18px);
             border-radius: 5000px;
         }
         &::-moz-range-thumb {
@@ -274,11 +362,25 @@ findPool([featuredTokens.value[0], featuredTokens.value[1]])
             height: 36px;
             width: 36px;
             background-color: var(--primary-btn-bg);
-            margin-top: calc(3px - 18px);
+            margin-top: calc(4px - 18px);
             border-radius: 5000px;
         }
         &::-webkit-progress-bar {
             background-color: var(--primary-btn-bg);
+        }
+
+        &:disabled {
+            &::-webkit-slider-thumb {
+                background-color: var(--placeholder-solid);
+            }
+            &::-moz-range-thumb {
+                background-color: var(--placeholder-solid);
+            }
+        }
+    }
+    &--disabled {
+        ::before {
+            background-color: var(--placeholder-solid);
         }
     }
 }

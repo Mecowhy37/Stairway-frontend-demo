@@ -62,6 +62,14 @@ export function usePools(routerAddress) {
         pool.value = data.value
     }
 
+    async function findPoolByIndex(index, chainId) {
+        return await useFetch(getUrl(`/chain/${chainId}/pool/${index}`))
+        // if (error.value) {
+        //     pool.value = null
+        //     console.error("error finding pool: ", error.value)
+        // }
+    }
+
     const poolRatio = computed(() => {
         if (!pool.value) {
             return null
@@ -279,6 +287,7 @@ export function usePools(routerAddress) {
     return {
         pool,
         findPool,
+        findPoolByIndex,
         poolRatio,
         listenForTransactionMine,
         addLiquidity,

@@ -140,9 +140,8 @@ $horiz-padd: 1.3rem; */
         padding: 0;
     }
     &--radio {
-        border-radius: 3px;
-        padding-right: 10px;
-        padding-left: 10px;
+        border-radius: var(--small-wdg-radius);
+        padding: 8px 10px;
         @media (max-width: 447px) {
             padding: 5px;
         }

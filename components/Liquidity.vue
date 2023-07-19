@@ -210,7 +210,7 @@ const ownedPosition = computed(() => {
     if (!pool.value || !positions.value) {
         return null
     }
-    const matchedPosition = positions.value.find((el) => el.pool.address === pool.value.address)
+    const matchedPosition = positions.value.find((el) => el.pool.pool_index === pool.value.pool_index)
     if (!matchedPosition) {
         return null
     }
@@ -427,7 +427,7 @@ watch(
         if (bothThere && isSupportedChain(chainId.value)) {
             // Stop the existing interval if it's running
             clearInterval(intervalId)
-
+            pool.value = null
             // Call findPool immediately
             await findPool(tokens, chainId.value)
 

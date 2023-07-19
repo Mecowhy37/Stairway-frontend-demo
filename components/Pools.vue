@@ -32,11 +32,22 @@
                         class="pool"
                     >
                         <div>
-                            <div class="pool__heading row space-between">
+                            <div class="pool__heading row">
+                                <div class="icons-wrapper row">
+                                    <img
+                                        class="token-icon"
+                                        :src="position.pool.base_token.logo_uri"
+                                    />
+                                    <img
+                                        class="token-icon"
+                                        :src="position.pool.quote_token.logo_uri"
+                                    />
+                                </div>
                                 <h4>{{ position.pool.base_token.symbol }} / {{ position.pool.quote_token.symbol }}</h4>
                                 <Dropdown
                                     solid
                                     no-padding
+                                    class="manage-btn"
                                 >
                                     <template #dropdown-activator="{ on }">
                                         <Btn
@@ -149,7 +160,7 @@ function addRedirect(pool) {
 
 function removeRedirect(pool) {
     router.push({
-        path: `/remove/${pool.address}`,
+        path: `/remove/${pool.pool_index}`,
     })
 }
 
@@ -196,18 +207,19 @@ function Round(amt) {
                     padding: 10px 20px;
                     align-items: center;
                     white-space: nowrap;
-                    div.row {
-                        gap: 1rem;
-                    }
-                    .list-item {
-                        padding: 1rem;
-                        &:first-of-type {
-                            border-top-left-radius: inherit;
-                            border-top-right-radius: inherit;
-                        }
-                        &:last-of-type {
-                            border-bottom-left-radius: inherit;
-                            border-bottom-right-radius: inherit;
+                    gap: 1rem;
+                    .manage-btn {
+                        margin-left: auto;
+                        .list-item {
+                            padding: 1rem;
+                            &:first-of-type {
+                                border-top-left-radius: inherit;
+                                border-top-right-radius: inherit;
+                            }
+                            &:last-of-type {
+                                border-bottom-left-radius: inherit;
+                                border-bottom-right-radius: inherit;
+                            }
                         }
                     }
                 }

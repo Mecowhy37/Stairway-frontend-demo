@@ -129,7 +129,6 @@ function revertTheme() {
         padding: 0 70px;
     }
     &__logo {
-        display: block;
         height: var(--logo-height);
     }
     &__navigation {
@@ -205,13 +204,13 @@ function revertTheme() {
         height: var(--nav-sm-height);
 
         &__wrapper {
-            padding: 15px;
+            padding: 20px;
         }
         &__logo {
             height: var(--logo-sm-height);
         }
         &__navigation {
-            gap: 15px;
+            gap: 20px;
         }
     }
 }

@@ -63,6 +63,9 @@
     --list-click-stroke: rgb(57, 171, 219);
     --drop-shadow: drop-shadow(0px 10px 40px rgba(0, 0, 0, 0.5));
     --backdrop-blur: blur(15px);
+
+    --placeholder: rgba(240, 248, 255, 0.3);
+    --placeholder-solid: rgb(105, 108, 110);
     .light {
         @include spread-map($light-map);
     }

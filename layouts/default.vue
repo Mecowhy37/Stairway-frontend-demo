@@ -69,7 +69,7 @@ watch(
 watch(
     () => chainId.value,
     (newVal) => {
-        console.log(newVal)
+        console.log("chainId:", newVal)
     },
     {
         immediate: true,
@@ -141,6 +141,27 @@ h4 {
 p {
     font-size: 1rem;
     line-height: 1.2rem;
+}
+.placeholder {
+    border-radius: var(--small-wdg-radius);
+    padding: 3px;
+    background-color: var(--placeholder) !important;
+    color: rgba(0, 0, 0, 0) !important;
+    * {
+        visibility: hidden;
+    }
+}
+img,
+svg {
+    display: block;
+}
+.token-icon {
+    border-radius: 50%;
+    height: 36px;
+    width: 36px;
+    &:last-of-type {
+        margin-left: -7px;
+    }
 }
 .list-item {
     border-top: 1px solid transparent;
