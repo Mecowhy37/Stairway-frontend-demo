@@ -93,7 +93,7 @@
                         <NuxtLink
                             to="/pools"
                             class="link list-item list-item--padded-sm"
-                            ><p>Add liquidity</p></NuxtLink
+                            ><p>Liquidity</p></NuxtLink
                         >
                     </template>
                 </Dropdown>
