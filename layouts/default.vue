@@ -58,6 +58,8 @@ watch(
     (account) => {
         if (account) {
             useAsyncData("positions", () => stepStore.fetchPositions(account, chainId.value))
+        } else {
+            positions.value = null
         }
     },
     {
@@ -99,6 +101,11 @@ html {
     margin: 0 auto;
     @media (min-width: 1536px) {
         max-width: 1536px;
+    }
+    &--wide-list {
+        width: 100%;
+        max-width: calc(var(--list-width) + 2 * var(--widget-sides));
+        padding: 0 var(--widget-sides);
     }
 }
 .page-slot {

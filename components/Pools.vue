@@ -1,101 +1,109 @@
 <template>
-    <div class="positions">
-        <div class="positions__top row">
-            <h1>Pools</h1>
-            <NuxtLink
-                class="link"
-                to="/add"
-            >
-                <Btn
-                    is="h4"
-                    reverse
-                    cta
+    <div class="wrapper--wide-list">
+        <div class="positions">
+            <div class="positions__top row">
+                <h1>Pools</h1>
+                <NuxtLink
+                    class="link"
+                    to="/add"
                 >
-                    New postition
-                    <template #icon>
-                        <Icon
-                            name="plus"
-                            :size="16"
-                        />
-                    </template>
-                </Btn>
-            </NuxtLink>
-        </div>
-        <div class="positions__list">
-            <h3 v-if="positions">
-                Your positions <span>{{ positions.length }}</span>
-            </h3>
-            <div class="pools">
-                <div
-                    v-for="(position, i) in positions"
-                    class="pool"
-                >
-                    <div>
-                        <div class="pool__heading row space-between">
-                            <h4>{{ position.pool.base_token.symbol }} / {{ position.pool.quote_token.symbol }}</h4>
-                            <Dropdown
-                                solid
-                                no-padding
-                            >
-                                <template #dropdown-activator="{ on }">
-                                    <Btn
-                                        opaque
-                                        selectable
-                                        sm-radius
-                                        @click="toggle(i)"
-                                    >
-                                        Manage
-                                        <template #icon>
-                                            <Icon
-                                                name="chevron"
-                                                :size="16"
-                                                :rotate="on ? 180 : 0"
-                                            />
-                                            <!-- :rotate="openedIndex === i" -->
-                                        </template>
-                                    </Btn>
-                                </template>
-                                <template #dropdown>
-                                    <p
-                                        @click="addRedirect(position.pool)"
-                                        class="list-item list-item--centered"
-                                    >
-                                        Add liquidity
-                                    </p>
-                                    <p
-                                        @click="removeRedirect(position.pool)"
-                                        class="list-item list-item--centered"
-                                    >
-                                        Redeem liquidity
-                                    </p>
-                                </template>
-                            </Dropdown>
-                        </div>
-                        <!-- <div
+                    <Btn
+                        is="h4"
+                        reverse
+                        cta
+                    >
+                        New postition
+                        <template #icon>
+                            <Icon
+                                name="plus"
+                                :size="16"
+                            />
+                        </template>
+                    </Btn>
+                </NuxtLink>
+            </div>
+            <div class="positions__list">
+                <h3 v-if="positions">
+                    Your positions <span>{{ positions.length }}</span>
+                </h3>
+                <div class="pools">
+                    <div
+                        v-for="(position, i) in positions"
+                        class="pool"
+                    >
+                        <div>
+                            <div class="pool__heading row space-between">
+                                <h4>{{ position.pool.base_token.symbol }} / {{ position.pool.quote_token.symbol }}</h4>
+                                <Dropdown
+                                    solid
+                                    no-padding
+                                >
+                                    <template #dropdown-activator="{ on }">
+                                        <Btn
+                                            opaque
+                                            selectable
+                                            sm-radius
+                                            @click="toggle(i)"
+                                        >
+                                            Manage
+                                            <template #icon>
+                                                <Icon
+                                                    name="chevron"
+                                                    :size="16"
+                                                    :rotate="on ? 180 : 0"
+                                                />
+                                                <!-- :rotate="openedIndex === i" -->
+                                            </template>
+                                        </Btn>
+                                    </template>
+                                    <template #dropdown>
+                                        <p
+                                            @click="addRedirect(position.pool)"
+                                            class="list-item list-item--centered"
+                                        >
+                                            Add liquidity
+                                        </p>
+                                        <p
+                                            @click="removeRedirect(position.pool)"
+                                            class="list-item list-item--centered"
+                                        >
+                                            Redeem liquidity
+                                        </p>
+                                    </template>
+                                </Dropdown>
+                            </div>
+                            <!-- <div
                             v-if="openedIndex === i"
                             class="pool__heading_ext row align-center center"
                         >
                             <Btn>Add liquidity</Btn>
                             <Btn>Redeem liquidity</Btn>
                         </div> -->
-                    </div>
-                    <div class="pool__stats">
-                        <div class="columns row">
-                            <div>
-                                <p>
-                                    {{ Round(formatUnits(position.base_amount, position.pool.base_token.decimals)) }}
-                                </p>
-                                <p class="caption grey-text">{{ position.pool.base_token.symbol }} pooled</p>
-                            </div>
-                            <div>
-                                <p>
-                                    {{ Round(formatUnits(position.quote_amount, position.pool.quote_token.decimals)) }}
-                                </p>
-                                <p class="caption grey-text">{{ position.pool.quote_token.symbol }} pooled</p>
-                            </div>
-                            <div>
-                                <p>100%</p>
-                                <p class="caption grey-text">pool share</p>
+                        </div>
+                        <div class="pool__stats">
+                            <div class="columns row">
+                                <div>
+                                    <p>
+                                        {{
+                                            Round(formatUnits(position.base_amount, position.pool.base_token.decimals))
+                                        }}
+                                    </p>
+                                    <p class="caption grey-text">{{ position.pool.base_token.symbol }} pooled</p>
+                                </div>
+                                <div>
+                                    <p>
+                                        {{
+                                            Round(
+                                                formatUnits(position.quote_amount, position.pool.quote_token.decimals)
+                                            )
+                                        }}
+                                    </p>
+                                    <p class="caption grey-text">{{ position.pool.quote_token.symbol }} pooled</p>
+                                </div>
+                                <div>
+                                    <p>100%</p>
+                                    <p class="caption grey-text">pool share</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -154,7 +162,6 @@ function Round(amt) {
 
 <style lang="scss" scoped>
 .positions {
-    width: var(--list-width);
     &__top {
         justify-content: space-between;
         align-items: center;

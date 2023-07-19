@@ -179,7 +179,8 @@ $horiz-padd: 1.3rem; */
     }
     &--plain {
         border: none;
-        background-color: var(--grey-solid);
+        /* background-color: var(--grey-solid); */
+        background-color: var(--widget-bg);
         * {
             color: var(--text-color-reverse);
         }
