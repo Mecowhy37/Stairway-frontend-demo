@@ -1,10 +1,11 @@
 import { ref } from "vue"
-import { BrowserProvider, Contract, parseEther, formatEther, formatUnits } from "ethers"
+import { BrowserProvider, Contract, parseUnits, formatUnits } from "ethers"
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
 
 import token from "@/ABIs/ERC20.json"
+import { ElementFlags } from "typescript"
 const TokenABI = token.abi
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -62,14 +63,6 @@ export function usePools(routerAddress) {
         pool.value = data.value
     }
 
-    async function findPoolByIndex(index, chainId) {
-        return await useFetch(getUrl(`/chain/${chainId}/pool/${index}`))
-        // if (error.value) {
-        //     pool.value = null
-        //     console.error("error finding pool: ", error.value)
-        // }
-    }
-
     const poolRatio = computed(() => {
         if (!pool.value) {
             return null
@@ -80,73 +73,58 @@ export function usePools(routerAddress) {
         )
     })
 
-    // async function setupPool(poolAdd, tokenAddresses, providerArg, wallet) {
-    //     console.log("setup")
-    //     const provider = new BrowserProvider(providerArg)
-    //     const router = new Contract(routerAddress, RouterABI, provider)
-    //     const pool = new Contract(poolAdd, PoolABI, provider)
+    async function addLiquidity(tokenA, tokenB, amountA, amountB, slippage, deadline, recipient, providerArg) {
+        const provider = new BrowserProvider(providerArg)
+        const signer = await provider.getSigner()
+        const router = new Contract(routerAddress, RouterABI, signer)
 
-    //     // BID_ASK
-    //     const bidAskVar = await router.getBidAsk(...tokenAddresses)
+        const parsedAmountA = parseUnits(amountA, tokenA.decimals)
+        const parsedAmountB = parseUnits(amountB, tokenB.decimals)
+        const parsedMinAmountA = parseUnits(String(amountA - (amountA * slippage) / 100), tokenA.decimals)
+        const parsedMinAmountB = parseUnits(String(amountB - (amountB * slippage) / 100), tokenB.decimals)
 
-    //     // DEPTH
-    //     const depth = formatEther(await router.getDepth(...tokenAddresses))
+        const blockTimestamp = (await provider.getBlock("latest")).timestamp
+        const deadlineStamp = blockTimestamp + deadline * 60
 
-    //     // THIS TOKEN
-    //     const thisToken = await pool.thisToken()
+        try {
+            console.log("tryying")
+            const allowanceA = await checkAllowance(tokenA.address, signer.address, routerAddress, providerArg)
+            const needApprovalA = allowanceA < parsedAmountA
 
-    //     // RESERVES & RATIO
-    //     const thisAmount = formatEther(await pool.thisBalance())
-    //     const thatAmount = formatEther(await pool.thatBalance())
+            const allowanceB = await checkAllowance(tokenB.address, signer.address, routerAddress, providerArg)
+            const needApprovalB = allowanceB < parsedAmountB
 
-    //     // LIQUIDITY TOKEN
-    //     const lpToken = await pool.lpToken()
+            if (needApprovalA || needApprovalB) {
+                const approvalPromises = []
 
-    //     // LQ TOKEN BALANCE
-    //     const { getTokenBalance, getTotalSupply } = useBalances()
-    //     const bal = await getTokenBalance({ address: lpToken, decimals: 18 }, wallet, providerArg)
+                if (needApprovalA) {
+                    approvalPromises.unshift(approveSpending(tokenA.address, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
+                }
 
-    //     // LQ TOKEN SUPPLY
-    //     const totalSupply = await getTotalSupply(lpToken, providerArg)
+                if (needApprovalB) {
+                    approvalPromises.unshift(approveSpending(tokenB.address, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
+                }
 
-    //     bidAsk.value = bidAskVar
-    //     thisTokenAddress.value = thisToken
-    //     thisReserve.value = Number(thisAmount)
-    //     thatReserve.value = Number(thatAmount)
-    //     poolRatio.value = Number(thatAmount) / Number(thisAmount)
-    //     poolDepth.value = Number(depth)
-    //     lpTokenAddress.value = lpToken
-    //     liquidityTokenBalance.value = bal
-    //     lpTotalSupply.value = totalSupply
-    // }
+                await Promise.all(approvalPromises)
+            }
 
-    // ------------------------------
-    const bidAsk = ref(null)
-    const poolAddress = ref("")
-    const thisTokenAddress = ref(null)
-    const thisReserve = ref(null)
-    const thatReserve = ref(null)
-    const poolDepth = ref(null)
-    const lpTokenAddress = ref(null)
-    const liquidityTokenBalance = ref(null)
-    const lpTotalSupply = ref(null)
+            await router.addLiquidity(
+                tokenA.address,
+                tokenB.address,
+                parsedMinAmountA,
+                parsedAmountA,
+                parsedMinAmountB,
+                parsedAmountB,
+                recipient,
+                deadlineStamp
+            )
+        } catch (error) {
+            console.log("Failed to add liquidity:", error)
+        }
+    }
 
-    // const bidAskFormat = computed(() => {
-    //     return bidAsk.value !== null ? bidAsk.value.map((el) => Number(formatEther(el))) : []
-    // })
-    // const bidAskDisplay = computed(() => {
-    //     return bidAskFormat
-    //         ? bidAskFormat.value.map((el) => (el >= 1 ? el.toFixed(2) : el < 0.0001 ? "<0.0001" : el.toPrecision(3)))
-    //         : []
-    // })
-
-    // const poolShare = computed(() => {
-    //     return liquidityTokenBalance.value && lpTotalSupply.value
-    //         ? (Number(liquidityTokenBalance.value) / Number(lpTotalSupply.value)) * 100
-    //         : null
-    // })
-
-    // async function approveSpending(tokenAddress, provider) {
     async function approveSpending(tokenAddress, providerArg, amount, callback = false) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
@@ -180,90 +158,55 @@ export function usePools(routerAddress) {
         }
     }
 
-    async function addLiquidity(addressA, addressB, amountA, amountB, slippage, deadline, recipient, providerArg) {
-        const provider = new BrowserProvider(providerArg)
-        const signer = await provider.getSigner()
-        const router = new Contract(routerAddress, RouterABI, signer)
-
-        const parsedAmountA = parseEther(amountA)
-        const parsedAmountB = parseEther(amountB)
-        const parsedMinAmountA = parseEther(String(amountA - (amountA * slippage) / 100))
-        const parsedMinAmountB = parseEther(String(amountB - (amountB * slippage) / 100))
-
-        const blockTimestamp = (await provider.getBlock("latest")).timestamp
-        const deadlineStamp = blockTimestamp + deadline * 60
-
+    async function redeemLiquidity(
+        tokenA,
+        tokenB,
+        pooledA,
+        pooledB,
+        redeemPercent,
+        lpToken,
+        lpAmount,
+        connectedAccount,
+        deadline,
+        providerArg
+    ) {
         try {
-            const allowanceA = await checkAllowance(addressA, signer.address, routerAddress, providerArg)
-            const needApprovalA = allowanceA < parsedAmountA
+            const provider = new BrowserProvider(providerArg)
+            const signer = await provider.getSigner()
+            const router = new Contract(routerAddress, RouterABI, signer)
 
-            const allowanceB = await checkAllowance(addressB, signer.address, routerAddress, providerArg)
-            const needApprovalB = allowanceB < parsedAmountB
+            const tokenList = [tokenA, tokenB].map((el) => el.address)
 
-            if (needApprovalA || needApprovalB) {
-                const approvalPromises = []
+            const amount0 = calcPercentage(pooledA)
+            const amount1 = calcPercentage(pooledB)
+            const lpAmountParsed = calcPercentage(lpAmount)
 
-                if (needApprovalA) {
-                    approvalPromises.unshift(approveSpending(addressA, providerArg, 0))
-                    // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
-                }
-
-                if (needApprovalB) {
-                    approvalPromises.unshift(approveSpending(addressB, providerArg, 0))
-                    // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
-                }
-
-                await Promise.all(approvalPromises)
+            function calcPercentage(amount) {
+                // temporary fix - bad browser support
+                return String((BigInt(amount) * BigInt(redeemPercent)) / BigInt(100))
             }
 
-            await router.addLiquidity(
-                addressA,
-                addressB,
-                parsedMinAmountA,
-                parsedAmountA,
-                parsedMinAmountB,
-                parsedAmountB,
-                recipient,
+            const blockTimestamp = (await provider.getBlock("latest")).timestamp
+            const deadlineStamp = blockTimestamp + deadline * 60
+
+            const allowance = await checkAllowance(lpToken.address, signer.address, routerAddress, providerArg)
+            const needApproval = allowance < lpAmountParsed
+            if (needApproval) {
+                await approveSpending(lpToken.address, providerArg, lpAmountParsed)
+            }
+
+            await router.redeemLiquidity(
+                ...tokenList,
+                amount0,
+                amount1,
+                lpAmountParsed,
+                connectedAccount,
                 deadlineStamp
             )
-        } catch (error) {
-            console.log("Failed to add liquidity:", error)
+        } catch (err) {
+            console.log("failed to redeem liquidity: ", err)
         }
     }
-
-    // async function redeemLiquidity(tokenA, tokenB, redeemPercent, connectedAccount, deadline, providerArg) {
-    //     console.log("redeemLiquidity()")
-
-    //     // if (poolShare.value) {
-    //     //     try {
-    //     //         const provider = new BrowserProvider(providerArg)
-    //     //         const signer = await provider.getSigner()
-    //     //         const router = new Contract(routerAddress, RouterABI, signer)
-
-    //     //         const tokenList = [tokenA, tokenB]
-    //     //         const orderedTokens = tokenA === thisTokenAddress.value ? tokenList : tokenList.reverse()
-
-    //     //         const amount0 = parseEther(String((thisReserve.value * poolShare.value * redeemPercent) / 10000))
-    //     //         const amount1 = parseEther(String((thatReserve.value * poolShare.value * redeemPercent) / 10000))
-    //     //         const lqAmount = parseEther(String((liquidityTokenBalance.value * redeemPercent) / 100))
-
-    //     //         const blockTimestamp = (await provider.getBlock("latest")).timestamp
-    //     //         const deadlineStamp = blockTimestamp + deadline * 60
-
-    //     //         await approveSpending(lpTokenAddress.value, providerArg, lqAmount)
-    //     //         await router.redeemLiquidity(
-    //     //             ...orderedTokens,
-    //     //             amount0,
-    //     //             amount1,
-    //     //             lqAmount,
-    //     //             connectedAccount,
-    //     //             deadlineStamp
-    //     //         )
-    //     //     } catch (err) {
-    //     //         console.log("failed to redeem liquidity: ", err)
-    //     //     }
-    //     // }
-    // }
 
     // async function swap(tokens, amounts, maxPrice, account, deadline, providerArg) {
     //     // address, address, desiredAmount, maxPrice, recepient, deadline
@@ -287,26 +230,13 @@ export function usePools(routerAddress) {
     return {
         pool,
         findPool,
-        findPoolByIndex,
         poolRatio,
         listenForTransactionMine,
         addLiquidity,
+        redeemLiquidity,
 
-        bidAsk,
-        poolAddress,
-        thisReserve,
-        thatReserve,
-        poolDepth,
-        thisTokenAddress,
-        lpTokenAddress,
-        liquidityTokenBalance,
-        lpTotalSupply,
         // checkAllowance,
         // swap,
-        // redeemLiquidity,
-        // bidAskFormat,
-        // bidAskDisplay,
         // approveSpending,
-        // redeemLiquidity,
     }
 }

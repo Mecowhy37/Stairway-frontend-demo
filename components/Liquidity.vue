@@ -168,23 +168,8 @@ const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
 const { featuredTokens, positions, connectedAccount, chainId } = storeToRefs(stepStore)
-const { isSupportedChain } = stepStore
-const {
-    pool,
-    findPool,
-    poolRatio,
-    approveSpending,
-    bidAsk,
-    thisTokenAddress,
-    poolAddress,
-    poolShare,
-    lpTotalSupply,
-    liquidityTokenBalance,
-    bidAskFormat,
-    lpTokenAddress,
-    bidAskDisplay,
-    addLiquidity,
-} = usePools(stepStore.routerAddress)
+const { isSupportedChain, getUrl } = stepStore
+const { findPool, poolRatio, addLiquidity } = usePools(stepStore.routerAddress)
 
 const { getTokenBalance } = useBalances()
 
@@ -201,6 +186,39 @@ const state = reactive({
     lastChangedToken: 0,
     redeemPercent: 100,
 })
+const ABTokens = computed({
+    get() {
+        return [state.tokens.A, state.tokens.B]
+        // return [poolTokens.value.A, poolTokens.value.B]
+    },
+    set(newValue) {
+        // poolTokens.value.A = newValue[0]
+        // poolTokens.value.B = newValue[1]
+
+        state.tokens.A = newValue[0]
+        state.tokens.B = newValue[1]
+    },
+})
+const {
+    data: pool,
+    error,
+    status,
+    pending,
+} = useAsyncData(
+    "pool",
+    () => {
+        const bothThere = ABTokens.value.every((el) => el !== null)
+
+        if (bothThere && isSupportedChain(chainId.value)) {
+            return $fetch(
+                getUrl(`/chain/${chainId.value}/pool/${ABTokens.value[0].address}/${ABTokens.value[1].address}`)
+            )
+        }
+    },
+    {
+        watch: [chainId, ABTokens],
+    }
+)
 
 // WIDGET ---------------
 const bothAmountsIn = computed(() => {
@@ -218,43 +236,23 @@ const ownedPosition = computed(() => {
 })
 function callAddLiquidity() {
     addLiquidity(
-        ...bothTokenAddresses.value,
+        ...ABTokens.value,
         ...ABAmounts.value,
         settingsAdd.value.slippage,
         settingsAdd.value.deadline,
         stepStore.connectedAccount,
         stepStore.connectedWallet.provider
     ).then(() => {
-        state.amountA = ""
-        state.amountB = ""
+        // state.amountA = ""
+        // state.amountB = ""
     })
 }
 // WIDGET ---------------
 
 // TOKENS ---------------
-const ABTokens = computed({
-    get() {
-        return [state.tokens.A, state.tokens.B]
-        // return [poolTokens.value.A, poolTokens.value.B]
-    },
-    set(newValue) {
-        // poolTokens.value.A = newValue[0]
-        // poolTokens.value.B = newValue[1]
 
-        state.tokens.A = newValue[0]
-        state.tokens.B = newValue[1]
-    },
-})
-const bothTokensThere = computed(() => !ABTokens.value.some((el) => el === null))
-const bothTokenAddresses = computed(() => (bothTokensThere.value ? ABTokens.value.map((el) => el.address) : null))
+const bothTokensThere = computed(() => ABTokens.value.every((el) => el !== null))
 
-const thisTokenIndex = computed(() => {
-    if (bothTokensThere.value && !(poolAddress.value === "" || poolAddress.value === unhandled)) {
-        return ABTokens.value.indexOf(ABTokens.value.find((el) => el.address == thisTokenAddress.value))
-    } else {
-        return null
-    }
-})
 async function setToken(token) {
     if (token) {
         const sameTokenIndex = ABTokens.value.findIndex((el) => el?.address === token.address)
@@ -289,19 +287,11 @@ const ABAmounts = computed({
             }
             if (state.lastChangedToken === 0) {
                 if (state.amountA.length !== 0) {
-                    if (thisTokenIndex.value === 0) {
-                        state.amountB = Round(calcThat(state.amountA))
-                    } else {
-                        state.amountB = Round(calcThis(state.amountA))
-                    }
+                    state.amountB = Round(calcThis(state.amountA))
                 }
             } else {
                 if (state.amountB.length !== 0) {
-                    if (thisTokenIndex.value === 0) {
-                        state.amountA = Round(calcThis(state.amountB))
-                    } else {
-                        state.amountA = Round(calcThat(state.amountB))
-                    }
+                    state.amountA = Round(calcThat(state.amountB))
                 }
             }
         }

@@ -24,7 +24,7 @@
                 <template #dropdown="{ toggleDropdown }">
                     <Settings
                         ref="settingsRedeem"
-                        :default-slippage="0.5"
+                        no-slippage
                         :default-deadline="30"
                         :toggle-dropdown="toggleDropdown"
                     ></Settings>
@@ -117,13 +117,8 @@
                     @input="removeSelected()"
                 />
             </div>
-            <!-- <p>your pool share: {{ poolShare }}%</p> -->
-            <!-- <p>procent to redeem: {{ state.redeemPercent }}%</p> -->
-            <div
-                v-if="pool && ownedPosition"
-                class="summary"
-            >
-                <div class="row">
+            <div v-if="pool && ownedPosition">
+                <div class="row space-between">
                     <p class="grey-text">Pooled {{ pool.base_token.symbol }}:</p>
                     <p>
                         {{
@@ -139,7 +134,7 @@
                         }}
                     </p>
                 </div>
-                <div class="row">
+                <div class="row space-between">
                     <p class="grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
                     <p>
                         {{
@@ -160,10 +155,17 @@
                 </div>
             </div>
             <div
-                v-else-if="pool && ownedPosition === false"
-                class="infos"
+                v-else-if="status === 'pending' || !ownedPosition"
+                class="placeholder"
             >
-                <div class="info row">
+                <p>placeholder</p>
+                <p>text</p>
+            </div>
+            <div class="infos contents">
+                <div
+                    v-if="pool && ownedPosition === false"
+                    class="info row"
+                >
                     <div>
                         <Icon
                             class="icon"
@@ -171,15 +173,12 @@
                             :size="25"
                         />
                     </div>
-                    <!-- <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p> -->
                     <p>You dont have any liquidity at this position.</p>
                 </div>
-            </div>
-            <div
-                v-else-if="pending || ownedPosition === null"
-                class="infos"
-            >
-                <div class="info row placeholder">
+                <div
+                    v-if="status === 'success' && !pool"
+                    class="info row"
+                >
                     <div>
                         <Icon
                             class="icon"
@@ -187,7 +186,7 @@
                             :size="25"
                         />
                     </div>
-                    <p>You dont have any liquidity at this position.</p>
+                    <p>Pool with ID: {{ route.params.address }} doesnt exist</p>
                 </div>
             </div>
             <div class="buttons">
@@ -201,7 +200,7 @@
                     Connect wallet
                 </Btn>
                 <Btn
-                    v-else
+                    v-else-if="isSupportedChain(chainId)"
                     is="h4"
                     wide
                     bulky
@@ -225,7 +224,7 @@ const stepStore = useStepStore()
 const { getUrl, isSupportedChain } = stepStore
 const { featuredTokens, positions, chainId } = storeToRefs(stepStore)
 
-const { findPoolByIndex } = usePools(stepStore.routerAddress)
+const { redeemLiquidity } = usePools(stepStore.routerAddress)
 
 const state = reactive({
     redeemPercent: 100,
@@ -244,15 +243,18 @@ function removeSelected() {
     options.value.childNodes.forEach((el) => el.classList.remove("selected"))
 }
 function redeemLiquidityCall() {
-    console.log("redeemLiquidityCall()")
-
-    // redeemLiquidity(
-    //     ...bothTokenAddresses.value,
-    //     state.redeemPercent,
-    //     stepStore.connectedAccount,
-    //     settingsRedeem.value.deadline,
-    //     stepStore.connectedWallet.provider
-    // )
+    redeemLiquidity(
+        pool.value.base_token,
+        pool.value.quote_token,
+        ownedPosition.value.base_amount,
+        ownedPosition.value.quote_amount,
+        state.redeemPercent,
+        pool.value.lp_token,
+        ownedPosition.value.lp_amount,
+        stepStore.connectedAccount,
+        settingsRedeem.value.deadline,
+        stepStore.connectedWallet.provider
+    )
 }
 
 const ownedPosition = computed(() => {
@@ -382,11 +384,6 @@ const {
         ::before {
             background-color: var(--placeholder-solid);
         }
-    }
-}
-.summary {
-    .row {
-        justify-content: space-between;
     }
 }
 </style>
