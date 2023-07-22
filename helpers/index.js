@@ -1,5 +1,5 @@
 import { ref } from "vue"
-import { BrowserProvider, Contract, parseUnits, formatUnits } from "ethers"
+import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
@@ -78,13 +78,11 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         }
         return [pool.value.bid, pool.value.ask]
     })
-    const bidAskFormat = computed(() => {
-        return pool.value && bidAsk.value
-            ? bidAsk.value.map((el) => Number(formatUnits(el, pool.value.quote_token.decimals)))
-            : []
+    const bidAskParse = computed(() => {
+        return pool.value && bidAsk.value ? bidAsk.value.map((el) => String(parseEther(String(el)))) : []
     })
     const displayDepth = computed(() => {
-        return pool.value ? Number(formatUnits(pool.value.ask_depth, pool.value.quote_token.decimals)) : null
+        return pool.value ? Number(formatUnits(pool.value.bid_depth, pool.value.quote_token.decimals)) : null
     })
 
     async function addLiquidity(tokenA, tokenB, amountA, amountB, slippage, deadline, recipient, providerArg) {
@@ -276,7 +274,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         poolPending,
         poolRatio,
         bidAsk,
-        bidAskFormat,
+        bidAskParse,
         displayDepth,
         addLiquidity,
         redeemLiquidity,

@@ -204,7 +204,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 // TOKENS ------------------
 
 // POOL -----------------
-const { pool, poolPending, bidAsk, bidAskFormat, displayDepth, swap } = usePools(
+const { pool, poolPending, bidAsk, bidAskParse, displayDepth, swap } = usePools(
     stepStore.routerAddress,
     Tokens,
     connectedAccount,
@@ -229,7 +229,7 @@ function callSwap() {
     swap(
         ...Tokens.value,
         AmountsUint.value,
-        bidAsk.value[0],
+        bidAskParse.value[0],
         connectedAccount.value,
         settings.value.deadline,
         stepStore.connectedWallet.provider
@@ -276,7 +276,8 @@ const AmountsUint = computed(() => {
     })
 })
 const rate = computed(() => {
-    return bidAskFormat.value ? Round(String(1 * bidAskFormat.value[1])) : null
+    // return bidAsk.value ? Round(String(1 / bidAsk.value[0])) : null
+    return bidAsk.value ? Round(String(bidAsk.value[0])) : null
 })
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
@@ -284,10 +285,10 @@ function setTokenAmount(event, inputIndex) {
 }
 
 function calcBase(value) {
-    return String(Number(value) * bidAskFormat.value[1])
+    return String(Number(value) / bidAsk.value[0])
 }
 function calcQuote(value) {
-    return String(Number(value) / bidAskFormat.value[1])
+    return String(Number(value) * bidAsk.value[0])
 }
 function Round(amt) {
     let amount = Number(amt)
