@@ -276,8 +276,7 @@ const AmountsUint = computed(() => {
     })
 })
 const rate = computed(() => {
-    // return bidAsk.value ? Round(String(1 / bidAsk.value[0])) : null
-    return bidAsk.value ? Round(String(bidAsk.value[0])) : null
+    return bidAsk.value ? Round(String(1 / bidAsk.value[0])) : null
 })
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
