@@ -141,7 +141,7 @@
                     Connect wallet
                 </Btn>
                 <Btn
-                    v-else-if="pool"
+                    v-else
                     @click="callAddLiquidity()"
                     is="h4"
                     wide
