@@ -204,40 +204,45 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
             await approveSpending(tokenA.address, providerArg, amounts[0])
         }
 
-        await router.buy(...tokenList, amounts[1], maxPrice, account, deadlineStamp)
+        console.log("tokenList:", tokenList)
+        console.log("amounts[1]:", String(amounts[1]))
+        console.log("maxPrice:", maxPrice)
+        console.log("account:", account)
+        console.log("deadlineStamp:", deadlineStamp)
+        await router.buy(...tokenList, String(amounts[0]), maxPrice, account, deadlineStamp)
 
         // "inputs": [
-        // {
-        //   "internalType": "contract IERC20",
-        //   "name": "baseToken",
-        //   "type": "address"
-        // },
-        // {
-        //   "internalType": "contract IERC20",
-        //   "name": "quoteToken",
-        //   "type": "address"
-        // },
         //     {
-        //       "internalType": "uint256",
-        //       "name": "desiredAmount",
-        //       "type": "uint256"
+        //         "internalType": "contract IERC20",
+        //         "name": "baseToken",
+        //         "type": "address"
         //     },
         //     {
-        //       "internalType": "uint256",
-        //       "name": "maxPrice",
-        //       "type": "uint256"
+        //         "internalType": "contract IERC20",
+        //         "name": "quoteToken",
+        //         "type": "address"
         //     },
         //     {
-        //       "internalType": "address",
-        //       "name": "recipient",
-        //       "type": "address"
+        //         "internalType": "uint256",
+        //         "name": "desiredAmount",
+        //         "type": "uint256"
         //     },
         //     {
-        //       "internalType": "uint256",
-        //       "name": "deadline",
-        //       "type": "uint256"
+        //         "internalType": "uint256",
+        //         "name": "maxPrice",
+        //         "type": "uint256"
+        //     },
+        //     {
+        //         "internalType": "address",
+        //         "name": "recipient",
+        //         "type": "address"
+        //     },
+        //     {
+        //         "internalType": "uint256",
+        //         "name": "deadline",
+        //         "type": "uint256"
         //     }
-        //   ],
+        // ]
     }
 
     async function approveSpending(tokenAddress, providerArg, amount, callback = false) {

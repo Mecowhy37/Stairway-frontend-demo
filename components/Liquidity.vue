@@ -150,6 +150,15 @@
                 >
                     Add liquidity
                 </Btn>
+                <Btn
+                    @click="getBothBalances()"
+                    is="h4"
+                    wide
+                    bulky
+                    :disabled="!connectedAccount"
+                >
+                    refresh balances
+                </Btn>
             </div>
         </template>
     </Widget>
@@ -237,11 +246,13 @@ const Amounts = computed({
             }
             if (state.lastChangedToken === 0) {
                 if (state.amountA.length !== 0) {
-                    state.amountB = Round(calcThis(state.amountA))
+                    // state.amountB = Round(calcThis(state.amountA))
+                    state.amountB = calcThis(state.amountA)
                 }
             } else {
                 if (state.amountB.length !== 0) {
-                    state.amountA = Round(calcThat(state.amountB))
+                    // state.amountA = Round(calcThat(state.amountB))
+                    state.amountA = calcThat(state.amountB)
                 }
             }
         }

@@ -78,6 +78,7 @@ const props = defineProps({
                     outline: none;
                     text-align: right;
                     font-size: 2rem;
+                    padding-left: 8px;
 
                     &::placeholder {
                         color: var(--text-grey);

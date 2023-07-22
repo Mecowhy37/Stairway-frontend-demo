@@ -144,6 +144,15 @@
                 >
                     Swap
                 </Btn>
+                <Btn
+                    @click="getBothBalances()"
+                    is="h4"
+                    wide
+                    bulky
+                    :disabled="!connectedAccount"
+                >
+                    refresh balances
+                </Btn>
             </div>
             <div
                 v-if="bidAsk && bothTokensThere"
@@ -238,9 +247,11 @@ const Amounts = computed({
                 return list
             }
             if (state.lastChangedToken === 0) {
-                list[1] = Round(calcQuote(list[0]))
+                // list[1] = Round(calcQuote(list[0]))
+                list[1] = calcQuote(list[0])
             } else if (state.lastChangedToken === 1) {
-                list[0] = Round(calcBase(list[1]))
+                // list[0] = Round(calcBase(list[1]))
+                list[0] = calcBase(list[1])
             }
         }
         return list
