@@ -24,6 +24,8 @@ import { storeToRefs } from "pinia"
 const stepStore = useStepStore()
 const { featuredTokens, addresses, positions, connectedAccount, chainId } = storeToRefs(stepStore)
 
+import { isSupportedChain } from "~/helpers/index"
+
 // MODAL STUFF ------------------
 const selectTokenModal = ref()
 function toggleSelectTokenModal(...args) {
@@ -31,15 +33,15 @@ function toggleSelectTokenModal(...args) {
 }
 provide("selectTokenModal", toggleSelectTokenModal)
 
-const newTokenModal = ref()
+const newTokenModal = ref(null)
 function toggleNewTokenModal() {
     newTokenModal.value.toggleModal()
 }
 const isNewTokenModalOpen = computed(() => {
-    if (!newTokenModal.value) {
+    if (newTokenModal.value === null) {
         return null
     }
-    return newTokenModal.value.showModal
+    return newTokenModal.value?.showModal
 })
 
 provide("newTokenModal", { toggleNewTokenModal, isNewTokenModalOpen })
@@ -54,22 +56,13 @@ if (!addresses.value) {
 }
 
 watch(
-    () => connectedAccount.value,
-    (account) => {
-        if (account) {
-            useAsyncData("positions", () => stepStore.fetchPositions(account, chainId.value))
+    () => [connectedAccount.value, chainId.value],
+    ([account, chain]) => {
+        if (account && isSupportedChain(chain)) {
+            useAsyncData("positions", () => stepStore.fetchPositions(account, chain))
         } else {
             positions.value = null
         }
-    },
-    {
-        immediate: true,
-    }
-)
-watch(
-    () => chainId.value,
-    (newVal) => {
-        console.log("chainId:", newVal)
     },
     {
         immediate: true,

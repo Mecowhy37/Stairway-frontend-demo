@@ -64,7 +64,7 @@
                                 selectable
                                 custom
                             >
-                                {{ ABTokens[x] !== null ? ABTokens[x]?.symbol : "Select token" }}
+                                {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
                                 <template #icon>
                                     <Icon
                                         name="chevron"
@@ -78,14 +78,12 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :disabled="waitingForAdding"
-                                :value="switchedAmounts[x]"
+                                :value="Amounts[x]"
                                 @input="setTokenAmount($event, x)"
                             />
                         </div>
                         <div class="window__lower row flex-end align-center">
-                            <!-- <p class="caption">{{ Number(switchedBalances[x]) }}</p> -->
-                            <p class="caption">5591</p>
+                            <p class="caption">{{ Number(Balances[x]) }}</p>
                             <Icon
                                 name="wallet"
                                 :size="13"
@@ -111,9 +109,10 @@
                     </div>
                 </div>
             </div>
-            <!-- v-if="!(poolAddress === '' || poolAddress === unhandled)" -->
-            <div class="infos">
-                <!-- v-if="Number(poolDepth) < Number(switchedAmounts[1])" -->
+            <div
+                v-if="bothTokensThere && pool && Number(displayDepth) < Number(Amounts[1])"
+                class="infos"
+            >
                 <div class="info row">
                     <div>
                         <Icon
@@ -122,13 +121,21 @@
                             :size="25"
                         />
                     </div>
-                    <!-- <p>you will only receive {{ Round(poolDepth) }} {{ switchedTokens[1].symbol }} at this price</p> -->
-                    <p>You will only receive 20 fETH at this price.</p>
+                    <p>you will only receive {{ Round(displayDepth) }} {{ Tokens[1].symbol }} at this price</p>
                 </div>
             </div>
             <div class="buttons">
-                <!-- v-if="stepStore.connectedWallet" -->
                 <Btn
+                    v-if="!stepStore.connectedWallet"
+                    is="h4"
+                    wide
+                    bulky
+                    @click="stepStore.connectWallet()"
+                >
+                    Connect wallet
+                </Btn>
+                <Btn
+                    v-else
                     @click="callSwap"
                     is="h4"
                     wide
@@ -137,26 +144,15 @@
                 >
                     Swap
                 </Btn>
-
-                <!-- v-if="!stepStore.connectedWallet" -->
-                <Btn
-                    is="h4"
-                    wide
-                    bulky
-                    @click="stepStore.connectWallet()"
-                >
-                    Connect wallet
-                </Btn>
             </div>
-            <!-- v-if="bidAsk" -->
-            <div class="sum-up grey-text caption">
-                <!-- <p>1 {{ switchedTokens[1].symbol }} = {{ rate }} {{ switchedTokens[0].symbol }}</p> -->
-                <p>1 fETH = 20 000 fUSD</p>
+            <div
+                v-if="bidAsk && bothTokensThere"
+                class="sum-up grey-text caption"
+            >
+                <p>1 {{ Tokens[1].symbol }} = {{ rate }} {{ Tokens[0].symbol }}</p>
                 <div class="row space-between">
-                    <!-- <p>Volume available at this price ({{ rate }} {{ switchedTokens[0].symbol }})</p> -->
-                    <p>Volume available at this price (20 000 fUSD)</p>
-                    <!-- <p>{{ displayDepth }} {{ switchedTokens[1].symbol }}</p> -->
-                    <p>20 fETH</p>
+                    <p>Volume available at this price ({{ rate }} {{ Tokens[0].symbol }})</p>
+                    <p>{{ Round(displayDepth) }} {{ Tokens[1].symbol }}</p>
                 </div>
                 <!-- <div class="row space-between">
                     <p>Gas price</p>
@@ -170,176 +166,117 @@
 <script setup>
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
-import { BrowserProvider, Contract, formatUnits, parseEther, formatEther } from "ethers"
+import { BrowserProvider, Contract, formatUnits, parseEther, formatEther, parseUnits } from "ethers"
 
-import { useBalances, usePools } from "~/helpers/index"
+import { useTokens, useBalances, usePools, isSupportedChain } from "~/helpers/index"
+import { isNoSubstitutionTemplateLiteral } from "typescript"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 
-const { swapTokens } = storeToRefs(stepStore)
-const {
-    pool,
-    findPool,
-    poolRatio,
-
-    bidAsk,
-    poolAddress,
-    thisReserve,
-    thatReserve,
-    poolDepth,
-    thisTokenAddress,
-    lpTokenAddress,
-    liquidityTokenBalance,
-    lpTotalSupply,
-} = usePools(stepStore.routerAddress)
+const { featuredTokens, connectedAccount, chainId } = storeToRefs(stepStore)
 
 const { getTokenBalance } = useBalances()
 
 const state = reactive({
     amountA: "",
     amountB: "",
-    order: 0,
     lastChangedToken: 0,
-    approvalA: "",
-    approvalB: "",
     balanceA: "",
     balanceB: "",
-    selectTokenIndex: 0,
     showRate: false,
     noSlippage: false,
     alreadyMounted: false,
 })
+
+// TOKENS ------------------
+const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = useTokens()
+// TOKENS ------------------
+
+// POOL -----------------
+const { pool, bidAsk, bidAskFormat, displayDepth, swap } = usePools(
+    stepStore.routerAddress,
+    Tokens,
+    connectedAccount,
+    chainId
+)
+// POOL -----------------
+
 // WIDGET ------------------
 const canSwap = computed(() => {
-    return !(poolAddress.value === unhandled || poolAddress.value === "") && bothAmountsIn.value
+    return pool.value && bothAmountsIn.value
 })
 const bothAmountsIn = computed(() => {
-    return switchedAmounts.value.every((el) => el !== "")
+    return Amounts.value.every((el) => el !== "")
 })
-const displayDepth = computed(() => {
-    return poolDepth.value ? Round(poolDepth.value) : null
-})
+function switchOrder() {
+    Tokens.value = Tokens.value.reverse()
+    Amounts.value = Amounts.value.reverse()
+    Balances.value = Balances.value.reverse()
+    state.lastChangedToken = Number(!Boolean(state.lastChangedToken))
+}
 function callSwap() {
     swap(
-        baseQuoteAddresses.value,
-        switchedAmountsUint.value,
+        ...Tokens.value,
+        AmountsUint.value,
         bidAsk.value[1],
-        stepStore.connectedAccount,
+        connectedAccount.value,
         settings.value.deadline,
         stepStore.connectedWallet.provider
     )
 }
 // WIDGET ------------------
 
-// TOKENS ------------------
-const ABTokens = computed(() => {
-    return [swapTokens.value.A, swapTokens.value.B]
-})
-const switchedTokens = computed({
-    get() {
-        const list = [swapTokens.value.A, swapTokens.value.B]
-        return !Boolean(state.order) ? list : list.reverse()
-    },
-    set(newValue) {
-        if (state.order === 0) {
-            swapTokens.value.A = newValue[0]
-            swapTokens.value.B = newValue[1]
-        } else {
-            // state.order = 0
-            swapTokens.value.A = newValue[1]
-            swapTokens.value.B = newValue[0]
-        }
-    },
-})
-const baseQuoteAddresses = computed(() => {
-    if (stepStore.bothSwapTokenAddresses) {
-        const list = [...stepStore.bothSwapTokenAddresses]
-        return state.order === 0 ? list.reverse() : list
-    } else {
-        return null
-    }
-})
-function setToken(token) {
-    if (token) {
-        const sameTokenIndex = switchedTokens.value.findIndex((el) => el?.address === token.address)
-        if (sameTokenIndex !== -1 && sameTokenIndex !== state.selectTokenIndex) {
-            switchOrder()
-            return
-        }
-    }
-    switchedTokens.value = switchedTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
-}
-function switchOrder() {
-    state.order = state.order === 0 ? 1 : 0
-    if (!(poolAddress.value === "" || poolAddress.value === unhandled)) {
-        getBidAsk()
-    }
-}
-
-// TOKENS ------------------
-
 // AMOUNTS -----------------
-const switchedAmounts = computed({
+const Amounts = computed({
     get() {
-        let list = [state.amountA, state.amountB]
+        const list = [state.amountA, state.amountB]
         if (bidAsk.value) {
             if (list[state.lastChangedToken] === "") {
                 list[Number(!Boolean(state.lastChangedToken))] = ""
                 return list
             }
             if (state.lastChangedToken === 0) {
-                list[1] = Round(calcThat(list[0]))
+                list[1] = Round(calcQuote(list[0]))
             } else if (state.lastChangedToken === 1) {
-                list[0] = Round(calcThis(list[1]))
+                list[0] = Round(calcBase(list[1]))
             }
         }
-        return state.order === 0 ? list : list.reverse()
+        return list
     },
     set(newVal) {
-        if (state.order === 0) {
-            state.amountA = newVal[0]
-            state.amountB = newVal[1]
-        } else {
-            state.amountA = newVal[1]
-            state.amountB = newVal[0]
-        }
+        state.amountA = newVal[0]
+        state.amountB = newVal[1]
     },
 })
-const switchedAmountsUint = computed(() => {
-    return switchedAmounts.value.map((el) => {
-        if (!el) {
-            return 0
+const AmountsUint = computed(() => {
+    return Amounts.value.map((el, index) => {
+        if (!el || !Tokens.value[index]) {
+            return "0"
         }
+
+        let elem = el
         const regex = /[<>]/
-        if (regex.test(el)) {
-            return parseEther("0.00001")
+        if (regex.test(elem)) {
+            elem = "0.00001"
         }
-        return parseEther(el)
+        return parseUnits(elem, Tokens.value[index].decimals)
     })
 })
 const rate = computed(() => {
     return bidAskFormat.value ? Round(String(1 * bidAskFormat.value[1])) : null
 })
 function setTokenAmount(event, inputIndex) {
-    state.lastChangedToken = state.order === 0 ? inputIndex : Number(!Boolean(inputIndex))
-    switchedAmounts.value = switchedAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
+    state.lastChangedToken = inputIndex
+    Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
 
-function calcThis(value) {
-    if (state.order === 0) {
-        return String(Number(value) * bidAskFormat.value[1])
-    } else {
-        return String(Number(value) / bidAskFormat.value[1])
-    }
+function calcBase(value) {
+    return String(Number(value) * bidAskFormat.value[1])
 }
-function calcThat(value) {
-    if (state.order === 0) {
-        return String(Number(value) / bidAskFormat.value[1])
-    } else {
-        return String(Number(value) * bidAskFormat.value[1])
-    }
+function calcQuote(value) {
+    return String(Number(value) / bidAskFormat.value[1])
 }
 function Round(amt) {
     let amount = Number(amt)
@@ -359,16 +296,14 @@ function cleanInput(value, oldValue) {
 }
 // CLEANS IMPUTED AMOUNT
 watch(
-    () => [state.amountA, state.amountB],
+    Amounts,
     (newVal, oldVal) => {
-        if (bidAsk.value) {
-            const [newA, newB] = [...newVal]
-            const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
-            if (state.lastChangedToken === 0 && newA !== oldA) {
-                state.amountA = cleanInput(newA, oldA)
-            } else if (state.lastChangedToken === 1 && newB !== oldB) {
-                state.amountB = cleanInput(newB, oldB)
-            }
+        const [newA, newB] = [...newVal]
+        const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
+        if (state.lastChangedToken === 0) {
+            state.amountA = cleanInput(newA, oldA)
+        } else if (state.lastChangedToken === 1) {
+            state.amountB = cleanInput(newB, oldB)
         }
     },
     {
@@ -378,10 +313,9 @@ watch(
 // AMOUNTS -----------------
 
 // BALANCES ----------------
-const switchedBalances = computed({
+const Balances = computed({
     get() {
-        const list = [state.balanceA, state.balanceB]
-        return state.order === 0 ? list : list.reverse()
+        return [state.balanceA, state.balanceB]
     },
     set(newVal) {
         state.balanceA = newVal[0]
@@ -393,29 +327,61 @@ const switchedBalances = computed({
 // MODAL STUFF -------------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(ABTokens.value, setToken)
-    state.selectTokenIndex = index
+    toggleSelectTokenModal(Tokens.value, setToken)
+    selectTokenIndex.value = index
 }
-const { toggleNewTokenModal } = inject("newTokenModal")
+const { toggleNewTokenModal, isNewTokenModalOpen } = inject("newTokenModal")
 function openNewTokenModal() {
     toggleNewTokenModal()
 }
+watch(isNewTokenModalOpen, (newVal) => {
+    if (!newVal) {
+        getBothBalances()
+    }
+})
 // MODAL STUFF -------------
 
 //SETTINGS--------------
 const settings = ref()
 //SETTINGS--------------
 
-//GETS BALANCES BY TOKENS AND WALLET
+// ROUTES ----------------
+const router = useRouter()
+const route = useRoute()
+function findTokenByAddress(address) {
+    const token = featuredTokens.value.find((el) => el.address === address)
+    if (!token) {
+        return null
+    }
+    return token
+}
+if (route.query.tk1) {
+    tokenA.value = findTokenByAddress(route.query.tk1)
+}
+if (route.query.tk2) {
+    tokenB.value = findTokenByAddress(route.query.tk2)
+}
+// ROUTES ----------------
+
 watch(
-    // () => [switchedTokens.value, stepStore.connectedWallet],
-    () => [ABTokens.value, stepStore.connectedWallet],
-    (newValue) => {
-        const wallet = newValue[1]
-        if (wallet) {
-            // getBalance(null, true)
-        } else {
-            switchedBalances.value = ["", ""]
+    Tokens,
+    async (tokens) => {
+        // adding query params to url
+        const obj = {}
+        tokens.map((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
+        router.replace({
+            query: {
+                ...obj,
+            },
+        })
+
+        //getting balance
+        if (connectedAccount.value && isSupportedChain(chainId.value)) {
+            if (selectTokenIndex.value === 0) {
+                state.balanceA = await getTokenBalance(tokens[0], connectedAccount.value, chainId.value)
+            } else {
+                state.balanceB = await getTokenBalance(tokens[1], connectedAccount.value, chainId.value)
+            }
         }
     },
     {
@@ -423,11 +389,27 @@ watch(
     }
 )
 
-//maybe only needed in development to find pool on code reload
-// onMounted(() => {
-//     state.alreadyMounted = true
-//     if (stepStore.connectedWallet && stepStore.bothSwapTokensThere) {
-//         findPool(...stepStore.bothSwapTokenAddresses, stepStore.connectedWallet.provider)
-//     }
-// })
+async function getBothBalances() {
+    if (connectedAccount.value && isSupportedChain(chainId.value)) {
+        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, chainId.value)
+        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, chainId.value)
+    }
+}
+
+//GETS BALANCES BY TOKENS AND WALLET
+watch(
+    () => [connectedAccount.value, chainId.value],
+    async (newVal) => {
+        const [wallet, chain] = newVal
+        if (wallet && isSupportedChain(chain)) {
+            state.balanceA = await getTokenBalance(Tokens.value[0], wallet, chain)
+            state.balanceB = await getTokenBalance(Tokens.value[1], wallet, chain)
+        } else {
+            Balances.value = ["", ""]
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 </script>

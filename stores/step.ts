@@ -2,7 +2,7 @@ import type { Ref } from "vue"
 import { defineStore } from "pinia"
 import { BrowserProvider, Contract } from "ethers"
 import { init, useOnboard } from "@web3-onboard/vue"
-import { getToken, useBalances, usePools } from "~/helpers/index"
+import { getUrl } from "~/helpers/index"
 
 import injectedModule from "@web3-onboard/injected-wallets"
 declare global {
@@ -67,20 +67,6 @@ export const useStepStore = defineStore("step", (): any => {
     // const { unsubscribe } = walletsNotifs.subscribe((update) =>
     //     console.log('transaction notifications: ', update)
     // )
-
-    const swapTokens = reactive({
-        A: null,
-        B: null
-    })
-
-    const swapTokensCmp = computed(() => {
-        return [swapTokens.A, swapTokens.B]
-    })
-
-    const bothSwapTokensThere = computed(() => !swapTokensCmp.value.some(el => el === null) ? true : false)
-
-
-    const bothSwapTokenAddresses = computed(() => bothSwapTokensThere.value ? swapTokensCmp.value.map(el => el.address) : null)
     
 
     // const { updateBalance } = useBalances()
@@ -99,9 +85,7 @@ export const useStepStore = defineStore("step", (): any => {
         return start + "..." + end
     })
     
-    function isSupportedChain(id: number) {
-        return id === 31337 || id === 80001
-    }
+    
     const chainId = computed(() => {
         if (!connectedChain.value) {
             return null
@@ -123,10 +107,6 @@ export const useStepStore = defineStore("step", (): any => {
 
     // remember to unsubscribe when updates are no longer needed
     // unsubscribe()
-    const api = "https://api.stairway.fi"
-    function getUrl(endpoint: string) {
-        return api + endpoint
-    }
     // TOKENS ---------------
     const featuredTokens = ref(null)
 
@@ -184,23 +164,15 @@ export const useStepStore = defineStore("step", (): any => {
 
         routerAddress,
         isDark,
-        swapTokens,
-
-        getUrl,
         
         featuredTokens,
         fetchTokens,
-
+        
         positions,
         fetchPositions,
-
+        
         addresses,
         fetchAddresses,
-
-        bothSwapTokensThere,
-        bothSwapTokenAddresses,
-
-        isSupportedChain,
         
         chainId,
         connectedChain,

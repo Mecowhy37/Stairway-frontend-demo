@@ -56,7 +56,7 @@
                                 selectable
                                 custom
                             >
-                                {{ ABTokens[x] !== null ? ABTokens[x]?.symbol : "Select token" }}
+                                {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
                                 <template #icon>
                                     <Icon
                                         name="chevron"
@@ -70,13 +70,14 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :value="ABAmounts[x]"
+                                :value="Amounts[x]"
                                 @input="setTokenAmount($event, x)"
                             />
-                            <!-- :value="ABAmounts[x]" -->
+                            <!-- :value="Amounts[x]" -->
                         </div>
                         <div class="window__lower row flex-end align-center">
-                            <p class="caption">{{ Number(ABBalance[x]) }}</p>
+                            <!-- <p class="caption">{{ Number(ABBalance[x]) }}</p> -->
+                            <p class="caption">{{ ABBalance[x] }}</p>
                             <Icon
                                 name="wallet"
                                 :size="13"
@@ -140,7 +141,7 @@
                     Connect wallet
                 </Btn>
                 <Btn
-                    v-else
+                    v-else-if="pool"
                     @click="callAddLiquidity()"
                     is="h4"
                     wide
@@ -161,68 +162,33 @@ import { BrowserProvider, Contract, parseEther, formatUnits } from "ethers"
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
-import { getToken, useBalances, usePools, basicRound } from "~/helpers/index"
-import { textSpanIntersection } from "typescript"
+import { useTokens, useBalances, usePools, basicRound, isSupportedChain } from "~/helpers/index"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
 const { featuredTokens, positions, connectedAccount, chainId } = storeToRefs(stepStore)
-const { isSupportedChain, getUrl } = stepStore
-const { findPool, poolRatio, addLiquidity } = usePools(stepStore.routerAddress)
-
-const { getTokenBalance } = useBalances()
 
 const state = reactive({
-    tokens: {
-        A: null,
-        B: null,
-    },
     amountA: "",
     amountB: "",
     balanceA: "",
     balanceB: "",
-    selectTokenIndex: 0,
     lastChangedToken: 0,
     redeemPercent: 100,
 })
-const ABTokens = computed({
-    get() {
-        return [state.tokens.A, state.tokens.B]
-        // return [poolTokens.value.A, poolTokens.value.B]
-    },
-    set(newValue) {
-        // poolTokens.value.A = newValue[0]
-        // poolTokens.value.B = newValue[1]
 
-        state.tokens.A = newValue[0]
-        state.tokens.B = newValue[1]
-    },
-})
-const {
-    data: pool,
-    error,
-    status,
-    pending,
-} = useAsyncData(
-    "pool",
-    () => {
-        const bothThere = ABTokens.value.every((el) => el !== null)
+// TOKENS ---------------
+const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
+// TOKENS ---------------
 
-        if (bothThere && isSupportedChain(chainId.value)) {
-            return $fetch(
-                getUrl(`/chain/${chainId.value}/pool/${ABTokens.value[0].address}/${ABTokens.value[1].address}`)
-            )
-        }
-    },
-    {
-        watch: [chainId, ABTokens],
-    }
-)
+// POOL -----------------
+const { pool, poolRatio, addLiquidity } = usePools(stepStore.routerAddress, Tokens, connectedAccount, chainId)
+// POOL -----------------
 
 // WIDGET ---------------
 const bothAmountsIn = computed(() => {
-    return ABAmounts.value.every((el) => el !== "")
+    return Amounts.value.every((el) => el !== "")
 })
 const ownedPosition = computed(() => {
     if (!pool.value || !positions.value) {
@@ -230,14 +196,14 @@ const ownedPosition = computed(() => {
     }
     const matchedPosition = positions.value.find((el) => el.pool.pool_index === pool.value.pool_index)
     if (!matchedPosition) {
-        return null
+        return false
     }
     return matchedPosition
 })
 function callAddLiquidity() {
     addLiquidity(
-        ...ABTokens.value,
-        ...ABAmounts.value,
+        ...Tokens.value,
+        ...Amounts.value,
         settingsAdd.value.slippage,
         settingsAdd.value.deadline,
         stepStore.connectedAccount,
@@ -249,24 +215,8 @@ function callAddLiquidity() {
 }
 // WIDGET ---------------
 
-// TOKENS ---------------
-
-const bothTokensThere = computed(() => ABTokens.value.every((el) => el !== null))
-
-async function setToken(token) {
-    if (token) {
-        const sameTokenIndex = ABTokens.value.findIndex((el) => el?.address === token.address)
-        if (sameTokenIndex !== -1 && sameTokenIndex !== state.selectTokenIndex) {
-            ABTokens.value = ABTokens.value.reverse()
-            return
-        }
-    }
-    ABTokens.value = ABTokens.value.map((el, index) => (index === state.selectTokenIndex ? token : el))
-}
-// TOKENS ---------------
-
 // AMOUNTS --------------
-const ABAmounts = computed({
+const Amounts = computed({
     get() {
         // Round function trimms down unncessary digits and adds < mark when unsignificant
         function Round(amt) {
@@ -305,7 +255,7 @@ const ABAmounts = computed({
 })
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
-    ABAmounts.value = ABAmounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
+    Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
 }
 
 function calcThat(value) {
@@ -333,7 +283,7 @@ function cleanInput(value, oldValue) {
 }
 // CLEANS IMPUTED AMOUNT
 watch(
-    ABAmounts,
+    Amounts,
     (newVal, oldVal) => {
         const [newA, newB] = [...newVal]
         const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
@@ -350,6 +300,8 @@ watch(
 // AMOUNTS --------------
 
 // BALANCES -------------
+const { getTokenBalance } = useBalances()
+
 const ABBalance = computed({
     get() {
         return [state.balanceA, state.balanceB]
@@ -364,8 +316,8 @@ const ABBalance = computed({
 //MODAL STUFF----------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(ABTokens.value, setToken)
-    state.selectTokenIndex = index
+    toggleSelectTokenModal(Tokens.value, setToken)
+    selectTokenIndex.value = index
 }
 const { toggleNewTokenModal, isNewTokenModalOpen } = inject("newTokenModal")
 function openNewTokenModal() {
@@ -393,15 +345,16 @@ function findTokenByAddress(address) {
     return token
 }
 if (route.query.tk1) {
-    state.tokens.A = findTokenByAddress(route.query.tk1)
+    tokenA.value = findTokenByAddress(route.query.tk1)
 }
 if (route.query.tk2) {
-    state.tokens.B = findTokenByAddress(route.query.tk2)
+    tokenB.value = findTokenByAddress(route.query.tk2)
 }
 // ROUTES ----------------
+
 let intervalId = null
 watch(
-    ABTokens,
+    Tokens,
     async (tokens) => {
         // adding query params to url
         const obj = {}
@@ -413,32 +366,30 @@ watch(
         })
 
         // finding a pool
-        const bothThere = tokens.every((el) => el !== null)
-        if (bothThere && isSupportedChain(chainId.value)) {
-            // Stop the existing interval if it's running
-            clearInterval(intervalId)
-            pool.value = null
-            // Call findPool immediately
-            await findPool(tokens, chainId.value)
+        // const bothThere = tokens.every((el) => el !== null)
+        // if (bothThere && isSupportedChain(chainId.value)) {
+        // clearInterval(intervalId)
+        // pool.value = null
+        // findPool(tokens, chainId.value)
 
-            // Start the loop to call findPool every second
-            // intervalId = setInterval(async () => {
-            //     console.log("looping...", tokens[0].symbol, " / ", tokens[1].symbol)
-            //     await findPool(tokens, chainId.value)
-            // }, 5000)
-        } else {
-            // Stop the loop if any of the values is missing
-            clearInterval(intervalId)
-            intervalId = null
-            pool.value = null
-        }
+        // Start the loop to call findPool every second
+        // intervalId = setInterval(async () => {
+        //     console.log("looping...", tokens[0].symbol, " / ", tokens[1].symbol)
+        //     await findPool(tokens, chainId.value)
+        // }, 5000)
+        // } else {
+        // Stop the loop if any of the values is missing
+        // clearInterval(intervalId)
+        // intervalId = null
+        // pool.value = null
+        // }
 
         //getting balance
-        if (stepStore.connectedAccount) {
-            if (state.selectTokenIndex === 0) {
-                state.balanceA = await getTokenBalance(tokens[0], stepStore.connectedAccount, 80001)
+        if (connectedAccount.value && isSupportedChain(chainId.value)) {
+            if (selectTokenIndex.value === 0) {
+                state.balanceA = await getTokenBalance(tokens[0], connectedAccount.value, chainId.value)
             } else {
-                state.balanceB = await getTokenBalance(tokens[1], stepStore.connectedAccount, 80001)
+                state.balanceB = await getTokenBalance(tokens[1], connectedAccount.value, chainId.value)
             }
         }
     },
@@ -448,9 +399,9 @@ watch(
 )
 
 async function getBothBalances() {
-    if (isSupportedChain(chainId.value)) {
-        state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, chainId.value)
-        state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, chainId.value)
+    if (connectedAccount.value && isSupportedChain(chainId.value)) {
+        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, chainId.value)
+        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, chainId.value)
     }
 }
 //GETS BALANCES BY TOKENS AND WALLET
@@ -459,8 +410,8 @@ watch(
     async (newVal) => {
         const [wallet, chain] = newVal
         if (wallet && isSupportedChain(chain)) {
-            state.balanceB = await getTokenBalance(ABTokens.value[1], stepStore.connectedAccount, chain)
-            state.balanceA = await getTokenBalance(ABTokens.value[0], stepStore.connectedAccount, chain)
+            state.balanceA = await getTokenBalance(Tokens.value[0], wallet, chain)
+            state.balanceB = await getTokenBalance(Tokens.value[1], wallet, chain)
         } else {
             ABBalance.value = ["", ""]
         }

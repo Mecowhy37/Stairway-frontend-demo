@@ -88,14 +88,12 @@
 
 <script setup>
 import { BrowserProvider, Contract, parseEther, id } from "ethers"
-import { usePools } from "~/helpers/index"
+import { listenForTransactionMine } from "~/helpers/index"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 const stepStore = useStepStore()
 const { featuredTokens } = storeToRefs(stepStore)
-
-const { listenForTransactionMine } = usePools(stepStore.routerAddress)
 
 const tokenSymbol = ref("")
 const copied = ref(false)
@@ -146,6 +144,10 @@ const truncatedTokenAddress = computed(() => {
     return start + "..." + end
 })
 
+function copyAddress() {
+    copied.value = true
+    navigator.clipboard.writeText(selectedAddress.value)
+}
 watch(tokenSymbol, (newVal, oldVal) => {
     newVal = newVal.replace(/[^a-zA-Z]/g, "")
     if (newVal.length > 7) {
@@ -154,10 +156,6 @@ watch(tokenSymbol, (newVal, oldVal) => {
     tokenSymbol.value = newVal.toUpperCase()
 })
 
-function copyAddress() {
-    copied.value = true
-    navigator.clipboard.writeText(selectedAddress.value)
-}
 watch(copied, (newVal) => {
     if (newVal) {
         setTimeout(() => {
