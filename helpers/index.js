@@ -193,7 +193,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress, RouterABI, signer)
 
-        const tokenList = [tokenA, tokenB].map((el) => el.address)
+        const tokenList = [tokenA, tokenB].map((el) => el.address).reverse()
 
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
@@ -204,12 +204,14 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
             await approveSpending(tokenA.address, providerArg, amounts[0])
         }
 
-        console.log("tokenList:", tokenList)
-        console.log("amounts[1]:", String(amounts[1]))
-        console.log("maxPrice:", maxPrice)
+        console.log(" - - - - -s w a p- - - - - - ")
+        console.log("base token:", tokenList[0])
+        console.log("qoute token:", tokenList[1])
+        console.log("desired_based_amount:", String(amounts[1]))
+        console.log("bid:", maxPrice)
         console.log("account:", account)
         console.log("deadlineStamp:", deadlineStamp)
-        await router.buy(...tokenList, String(amounts[0]), maxPrice, account, deadlineStamp)
+        await router.buy(...tokenList, String(amounts[1]), maxPrice, account, deadlineStamp)
 
         // "inputs": [
         //     {

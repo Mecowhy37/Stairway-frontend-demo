@@ -110,7 +110,7 @@
                 </div>
             </div>
             <div
-                v-if="bothTokensThere && pool && Number(displayDepth) < Number(Amounts[1])"
+                v-if="bothTokensThere && pool && !poolPending && Number(displayDepth) < Number(Amounts[1])"
                 class="infos"
             >
                 <div class="info row">
@@ -204,7 +204,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 // TOKENS ------------------
 
 // POOL -----------------
-const { pool, bidAsk, bidAskFormat, displayDepth, swap } = usePools(
+const { pool, poolPending, bidAsk, bidAskFormat, displayDepth, swap } = usePools(
     stepStore.routerAddress,
     Tokens,
     connectedAccount,
@@ -229,7 +229,7 @@ function callSwap() {
     swap(
         ...Tokens.value,
         AmountsUint.value,
-        bidAsk.value[1],
+        bidAsk.value[0],
         connectedAccount.value,
         settings.value.deadline,
         stepStore.connectedWallet.provider
