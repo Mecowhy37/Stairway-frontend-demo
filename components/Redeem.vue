@@ -218,11 +218,10 @@
 import { formatUnits } from "ethers"
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
-import { usePools, basicRound } from "~/helpers/index"
+import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 const stepStore = useStepStore()
-const { getUrl, isSupportedChain } = stepStore
-const { featuredTokens, positions, chainId } = storeToRefs(stepStore)
+const { connectAccount, positions, chainId } = storeToRefs(stepStore)
 
 const { redeemLiquidity } = usePools(stepStore.routerAddress)
 
@@ -283,6 +282,7 @@ const {
     "pool",
     () => {
         if (isSupportedChain(chainId.value)) {
+            console.log("fetching")
             return $fetch(getUrl(`/chain/${chainId.value}/pool/${route.params.address}`))
         }
     },

@@ -22,6 +22,7 @@ declare global {
 //   }
 
 export const useStepStore = defineStore("step", (): any => {
+    const isMobile: Ref<boolean> = ref(false)
     const isDark: Ref<boolean> = ref(false)
     const activeWallet: Ref<string | null> = ref(null)
     const connectingWallet: Ref<boolean> = ref(false)
@@ -164,6 +165,7 @@ export const useStepStore = defineStore("step", (): any => {
 
         routerAddress,
         isDark,
+        isMobile,
         
         featuredTokens,
         fetchTokens,

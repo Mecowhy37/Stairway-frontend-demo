@@ -16,6 +16,7 @@
 </template>
 
 <script setup>
+import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
 
 import { useStepStore } from "@/stores/step"
@@ -25,6 +26,23 @@ const stepStore = useStepStore()
 const { featuredTokens, addresses, positions, connectedAccount, chainId } = storeToRefs(stepStore)
 
 import { isSupportedChain } from "~/helpers/index"
+
+// SCREEN SIZE ------------------
+const { width } = useWindowSize()
+watch(
+    width,
+    (newVal) => {
+        if (newVal <= 600) {
+            stepStore.isMobile = true
+        } else {
+            stepStore.isMobile = false
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+// SCREEN SIZE ------------------
 
 // MODAL STUFF ------------------
 const selectTokenModal = ref()

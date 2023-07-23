@@ -22,7 +22,7 @@
                     v-if="!stepStore.connectedWallet"
                     plain
                     active
-                    compact
+                    :compact="isMobile"
                     @click="stepStore.connectWallet()"
                 >
                     Connect
@@ -36,13 +36,13 @@
 
                 <Dropdown
                     v-else
-                    :width="180"
+                    :width="isMobile ? 180 : 250"
                 >
                     <template #dropdown-activator="{ on }">
                         <Btn
                             plain
                             active
-                            compact
+                            :compact="isMobile"
                         >
                             {{ stepStore.getTruncatedWalletAddress }}
                             <template #icon>
@@ -57,9 +57,9 @@
                     <template #dropdown>
                         <Btn
                             wide
-                            compact
                             opaque
                             active
+                            :compact="isMobile"
                             @click="stepStore.disconnectConnectedWallet()"
                         >
                             Disconnect
@@ -104,8 +104,10 @@
 
 <script setup>
 import { useStepStore } from "@/stores/step"
+import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
+const { isMobile } = storeToRefs(stepStore)
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
