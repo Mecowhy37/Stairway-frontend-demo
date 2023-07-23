@@ -67,6 +67,43 @@
                     </template>
                 </Dropdown>
                 <Dropdown
+                    class="chain-dropdown"
+                    :width="160"
+                    no-padding
+                >
+                    <template #dropdown-activator="{ on }">
+                        <Btn
+                            transparent
+                            circle
+                        >
+                            <template #icon>
+                                <img src="~/assets/img/ethLogo.svg" />
+                            </template>
+                        </Btn>
+                    </template>
+                    <template #dropdown>
+                        <div class="list-item list-item--padded-xs row">
+                            <img
+                                class="token-icon--sm"
+                                src="~/assets/img/ethLogo.svg"
+                            />
+                            <p>mainnet</p>
+                        </div>
+                        <div class="list-item list-item--padded-xs lists-item--selected row align-center">
+                            <img
+                                class="token-icon token-icon--sm"
+                                src="~/assets/img/ethLogo.svg"
+                            />
+                            <p>testnet</p>
+                            <Icon
+                                class="tick-icon"
+                                name="tick"
+                                :size="9"
+                            ></Icon>
+                        </div>
+                    </template>
+                </Dropdown>
+                <Dropdown
                     no-padding
                     :width="140"
                     class="burger"
@@ -182,6 +219,15 @@ function revertTheme() {
                 }
             }
         }
+        .chain-dropdown {
+            .dropdown__box {
+                .list-item {
+                    p {
+                        margin-left: 5px;
+                    }
+                }
+            }
+        }
     }
     @media (max-width: 900px) {
         &__wrapper {
@@ -213,6 +259,11 @@ function revertTheme() {
         }
         &__navigation {
             gap: 20px;
+        }
+    }
+    @media (max-width: 400px) {
+        &__wrapper {
+            padding-left: 5px;
         }
     }
 }

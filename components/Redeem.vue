@@ -12,6 +12,7 @@
                         transparent
                         circle
                         icon-contrast
+                        class="grey-text"
                     >
                         <template #icon>
                             <Icon
@@ -117,10 +118,17 @@
                     @input="removeSelected()"
                 />
             </div>
-            <div v-if="pool && ownedPosition">
-                <div class="row space-between">
-                    <p class="grey-text">Pooled {{ pool.base_token.symbol }}:</p>
-                    <p>
+            <div
+                v-if="pool && ownedPosition"
+                class="pooled"
+            >
+                <div class="pooled__item row align-center">
+                    <img
+                        class="token-icon token-icon--sm"
+                        :src="pool.base_token.logo_uri"
+                    />
+                    <p class="pooled__item__symbol grey-text">Pooled {{ pool.base_token.symbol }}:</p>
+                    <p class="pooled__item__amount">
                         {{
                             ownedPosition
                                 ? basicRound(
@@ -134,9 +142,13 @@
                         }}
                     </p>
                 </div>
-                <div class="row space-between">
-                    <p class="grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
-                    <p>
+                <div class="pooled__item row align-center">
+                    <img
+                        class="token-icon token-icon--sm"
+                        :src="pool.quote_token.logo_uri"
+                    />
+                    <p class="pooled__item__symbol grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
+                    <p class="pooled__item__amount">
                         {{
                             ownedPosition
                                 ? basicRound(
@@ -299,6 +311,9 @@ const {
     p {
         margin-left: 12px;
     }
+    .token-icon:last-of-type {
+        margin-left: -7px;
+    }
 }
 .amount {
     .percents {
@@ -313,6 +328,20 @@ const {
         .options {
             justify-content: flex-end;
             gap: 5px;
+        }
+    }
+}
+
+.pooled {
+    &__item {
+        &__symbol {
+            margin-left: 6px;
+        }
+        &__amount {
+            margin-left: auto;
+        }
+        &:first-of-type {
+            margin-bottom: 8px;
         }
     }
 }

@@ -11,6 +11,7 @@
                 <Btn
                     circle
                     transparent
+                    class="grey-text"
                     @click="toggleDropdown"
                 >
                     <template #icon>
@@ -188,7 +189,6 @@ defineExpose({
 
 <style lang="scss" scoped>
 .settings {
-    color: var(--text-color-reverse);
     .topbar {
         padding: 12px;
         border-bottom: 1px solid var(--text-color-reverse);

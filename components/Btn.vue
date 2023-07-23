@@ -259,6 +259,7 @@ $horiz-padd: 1.3rem; */
         background-color: var(--cta-bg);
     }
     &--circle {
+        border: none;
         border-radius: 9999px;
         padding: 0px;
         #icon-slot {

@@ -10,8 +10,9 @@
                 <template #dropdown-activator="{ on }">
                     <Btn
                         transparent
-                        tiny
+                        circle
                         icon-contrast
+                        class="grey-text"
                     >
                         <template #icon>
                             <Icon
@@ -33,22 +34,15 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <div
-                v-if="true"
-                class="tips"
-            >
+            <div class="tips">
                 <p>
-                    <span class="text-highlight">Tip: </span>To try out the interface you'll need some tokens, you can
-                    get them
+                    <span class="text-highlight">Tip: </span>
+                    Get tokens for test
                     <span
                         @click="openNewTokenModal"
                         class="activator-link text-highlight"
                         >here</span
-                    >.
-                </p>
-                <p>
-                    <span class="text-highlight">Tip:</span> Pool with these tokens doesnt exist yet,
-                    <span class="text-highlight">create it.</span>
+                    >
                 </p>
             </div>
             <div class="windows">
@@ -224,6 +218,7 @@ function switchOrder() {
     Amounts.value = Amounts.value.reverse()
     Balances.value = Balances.value.reverse()
     state.lastChangedToken = Number(!Boolean(state.lastChangedToken))
+    selectTokenIndex.value = Number(!Boolean(selectTokenIndex.value))
 }
 function callSwap() {
     swap(
@@ -376,24 +371,18 @@ if (route.query.tk2) {
 
 watch(
     Tokens,
-    async (tokens) => {
+    async (tokens, oldTokens) => {
+        console.log("tokens:", tokens)
+        console.log("oldTokens:", oldTokens)
         // adding query params to url
         const obj = {}
-        tokens.map((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
+        tokens.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
         router.replace({
             query: {
                 ...obj,
             },
         })
-
-        //getting balance
-        if (connectedAccount.value && isSupportedChain(chainId.value)) {
-            if (selectTokenIndex.value === 0) {
-                state.balanceA = await getTokenBalance(tokens[0], connectedAccount.value, chainId.value)
-            } else {
-                state.balanceB = await getTokenBalance(tokens[1], connectedAccount.value, chainId.value)
-            }
-        }
+        getBothBalances()
     },
     {
         immediate: true,

@@ -29,7 +29,7 @@
             :class="{ 'widget-title--margin': !props.noReturn }"
             ><slot name="widget-title"></slot
         ></component>
-        <div class="grey-text">
+        <div>
             <slot name="right-icon"></slot>
         </div>
     </div>

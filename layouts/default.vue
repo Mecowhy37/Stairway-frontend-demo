@@ -170,8 +170,9 @@ svg {
     border-radius: 50%;
     height: 36px;
     width: 36px;
-    &:last-of-type {
-        margin-left: -7px;
+    &--sm {
+        height: 21px;
+        width: 21px;
     }
 }
 .list-item {
@@ -203,11 +204,19 @@ svg {
     &--padded-sm {
         padding: 0.7rem;
     }
+    &--padded-xs {
+        padding: 0.7rem 5px;
+    }
     &--centered {
         text-align: center;
     }
     &--all-rounded {
         border-radius: inherit;
+    }
+    .tick-icon {
+        margin-left: auto;
+        color: var(--list-click-stroke);
+        margin-right: 5px;
     }
 }
 .caption {
@@ -221,13 +230,12 @@ svg {
 }
 .activator-link {
     cursor: pointer;
-    border-bottom: 1px solid var(--primary-btn-bg);
+    &:hover {
+        border-bottom: 1px solid var(--primary-btn-bg);
+    }
 }
 .grey-text {
     color: var(--text-grey);
-    * {
-        color: var(--text-grey);
-    }
 }
 .base-box {
     background-color: var(--widget-bg);

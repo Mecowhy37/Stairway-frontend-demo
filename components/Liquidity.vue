@@ -12,6 +12,7 @@
                         circle
                         transparent
                         icon-contrast
+                        class="grey-text"
                     >
                         <template #icon>
                             <Icon
@@ -34,7 +35,7 @@
         <template #widget-content>
             <div class="tips">
                 <p>
-                    <!-- <span class="text-highlight">Tip: </span> -->
+                    <span class="text-highlight">Tip: </span>
                     Get tokens for test
                     <span
                         @click="openNewTokenModal"

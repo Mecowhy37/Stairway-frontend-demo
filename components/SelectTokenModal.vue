@@ -17,6 +17,7 @@
                         @click="toggleModal"
                         circle
                         transparent
+                        class="grey-text"
                     >
                         <template #icon>
                             <Icon
@@ -34,9 +35,13 @@
                 <div
                     v-for="token in featuredTokens"
                     @click="setToken(token)"
-                    class="list-item list-item--padded row space-between align-center"
+                    class="list-item list-item--padded row align-center"
                 >
-                    <p>
+                    <img
+                        class="token-icon token-icon--sm"
+                        :src="token.logo_uri"
+                    />
+                    <p class="token-name">
                         {{ token.name }}
                     </p>
                     <Icon
@@ -150,8 +155,15 @@ defineExpose({
             &::-webkit-scrollbar {
                 display: none;
             }
-
+            .list-item {
+                padding: 16px 8px;
+            }
+            .token-name {
+                margin-left: 6px;
+            }
             .tick-icon {
+                margin-left: auto;
+                margin-right: 8px;
                 color: var(--list-click-stroke);
             }
         }

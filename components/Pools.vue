@@ -43,7 +43,7 @@
                                         :src="position.pool.quote_token.logo_uri"
                                     />
                                 </div>
-                                <h4>{{ position.pool.base_token.symbol }} / {{ position.pool.quote_token.symbol }}</h4>
+                                <p>{{ position.pool.base_token.symbol }} / {{ position.pool.quote_token.symbol }}</p>
                                 <Dropdown
                                     solid
                                     no-padding
@@ -54,6 +54,7 @@
                                             opaque
                                             selectable
                                             sm-radius
+                                            :compact="isMobile"
                                             @click="toggle(i)"
                                         >
                                             Manage
@@ -71,12 +72,14 @@
                                         <p
                                             @click="addRedirect(position.pool)"
                                             class="list-item list-item--centered"
+                                            :class="isMobile ? 'list-item--padded-sm' : 'list-item--padded'"
                                         >
                                             Add liquidity
                                         </p>
                                         <p
                                             @click="removeRedirect(position.pool)"
                                             class="list-item list-item--centered"
+                                            :class="isMobile ? 'list-item--padded-sm' : 'list-item--padded'"
                                         >
                                             Redeem liquidity
                                         </p>
@@ -131,7 +134,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions, connectedAccount, chainId } = storeToRefs(stepStore)
+const { positions, connectedAccount, chainId, isMobile } = storeToRefs(stepStore)
 
 const openedIndex = ref(null)
 
@@ -208,10 +211,15 @@ function Round(amt) {
                     align-items: center;
                     white-space: nowrap;
                     gap: 1rem;
+
+                    .token-icon {
+                        &:last-of-type {
+                            margin-left: -7px;
+                        }
+                    }
                     .manage-btn {
                         margin-left: auto;
                         .list-item {
-                            padding: 1rem;
                             &:first-of-type {
                                 border-top-left-radius: inherit;
                                 border-top-right-radius: inherit;

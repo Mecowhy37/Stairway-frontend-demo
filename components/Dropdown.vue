@@ -1,5 +1,8 @@
 <template>
-    <div class="dropdown">
+    <div
+        class="dropdown"
+        ref="toActivate"
+    >
         <div
             class="dropdown__activator"
             ref="openner"
@@ -15,7 +18,6 @@
             v-show="isDropdownActive"
             class="dropdown__box base-box"
             :class="[{ 'no-padding': props.noPadding, 'base-box--solid': props.solid }]"
-            ref="toActivate"
         >
             <slot
                 name="dropdown"
@@ -63,10 +65,10 @@ function toggleDropdown() {
 onClickOutside(toActivate, (event) => {
     if (isDropdownActive.value === true) {
         toggleDropdown()
-        event.stopPropagation()
+        // event.stopPropagation()
         if (openner.value === event.target.parentNode) {
             // when is open and actcivator is clicked
-            event.stopPropagation()
+            // event.stopPropagation()
         }
     }
 })
