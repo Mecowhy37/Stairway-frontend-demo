@@ -77,8 +77,7 @@
                             <!-- :value="Amounts[x]" -->
                         </div>
                         <div class="window__lower row flex-end align-center">
-                            <!-- <p class="caption">{{ Number(ABBalance[x]) }}</p> -->
-                            <p class="caption">{{ ABBalance[x] }}</p>
+                            <p class="caption">{{ Number(ABBalance[x]) }}</p>
                             <Icon
                                 name="wallet"
                                 :size="13"
