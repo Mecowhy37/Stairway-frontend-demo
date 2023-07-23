@@ -372,8 +372,6 @@ if (route.query.tk2) {
 watch(
     Tokens,
     async (tokens, oldTokens) => {
-        console.log("tokens:", tokens)
-        console.log("oldTokens:", oldTokens)
         // adding query params to url
         const obj = {}
         tokens.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))

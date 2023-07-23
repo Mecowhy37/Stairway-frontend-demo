@@ -91,7 +91,7 @@
                         </div>
                         <div class="list-item list-item--padded-xs lists-item--selected row align-center">
                             <img
-                                class="token-icon token-icon--sm"
+                                class="token-icon--sm"
                                 src="~/assets/img/ethLogo.svg"
                             />
                             <p>testnet</p>

@@ -52,7 +52,6 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
             const bothThere = Tokens.value.every((el) => el !== null)
 
             if (bothThere && connectedAccount.value && isSupportedChain(chainId.value)) {
-                console.log("fetching pool")
                 return $fetch(
                     getUrl(`/chain/${chainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`)
                 )

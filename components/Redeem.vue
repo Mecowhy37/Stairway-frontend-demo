@@ -294,7 +294,6 @@ const {
     "pool",
     () => {
         if (isSupportedChain(chainId.value)) {
-            console.log("fetching")
             return $fetch(getUrl(`/chain/${chainId.value}/pool/${route.params.address}`))
         }
     },

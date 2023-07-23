@@ -164,7 +164,6 @@ defineExpose({
             .tick-icon {
                 margin-left: auto;
                 margin-right: 8px;
-                color: var(--list-click-stroke);
             }
         }
     }
