@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       "@nuxt/devtools"
   ],
   build: {
-    // standalone: true,
+    standalone: true,
   },
 })
     

@@ -68,7 +68,7 @@
                 </Dropdown>
                 <Dropdown
                     class="chain-dropdown"
-                    :width="160"
+                    :width="210"
                     no-padding
                 >
                     <template #dropdown-activator="{ on }">
@@ -77,25 +77,30 @@
                             circle
                         >
                             <template #icon>
-                                <img src="~/assets/img/ethLogo.svg" />
+                                <img
+                                    class="token-icon"
+                                    :src="
+                                        connectedChainFullObj
+                                            ? connectedChainFullObj.icon
+                                            : '/_nuxt/assets/img/polygon_mainnet.webp'
+                                    "
+                                />
                             </template>
                         </Btn>
                     </template>
                     <template #dropdown>
-                        <div class="list-item list-item--padded-xs row">
+                        <div
+                            v-for="chain in chains"
+                            class="list-item list-item--padded-xs row align-center"
+                            @click="setChain(chain.id)"
+                        >
                             <img
-                                class="token-icon--sm"
-                                src="~/assets/img/ethLogo.svg"
+                                class="token-icon token-icon--sm"
+                                :src="chain.icon"
                             />
-                            <p>mainnet</p>
-                        </div>
-                        <div class="list-item list-item--padded-xs lists-item--selected row align-center">
-                            <img
-                                class="token-icon--sm"
-                                src="~/assets/img/ethLogo.svg"
-                            />
-                            <p>testnet</p>
+                            <p>{{ chain.label }}</p>
                             <Icon
+                                v-if="connectedChain && chain.id === connectedChain.id"
                                 class="tick-icon"
                                 name="tick"
                                 :size="9"
@@ -144,11 +149,19 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { isMobile } = storeToRefs(stepStore)
+const { isMobile, chains, connectedChain } = storeToRefs(stepStore)
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
 }
+
+function setChain(id) {
+    stepStore.setChain({ chainId: id })
+}
+
+const connectedChainFullObj = computed(() => {
+    return chains.value.find((el) => el.id === connectedChain.value?.id)
+})
 </script>
 
 <style lang="scss" scoped>

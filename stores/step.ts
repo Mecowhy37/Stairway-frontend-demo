@@ -28,9 +28,9 @@ export const useStepStore = defineStore("step", (): any => {
     const connectingWallet: Ref<boolean> = ref(false)
     const isConnectingText = computed((): string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
     
-    const MAINNET_RPC_URL: string = "https://cloudflare-eth.com/"
-    const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
+    const POLYGON_MAIN = "https://polygon.llamarpc.com"
     const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
+    const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
 
     const unhandled = "0x0000000000000000000000000000000000000000"
 
@@ -39,16 +39,25 @@ export const useStepStore = defineStore("step", (): any => {
         wallets: [injected],
         chains: [
             {
+                id: "0x89",
+                token: "MATIC",
+                label: "Polygon Mainnet",
+                rpcUrl: POLYGON_MAIN,
+                icon: "/_nuxt/assets/img/polygon_mainnet.webp"
+            },
+            {
                 id: "0x13881",
                 token: "MATIC",
                 label: "Polygon Mumbai",
                 rpcUrl: MUMBAI_RPC_URL,
+                icon: "/_nuxt/assets/img/polygon_mainnet.webp"
             },
             {
                 id: "0x7a69",
                 token: "ETH",
                 label: "Local Anvil",
                 rpcUrl: LOCAL_ANVIL,
+                icon: "/_nuxt/assets/img/ethLogo.svg"
             },
         ],
         accountCenter: {
@@ -63,7 +72,7 @@ export const useStepStore = defineStore("step", (): any => {
             autoConnectLastWallet: true,
         },
     })
-    const { wallets, connectWallet, connectedChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
+    const { wallets, connectWallet, connectedChain, setChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
     // const walletsNotifs = onboard.state.select('notifications')
     // const { unsubscribe } = walletsNotifs.subscribe((update) =>
     //     console.log('transaction notifications: ', update)
@@ -86,6 +95,10 @@ export const useStepStore = defineStore("step", (): any => {
         return start + "..." + end
     })
     
+
+    const chains = computed(() => {
+        return onboard.state.get().chains
+    })
     
     const chainId = computed(() => {
         if (!connectedChain.value) {
@@ -176,6 +189,8 @@ export const useStepStore = defineStore("step", (): any => {
         addresses,
         fetchAddresses,
         
+        chains,
+        setChain,
         chainId,
         connectedChain,
         isConnectingText,
