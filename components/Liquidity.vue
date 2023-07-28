@@ -355,12 +355,23 @@ function findTokenByAddress(address) {
     }
     return token
 }
-if (route.query.tk1) {
-    tokenA.value = findTokenByAddress(route.query.tk1)
-}
-if (route.query.tk2) {
-    tokenB.value = findTokenByAddress(route.query.tk2)
-}
+watch(
+    featuredTokens,
+    (newTokens) => {
+        if (newTokens && newTokens.length > 0) {
+            // Fetch tokenA and tokenB from route.query and update the values
+            if (route.query.tk1) {
+                tokenA.value = findTokenByAddress(route.query.tk1)
+            }
+            if (route.query.tk2) {
+                tokenB.value = findTokenByAddress(route.query.tk2)
+            }
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 // ROUTES ----------------
 
 let intervalId = null
@@ -368,32 +379,15 @@ watch(
     Tokens,
     async (tokens) => {
         // adding query params to url
-        const obj = {}
-        tokens.map((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
-        router.replace({
-            query: {
-                ...obj,
-            },
-        })
-
-        // finding a pool
-        // const bothThere = tokens.every((el) => el !== null)
-        // if (bothThere && isSupportedChain(chainId.value)) {
-        // clearInterval(intervalId)
-        // pool.value = null
-        // findPool(tokens, chainId.value)
-
-        // Start the loop to call findPool every second
-        // intervalId = setInterval(async () => {
-        //     console.log("looping...", tokens[0].symbol, " / ", tokens[1].symbol)
-        //     await findPool(tokens, chainId.value)
-        // }, 5000)
-        // } else {
-        // Stop the loop if any of the values is missing
-        // clearInterval(intervalId)
-        // intervalId = null
-        // pool.value = null
-        // }
+        if (featuredTokens.value && featuredTokens.value.length > 0) {
+            const obj = {}
+            tokens.map((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
+            router.replace({
+                query: {
+                    ...obj,
+                },
+            })
+        }
 
         //getting balance
         if (connectedAccount.value && isSupportedChain(chainId.value)) {

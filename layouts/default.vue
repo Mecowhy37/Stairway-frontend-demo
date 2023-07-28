@@ -16,16 +16,159 @@
 </template>
 
 <script setup>
+import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
+
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
+
+import poolmanager from "@/ABIs/IPoolManager.json"
+const PoolManagerABI = poolmanager.abi
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, positions, connectedAccount, chainId } = storeToRefs(stepStore)
+const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chainId } = storeToRefs(stepStore)
 
-import { isSupportedChain } from "~/helpers/index"
+import { isSupportedChain, getUrl } from "~/helpers/index"
+
+const {
+    data: TokensData,
+    pending: TokensPending,
+    refresh: refreshTokens,
+    error: TokensError,
+    status: TokensStatus,
+} = await useAsyncData(
+    "tokens",
+    () => {
+        if (isSupportedChain(chainId.value)) {
+            return $fetch(getUrl(`/chain/${chainId.value}/tokens/featured`))
+        }
+    },
+    {
+        watch: [chainId],
+    }
+)
+watch(
+    TokensData,
+    (newVal) => {
+        if (newVal) {
+            featuredTokens.value = newVal
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+const {
+    data: AddressesData,
+    pending: AddressesPending,
+    refresh: refreshAddresses,
+    error: AddressesError,
+    status: AddressesStatus,
+} = await useAsyncData(
+    "addresses",
+    () => {
+        if (isSupportedChain(chainId.value)) {
+            return $fetch(getUrl(`/chain/${chainId.value}/addresses/local`))
+        }
+    },
+    {
+        watch: [chainId],
+    }
+)
+watch(
+    AddressesData,
+    (newVal) => {
+        if (newVal) {
+            addresses.value = newVal
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+const {
+    data: PositionsData,
+    pending: PositionsPending,
+    refresh: refreshPositions,
+    error: PositionsError,
+    status: PositionsStatus,
+} = await useAsyncData(
+    "positions",
+    () => {
+        if (connectedAccount.value && isSupportedChain(chainId.value)) {
+            console.log("fetching positions")
+            return $fetch(getUrl(`/chain/${chainId.value}/user/${connectedAccount.value}/positions`))
+        }
+    },
+    {
+        watch: [chainId, connectedAccount],
+    }
+)
+watch(
+    PositionsData,
+    (newVal) => {
+        if (newVal) {
+            positions.value = newVal
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+let poolManager = null
+watch(
+    () => [connectedAccount.value, chainId.value, addresses.value],
+    async ([account, chain, addresses], oldVal) => {
+        const [oldAccount, oldChain, oldAddresses] = oldVal ? oldVal : [null, null, null]
+        if (account && isSupportedChain(chain) && addresses) {
+            if (poolManager) {
+                console.log("switch off - liquidityAdded")
+                poolManager.off("LiquidityAdded", LiquidityAddedHandler)
+                poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
+            }
+            const provider = new BrowserProvider(connectedWallet.value.provider)
+            poolManager = new Contract(addresses.PoolManager, PoolManagerABI, provider)
+            console.log("set up - liquidityAdded")
+            poolManager.on("LiquidityAdded", LiquidityAddedHandler)
+            poolManager.on("LiquidityRedeemed", LiquidityRedeemedHandler)
+        } else {
+            if (poolManager) {
+                console.log("switch off - liquidityAdded")
+                poolManager.off("LiquidityAdded", LiquidityAddedHandler)
+                poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
+            }
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+function LiquidityAddedHandler(poolIdx, provider, thisToken, thatToken, thisIn, thatIn) {
+    console.log(" - - - - - - - lq added  - - - - - - -")
+    console.log("poolIdx:", poolIdx)
+    console.log("provider:", provider)
+    console.log("thisToken:", thisToken)
+    console.log("thatToken:", thatToken)
+    console.log("thisIn:", thisIn)
+    console.log("thatIn:", thatIn)
+    refreshPositions()
+}
+function LiquidityRedeemedHandler(poolIdx, receiver, thisToken, thatToken, thisOut, thatOut) {
+    console.log(" - - - - - - lq redeemed - - - - - - -")
+    console.log("poolIdx:", poolIdx)
+    console.log("receiver:", receiver)
+    console.log("thisToken:", thisToken)
+    console.log("thatToken:", thatToken)
+    console.log("thisOut:", thisOut)
+    console.log("thatOut:", thatOut)
+    refreshPositions()
+}
 
 // SCREEN SIZE ------------------
 const { width } = useWindowSize()
@@ -45,7 +188,7 @@ watch(
 // SCREEN SIZE ------------------
 
 // MODAL STUFF ------------------
-const selectTokenModal = ref()
+const selectTokenModal = ref(null)
 function toggleSelectTokenModal(...args) {
     selectTokenModal.value.toggleModal(...args)
 }
@@ -61,31 +204,9 @@ const isNewTokenModalOpen = computed(() => {
     }
     return newTokenModal.value?.showModal
 })
-
 provide("newTokenModal", { toggleNewTokenModal, isNewTokenModalOpen })
+
 // MODAL STUFF ------------------
-
-if (!featuredTokens.value) {
-    await useAsyncData("tokens", () => stepStore.fetchTokens())
-}
-
-if (!addresses.value) {
-    await useAsyncData("addresses", () => stepStore.fetchAddresses())
-}
-
-watch(
-    () => [connectedAccount.value, chainId.value],
-    ([account, chain]) => {
-        if (account && isSupportedChain(chain)) {
-            useAsyncData("positions", () => stepStore.fetchPositions(account, chain))
-        } else {
-            positions.value = null
-        }
-    },
-    {
-        immediate: true,
-    }
-)
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>

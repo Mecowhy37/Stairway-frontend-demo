@@ -13,8 +13,8 @@ export function getToken(symb) {
     return TokenList.find((el) => el.symbol === symb)
 }
 
-const api = "https://api.stairway.fi"
 export function getUrl(endpoint) {
+    const api = "https://api.stairway.fi"
     return api + endpoint
 }
 export function basicRound(amt) {
@@ -24,7 +24,7 @@ export function basicRound(amt) {
 }
 
 export function isSupportedChain(id) {
-    return id === 31337 || id === 80001
+    return id === 31337 || id === 80001 || id === 137
 }
 
 export function listenForTransactionMine(txRes, provider, callback = null) {
@@ -143,14 +143,13 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         redeemPercent,
         lpToken,
         lpAmount,
-        connectedAccount,
         deadline,
         providerArg
     ) {
         try {
             const provider = new BrowserProvider(providerArg)
             const signer = await provider.getSigner()
-            const router = new Contract(routerAddress, RouterABI, signer)
+            const router = new Contract(routerAddress.value, RouterABI, signer)
 
             const tokenList = [tokenA, tokenB].map((el) => el.address)
 
@@ -177,7 +176,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
                 amount0,
                 amount1,
                 lpAmountParsed,
-                connectedAccount,
+                connectedAccount.value,
                 deadlineStamp
             )
         } catch (err) {

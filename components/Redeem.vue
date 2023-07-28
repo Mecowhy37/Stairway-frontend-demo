@@ -233,9 +233,9 @@ import { storeToRefs } from "pinia"
 import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 const stepStore = useStepStore()
-const { connectAccount, positions, chainId } = storeToRefs(stepStore)
+const { routerAddress, connectedAccount, positions, chainId } = storeToRefs(stepStore)
 
-const { redeemLiquidity } = usePools(stepStore.routerAddress)
+const { redeemLiquidity } = usePools(routerAddress, null, connectedAccount, chainId)
 
 const state = reactive({
     redeemPercent: 100,
@@ -254,18 +254,19 @@ function removeSelected() {
     options.value.childNodes.forEach((el) => el.classList.remove("selected"))
 }
 function redeemLiquidityCall() {
-    redeemLiquidity(
-        pool.value.base_token,
-        pool.value.quote_token,
-        ownedPosition.value.base_amount,
-        ownedPosition.value.quote_amount,
-        state.redeemPercent,
-        pool.value.lp_token,
-        ownedPosition.value.lp_amount,
-        stepStore.connectedAccount,
-        settingsRedeem.value.deadline,
-        stepStore.connectedWallet.provider
-    )
+    if (routerAddress.value) {
+        redeemLiquidity(
+            pool.value.base_token,
+            pool.value.quote_token,
+            ownedPosition.value.base_amount,
+            ownedPosition.value.quote_amount,
+            state.redeemPercent,
+            pool.value.lp_token,
+            ownedPosition.value.lp_amount,
+            settingsRedeem.value.deadline,
+            stepStore.connectedWallet.provider
+        )
+    }
 }
 
 const ownedPosition = computed(() => {

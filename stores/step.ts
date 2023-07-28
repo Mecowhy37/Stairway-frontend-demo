@@ -51,14 +51,7 @@ export const useStepStore = defineStore("step", (): any => {
                 label: "Polygon Mumbai",
                 rpcUrl: MUMBAI_RPC_URL,
                 icon: "/_nuxt/assets/img/polygon_mainnet.webp"
-            },
-            {
-                id: "0x7a69",
-                token: "ETH",
-                label: "Local Anvil",
-                rpcUrl: LOCAL_ANVIL,
-                icon: "/_nuxt/assets/img/ethLogo.svg"
-            },
+            }
         ],
         accountCenter: {
             desktop: {
@@ -121,47 +114,18 @@ export const useStepStore = defineStore("step", (): any => {
 
     // remember to unsubscribe when updates are no longer needed
     // unsubscribe()
+
     // TOKENS ---------------
     const featuredTokens = ref(null)
-
-    async function fetchTokens() {
-        const { data, error } = await useFetch(getUrl("/chain/80001/tokens/featured"))
-        if (error.value) {
-            featuredTokens.value = null
-            console.error("failed fetching tokens", error.value)
-            return
-        }
-        featuredTokens.value = data.value
-    }
     // TOKENS ---------------
     
     
     // POSITIONS ----------------
-    const positions = ref(null)
-
-    async function fetchPositions(account, chain) {
-        const { data, error } = await useFetch(getUrl(`/chain/${chain}/user/${account}/positions`))
-        if (error.value) {
-            positions.value = null 
-            console.error("failed fetching positions: ", error.value)
-            return
-        }
-        positions.value = data.value 
-    }   
+    const positions = ref(null) 
     // POSITIONS ----------------
     
     // ADDRESSES ----------------
     const addresses = ref(null)
-    
-    async function fetchAddresses() {
-        const { data, error } = await useFetch(getUrl("/chain/80001/addresses/local"))
-        if (error.value) {
-            addresses.value = null
-            console.error("failed fetching addresses: ", error.value)
-            return
-        }
-        addresses.value = data.value
-    }
     
     const routerAddress = computed(() => {
         if (!addresses.value) {
@@ -169,8 +133,6 @@ export const useStepStore = defineStore("step", (): any => {
         }
         return addresses.value.DEX
     })
-
-    
     // ADDRESSES ----------------
 
     return {
@@ -181,13 +143,10 @@ export const useStepStore = defineStore("step", (): any => {
         isMobile,
         
         featuredTokens,
-        fetchTokens,
         
         positions,
-        fetchPositions,
         
         addresses,
-        fetchAddresses,
         
         chains,
         setChain,
