@@ -19,6 +19,7 @@
     "@vueuse/core": "^9.13.0",
     "@web3-onboard/injected-wallets": "^2.4.0",
     "@web3-onboard/vue": "^2.5.4",
+    "decimal.js": "^10.4.3",
     "ethers": "^6.0.8",
     "pinia": "^2.0.32"
   }

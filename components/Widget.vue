@@ -28,7 +28,8 @@ const props = defineProps({
 
 <style lang="scss">
 .widget {
-    width: var(--widget-width);
+    /* width: var(--widget-width); */
+    min-width: var(--widget-width);
     margin: auto var(--widget-sides);
     background-color: var(--widget-bg);
     color: var(--text-color-reverse);
@@ -152,6 +153,15 @@ const props = defineProps({
         margin-top: -5px;
         p:last-of-type {
             white-space: nowrap;
+        }
+    }
+
+    .temp-display {
+        h4 {
+            margin-bottom: 5px;
+        }
+        & > div > div:not(:has(h4)) {
+            margin: 5px 0;
         }
     }
 }
