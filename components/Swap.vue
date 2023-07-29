@@ -224,8 +224,6 @@
                         </div>
                         <p><span class="grey-text">rate: </span> {{ rate }}</p>
                         <p><span class="grey-text">formula: </span> 1/bid</p>
-                        <p>{{ AmountsUint[0].toString() }}</p>
-                        <p>{{ AmountsUint[1].toString() }}</p>
                     </div>
                 </div>
             </template>
@@ -247,7 +245,7 @@ const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 
-const { featuredTokens, connectedAccount, chainId } = storeToRefs(stepStore)
+const { featuredTokens, connectedAccount, chainId, routerAddress } = storeToRefs(stepStore)
 
 const { getTokenBalance } = useBalances()
 
@@ -268,7 +266,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 
 // POOL -----------------
 const { pool, poolPending, bidAsk, bidAskParse, displayDepth, swap } = usePools(
-    stepStore.routerAddress,
+    routerAddress,
     Tokens,
     connectedAccount,
     chainId
@@ -358,15 +356,21 @@ const rate = computed(() => {
     return up.div(down)
 })
 
+// function calcBase(value) {
+//     const inputed = new Decimal(value)
+//     const bid = new Decimal(bidAsk.value[0])
+//     return inputed.div(bid)
+// }
+// function calcQuote(value) {
+//     const inputed = new Decimal(value)
+//     const bid = new Decimal(bidAsk.value[0])
+//     return inputed.mul(bid)
+// }
 function calcBase(value) {
-    const inputed = new Decimal(value)
-    const bid = new Decimal(bidAsk.value[0])
-    return inputed.div(bid)
+    return String(Number(value) / bidAsk.value[0])
 }
 function calcQuote(value) {
-    const inputed = new Decimal(value)
-    const bid = new Decimal(bidAsk.value[0])
-    return inputed.mul(bid)
+    return String(Number(value) * bidAsk.value[0])
 }
 function cleanInput(value, oldValue) {
     value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")

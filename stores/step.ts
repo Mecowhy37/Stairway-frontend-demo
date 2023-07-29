@@ -128,7 +128,7 @@ export const useStepStore = defineStore("step", (): any => {
     const addresses = ref(null)
     
     const routerAddress = computed(() => {
-        if (!addresses.value) {
+        if (addresses.value === null) {
             return null
         }
         return addresses.value.DEX

@@ -177,7 +177,7 @@ import { useTokens, useBalances, usePools, basicRound, isSupportedChain } from "
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
-const { featuredTokens, positions, connectedAccount, chainId } = storeToRefs(stepStore)
+const { featuredTokens, positions, connectedAccount, chainId, routerAddress } = storeToRefs(stepStore)
 
 const state = reactive({
     amountA: "",
@@ -193,7 +193,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = 
 // TOKENS ---------------
 
 // POOL -----------------
-const { pool, poolRatio, addLiquidity } = usePools(stepStore.routerAddress, Tokens, connectedAccount, chainId)
+const { pool, poolRatio, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, chainId)
 // POOL -----------------
 
 // WIDGET ---------------
@@ -267,15 +267,21 @@ function setTokenAmount(event, inputIndex) {
     Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
 }
 
+// function calcThat(value) {
+//     const inputed = new Decimal(value)
+//     const ratio = new Decimal(poolRatio.value)
+//     return inputed.mul(ratio).toString()
+// }
+// function calcThis(value) {
+//     const inputed = new Decimal(value)
+//     const ratio = new Decimal(poolRatio.value)
+//     return inputed.div(ratio).toString()
+// }
 function calcThat(value) {
-    const inputed = new Decimal(value)
-    const ratio = new Decimal(poolRatio.value)
-    return inputed.mul(ratio).toString()
+    return String(Number(value) * poolRatio.value)
 }
 function calcThis(value) {
-    const inputed = new Decimal(value)
-    const ratio = new Decimal(poolRatio.value)
-    return inputed.div(ratio).toString()
+    return String(Number(value) / poolRatio.value)
 }
 function cleanInput(value, oldValue) {
     value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")

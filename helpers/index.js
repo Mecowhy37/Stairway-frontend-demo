@@ -87,7 +87,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
     async function addLiquidity(tokenA, tokenB, amountA, amountB, slippage, deadline, recipient, providerArg) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
-        const router = new Contract(routerAddress, RouterABI, signer)
+        const router = new Contract(routerAddress.value, RouterABI, signer)
 
         const parsedAmountA = parseUnits(amountA, tokenA.decimals)
         const parsedAmountB = parseUnits(amountB, tokenB.decimals)
@@ -98,10 +98,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         const deadlineStamp = blockTimestamp + deadline * 60
 
         try {
-            const allowanceA = await checkAllowance(tokenA.address, signer.address, routerAddress, providerArg)
+            const allowanceA = await checkAllowance(tokenA.address, signer.address, routerAddress.value, providerArg)
             const needApprovalA = allowanceA < parsedAmountA
 
-            const allowanceB = await checkAllowance(tokenB.address, signer.address, routerAddress, providerArg)
+            const allowanceB = await checkAllowance(tokenB.address, signer.address, routerAddress.value, providerArg)
             const needApprovalB = allowanceB < parsedAmountB
 
             if (needApprovalA || needApprovalB) {
@@ -165,7 +165,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
             const blockTimestamp = (await provider.getBlock("latest")).timestamp
             const deadlineStamp = blockTimestamp + deadline * 60
 
-            const allowance = await checkAllowance(lpToken.address, signer.address, routerAddress, providerArg)
+            const allowance = await checkAllowance(lpToken.address, signer.address, routerAddress.value, providerArg)
             const needApproval = allowance < lpAmountParsed
             if (needApproval) {
                 await approveSpending(lpToken.address, providerArg, lpAmountParsed)
@@ -187,14 +187,14 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
     async function swap(tokenA, tokenB, amounts, maxPrice, account, deadline, providerArg) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
-        const router = new Contract(routerAddress, RouterABI, signer)
+        const router = new Contract(routerAddress.value, RouterABI, signer)
 
         const tokenList = [tokenA, tokenB].map((el) => el.address).reverse()
 
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
-        const allowance = await checkAllowance(tokenA.address, signer.address, routerAddress, providerArg)
+        const allowance = await checkAllowance(tokenA.address, signer.address, routerAddress.value, providerArg)
         const needApproval = allowance < amounts[0]
         if (needApproval) {
             await approveSpending(tokenA.address, providerArg, amounts[0])
@@ -249,7 +249,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         const erc20 = new Contract(tokenAddress, TokenABI, signer)
         const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
         const quantity = amount === 0 ? maxUint : amount
-        const tx = await erc20.approve(routerAddress, quantity)
+        const tx = await erc20.approve(routerAddress.value, quantity)
         await tx.wait(1)
         return await listenForTransactionMine(tx, provider, callback)
     }
