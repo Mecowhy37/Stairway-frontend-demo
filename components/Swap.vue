@@ -224,6 +224,8 @@
                         </div>
                         <p><span class="grey-text">rate: </span> {{ rate }}</p>
                         <p><span class="grey-text">formula: </span> 1/bid</p>
+                        <p>{{ AmountsUint[0].toString() }}</p>
+                        <p>{{ AmountsUint[1].toString() }}</p>
                     </div>
                 </div>
             </template>
@@ -339,20 +341,14 @@ function setTokenAmount(event, inputIndex) {
     Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
 }
 
-// const AmountsUint = computed(() => {
-//     return Amounts.value.map((el, index) => {
-//         if (!el || !Tokens.value[index]) {
-//             return "0"
-//         }
-
-//         let elem = el
-//         const regex = /[<>]/
-//         if (regex.test(elem)) {
-//             elem = "0.00001"
-//         }
-//         return parseUnits(elem, Tokens.value[index].decimals)
-//     })
-// })
+const AmountsUint = computed(() => {
+    return Amounts.value.map((el, index) => {
+        if (!el || !Tokens.value[index]) {
+            return "0"
+        }
+        return parseUnits(el.toString(), Tokens.value[index].decimals)
+    })
+})
 const rate = computed(() => {
     if (!bidAsk.value) {
         return null
