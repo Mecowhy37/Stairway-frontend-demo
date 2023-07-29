@@ -71,10 +71,9 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :value="Amounts[x]"
+                                :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])"
                                 @input="setTokenAmount($event, x)"
                             />
-                            <!-- :value="Amounts[x]" -->
                         </div>
                         <div class="window__lower row flex-end align-center">
                             <p class="caption">{{ Number(ABBalance[x]) }}</p>
@@ -165,6 +164,8 @@
 </template>
 
 <script setup>
+import Decimal from "decimal.js"
+
 import { inject } from "vue"
 import { BrowserProvider, Contract, parseEther, formatUnits } from "ethers"
 
@@ -225,39 +226,35 @@ function callAddLiquidity() {
 // WIDGET ---------------
 
 // AMOUNTS --------------
+// Round function trimms down unncessary digits and adds < mark when unsignificant
+function Round(amt) {
+    let amount = Number(amt)
+    if (amount === 0) {
+        return ""
+    }
+    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+    return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
+}
 const Amounts = computed({
     get() {
-        // Round function trimms down unncessary digits and adds < mark when unsignificant
-        function Round(amt) {
-            let amount = Number(amt)
-            if (amount === 0) {
-                return ""
-            }
-            amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-            return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
-        }
+        const list = [state.amountA, state.amountB]
         if (poolRatio.value && bothTokensThere.value) {
-            // this if() cleans up other input when prior is set to 0
-            if (
-                (state.lastChangedToken === 0 && String(state.amountA).length === 0) ||
-                (state.lastChangedToken === 1 && String(state.amountB).length === 0)
-            ) {
-                return ["", ""]
+            if (list[state.lastChangedToken] === "") {
+                list[Number(!Boolean(state.lastChangedToken))] = ""
+                return list
             }
             if (state.lastChangedToken === 0) {
-                if (state.amountA.length !== 0) {
-                    // state.amountB = Round(calcThis(state.amountA))
-                    state.amountB = calcThis(state.amountA)
+                if (list[0].length !== 0 && !Number.isNaN(Number(list[0]))) {
+                    list[1] = calcThis(list[0])
                 }
             } else {
-                if (state.amountB.length !== 0) {
-                    // state.amountA = Round(calcThat(state.amountB))
-                    state.amountA = calcThat(state.amountB)
+                if (list[1].length !== 0 && !Number.isNaN(Number(list[1]))) {
+                    list[0] = calcThat(list[1])
                 }
             }
         }
 
-        return [state.amountA, state.amountB]
+        return list
     },
     set(newValue) {
         state.amountA = newValue[0]
@@ -266,26 +263,22 @@ const Amounts = computed({
 })
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
-    Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
+    const newVal = event.target.value
+    Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
 }
 
 function calcThat(value) {
-    value = Number(value)
-    if (Number.isNaN(value)) {
-        return ""
-    }
-    return value * poolRatio.value + ""
+    const inputed = new Decimal(value)
+    const ratio = new Decimal(poolRatio.value)
+    return inputed.mul(ratio).toString()
 }
 function calcThis(value) {
-    value = Number(value)
-    if (Number.isNaN(value)) {
-        return ""
-    }
-    return value * (1 / poolRatio.value) + ""
+    const inputed = new Decimal(value)
+    const ratio = new Decimal(poolRatio.value)
+    return inputed.div(ratio).toString()
 }
 function cleanInput(value, oldValue) {
     value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
-
     let dotCount = value.split(".").length - 1
     if (dotCount === 2) {
         value = oldValue

@@ -28,8 +28,7 @@ const props = defineProps({
 
 <style lang="scss">
 .widget {
-    /* width: var(--widget-width); */
-    min-width: var(--widget-width);
+    width: var(--widget-width);
     margin: auto var(--widget-sides);
     background-color: var(--widget-bg);
     color: var(--text-color-reverse);

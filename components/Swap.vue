@@ -73,7 +73,7 @@
                                     spellcheck="false"
                                     autocomplete="off"
                                     autocorrect="off"
-                                    :value="Amounts[x]"
+                                    :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])"
                                     @input="setTokenAmount($event, x)"
                                 />
                             </div>
@@ -175,16 +175,11 @@
                             <p>{{ state.lastChangedToken === 0 ? "- last changed" : "- calculated" }}</p>
                         </div>
                         <p><span class="grey-text">symbol: </span> {{ tokenA?.symbol }}</p>
-                        <p><span class="grey-text">amount: </span> {{ Amounts[0] }}</p>
-                        <div>
-                            <p v-if="state.lastChangedToken === 1">
-                                <span class="grey-text">amount (decimalJS calc): </span> {{ deciAms[0] }}
-                            </p>
-                            <p v-if="state.lastChangedToken === 1">
-                                <span class="grey-text">formula: </span> [tokenB.amount].dividedBy(bid)
-                            </p>
+                        <p><span class="grey-text">full amount: </span> {{ Amounts[0] }}</p>
+                        <div v-if="state.lastChangedToken === 1">
+                            <p><span class="grey-text">rounded: </span> {{ Round(Amounts[0]) }}</p>
+                            <p><span class="grey-text">formula: </span> [tokenB.amount].div(bid)</p>
                         </div>
-                        <!-- <p><span class="grey-text">full amount (uint): </span> {{ AmountsUint[0] }}</p> -->
                     </div>
                     <div>
                         <div class="row align-center">
@@ -192,16 +187,11 @@
                             {{ state.lastChangedToken === 1 ? "- last changed" : "- calculated" }}
                         </div>
                         <p><span class="grey-text">symbol: </span> {{ tokenB?.symbol }}</p>
-                        <p><span class="grey-text">amount: </span> {{ Amounts[1] }}</p>
-                        <div>
-                            <p v-if="state.lastChangedToken === 0">
-                                <span class="grey-text">amount (decimalJS calc): </span> {{ deciAms[1] }}
-                            </p>
-                            <p v-if="state.lastChangedToken === 0">
-                                <span class="grey-text">formula: </span> [tokenA.amount].mul(bid)
-                            </p>
+                        <p><span class="grey-text">full amount: </span> {{ Amounts[1] }}</p>
+                        <div v-if="state.lastChangedToken === 0">
+                            <p><span class="grey-text">rounded: </span> {{ Round(Amounts[1]) }}</p>
+                            <p><span class="grey-text">formula: </span> [tokenA.amount].mul(bid)</p>
                         </div>
-                        <!-- <p><span class="grey-text">full amount (uint): </span> {{ AmountsUint[1] }}</p> -->
                     </div>
                     <div>
                         <h4>pool data</h4>
@@ -226,7 +216,7 @@
                         <h4>widget info</h4>
                         <div>
                             <p>
-                                <span class="grey-text">AVAIL to recieve: </span> {{ displayDepth }} ({{
+                                <span class="grey-text">avail. to recieve: </span> {{ displayDepth }} ({{
                                     typeof displayDepth
                                 }})
                             </p>
@@ -310,24 +300,30 @@ function callSwap() {
 // WIDGET ------------------
 
 // AMOUNTS -----------------
-const deciAms = ref([0, 0])
+function Round(amt) {
+    let amount = Number(amt)
+    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
+    if (amount == 0) {
+        return ""
+    }
+    return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
+}
 const Amounts = computed({
     get() {
         const list = [state.amountA, state.amountB]
         if (bidAsk.value) {
             if (list[state.lastChangedToken] === "") {
                 list[Number(!Boolean(state.lastChangedToken))] = ""
-                deciAms.value = [0, 0]
                 return list
             }
             if (state.lastChangedToken === 0) {
-                // list[1] = Round(calcQuote(list[0]))
-                list[1] = calcQuote(list[0])
-                deciAms.value[1] = calcQuoteDec(list[0])
+                if (list[0].length !== 0 && !Number.isNaN(Number(list[0]))) {
+                    list[1] = calcQuote(list[0])
+                }
             } else if (state.lastChangedToken === 1) {
-                // list[0] = Round(calcBase(list[1]))
-                list[0] = calcBase(list[1])
-                deciAms.value[0] = calcBaseDec(list[1])
+                if (list[1].length !== 0 && !Number.isNaN(Number(list[1]))) {
+                    list[0] = calcBase(list[1])
+                }
             }
         }
         return list
@@ -337,56 +333,44 @@ const Amounts = computed({
         state.amountB = newVal[1]
     },
 })
-const AmountsUint = computed(() => {
-    return Amounts.value.map((el, index) => {
-        if (!el || !Tokens.value[index]) {
-            return "0"
-        }
+function setTokenAmount(event, inputIndex) {
+    state.lastChangedToken = inputIndex
+    const newVal = event.target.value
+    Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
+}
 
-        let elem = el
-        const regex = /[<>]/
-        if (regex.test(elem)) {
-            elem = "0.00001"
-        }
-        return parseUnits(elem, Tokens.value[index].decimals)
-    })
-})
+// const AmountsUint = computed(() => {
+//     return Amounts.value.map((el, index) => {
+//         if (!el || !Tokens.value[index]) {
+//             return "0"
+//         }
+
+//         let elem = el
+//         const regex = /[<>]/
+//         if (regex.test(elem)) {
+//             elem = "0.00001"
+//         }
+//         return parseUnits(elem, Tokens.value[index].decimals)
+//     })
+// })
 const rate = computed(() => {
     if (!bidAsk.value) {
         return null
     }
     const up = new Decimal(1)
     const down = new Decimal(bidAsk.value[0])
-    return up.dividedBy(down)
+    return up.div(down)
 })
-function setTokenAmount(event, inputIndex) {
-    state.lastChangedToken = inputIndex
-    Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? event.target.value : el))
-}
 
 function calcBase(value) {
-    return String(Number(value) / bidAsk.value[0])
-}
-function calcQuote(value) {
-    return String(Number(value) * bidAsk.value[0])
-}
-function calcBaseDec(value) {
     const inputed = new Decimal(value)
     const bid = new Decimal(bidAsk.value[0])
-    return inputed.dividedBy(bid)
+    return inputed.div(bid)
 }
-function calcQuoteDec(value) {
+function calcQuote(value) {
     const inputed = new Decimal(value)
     const bid = new Decimal(bidAsk.value[0])
     return inputed.mul(bid)
-}
-function Round(amt) {
-    let amount = Number(amt)
-    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-    if (amount == 0) {
-        return ""
-    }
-    return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
 }
 function cleanInput(value, oldValue) {
     value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
