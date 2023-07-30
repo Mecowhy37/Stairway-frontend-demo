@@ -284,14 +284,14 @@ function switchOrder() {
     selectTokenIndex.value = Number(!Boolean(selectTokenIndex.value))
 }
 function callSwap() {
-    // swap(
-    //     ...Tokens.value,
-    //     AmountsUint.value,
-    //     bidAsk.value[0],
-    //     connectedAccount.value,
-    //     settings.value.deadline,
-    //     stepStore.connectedWallet.provider
-    // )
+    swap(
+        ...Tokens.value,
+        AmountsUint.value,
+        bidAsk.value[0],
+        connectedAccount.value,
+        settings.value.deadline,
+        stepStore.connectedWallet.provider
+    )
 }
 // WIDGET ------------------
 
