@@ -1,3 +1,5 @@
+import Decimal from "decimal.js"
+
 import { ref } from "vue"
 import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
 
@@ -77,11 +79,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         }
         return [pool.value.bid, pool.value.ask]
     })
-    const bidAskParse = computed(() => {
-        return pool.value && bidAsk.value ? bidAsk.value.map((el) => String(parseEther(String(el)))) : []
-    })
+
     const displayDepth = computed(() => {
-        return pool.value ? Number(formatUnits(pool.value.bid_depth, pool.value.quote_token.decimals)) : null
+        return pool.value ? Number(formatUnits(pool.value.bid_depth, pool.value.base_token.decimals)) : null
     })
 
     async function addLiquidity(tokenA, tokenB, amountA, amountB, slippage, deadline, recipient, providerArg) {
@@ -191,6 +191,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
 
         const tokenList = [tokenA, tokenB].map((el) => el.address).reverse()
 
+        // added +0.1 to avoid truncation fail
+        const bid = parseUnits(Number(maxPrice + 0.1).toString(), tokenA.decimals)
+
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
@@ -204,10 +207,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         console.log("base token:", tokenList[0])
         console.log("qoute token:", tokenList[1])
         console.log("desired_based_amount:", String(amounts[1]))
-        console.log("bid:", maxPrice)
+        console.log("bid:", bid)
         console.log("account:", account)
         console.log("deadlineStamp:", deadlineStamp)
-        await router.buy(...tokenList, String(amounts[1]), maxPrice, account, deadlineStamp)
+        await router.buy(...tokenList, String(amounts[1]), bid, account, deadlineStamp)
 
         // "inputs": [
         //     {
@@ -272,7 +275,6 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         poolPending,
         poolRatio,
         bidAsk,
-        bidAskParse,
         displayDepth,
         addLiquidity,
         redeemLiquidity,

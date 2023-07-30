@@ -220,10 +220,12 @@
                                     typeof displayDepth
                                 }})
                             </p>
-                            <p><span class="grey-text">formula: </span> formatUnits(bid_depth, quoteTK_decimals)</p>
+                            <p><span class="grey-text">formula: </span> formatUnits(bid_depth, baseTK_decimals)</p>
                         </div>
                         <p><span class="grey-text">rate: </span> {{ rate }}</p>
                         <p><span class="grey-text">formula: </span> 1/bid</p>
+                        <p>{{ AmountsUint[0].toString() }}</p>
+                        <p>{{ AmountsUint[1].toString() }}</p>
                     </div>
                 </div>
             </template>
@@ -265,12 +267,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 // TOKENS ------------------
 
 // POOL -----------------
-const { pool, poolPending, bidAsk, bidAskParse, displayDepth, swap } = usePools(
-    routerAddress,
-    Tokens,
-    connectedAccount,
-    chainId
-)
+const { pool, poolPending, bidAsk, displayDepth, swap } = usePools(routerAddress, Tokens, connectedAccount, chainId)
 // POOL -----------------
 
 // WIDGET ------------------
@@ -291,7 +288,7 @@ function callSwap() {
     swap(
         ...Tokens.value,
         AmountsUint.value,
-        bidAskParse.value[0],
+        bidAsk.value[0],
         connectedAccount.value,
         settings.value.deadline,
         stepStore.connectedWallet.provider
