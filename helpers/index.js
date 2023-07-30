@@ -191,9 +191,6 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
 
         const tokenList = [tokenA, tokenB].map((el) => el.address).reverse()
 
-        // current work around for it to work ---- REMOVE!!
-        const bid = parseUnits(maxPrice.toString(), tokenA.decimals) + BigInt(1 * 10 ** 17) + ""
-
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
@@ -207,10 +204,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         console.log("base token:", tokenList[0])
         console.log("qoute token:", tokenList[1])
         console.log("desired_based_amount:", amounts[1].toString())
-        console.log("bid:", bid)
+        console.log("bid:", maxPrice)
         console.log("account:", account)
         console.log("deadlineStamp:", deadlineStamp)
-        await router.buy(...tokenList, amounts[1].toString(), bid, account, deadlineStamp)
+        await router.buy(...tokenList, amounts[1].toString(), maxPrice, account, deadlineStamp)
 
         // "inputs": [
         //     {

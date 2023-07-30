@@ -76,6 +76,7 @@
                                     :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])"
                                     @input="setTokenAmount($event, x)"
                                 />
+                                <!-- :value="Amounts[x]" -->
                             </div>
                             <div class="window__lower row flex-end align-center">
                                 <p class="caption">{{ Number(Balances[x]) }}</p>
@@ -178,7 +179,6 @@
                         <p><span class="grey-text">full amount: </span> {{ Amounts[0] }}</p>
                         <div v-if="state.lastChangedToken === 1">
                             <p><span class="grey-text">rounded: </span> {{ Round(Amounts[0]) }}</p>
-                            <p><span class="grey-text">formula: </span> [tokenB.amount].div(bid)</p>
                         </div>
                     </div>
                     <div>
@@ -190,7 +190,6 @@
                         <p><span class="grey-text">full amount: </span> {{ Amounts[1] }}</p>
                         <div v-if="state.lastChangedToken === 0">
                             <p><span class="grey-text">rounded: </span> {{ Round(Amounts[1]) }}</p>
-                            <p><span class="grey-text">formula: </span> [tokenA.amount].mul(bid)</p>
                         </div>
                     </div>
                     <div>
@@ -285,14 +284,14 @@ function switchOrder() {
     selectTokenIndex.value = Number(!Boolean(selectTokenIndex.value))
 }
 function callSwap() {
-    swap(
-        ...Tokens.value,
-        AmountsUint.value,
-        bidAsk.value[0],
-        connectedAccount.value,
-        settings.value.deadline,
-        stepStore.connectedWallet.provider
-    )
+    // swap(
+    //     ...Tokens.value,
+    //     AmountsUint.value,
+    //     bidAsk.value[0],
+    //     connectedAccount.value,
+    //     settings.value.deadline,
+    //     stepStore.connectedWallet.provider
+    // )
 }
 // WIDGET ------------------
 
@@ -315,10 +314,12 @@ const Amounts = computed({
             }
             if (state.lastChangedToken === 0) {
                 if (list[0].length !== 0 && !Number.isNaN(Number(list[0]))) {
+                    console.log("list:", list)
                     list[1] = calcQuote(list[0])
                 }
             } else if (state.lastChangedToken === 1) {
                 if (list[1].length !== 0 && !Number.isNaN(Number(list[1]))) {
+                    console.log("list:", list)
                     list[0] = calcBase(list[1])
                 }
             }
@@ -353,22 +354,24 @@ const rate = computed(() => {
     return up.div(down)
 })
 
-// function calcBase(value) {
-//     const inputed = new Decimal(value)
-//     const bid = new Decimal(bidAsk.value[0])
-//     return inputed.div(bid)
-// }
-// function calcQuote(value) {
-//     const inputed = new Decimal(value)
-//     const bid = new Decimal(bidAsk.value[0])
-//     return inputed.mul(bid)
-// }
 function calcBase(value) {
-    return String(Number(value) / bidAsk.value[0])
+    const qouteDecim = Tokens.value[1].decimals
+    const inputed = new Decimal(parseUnits(value, qouteDecim).toString())
+    const bid = new Decimal(bidAsk.value[0])
+    return inputed.div(bid).toFixed(18).toString()
 }
 function calcQuote(value) {
-    return String(Number(value) * bidAsk.value[0])
+    const baseDecim = Tokens.value[0].decimals
+    const quoteDecim = Tokens.value[1].decimals
+    const inputed = new Decimal(parseUnits(value, baseDecim).toString())
+    const bid = new Decimal(bidAsk.value[0])
+    return inputed
+        .mul(bid)
+        .div(10 ** (baseDecim + quoteDecim))
+        .toFixed(18)
+        .toString()
 }
+
 function cleanInput(value, oldValue) {
     value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
     let dotCount = value.split(".").length - 1
