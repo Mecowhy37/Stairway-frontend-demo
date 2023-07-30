@@ -347,7 +347,7 @@ const rate = computed(() => {
     if (!bidAsk.value) {
         return null
     }
-    const up = new Decimal(1)
+    const up = new Decimal(parseUnits("1", Tokens.value[0].decimals).toString())
     const down = new Decimal(bidAsk.value[0])
     return up.div(down)
 })

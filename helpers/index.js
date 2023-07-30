@@ -203,7 +203,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         console.log(" - - - - -s w a p- - - - - - ")
         console.log("base token:", tokenList[0])
         console.log("qoute token:", tokenList[1])
-        console.log("desired_based_amount:", amounts[1].toString())
+        console.log("desired_base_amount:", amounts[1].toString())
         console.log("bid:", maxPrice)
         console.log("account:", account)
         console.log("deadlineStamp:", deadlineStamp)
