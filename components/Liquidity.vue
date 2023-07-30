@@ -284,7 +284,14 @@ function calcThis(value) {
     return String(Number(value) / poolRatio.value)
 }
 function cleanInput(value, oldValue) {
-    value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
+    // Remove spaces from the input value
+    value = value.replace(/\s/g, "")
+
+    // Replace any non-digit, non-dot, non-comma characters with an empty string
+    value = value.replace(/[^\d.,]/g, "")
+
+    // Replace commas with dots to handle decimal numbers
+    value = value.replace(/,/g, ".")
     let dotCount = value.split(".").length - 1
     if (dotCount === 2) {
         value = oldValue

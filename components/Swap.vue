@@ -314,12 +314,10 @@ const Amounts = computed({
             }
             if (state.lastChangedToken === 0) {
                 if (list[0].length !== 0 && !Number.isNaN(Number(list[0]))) {
-                    console.log("list:", list)
                     list[1] = calcQuote(list[0])
                 }
             } else if (state.lastChangedToken === 1) {
                 if (list[1].length !== 0 && !Number.isNaN(Number(list[1]))) {
-                    console.log("list:", list)
                     list[0] = calcBase(list[1])
                 }
             }
@@ -373,7 +371,14 @@ function calcQuote(value) {
 }
 
 function cleanInput(value, oldValue) {
-    value = value.replace(/[^\d.,]/g, "").replace(/,/g, ".")
+    // Remove spaces from the input value
+    value = value.replace(/\s/g, "")
+
+    // Replace any non-digit, non-dot, non-comma characters with an empty string
+    value = value.replace(/[^\d.,]/g, "")
+
+    // Replace commas with dots to handle decimal numbers
+    value = value.replace(/,/g, ".")
     let dotCount = value.split(".").length - 1
     if (dotCount === 2) {
         value = oldValue
