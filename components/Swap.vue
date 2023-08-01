@@ -93,6 +93,7 @@
                             <Btn
                                 circle
                                 plain
+                                active
                                 @click="switchOrder()"
                             >
                                 <template #icon>

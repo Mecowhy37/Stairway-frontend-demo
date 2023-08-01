@@ -127,6 +127,9 @@ async function getTokens() {
     })
 }
 const selectedToken = computed(() => {
+    if (!featuredTokens.value) {
+        return null
+    }
     return featuredTokens.value.find((el) => el.symbol.toUpperCase() === tokenSymbol.value)
 })
 const selectedAddress = computed(() => {

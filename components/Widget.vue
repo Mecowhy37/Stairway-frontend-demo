@@ -34,7 +34,7 @@ const props = defineProps({
     color: var(--text-color-reverse);
     backdrop-filter: var(--backdrop-blur);
     border-radius: var(--outer-wdg-radius);
-    /* filter: var(--drop-shadow); */
+    box-shadow: var(--widget-box-shadow);
 
     @media (max-width: 475px) {
         width: calc(100% - var(--widget-sides) * 2);

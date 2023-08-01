@@ -131,12 +131,13 @@ defineExpose({
     &__window {
         width: 300px;
         height: 50%;
-        place-self: center;
-        border-radius: var(--semi-wdg-radius);
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        place-self: center;
         padding: 0px 0px !important;
+        overflow: hidden;
+        border-radius: var(--semi-wdg-radius);
+        box-shadow: var(--modal-box-shadow);
 
         .topbar {
             display: flex;

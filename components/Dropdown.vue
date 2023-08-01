@@ -96,6 +96,7 @@ const boxWidth = computed(() => {
         border-radius: var(--semi-wdg-radius);
         padding: 0.5rem;
         border: 1px solid var(--grey-opaque);
+        box-shadow: var(--modal-box-shadow);
         &.no-padding {
             padding: 0;
         }

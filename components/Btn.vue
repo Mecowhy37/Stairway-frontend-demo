@@ -107,7 +107,7 @@ $horiz-padd: 1.3rem; */
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
     background-color: var(--primary-btn-bg);
-    box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--button-box-shadow);
     transform: rotate(v-bind(rotateDeg));
     cursor: pointer;
     * {
@@ -178,15 +178,14 @@ $horiz-padd: 1.3rem; */
     }
     &--plain {
         border: none;
-        /* background-color: var(--grey-solid); */
         background-color: var(--widget-bg);
         * {
             color: var(--text-color-reverse);
         }
     }
     &--opaque {
+        border: none;
         background-color: var(--grey-opaque);
-        border: 1px solid transparent;
         * {
             color: var(--text-color-reverse);
         }
@@ -203,7 +202,7 @@ $horiz-padd: 1.3rem; */
             content: "";
             height: 100%;
             width: 100%;
-            border-radius: var(--inner-wdg-radius);
+            border-radius: inherit;
         }
         &:not(:disabled):hover::before {
             background-color: var(--blue-hover);
@@ -213,6 +212,7 @@ $horiz-padd: 1.3rem; */
         }
     }
     &--selectable {
+        border: 1px solid transparent;
         &:not(:disabled)::before {
             position: absolute;
             content: "";
