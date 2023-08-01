@@ -160,7 +160,9 @@ function setChain(id) {
 }
 
 const connectedChainFullObj = computed(() => {
-    return chains.value.find((el) => el.id === connectedChain.value?.id)
+    if (chains.value && connectedChain.value) {
+        return chains.value.find((el) => el.id === connectedChain.value?.id)
+    }
 })
 </script>
 

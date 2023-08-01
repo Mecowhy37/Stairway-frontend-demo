@@ -43,14 +43,14 @@ export const useStepStore = defineStore("step", (): any => {
                 token: "MATIC",
                 label: "Polygon Mainnet",
                 rpcUrl: POLYGON_MAIN,
-                icon: "/_nuxt/assets/img/polygon_mainnet.webp"
+                icon: "~/assets/img/polygon_mainnet.webp"
             },
             {
                 id: "0x13881",
                 token: "MATIC",
                 label: "Polygon Mumbai",
                 rpcUrl: MUMBAI_RPC_URL,
-                icon: "/_nuxt/assets/img/polygon_mainnet.webp"
+                icon: "~/assets/img/polygon_mainnet.webp"
             }
         ],
         accountCenter: {
