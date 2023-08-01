@@ -122,6 +122,7 @@ export const useStepStore = defineStore("step", (): any => {
     
     // POSITIONS ----------------
     const positions = ref(null) 
+    const refreshPositions = ref(null)
     // POSITIONS ----------------
     
     // ADDRESSES ----------------
@@ -145,6 +146,7 @@ export const useStepStore = defineStore("step", (): any => {
         featuredTokens,
         
         positions,
+        refreshPositions,
         
         addresses,
         

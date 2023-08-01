@@ -51,12 +51,14 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
     } = useAsyncData(
         "pool",
         () => {
-            const bothThere = Tokens.value.every((el) => el !== null)
+            if (Tokens?.value) {
+                const bothThere = Tokens.value.every((el) => el !== null)
 
-            if (bothThere && connectedAccount.value && isSupportedChain(chainId.value)) {
-                return $fetch(
-                    getUrl(`/chain/${chainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`)
-                )
+                if (bothThere && connectedAccount.value && isSupportedChain(chainId.value)) {
+                    return $fetch(
+                        getUrl(`/chain/${chainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`)
+                    )
+                }
             }
         },
         {

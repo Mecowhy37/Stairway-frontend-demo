@@ -66,10 +66,10 @@ onClickOutside(toActivate, (event) => {
     if (isDropdownActive.value === true) {
         toggleDropdown()
         // event.stopPropagation()
-        if (openner.value === event.target.parentNode) {
-            // when is open and actcivator is clicked
-            // event.stopPropagation()
-        }
+        // if (openner.value === event.target.parentNode) {
+        // when is open and actcivator is clicked
+        // event.stopPropagation()
+        // }
     }
 })
 

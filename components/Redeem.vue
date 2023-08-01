@@ -188,7 +188,7 @@
                     <p>You dont have any liquidity at this position.</p>
                 </div>
                 <div
-                    v-if="status === 'success' && !pool"
+                    v-if="poolError"
                     class="info row"
                 >
                     <div>
@@ -241,7 +241,7 @@ const state = reactive({
     redeemPercent: 100,
 })
 
-const options = ref()
+const options = ref(null)
 function setRedeemProc(event, proc) {
     removeSelected()
     event.target.classList.add("selected")
@@ -253,8 +253,29 @@ const progressPercent = computed(() => {
 function removeSelected() {
     options.value.childNodes.forEach((el) => el.classList.remove("selected"))
 }
+// ROUTES ----------------
+const route = useRoute()
+const {
+    data: pool,
+    error: poolError,
+    status,
+    pending,
+} = useAsyncData(
+    "pool",
+    () => {
+        if (chainId.value && isSupportedChain(chainId.value)) {
+            console.log("fetching pool")
+            return $fetch(getUrl(`/chain/${chainId.value}/pool/${route.params.address}`))
+        }
+    },
+    {
+        watch: [chainId],
+    }
+)
+
+// ROUTES ----------------
 function redeemLiquidityCall() {
-    if (routerAddress.value) {
+    if (ownedPosition.value && pool.value) {
         redeemLiquidity(
             pool.value.base_token,
             pool.value.quote_token,
@@ -281,29 +302,8 @@ const ownedPosition = computed(() => {
 })
 
 //SETTINGS--------------
-const settingsRedeem = ref()
+const settingsRedeem = ref(null)
 //SETTINGS--------------
-
-// ROUTES ----------------
-const route = useRoute()
-const {
-    data: pool,
-    error,
-    status,
-    pending,
-} = useAsyncData(
-    "pool",
-    () => {
-        if (isSupportedChain(chainId.value)) {
-            return $fetch(getUrl(`/chain/${chainId.value}/pool/${route.params.address}`))
-        }
-    },
-    {
-        watch: [chainId],
-    }
-)
-
-// ROUTES ----------------
 </script>
 
 <style lang="scss" scoped>

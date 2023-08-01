@@ -134,7 +134,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions, connectedAccount, chainId, isMobile } = storeToRefs(stepStore)
+const { positions, connectedAccount, chainId, isMobile, refreshPositions } = storeToRefs(stepStore)
 
 const openedIndex = ref(null)
 
@@ -146,8 +146,8 @@ function toggle(index) {
     openedIndex.value = index
 }
 onMounted(() => {
-    if (connectedAccount.value) {
-        useAsyncData("positions", () => stepStore.fetchPositions(connectedAccount.value, chainId.value))
+    if (connectedAccount.value && refreshPositions.value) {
+        refreshPositions.value.call(this)
     }
 })
 const router = useRouter()
@@ -197,7 +197,7 @@ function Round(amt) {
         }
         .pools {
             height: 50vh;
-            overflow: auto;
+            overflow-y: auto;
             &::-webkit-scrollbar {
                 display: none;
             }

@@ -89,7 +89,6 @@ watch(
         immediate: true,
     }
 )
-
 const {
     data: PositionsData,
     pending: PositionsPending,
@@ -108,6 +107,7 @@ const {
         watch: [chainId, connectedAccount],
     }
 )
+stepStore.refreshPositions = refreshPositions
 watch(
     PositionsData,
     (newVal) => {
@@ -275,6 +275,22 @@ p {
     font-size: 1rem;
     line-height: 1.2rem;
 }
+a {
+    text-decoration: none;
+    color: inherit;
+    &:visited {
+        color: inherit;
+    }
+
+    &:hover {
+        color: inherit;
+    }
+
+    &:active {
+        color: inherit;
+    }
+}
+
 .placeholder {
     border-radius: var(--small-wdg-radius);
     padding: 3px;
