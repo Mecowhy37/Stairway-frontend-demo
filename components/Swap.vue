@@ -35,7 +35,10 @@
                 </Dropdown>
             </template>
             <template #widget-content>
-                <div class="tips">
+                <div
+                    class="tips"
+                    v-if="chainId !== 137"
+                >
                     <p>
                         <span class="text-highlight">Tip: </span>
                         Get tokens for test
@@ -345,7 +348,7 @@ const AmountsUint = computed(() => {
     })
 })
 const rate = computed(() => {
-    if (!bidAsk.value) {
+    if (!bidAsk.value || !bothTokensThere.value) {
         return null
     }
     const up = new Decimal(parseUnits("1", Tokens.value[0].decimals).toString())
