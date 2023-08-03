@@ -76,7 +76,7 @@
                                     spellcheck="false"
                                     autocomplete="off"
                                     autocorrect="off"
-                                    :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])"
+                                    :value="state.lastChangedToken === x ? Amounts[x] : prettyPrint(Amounts[x], x)"
                                     @input="setTokenAmount($event, x)"
                                 />
                                 <!-- :value="Amounts[x]" -->
@@ -109,8 +109,9 @@
                         </div>
                     </div>
                 </div>
+                <!-- v-if="bothTokensThere && pool && !poolPending && Number(displayDepth) < Number(Amounts[1])" -->
                 <div
-                    v-if="bothTokensThere && pool && !poolPending && Number(displayDepth) < Number(Amounts[1])"
+                    v-if="false"
                     class="infos"
                 >
                     <div class="info row">
@@ -181,9 +182,9 @@
                         </div>
                         <p><span class="grey-text">symbol: </span> {{ tokenA?.symbol }}</p>
                         <p><span class="grey-text">full amount: </span> {{ Amounts[0] }}</p>
-                        <div v-if="state.lastChangedToken === 1">
+                        <!-- <div v-if="state.lastChangedToken === 1">
                             <p><span class="grey-text">rounded: </span> {{ Round(Amounts[0]) }}</p>
-                        </div>
+                        </div> -->
                     </div>
                     <div>
                         <div class="row align-center">
@@ -192,9 +193,9 @@
                         </div>
                         <p><span class="grey-text">symbol: </span> {{ tokenB?.symbol }}</p>
                         <p><span class="grey-text">full amount: </span> {{ Amounts[1] }}</p>
-                        <div v-if="state.lastChangedToken === 0">
+                        <!-- <div v-if="state.lastChangedToken === 0">
                             <p><span class="grey-text">rounded: </span> {{ Round(Amounts[1]) }}</p>
-                        </div>
+                        </div> -->
                     </div>
                     <div>
                         <h4>pool data</h4>
@@ -227,8 +228,6 @@
                         </div>
                         <p><span class="grey-text">rate: </span> {{ rate }}</p>
                         <p><span class="grey-text">formula: </span> 1/bid</p>
-                        <p>{{ AmountsUint[0].toString() }}</p>
-                        <p>{{ AmountsUint[1].toString() }}</p>
                     </div>
                 </div>
             </template>
@@ -250,9 +249,14 @@ const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 
-const { featuredTokens, connectedAccount, chainId, routerAddress } = storeToRefs(stepStore)
+const { featuredTokens, connectedAccount, chainId, routerAddress, precision } = storeToRefs(stepStore)
 
 const { getTokenBalance } = useBalances()
+
+const tkEnum = {
+    QUOTE: 0,
+    BASE: 1,
+}
 
 const state = reactive({
     amountA: "",
@@ -288,14 +292,14 @@ function switchOrder() {
     selectTokenIndex.value = Number(!Boolean(selectTokenIndex.value))
 }
 function callSwap() {
-    swap(
-        ...Tokens.value,
-        AmountsUint.value,
-        bidAsk.value[0],
-        connectedAccount.value,
-        settings.value.deadline,
-        stepStore.connectedWallet.provider
-    )
+    // swap(
+    //     ...Tokens.value,
+    //     AmountsUint.value,
+    //     bidAsk.value[0],
+    //     connectedAccount.value,
+    //     settings.value.deadline,
+    //     stepStore.connectedWallet.provider
+    // )
 }
 // WIDGET ------------------
 
@@ -308,6 +312,27 @@ function Round(amt) {
     }
     return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
 }
+function prettyPrint(amount, tkIndex) {
+    if (Tokens.value[tkIndex] === null) {
+        return amount
+    }
+    if (amount === "") {
+        return ""
+    }
+    const decimals = tkIndex === tkEnum.BASE ? Tokens.value[tkEnum.BASE].decimals : Tokens.value[tkEnum.QUOTE].decimals
+
+    const fullResult = formatUnits(amount.toString(), decimals).toString()
+    if (tkIndex === tkEnum.QUOTE) {
+        return parseFloat(fullResult).toPrecision(5).toString()
+    } else if (tkIndex === tkEnum.BASE) {
+        return parseFloat(toFixedFloor(fullResult, 4)).toString()
+    }
+}
+function toFixedFloor(stringAmount, fixed) {
+    let re = new RegExp("^-?\\d+(?:\.\\d{0," + (fixed || -1) + "})?")
+    return stringAmount.match(re)[0]
+}
+
 const Amounts = computed({
     get() {
         const list = [state.amountA, state.amountB]
@@ -316,14 +341,10 @@ const Amounts = computed({
                 list[Number(!Boolean(state.lastChangedToken))] = ""
                 return list
             }
-            if (state.lastChangedToken === 0) {
-                if (list[0].length !== 0 && !Number.isNaN(Number(list[0]))) {
-                    list[1] = calcQuote(list[0])
-                }
-            } else if (state.lastChangedToken === 1) {
-                if (list[1].length !== 0 && !Number.isNaN(Number(list[1]))) {
-                    list[0] = calcBase(list[1])
-                }
+            if (state.lastChangedToken === tkEnum.QUOTE && isClean(list[tkEnum.QUOTE])) {
+                list[tkEnum.BASE] = calcBase(list[tkEnum.QUOTE])
+            } else if (state.lastChangedToken === tkEnum.BASE && isClean(list[tkEnum.BASE])) {
+                list[tkEnum.QUOTE] = calcQuote(list[tkEnum.BASE])
             }
         }
         return list
@@ -339,14 +360,14 @@ function setTokenAmount(event, inputIndex) {
     Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
 }
 
-const AmountsUint = computed(() => {
-    return Amounts.value.map((el, index) => {
-        if (!el || !Tokens.value[index]) {
-            return "0"
-        }
-        return parseUnits(el.toString(), Tokens.value[index].decimals)
-    })
-})
+// const AmountsUint = computed(() => {
+//     return Amounts.value.map((el, index) => {
+//         if (!el || !Tokens.value[index]) {
+//             return "0"
+//         }
+//         return parseUnits(el.toString(), Tokens.value[index].decimals)
+//     })
+// })
 const rate = computed(() => {
     if (!bidAsk.value || !bothTokensThere.value) {
         return null
@@ -356,22 +377,20 @@ const rate = computed(() => {
     return up.div(down)
 })
 
-function calcBase(value) {
-    const qouteDecim = Tokens.value[1].decimals
-    const inputed = new Decimal(parseUnits(value, qouteDecim).toString())
-    const bid = new Decimal(bidAsk.value[0])
-    return inputed.div(bid).toFixed(18).toString()
+function calcQuote(baseInputed) {
+    const baseDecim = Tokens.value[tkEnum.BASE].decimals
+    const baseParsed = BigInt(parseUnits(baseInputed, baseDecim).toString())
+    const ask = BigInt(bidAsk.value[1])
+    const quoteAmount = (baseParsed * ask + precision.value - 1n) / precision.value
+    return quoteAmount.toString()
 }
-function calcQuote(value) {
-    const baseDecim = Tokens.value[0].decimals
-    const quoteDecim = Tokens.value[1].decimals
-    const inputed = new Decimal(parseUnits(value, baseDecim).toString())
-    const bid = new Decimal(bidAsk.value[0])
-    return inputed
-        .mul(bid)
-        .div(10 ** (baseDecim + quoteDecim))
-        .toFixed(18)
-        .toString()
+function calcBase(quoteInputed) {
+    console.log("quoteInputed:", quoteInputed)
+    const quoteDecim = Tokens.value[tkEnum.QUOTE].decimals
+    const quoteParsed = BigInt(parseUnits(quoteInputed, quoteDecim).toString())
+    const ask = BigInt(bidAsk.value[1])
+    const baseAmount = (quoteParsed * precision.value) / ask
+    return baseAmount.toString()
 }
 
 function cleanInput(value, oldValue) {
@@ -383,11 +402,28 @@ function cleanInput(value, oldValue) {
 
     // Replace commas with dots to handle decimal numbers
     value = value.replace(/,/g, ".")
+
     let dotCount = value.split(".").length - 1
-    if (dotCount === 2) {
+    if (dotCount === 2 || value > 9007199254740991) {
         value = oldValue
     }
     return value
+}
+function isClean(value) {
+    // Match any character that's not a digit, dot, or comma, or more than one dot
+    if (value.match(/[^\d.,]/) || (value.match(/\./g) || []).length > 1) {
+        console.log("not clean")
+        return false
+    }
+    return true
+}
+function canBeBigInt(value) {
+    try {
+        BigInt(value)
+        return true
+    } catch (error) {
+        return false
+    }
 }
 // CLEANS IMPUTED AMOUNT
 watch(
