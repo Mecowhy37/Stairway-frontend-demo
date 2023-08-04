@@ -314,12 +314,11 @@ svg {
     }
 }
 .list-item {
-    border-top: 1px solid transparent;
-    border-right: 1px solid transparent;
-    border-left: 1px solid transparent;
-    border-bottom: 1px solid var(--grey-opaque);
+    border: 1px solid transparent;
     cursor: pointer;
-
+    &:not(.list-item--separate) {
+        border-bottom: 1px solid var(--grey-opaque);
+    }
     &:first-of-type {
         border-top-left-radius: inherit;
         border-top-right-radius: inherit;
@@ -424,7 +423,8 @@ svg {
     width: 100%;
     height: 100%;
     z-index: -2;
-    background-image: url("~/assets/img/stairway-background.jpg");
+    background-color: var(--background-color);
+    background-image: url("~/assets/img/stairway-background.png");
     background-size: cover;
     background-repeat: no-repeat;
 }

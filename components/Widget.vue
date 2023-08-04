@@ -155,6 +155,20 @@ const props = defineProps({
         }
     }
 
+    .pooled {
+        &__item {
+            &__symbol {
+                margin-left: 6px;
+            }
+            &__amount {
+                margin-left: auto;
+            }
+            &:first-of-type {
+                margin-bottom: 8px;
+            }
+        }
+    }
+
     .temp-display {
         h4 {
             margin-bottom: 5px;

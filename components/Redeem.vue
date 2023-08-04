@@ -331,20 +331,6 @@ const settingsRedeem = ref(null)
         }
     }
 }
-
-.pooled {
-    &__item {
-        &__symbol {
-            margin-left: 6px;
-        }
-        &__amount {
-            margin-left: auto;
-        }
-        &:first-of-type {
-            margin-bottom: 8px;
-        }
-    }
-}
 .slider {
     position: relative;
     margin-top: 8px;

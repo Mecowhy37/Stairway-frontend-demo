@@ -17,7 +17,14 @@
         <div
             v-show="isDropdownActive"
             class="dropdown__box base-box"
-            :class="[{ 'no-padding': props.noPadding, 'base-box--solid': props.solid }]"
+            :class="[
+                {
+                    'no-padding': props.noPadding,
+                    'base-box--solid': props.solid,
+                    burger: props.burger,
+                    'to-right': props.toRight,
+                },
+            ]"
         >
             <slot
                 name="dropdown"
@@ -32,6 +39,8 @@ import { onClickOutside } from "@vueuse/core"
 
 const props = defineProps({
     settingsRef: Object,
+    toRight: Boolean,
+    burger: Boolean,
     noPadding: Boolean,
     solid: Boolean,
     width: {
@@ -99,6 +108,12 @@ const boxWidth = computed(() => {
         box-shadow: var(--modal-box-shadow);
         &.no-padding {
             padding: 0;
+        }
+        &.to-right {
+            left: 0%;
+        }
+        &.burger {
+            margin-left: 10px;
         }
     }
 }

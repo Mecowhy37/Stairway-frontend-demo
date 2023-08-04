@@ -1,10 +1,45 @@
 <template>
     <nav class="navbar">
         <div class="navbar__wrapper row space-between align-center">
-            <img
-                class="navbar__logo"
-                src="/logox2.png"
-            />
+            <div class="row align-center">
+                <Dropdown
+                    no-padding
+                    to-right
+                    burger
+                    :width="140"
+                    class="navbar__burger"
+                >
+                    <template #dropdown-activator="{ on }">
+                        <Btn
+                            circle
+                            transparent
+                        >
+                            <template #icon>
+                                <Icon
+                                    name="burger"
+                                    :size="16"
+                                />
+                            </template>
+                        </Btn>
+                    </template>
+                    <template #dropdown>
+                        <NuxtLink
+                            to="/"
+                            class="link list-item list-item--padded-sm"
+                            ><p>Swap</p></NuxtLink
+                        >
+                        <NuxtLink
+                            to="/pools"
+                            class="link list-item list-item--padded-sm"
+                            ><p>Liquidity</p></NuxtLink
+                        >
+                    </template>
+                </Dropdown>
+                <img
+                    class="navbar__logo"
+                    src="/logox2.png"
+                />
+            </div>
             <div class="navbar__navigation">
                 <div class="desktop contents">
                     <NuxtLink
@@ -36,7 +71,7 @@
 
                 <Dropdown
                     v-else
-                    :width="isMobile ? 180 : 250"
+                    :width="isMobile ? 180 : 210"
                 >
                     <template #dropdown-activator="{ on }">
                         <Btn
@@ -55,6 +90,10 @@
                         </Btn>
                     </template>
                     <template #dropdown>
+                        <p class="list-item list-item--padded-xs list-item--all-rounded list-item--separate">Copy</p>
+                        <p class="list-item list-item--padded-xs list-item--all-rounded list-item--separate">
+                            View in explorer
+                        </p>
                         <Btn
                             wide
                             opaque
@@ -108,37 +147,6 @@
                         </div>
                     </template>
                 </Dropdown>
-                <Dropdown
-                    no-padding
-                    :width="140"
-                    class="burger"
-                >
-                    <template #dropdown-activator="{ on }">
-                        <Btn
-                            circle
-                            transparent
-                        >
-                            <template #icon>
-                                <Icon
-                                    name="burger"
-                                    :size="16"
-                                />
-                            </template>
-                        </Btn>
-                    </template>
-                    <template #dropdown>
-                        <NuxtLink
-                            to="/"
-                            class="link list-item list-item--padded-sm"
-                            ><p>Swap</p></NuxtLink
-                        >
-                        <NuxtLink
-                            to="/pools"
-                            class="link list-item list-item--padded-sm"
-                            ><p>Liquidity</p></NuxtLink
-                        >
-                    </template>
-                </Dropdown>
             </div>
         </div>
     </nav>
@@ -185,21 +193,34 @@ const connectedChainFullObj = computed(() => {
     &__logo {
         height: var(--logo-height);
     }
+    &__burger {
+        display: none;
+        margin-right: 10px;
+        .btn {
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.04);
+            }
+            .icon {
+                margin: 10px !important;
+            }
+        }
+    }
     &__navigation {
         display: flex;
         align-items: center;
         gap: 30px;
+    }
 
-        .link {
-            color: var(--text-color-reverse);
-            position: relative;
-            text-decoration: none;
-            box-sizing: content-box !important;
-            display: flex;
-            align-items: center;
-            &--underlined {
-                color: var(--text-color);
-                /* &::before {
+    .link {
+        color: var(--text-color-reverse);
+        position: relative;
+        text-decoration: none;
+        box-sizing: content-box !important;
+        display: flex;
+        align-items: center;
+        &--underlined {
+            color: var(--text-color);
+            /* &::before {
                     content: "";
                     position: absolute;
                     opacity: 0;
@@ -213,25 +234,12 @@ const connectedChainFullObj = computed(() => {
                     transform: translateX(-50%);
                 } */
 
-                &:hover::before {
-                    opacity: 0.2;
-                }
-
-                &.router-link-exact-active::before {
-                    opacity: 1;
-                }
+            &:hover::before {
+                opacity: 0.2;
             }
-        }
-        .burger {
-            display: none;
-            .btn {
-                margin: 0 -10px;
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.04);
-                }
-                .icon {
-                    margin: 10px !important;
-                }
+
+            &.router-link-exact-active::before {
+                opacity: 1;
             }
         }
         .chain-dropdown {
@@ -248,10 +256,7 @@ const connectedChainFullObj = computed(() => {
         &__wrapper {
             padding: 0 30px;
         }
-        &__wrapper {
-            padding: 0 30px;
-        }
-        .burger {
+        &__burger {
             display: block;
         }
         .desktop {
@@ -265,9 +270,8 @@ const connectedChainFullObj = computed(() => {
     }
     @media (max-width: 600px) {
         height: var(--nav-sm-height);
-
         &__wrapper {
-            padding: 20px;
+            padding: 0 20px;
         }
         &__logo {
             height: var(--logo-sm-height);
@@ -278,7 +282,13 @@ const connectedChainFullObj = computed(() => {
     }
     @media (max-width: 400px) {
         &__wrapper {
-            padding-left: 5px;
+            padding: 0 5px;
+        }
+        &__burger {
+            margin-right: 5px;
+        }
+        &__navigation {
+            gap: 10px;
         }
     }
 }

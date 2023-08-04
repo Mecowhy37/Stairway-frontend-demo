@@ -6,7 +6,6 @@
         :class="[
             {
                 'btn--primary': !props.plain && !props.opaque && !props.transparent,
-                'btn--cta': props.cta,
                 'btn--plain': props.plain,
                 'btn--tiny': props.tiny,
                 'btn--radio': props.radio,
@@ -66,7 +65,6 @@ export interface Props {
     bulky?: boolean
     custom?: boolean
     wide?: boolean
-    cta?: boolean
     transparent?: boolean
     plain?: boolean
     opaque?: boolean
@@ -254,9 +252,6 @@ $horiz-padd: 1.3rem; */
         &:hover {
             background-color: var(--trans-hover);
         }
-    }
-    &--cta {
-        background-color: var(--cta-bg);
     }
     &--circle {
         border: none;

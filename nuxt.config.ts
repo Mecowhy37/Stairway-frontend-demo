@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   //     crawlLinks: true
   //   }
   // },
+  meta: {
+    title: 'Stairway.fi',
+  },
   modules: [
       "@pinia/nuxt",
       "@nuxt/devtools"

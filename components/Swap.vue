@@ -76,10 +76,10 @@
                                     spellcheck="false"
                                     autocomplete="off"
                                     autocorrect="off"
-                                    :value="state.lastChangedToken === x ? Amounts[x] : prettyPrint(Amounts[x], x)"
+                                    :value="getInputValue(x)"
                                     @input="setTokenAmount($event, x)"
                                 />
-                                <!-- :value="Amounts[x]" -->
+                                <!-- :value="state.lastChangedToken === x ? Amounts[x] : prettyPrint(Amounts[x], x)" -->
                             </div>
                             <div class="window__lower row flex-end align-center">
                                 <p class="caption">{{ Number(Balances[x]) }}</p>
@@ -109,9 +109,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- v-if="bothTokensThere && pool && !poolPending && Number(displayDepth) < Number(Amounts[1])" -->
                 <div
-                    v-if="false"
+                    v-if="bothTokensThere && pool && !poolPending && Number(prettyDepth) < Number(Amounts[1])"
                     class="infos"
                 >
                     <div class="info row">
@@ -122,7 +121,7 @@
                                 :size="25"
                             />
                         </div>
-                        <p>you will only receive {{ Round(displayDepth) }} {{ Tokens[1].symbol }} at this price</p>
+                        <p>you will only receive {{ prettyDepth }} {{ Tokens[1].symbol }} at this price</p>
                     </div>
                 </div>
                 <div class="buttons">
@@ -156,13 +155,13 @@
                     </Btn>
                 </div>
                 <div
-                    v-if="bidAsk && bothTokensThere"
+                    v-if="price && bothTokensThere"
                     class="sum-up grey-text caption"
                 >
-                    <p>1 {{ Tokens[1].symbol }} = {{ Round(rate) }} {{ Tokens[0].symbol }}</p>
+                    <p>1 {{ Tokens[tkEnum.BASE].symbol }} = {{ prettyPrice }} {{ Tokens[tkEnum.QUOTE].symbol }}</p>
                     <div class="row space-between">
-                        <p>Volume available at this price ({{ Round(rate) }} {{ Tokens[0].symbol }})</p>
-                        <p>{{ Round(displayDepth) }} {{ Tokens[1].symbol }}</p>
+                        <p>Volume available at this price ({{ prettyPrice }} {{ Tokens[0].symbol }})</p>
+                        <p>{{ prettyDepth }} {{ Tokens[1].symbol }}</p>
                     </div>
                     <!-- <div class="row space-between">
                     <p>Gas price</p>
@@ -182,9 +181,9 @@
                         </div>
                         <p><span class="grey-text">symbol: </span> {{ tokenA?.symbol }}</p>
                         <p><span class="grey-text">full amount: </span> {{ Amounts[0] }}</p>
-                        <!-- <div v-if="state.lastChangedToken === 1">
-                            <p><span class="grey-text">rounded: </span> {{ Round(Amounts[0]) }}</p>
-                        </div> -->
+                        <div v-if="state.lastChangedToken === 0">
+                            <p><span class="grey-text">parsed: </span> {{ parsedLastInputed }}</p>
+                        </div>
                     </div>
                     <div>
                         <div class="row align-center">
@@ -193,41 +192,28 @@
                         </div>
                         <p><span class="grey-text">symbol: </span> {{ tokenB?.symbol }}</p>
                         <p><span class="grey-text">full amount: </span> {{ Amounts[1] }}</p>
-                        <!-- <div v-if="state.lastChangedToken === 0">
-                            <p><span class="grey-text">rounded: </span> {{ Round(Amounts[1]) }}</p>
-                        </div> -->
+                        <div v-if="state.lastChangedToken === 1">
+                            <p><span class="grey-text">parsed: </span> {{ parsedLastInputed }}</p>
+                        </div>
                     </div>
                     <div>
                         <h4>pool data</h4>
                         <div>
-                            <p><span class="grey-text">bid: </span> {{ pool?.bid }} ({{ typeof pool?.bid }})</p>
-                            <p><span class="grey-text">ask: </span> {{ pool?.ask }} ({{ typeof pool?.ask }})</p>
+                            <p><span class="grey-text">price: </span> {{ price }} ({{ typeof price }})</p>
                         </div>
                         <div>
-                            <p>
-                                <span class="grey-text">bid_depth: </span> {{ pool?.bid_depth }} ({{
-                                    typeof pool?.bid_depth
-                                }})
-                            </p>
-                            <p>
-                                <span class="grey-text">ask_depth: </span> {{ pool?.ask_depth }} ({{
-                                    typeof pool?.ask_depth
-                                }})
-                            </p>
+                            <p><span class="grey-text">depth: </span> {{ depth }} ({{ typeof depth }})</p>
                         </div>
                     </div>
                     <div>
                         <h4>widget info</h4>
                         <div>
                             <p>
-                                <span class="grey-text">avail. to recieve: </span> {{ displayDepth }} ({{
-                                    typeof displayDepth
+                                <span class="grey-text">avail. to recieve: </span> {{ prettyDepth }} ({{
+                                    typeof prettyDepth
                                 }})
                             </p>
-                            <p><span class="grey-text">formula: </span> formatUnits(bid_depth, baseTK_decimals)</p>
                         </div>
-                        <p><span class="grey-text">rate: </span> {{ rate }}</p>
-                        <p><span class="grey-text">formula: </span> 1/bid</p>
                     </div>
                 </div>
             </template>
@@ -236,14 +222,11 @@
 </template>
 
 <script setup>
-import Decimal from "decimal.js"
-
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
-import { BrowserProvider, Contract, formatUnits, parseEther, formatEther, parseUnits } from "ethers"
+import { formatUnits, parseUnits } from "ethers"
 
 import { useTokens, useBalances, usePools, isSupportedChain } from "~/helpers/index"
-import { isNoSubstitutionTemplateLiteral } from "typescript"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 
@@ -252,6 +235,13 @@ const stepStore = useStepStore()
 const { featuredTokens, connectedAccount, chainId, routerAddress, precision } = storeToRefs(stepStore)
 
 const { getTokenBalance } = useBalances()
+
+function getInputValue(tkIndex) {
+    if (!price.value) {
+        return Amounts.value[tkIndex]
+    }
+    return state.lastChangedToken === tkIndex ? Amounts.value[x] : prettyPrint(Amounts.value[x], x)
+}
 
 const tkEnum = {
     QUOTE: 0,
@@ -274,7 +264,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 // TOKENS ------------------
 
 // POOL -----------------
-const { pool, poolPending, bidAsk, displayDepth, swap } = usePools(routerAddress, Tokens, connectedAccount, chainId)
+const { pool, poolPending, price, depth, swap } = usePools(routerAddress, Tokens, connectedAccount, chainId)
 // POOL -----------------
 
 // WIDGET ------------------
@@ -312,38 +302,19 @@ function Round(amt) {
     }
     return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
 }
-function prettyPrint(amount, tkIndex) {
-    if (Tokens.value[tkIndex] === null) {
-        return amount
-    }
-    if (amount === "") {
-        return ""
-    }
-    const decimals = tkIndex === tkEnum.BASE ? Tokens.value[tkEnum.BASE].decimals : Tokens.value[tkEnum.QUOTE].decimals
-
-    const fullResult = formatUnits(amount.toString(), decimals).toString()
-    if (tkIndex === tkEnum.QUOTE) {
-        return parseFloat(fullResult).toPrecision(5).toString()
-    } else if (tkIndex === tkEnum.BASE) {
-        return parseFloat(toFixedFloor(fullResult, 4)).toString()
-    }
-}
-function toFixedFloor(stringAmount, fixed) {
-    let re = new RegExp("^-?\\d+(?:\.\\d{0," + (fixed || -1) + "})?")
-    return stringAmount.match(re)[0]
-}
-
 const Amounts = computed({
     get() {
         const list = [state.amountA, state.amountB]
-        if (bidAsk.value) {
+        if (price.value) {
             if (list[state.lastChangedToken] === "") {
                 list[Number(!Boolean(state.lastChangedToken))] = ""
                 return list
             }
             if (state.lastChangedToken === tkEnum.QUOTE && isClean(list[tkEnum.QUOTE])) {
                 list[tkEnum.BASE] = calcBase(list[tkEnum.QUOTE])
+                // list[tkEnum.QUOTE] = parseUnits(list[tkEnum.QUOTE], Tokens.value[tkEnum.QUOTE].decimals).toString()
             } else if (state.lastChangedToken === tkEnum.BASE && isClean(list[tkEnum.BASE])) {
+                // list[tkEnum.BASE] = parseUnits(list[tkEnum.BASE], Tokens.value[tkEnum.BASE].decimals).toString()
                 list[tkEnum.QUOTE] = calcQuote(list[tkEnum.BASE])
             }
         }
@@ -354,43 +325,70 @@ const Amounts = computed({
         state.amountB = newVal[1]
     },
 })
+
+const parsedLastInputed = computed(() => {
+    if (!Tokens.value[state.lastChangedToken] || !Amounts.value[state.lastChangedToken]) {
+        return null
+    }
+    return parseUnits(Amounts.value[state.lastChangedToken], Tokens.value[state.lastChangedToken].decimals).toString()
+})
+const prettyPrice = computed(() => {
+    if (!price.value) {
+        return null
+    }
+    return prettyPrint(price.value, tkEnum.QUOTE)
+})
+const prettyDepth = computed(() => {
+    if (!depth.value) {
+        return null
+    }
+    return prettyPrint(depth.value, tkEnum.BASE)
+})
 function setTokenAmount(event, inputIndex) {
     state.lastChangedToken = inputIndex
     const newVal = event.target.value
     Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
 }
-
-// const AmountsUint = computed(() => {
-//     return Amounts.value.map((el, index) => {
-//         if (!el || !Tokens.value[index]) {
-//             return "0"
-//         }
-//         return parseUnits(el.toString(), Tokens.value[index].decimals)
-//     })
-// })
-const rate = computed(() => {
-    if (!bidAsk.value || !bothTokensThere.value) {
-        return null
+function prettyPrint(amount, tkIndex) {
+    if (Tokens.value[tkIndex] === null) {
+        return amount
     }
-    const up = new Decimal(parseUnits("1", Tokens.value[0].decimals).toString())
-    const down = new Decimal(bidAsk.value[0])
-    return up.div(down)
-})
+    if (amount === "") {
+        return ""
+    }
+    const decimals = tkIndex === tkEnum.BASE ? Tokens.value[tkEnum.BASE].decimals : Tokens.value[tkEnum.QUOTE].decimals
 
+    const fullResult = formatUnits(amount.toString(), decimals)
+
+    if (tkIndex === tkEnum.QUOTE) {
+        return roundCeiling(fullResult)
+    } else if (tkIndex === tkEnum.BASE) {
+        return roundFloor(fullResult)
+    }
+}
 function calcQuote(baseInputed) {
     const baseDecim = Tokens.value[tkEnum.BASE].decimals
     const baseParsed = BigInt(parseUnits(baseInputed, baseDecim).toString())
-    const ask = BigInt(bidAsk.value[1])
+    const ask = BigInt(price.value)
     const quoteAmount = (baseParsed * ask + precision.value - 1n) / precision.value
     return quoteAmount.toString()
 }
 function calcBase(quoteInputed) {
-    console.log("quoteInputed:", quoteInputed)
     const quoteDecim = Tokens.value[tkEnum.QUOTE].decimals
     const quoteParsed = BigInt(parseUnits(quoteInputed, quoteDecim).toString())
-    const ask = BigInt(bidAsk.value[1])
+    const ask = BigInt(price.value)
     const baseAmount = (quoteParsed * precision.value) / ask
     return baseAmount.toString()
+}
+function roundCeiling(stringAmount) {
+    return parseFloat(parseFloat(stringAmount).toPrecision(5)).toString()
+}
+function roundFloor(stringAmount) {
+    return parseFloat(toFixedFloor(stringAmount, 4)).toString()
+}
+function toFixedFloor(stringAmount, fixed) {
+    let re = new RegExp("^-?\\d+(?:\.\\d{0," + (fixed || -1) + "})?")
+    return stringAmount.match(re)[0]
 }
 
 function cleanInput(value, oldValue) {

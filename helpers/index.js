@@ -75,15 +75,17 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
             Number(formatUnits(pool.value.quote_reserves, pool.value.quote_token.decimals))
         )
     })
-    const bidAsk = computed(() => {
+    const price = computed(() => {
         if (!pool.value) {
             return null
         }
-        return [pool.value.bid, pool.value.ask]
+        return pool.value.ask
     })
-
-    const displayDepth = computed(() => {
-        return pool.value ? Number(formatUnits(pool.value.bid_depth, pool.value.base_token.decimals)) : null
+    const depth = computed(() => {
+        if (!pool.value) {
+            return null
+        }
+        return pool.value.ask_depth
     })
 
     async function addLiquidity(tokenA, tokenB, amountA, amountB, slippage, deadline, recipient, providerArg) {
@@ -273,8 +275,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         poolStatus,
         poolPending,
         poolRatio,
-        bidAsk,
-        displayDepth,
+        price,
+        depth,
         addLiquidity,
         redeemLiquidity,
         swap,

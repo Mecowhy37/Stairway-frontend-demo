@@ -2,15 +2,14 @@
     <div class="wrapper--wide-list">
         <div class="positions">
             <div class="positions__top row">
-                <h1>Pools</h1>
+                <h1>Liquidity</h1>
                 <NuxtLink
                     class="link"
-                    to="/add"
+                    to="/add-liquidity"
                 >
                     <Btn
                         is="h4"
                         reverse
-                        cta
                     >
                         New postition
                         <template #icon>
@@ -24,7 +23,7 @@
             </div>
             <div class="positions__list">
                 <h3 v-if="positions">
-                    Your positions <span>{{ positions.length }}</span>
+                    Your liquidity pools <span>{{ positions.length }}</span>
                 </h3>
                 <div class="pools">
                     <div
@@ -153,7 +152,7 @@ onMounted(() => {
 const router = useRouter()
 function addRedirect(pool) {
     router.push({
-        path: "/add",
+        path: "/add-liquidity",
         query: {
             tk1: pool.base_token.address,
             tk2: pool.quote_token.address,
