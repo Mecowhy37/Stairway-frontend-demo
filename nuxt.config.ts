@@ -1,9 +1,5 @@
 // https://v3.nuxtjs.org/api/confsiguration/nuxt.config
 export default defineNuxtConfig({
-  target : 'static',
-  router: {
-    base: '/app/'
-  },
   ssr: false,
   // nitro: {
   //   prerender: {
