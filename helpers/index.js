@@ -1,13 +1,14 @@
-import Decimal from "decimal.js"
-
 import { ref } from "vue"
 import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
 
-import router from "@/ABIs/IDEX.json"
+import router from "@/ABIs/IDEX.sol/IDEX.json"
 const RouterABI = router.abi
 
-import token from "@/ABIs/ERC20.json"
+import token from "@/ABIs/IERC20.sol/IERC20.json"
 const TokenABI = token.abi
+
+import poolmanager from "@/ABIs/IPoolManager.sol/IPoolManager.json"
+const PoolManagerABI = poolmanager.abi
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 
@@ -88,16 +89,24 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         return pool.value.ask_depth
     })
 
-    async function addLiquidity(tokenA, tokenB, amountA, amountB, slippage, deadline, recipient, providerArg) {
+    async function addLiquidity(
+        tokenA,
+        tokenB,
+        amountA,
+        amountB,
+        slippage,
+        deadline,
+        recipient,
+        providerArg,
+        poolManagerAddress
+    ) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
 
-        const parsedAmountA = parseUnits(amountA, tokenA.decimals)
-        const parsedAmountB = parseUnits(amountB, tokenB.decimals)
-        const parsedMinAmountA = parseUnits(String(amountA - (amountA * slippage) / 100), tokenA.decimals)
-        const parsedMinAmountB = parseUnits(String(amountB - (amountB * slippage) / 100), tokenB.decimals)
-
+        const parsedAmountA = parseUnits(amountA, tokenA.decimals).toString()
+        const parsedAmountB = parseUnits(amountB, tokenB.decimals).toString()
+        const parsedSlippage = parseUnits(slippage.toString(), 18).toString()
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
@@ -123,19 +132,28 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
 
                 await Promise.all(approvalPromises)
             }
-
+        } catch (error) {
+            console.log("Failed to get approvals:", error)
+        }
+        try {
+            console.log("tokenA.address:", tokenA.address)
+            console.log("tokenB.address,:", tokenB.address)
+            console.log("parsedAmountA:", parsedAmountA)
+            console.log("parsedAmountB:", parsedAmountB)
+            console.log("parsedSlippage:", parsedSlippage)
+            console.log("recipient:", recipient)
+            console.log("deadlineStamp:", deadlineStamp)
             await router.addLiquidity(
                 tokenA.address,
                 tokenB.address,
-                parsedMinAmountA,
                 parsedAmountA,
-                parsedMinAmountB,
                 parsedAmountB,
+                parsedSlippage,
                 recipient,
                 deadlineStamp
             )
         } catch (error) {
-            console.log("Failed to add liquidity:", error)
+            console.log("Failed to add lq:", error)
         }
     }
 

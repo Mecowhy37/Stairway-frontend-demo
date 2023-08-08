@@ -1,10 +1,28 @@
 import type { Ref } from "vue"
 import { defineStore } from "pinia"
-import { BrowserProvider, Contract } from "ethers"
 import { init, useOnboard } from "@web3-onboard/vue"
-import { getUrl } from "~/helpers/index"
+import injectedModule, { ProviderLabel } from "@web3-onboard/injected-wallets"
 
-import injectedModule from "@web3-onboard/injected-wallets"
+import ledgerModule from '@web3-onboard/ledger'
+import walletConnectModule from '@web3-onboard/walletconnect'
+import gnosisModule from '@web3-onboard/gnosis'
+
+
+const ledger = ledgerModule({
+  projectId: 'Stairway',
+  requiredChains: [137, 80001]
+})
+const walletConnect = walletConnectModule({
+    projectId: 'Stairway',
+    requiredChains: [137, 80001],
+    dappUrl: 'https://app.stairway.fi/'
+})
+const regex = new RegExp("^https://app\\.stairway\\.fi/.*$");
+const localhostRegex = new RegExp("^http://localhost:3000/.*$");
+const gnosis = gnosisModule()
+// const gnosis = gnosisModule({
+//     whitelistedDomains: [regex, localhostRegex]
+// })
 declare global {
     interface Window {
         ethereum?: any
@@ -29,14 +47,17 @@ export const useStepStore = defineStore("step", (): any => {
     const isConnectingText = computed((): string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
     
     const POLYGON_MAIN = "https://polygon.llamarpc.com"
-    const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
+    const MUMBAI_RPC_URL = "https://polygon-mumbai.blockpi.network/v1/rpc/public"
+    // const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
 
     const unhandled = "0x0000000000000000000000000000000000000000"
 
-    const injected = injectedModule()
+    const injected = injectedModule({
+        displayUnavailable: [ProviderLabel.MetaMask, ProviderLabel.Coinbase],
+    })
     const onboard = init({
-        wallets: [injected],
+        wallets: [injected, ledger, walletConnect, gnosis],
         chains: [
             {
                 id: "0x89",
@@ -64,6 +85,7 @@ export const useStepStore = defineStore("step", (): any => {
         connect: {
             autoConnectLastWallet: true,
         },
+        
     })
     const { wallets, connectWallet, connectedChain, setChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
     // const walletsNotifs = onboard.state.select('notifications')

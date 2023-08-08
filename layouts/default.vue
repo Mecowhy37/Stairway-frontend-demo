@@ -21,17 +21,20 @@ import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseE
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
 
-import poolmanager from "@/ABIs/IPoolManager.json"
+import poolmanager from "@/ABIs/IPoolManager.sol/IPoolManager.json"
 const PoolManagerABI = poolmanager.abi
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chainId } = storeToRefs(stepStore)
+const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chainId, onboard } =
+    storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
-
+useHead({
+    title: "Stairway",
+})
 const {
     data: TokensData,
     pending: TokensPending,
@@ -120,34 +123,34 @@ watch(
     }
 )
 
-let poolManager = null
-watch(
-    () => [connectedAccount.value, chainId.value, addresses.value],
-    async ([account, chain, addresses], oldVal) => {
-        const [oldAccount, oldChain, oldAddresses] = oldVal ? oldVal : [null, null, null]
-        if (account && isSupportedChain(chain) && addresses) {
-            if (poolManager) {
-                console.log("switch off - liquidityAdded")
-                poolManager.off("LiquidityAdded", LiquidityAddedHandler)
-                poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
-            }
-            const provider = new BrowserProvider(connectedWallet.value.provider)
-            poolManager = new Contract(addresses.PoolManager, PoolManagerABI, provider)
-            console.log("set up - liquidityAdded")
-            poolManager.on("LiquidityAdded", LiquidityAddedHandler)
-            poolManager.on("LiquidityRedeemed", LiquidityRedeemedHandler)
-        } else {
-            if (poolManager) {
-                console.log("switch off - liquidityAdded")
-                poolManager.off("LiquidityAdded", LiquidityAddedHandler)
-                poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
-            }
-        }
-    },
-    {
-        immediate: true,
-    }
-)
+// let poolManager = null
+// watch(
+//     () => [connectedAccount.value, chainId.value, addresses.value],
+//     async ([account, chain, addresses], oldVal) => {
+//         const [oldAccount, oldChain, oldAddresses] = oldVal ? oldVal : [null, null, null]
+//         if (account && isSupportedChain(chain) && addresses) {
+//             if (poolManager) {
+//                 console.log("switch off - liquidityAdded")
+//                 poolManager.off("LiquidityAdded", LiquidityAddedHandler)
+//                 poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
+//             }
+//             const provider = new BrowserProvider(connectedWallet.value.provider)
+//             poolManager = new Contract(addresses.PoolManager, PoolManagerABI, provider)
+//             console.log("set up - liquidityAdded")
+//             poolManager.on("LiquidityAdded", LiquidityAddedHandler)
+//             poolManager.on("LiquidityRedeemed", LiquidityRedeemedHandler)
+//         } else {
+//             if (poolManager) {
+//                 console.log("switch off - liquidityAdded")
+//                 poolManager.off("LiquidityAdded", LiquidityAddedHandler)
+//                 poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
+//             }
+//         }
+//     },
+//     {
+//         immediate: true,
+//     }
+// )
 
 function LiquidityAddedHandler(poolIdx, provider, thisToken, thatToken, thisIn, thatIn) {
     console.log(" - - - - - - - lq added  - - - - - - -")

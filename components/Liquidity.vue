@@ -215,8 +215,6 @@
 </template>
 
 <script setup>
-import Decimal from "decimal.js"
-
 import { inject } from "vue"
 import { BrowserProvider, Contract, parseEther, formatUnits } from "ethers"
 
@@ -268,7 +266,8 @@ function callAddLiquidity() {
         settingsAdd.value.slippage,
         settingsAdd.value.deadline,
         stepStore.connectedAccount,
-        stepStore.connectedWallet.provider
+        stepStore.connectedWallet.provider,
+        stepStore.addresses.PoolManager
     ).then(() => {
         // state.amountA = ""
         // state.amountB = ""
