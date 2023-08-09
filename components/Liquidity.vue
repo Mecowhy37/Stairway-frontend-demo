@@ -35,7 +35,7 @@
         <template #widget-content>
             <div
                 class="tips"
-                v-if="chainId !== 137"
+                v-if="connectedChainId !== 137"
             >
                 <p>
                     <span class="text-highlight">Tip: </span>
@@ -226,7 +226,7 @@ import { useTokens, useBalances, usePools, basicRound, isSupportedChain } from "
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
-const { featuredTokens, positions, connectedAccount, chainId, routerAddress } = storeToRefs(stepStore)
+const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 
 const state = reactive({
     amountA: "",
@@ -242,7 +242,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = 
 // TOKENS ---------------
 
 // POOL -----------------
-const { pool, poolRatio, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, chainId)
+const { pool, poolRatio, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId)
 // POOL -----------------
 
 // WIDGET ---------------
@@ -446,11 +446,11 @@ watch(
         }
 
         //getting balance
-        if (connectedAccount.value && isSupportedChain(chainId.value)) {
+        if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
             if (selectTokenIndex.value === 0) {
-                state.balanceA = await getTokenBalance(tokens[0], connectedAccount.value, chainId.value)
+                state.balanceA = await getTokenBalance(tokens[0], connectedAccount.value, connectedChainId.value)
             } else {
-                state.balanceB = await getTokenBalance(tokens[1], connectedAccount.value, chainId.value)
+                state.balanceB = await getTokenBalance(tokens[1], connectedAccount.value, connectedChainId.value)
             }
         }
     },
@@ -460,14 +460,14 @@ watch(
 )
 
 async function getBothBalances() {
-    if (connectedAccount.value && isSupportedChain(chainId.value)) {
-        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, chainId.value)
-        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, chainId.value)
+    if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, connectedChainId.value)
+        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, connectedChainId.value)
     }
 }
 //GETS BALANCES BY TOKENS AND WALLET
 watch(
-    () => [connectedAccount.value, chainId.value],
+    () => [connectedAccount.value, connectedChainId.value],
     async (newVal) => {
         const [wallet, chain] = newVal
         if (wallet && isSupportedChain(chain)) {

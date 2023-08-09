@@ -56,20 +56,21 @@ export const useStepStore = defineStore("step", (): any => {
     const injected = injectedModule({
         displayUnavailable: [ProviderLabel.MetaMask, ProviderLabel.Coinbase],
     })
-    const onboard = init({
+    // id: "0x89",
+        const onboard = init({
         wallets: [injected, ledger, walletConnect, gnosis],
         chains: [
             {
-                id: "0x89",
+                id: 137,
                 token: "MATIC",
                 label: "Polygon Mainnet",
                 rpcUrl: POLYGON_MAIN,
                 icon: "~/assets/img/polygon_mainnet.webp"
             },
             {
-                id: "0x13881",
+                id: 80001,
                 token: "MATIC",
-                label: "Polygon Mumbai",
+                label: "Polygon Mumbaii",
                 rpcUrl: MUMBAI_RPC_URL,
                 icon: "~/assets/img/polygon_mainnet.webp"
             }
@@ -108,18 +109,6 @@ export const useStepStore = defineStore("step", (): any => {
         const start = toTruncate.splice(0, 5).join("")
         const end = toTruncate.splice(-4).join("")
         return start + "..." + end
-    })
-    
-
-    const chains = computed(() => {
-        return onboard.state.get().chains
-    })
-    
-    const chainId = computed(() => {
-        if (!connectedChain.value) {
-            return null
-        }
-        return parseInt(connectedChain.value.id, 16)
     })
 
     function connectWalletAction() {
@@ -160,6 +149,17 @@ export const useStepStore = defineStore("step", (): any => {
     })
     // ADDRESSES ----------------
 
+    // CHAINS ----------------
+    const chains = ref(null)
+    
+    const connectedChainId = computed(() => {
+        if (!connectedChain.value) {
+            return null
+        }
+        return parseInt(connectedChain.value.id, 16)
+    })
+    // CHAINS ----------------
+
     return {
         onboard,
 
@@ -177,7 +177,7 @@ export const useStepStore = defineStore("step", (): any => {
         
         chains,
         setChain,
-        chainId,
+        connectedChainId,
         connectedChain,
         isConnectingText,
         connectWallet,

@@ -107,7 +107,7 @@
                 </Dropdown>
                 <Dropdown
                     class="chain-dropdown"
-                    :width="210"
+                    :width="270"
                     no-padding
                 >
                     <template #dropdown-activator="{ on }">
@@ -120,7 +120,7 @@
                                     class="token-icon"
                                     :src="
                                         connectedChainFullObj
-                                            ? connectedChainFullObj.icon
+                                            ? connectedChainFullObj.logo_url
                                             : '/_nuxt/assets/img/polygon_mainnet.webp'
                                     "
                                 />
@@ -131,15 +131,15 @@
                         <div
                             v-for="chain in chains"
                             class="list-item list-item--padded-xs row align-center"
-                            @click="setChain(chain.id)"
+                            @click="setChain(chain.chain_id)"
                         >
                             <img
                                 class="token-icon token-icon--sm"
-                                :src="chain.icon"
+                                :src="chain.logo_url"
                             />
-                            <p>{{ chain.label }}</p>
+                            <p>{{ chain.chain_name }}</p>
                             <Icon
-                                v-if="connectedChain && chain.id === connectedChain.id"
+                                v-if="chain.chain_id === connectedChainId"
                                 class="tick-icon"
                                 name="tick"
                                 :size="9"
@@ -157,7 +157,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { isMobile, chains, connectedChain } = storeToRefs(stepStore)
+const { isMobile, chains, connectedChain, connectedChainId } = storeToRefs(stepStore)
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
@@ -169,7 +169,7 @@ function setChain(id) {
 
 const connectedChainFullObj = computed(() => {
     if (chains.value && connectedChain.value) {
-        return chains.value.find((el) => el.id === connectedChain.value?.id)
+        return chains.value.find((el) => el.chain_id === connectedChainId.value)
     }
 })
 </script>

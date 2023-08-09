@@ -37,7 +37,7 @@
             <template #widget-content>
                 <div
                     class="tips"
-                    v-if="chainId !== 137"
+                    v-if="connectedChainId !== 137"
                 >
                     <p>
                         <span class="text-highlight">Tip: </span>
@@ -232,7 +232,7 @@ const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 
-const { featuredTokens, connectedAccount, chainId, routerAddress, precision } = storeToRefs(stepStore)
+const { featuredTokens, connectedAccount, connectedChainId, routerAddress, precision } = storeToRefs(stepStore)
 
 const { getTokenBalance } = useBalances()
 
@@ -264,7 +264,7 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 // TOKENS ------------------
 
 // POOL -----------------
-const { pool, poolPending, price, depth, swap } = usePools(routerAddress, Tokens, connectedAccount, chainId)
+const { pool, poolPending, price, depth, swap } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId)
 // POOL -----------------
 
 // WIDGET ------------------
@@ -327,7 +327,11 @@ const Amounts = computed({
 })
 
 const parsedLastInputed = computed(() => {
-    if (!Tokens.value[state.lastChangedToken] || !Amounts.value[state.lastChangedToken]) {
+    if (
+        !Tokens.value[state.lastChangedToken] ||
+        !Amounts.value[state.lastChangedToken] ||
+        !isClean(Amounts.value[state.lastChangedToken])
+    ) {
         return null
     }
     return parseUnits(Amounts.value[state.lastChangedToken], Tokens.value[state.lastChangedToken].decimals).toString()
@@ -402,15 +406,14 @@ function cleanInput(value, oldValue) {
     value = value.replace(/,/g, ".")
 
     let dotCount = value.split(".").length - 1
-    if (dotCount === 2 || value > 9007199254740991) {
+    if (dotCount === 2 || value > 9007199254740991 || (value > 0 && value < 1e-18)) {
         value = oldValue
     }
     return value
 }
 function isClean(value) {
     // Match any character that's not a digit, dot, or comma, or more than one dot
-    if (value.match(/[^\d.,]/) || (value.match(/\./g) || []).length > 1) {
-        console.log("not clean")
+    if (value.match(/[^\d.,]/) || (value.match(/\./g) || []).length > 1 || value === ".") {
         return false
     }
     return true
@@ -524,15 +527,15 @@ watch(
 )
 
 async function getBothBalances() {
-    if (connectedAccount.value && isSupportedChain(chainId.value)) {
-        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, chainId.value)
-        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, chainId.value)
+    if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, connectedChainId.value)
+        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, connectedChainId.value)
     }
 }
 
 //GETS BALANCES BY TOKENS AND WALLET
 watch(
-    () => [connectedAccount.value, chainId.value],
+    () => [connectedAccount.value, connectedChainId.value],
     async (newVal) => {
         const [wallet, chain] = newVal
         if (wallet && isSupportedChain(chain)) {

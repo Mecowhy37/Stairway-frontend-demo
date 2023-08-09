@@ -28,7 +28,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chainId, onboard } =
+const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chains, chainId, onboard } =
     storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
@@ -116,6 +116,27 @@ watch(
     (newVal) => {
         if (newVal) {
             positions.value = newVal
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+
+const {
+    data: ChainsData,
+    pending: ChainsPending,
+    refresh: refreshChains,
+    error: ChainsError,
+    status: ChainsStatus,
+} = await useAsyncData("chains", () => {
+    return $fetch(getUrl(`/chain`))
+})
+watch(
+    ChainsData,
+    (newVal) => {
+        if (newVal) {
+            chains.value = newVal
         }
     },
     {

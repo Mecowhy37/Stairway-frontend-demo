@@ -4,6 +4,7 @@
             <div class="positions__top row">
                 <h1>Liquidity</h1>
                 <NuxtLink
+                    v-if="positions && connectedAccount"
                     class="link"
                     to="/add-liquidity"
                 >
@@ -11,7 +12,7 @@
                         is="h4"
                         reverse
                     >
-                        New postition
+                        Add Liquidity
                         <template #icon>
                             <Icon
                                 name="plus"
@@ -21,8 +22,11 @@
                     </Btn>
                 </NuxtLink>
             </div>
-            <div class="positions__list">
-                <h3 v-if="positions">
+            <div
+                v-if="positions"
+                class="positions__list"
+            >
+                <h3>
                     Your liquidity pools <span>{{ positions.length }}</span>
                 </h3>
                 <div class="pools">
@@ -122,6 +126,43 @@
                     </div>
                 </div>
             </div>
+            <div
+                v-else
+                class="positions__list"
+            >
+                <div class="pools pools">
+                    <div class="empty">
+                        <p>Your active liquidity will be listed here</p>
+                        <NuxtLink
+                            v-if="connectedAccount"
+                            class="link"
+                            to="/add-liquidity"
+                        >
+                            <Btn
+                                is="h4"
+                                reverse
+                                wide
+                            >
+                                Add Liquidity
+                                <template #icon>
+                                    <Icon
+                                        name="plus"
+                                        :size="16"
+                                    />
+                                </template>
+                            </Btn>
+                        </NuxtLink>
+                        <Btn
+                            v-else
+                            is="h4"
+                            bulky
+                            @click="stepStore.connectWallet()"
+                        >
+                            Connect wallet
+                        </Btn>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -197,6 +238,8 @@ function Round(amt) {
         .pools {
             height: 50vh;
             overflow-y: auto;
+            display: flex;
+            justify-content: center;
             &::-webkit-scrollbar {
                 display: none;
             }
@@ -247,6 +290,17 @@ function Round(amt) {
                             }
                         }
                     }
+                }
+            }
+            .empty {
+                width: min-content;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                white-space: nowrap;
+                p {
+                    margin-bottom: 21px;
                 }
             }
         }
