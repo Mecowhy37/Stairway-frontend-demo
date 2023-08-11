@@ -79,13 +79,13 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         if (!pool.value) {
             return null
         }
-        return pool.value.ask
+        return pool.value.price
     })
     const depth = computed(() => {
         if (!pool.value) {
             return null
         }
-        return pool.value.ask_depth
+        return pool.value.depth
     })
 
     async function addLiquidity(tokenA, tokenB, amountA, amountB, slippage, deadline, recipient, providerArg) {
