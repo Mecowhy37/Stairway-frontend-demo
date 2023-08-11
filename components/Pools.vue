@@ -4,7 +4,7 @@
             <div class="positions__top row">
                 <h1>Liquidity</h1>
                 <NuxtLink
-                    v-if="positions && connectedAccount"
+                    v-if="positions && positions.length > 0 && connectedAccount"
                     class="link"
                     to="/add-liquidity"
                 >
@@ -23,7 +23,7 @@
                 </NuxtLink>
             </div>
             <div
-                v-if="positions"
+                v-if="positions && positions.length > 0"
                 class="positions__list"
             >
                 <h3>
@@ -130,7 +130,7 @@
                 v-else
                 class="positions__list"
             >
-                <div class="pools pools">
+                <div class="pools">
                     <div class="empty">
                         <p>Your active liquidity will be listed here</p>
                         <NuxtLink
@@ -239,7 +239,8 @@ function Round(amt) {
             height: 50vh;
             overflow-y: auto;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            /* align-items: center; */
             &::-webkit-scrollbar {
                 display: none;
             }
@@ -296,6 +297,7 @@ function Round(amt) {
                 width: min-content;
                 height: 100%;
                 display: flex;
+                margin: 0 auto;
                 flex-direction: column;
                 justify-content: center;
                 white-space: nowrap;
