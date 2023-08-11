@@ -74,9 +74,10 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])"
+                                :value="getInputValue(x)"
                                 @input="setTokenAmount($event, x)"
                             />
+                            <!-- :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])" -->
                         </div>
                         <div class="window__lower row flex-end align-center">
                             <p class="caption">{{ Number(ABBalance[x]) }}</p>
@@ -216,12 +217,21 @@
 
 <script setup>
 import { inject } from "vue"
-import { BrowserProvider, Contract, parseEther, formatUnits } from "ethers"
+import { BrowserProvider, Contract, parseUnits, formatUnits } from "ethers"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
-import { useTokens, useBalances, usePools, basicRound, isSupportedChain } from "~/helpers/index"
+import {
+    useTokens,
+    useBalances,
+    usePools,
+    useInputs,
+    basicRound,
+    isSupportedChain,
+    tkEnum,
+    precision,
+} from "~/helpers/index"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
@@ -229,8 +239,8 @@ const stepStore = useStepStore()
 const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 
 const state = reactive({
-    amountA: "",
-    amountB: "",
+    amountQuote: "",
+    amountBase: "",
     balanceA: "",
     balanceB: "",
     lastChangedToken: 0,
@@ -244,6 +254,10 @@ const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = 
 // POOL -----------------
 const { pool, poolRatio, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId)
 // POOL -----------------
+
+// INPUTS -----------------
+const { cleanInput, isCleanInput, prettyPrint } = useInputs(Tokens)
+// INPUTS -----------------
 
 // WIDGET ---------------
 const bothAmountsIn = computed(() => {
@@ -269,8 +283,8 @@ function callAddLiquidity() {
         stepStore.connectedWallet.provider,
         stepStore.addresses.PoolManager
     ).then(() => {
-        // state.amountA = ""
-        // state.amountB = ""
+        // state.amountQuote = ""
+        // state.amountBase = ""
     })
 }
 // WIDGET ---------------
@@ -287,67 +301,66 @@ function Round(amt) {
 }
 const Amounts = computed({
     get() {
-        const list = [state.amountA, state.amountB]
-        if (poolRatio.value && bothTokensThere.value) {
-            if (list[state.lastChangedToken] === "") {
-                list[Number(!Boolean(state.lastChangedToken))] = ""
-                return list
+        const tokenAmounts = [state.amountQuote, state.amountBase]
+        if (pool.value) {
+            if (tokenAmounts[state.lastChangedToken] === "") {
+                tokenAmounts[Number(!Boolean(state.lastChangedToken))] = ""
+                return tokenAmounts
             }
-            if (state.lastChangedToken === 0) {
-                if (list[0].length !== 0 && !Number.isNaN(Number(list[0]))) {
-                    list[1] = calcThis(list[0])
-                }
-            } else {
-                if (list[1].length !== 0 && !Number.isNaN(Number(list[1]))) {
-                    list[0] = calcThat(list[1])
-                }
+            if (state.lastChangedToken === tkEnum.QUOTE && isCleanInput(tokenAmounts[tkEnum.QUOTE])) {
+                tokenAmounts[tkEnum.BASE] = calcB(
+                    tokenAmounts[tkEnum.QUOTE],
+                    Tokens.value[tkEnum.QUOTE].decimals,
+                    pool.value.quote_reserves,
+                    pool.value.base_reserves
+                )
+            } else if ((state.lastChangedToken === tkEnum.BASE) & isCleanInput(tokenAmounts[tkEnum.BASE])) {
+                tokenAmounts[tkEnum.QUOTE] = calcB(
+                    tokenAmounts[tkEnum.BASE],
+                    Tokens.value[tkEnum.BASE].decimals,
+                    pool.value.base_reserves,
+                    pool.value.quote_reserves
+                )
             }
         }
 
-        return list
+        return tokenAmounts
     },
     set(newValue) {
-        state.amountA = newValue[0]
-        state.amountB = newValue[1]
+        state.amountQuote = newValue[tkEnum.QUOTE]
+        state.amountBase = newValue[tkEnum.BASE]
     },
 })
-function setTokenAmount(event, inputIndex) {
-    state.lastChangedToken = inputIndex
-    const newVal = event.target.value
-    Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
-}
-
-// function calcThat(value) {
-//     const inputed = new Decimal(value)
-//     const ratio = new Decimal(poolRatio.value)
-//     return inputed.mul(ratio).toString()
-// }
-// function calcThis(value) {
-//     const inputed = new Decimal(value)
-//     const ratio = new Decimal(poolRatio.value)
-//     return inputed.div(ratio).toString()
-// }
-function calcThat(value) {
-    return String(Number(value) * poolRatio.value)
-}
-function calcThis(value) {
-    return String(Number(value) / poolRatio.value)
-}
-function cleanInput(value, oldValue) {
-    // Remove spaces from the input value
-    value = value.replace(/\s/g, "")
-
-    // Replace any non-digit, non-dot, non-comma characters with an empty string
-    value = value.replace(/[^\d.,]/g, "")
-
-    // Replace commas with dots to handle decimal numbers
-    value = value.replace(/,/g, ".")
-    let dotCount = value.split(".").length - 1
-    if (dotCount === 2) {
-        value = oldValue
+function getInputValue(tkIndex) {
+    if (!poolRatio.value) {
+        return Amounts.value[tkIndex]
     }
-    return value
+    return state.lastChangedToken === tkIndex ? Amounts.value[tkIndex] : prettyPrint(Amounts.value[tkIndex], tkIndex)
+    // return state.lastChangedToken === tkIndex ? Amounts.value[tkIndex] : prettyPrint(Amounts.value[tkIndex], tkIndex)
 }
+function setTokenAmount(event, tokenIndex) {
+    state.lastChangedToken = tokenIndex
+    const newVal = event.target.value
+    Amounts.value = Amounts.value.map((el, i) => (tokenIndex === i ? newVal : el))
+}
+function parseValue(input, decimals) {
+    return BigInt(parseUnits(input, decimals))
+}
+
+function calcB(aInputed, aDecimals, balanceA, balanceB) {
+    const aParsed = BigInt(parseUnits(aInputed, aDecimals))
+    return (aParsed * BigInt(balanceB) + BigInt(balanceA) - 1n) / BigInt(balanceA)
+}
+// const parsedLastInputed = computed(() => {
+//     if (
+//         !Tokens.value[state.lastChangedToken] ||
+//         !Amounts.value[state.lastChangedToken] ||
+//         !isCleanInput(Amounts.value[state.lastChangedToken])
+//     ) {
+//         return null
+//     }
+//     return parseUnits(Amounts.value[state.lastChangedToken], Tokens.value[state.lastChangedToken].decimals).toString()
+// })
 // CLEANS IMPUTED AMOUNT
 watch(
     Amounts,
@@ -355,9 +368,9 @@ watch(
         const [newA, newB] = [...newVal]
         const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
         if (state.lastChangedToken === 0) {
-            state.amountA = cleanInput(newA, oldA)
+            state.amountQuote = cleanInput(newA, oldA)
         } else if (state.lastChangedToken === 1) {
-            state.amountB = cleanInput(newB, oldB)
+            state.amountBase = cleanInput(newB, oldB)
         }
     },
     {

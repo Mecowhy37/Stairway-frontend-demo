@@ -1,3 +1,3 @@
 <template>
-    <Redeem />
+    <RedeemLiquidity />
 </template>

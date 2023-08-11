@@ -12,6 +12,13 @@ const PoolManagerABI = poolmanager.abi
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 
+export const tkEnum = {
+    QUOTE: 0,
+    BASE: 1,
+}
+
+export const precision = BigInt(10) ** BigInt(18)
+
 export function getToken(symb) {
     return TokenList.find((el) => el.symbol === symb)
 }
@@ -73,10 +80,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         if (!pool.value) {
             return null
         }
-        return (
-            Number(formatUnits(pool.value.base_reserves, pool.value.base_token.decimals)) /
-            Number(formatUnits(pool.value.quote_reserves, pool.value.quote_token.decimals))
-        )
+
+        return (BigInt(pool.value.base_reserves) * precision) / BigInt(pool.value.quote_reserves)
     })
     const price = computed(() => {
         if (!pool.value) {
@@ -106,18 +111,16 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
 
-        const parsedAmountA = parseUnits(amountA, tokenA.decimals).toString()
-        const parsedAmountB = parseUnits(amountB, tokenB.decimals).toString()
         const parsedSlippage = parseUnits(slippage.toString(), 18).toString()
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
         try {
             const allowanceA = await checkAllowance(tokenA.address, signer.address, routerAddress.value, providerArg)
-            const needApprovalA = allowanceA < parsedAmountA
+            const needApprovalA = allowanceA < amountA
 
             const allowanceB = await checkAllowance(tokenB.address, signer.address, routerAddress.value, providerArg)
-            const needApprovalB = allowanceB < parsedAmountB
+            const needApprovalB = allowanceB < amountB
 
             if (needApprovalA || needApprovalB) {
                 const approvalPromises = []
@@ -140,10 +143,12 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         try {
             console.log("tokenA.address:", tokenA.address)
             console.log("tokenB.address,:", tokenB.address)
-            console.log("parsedAmountA:", parsedAmountA)
-            console.log("parsedAmountB:", parsedAmountB)
+            console.log("amountA:", amountA)
+            console.log("amountB:", amountB)
             console.log("parsedSlippage:", parsedSlippage)
             console.log("recipient:", recipient)
+            console.log("deadline:", deadline)
+            console.log("deadline * 60:", deadline * 60)
             console.log("deadlineStamp:", deadlineStamp)
             await router.addLiquidity(
                 tokenA.address,
@@ -363,4 +368,65 @@ export function useBalances() {
     }
 
     return { getTokenBalance }
+}
+
+export function useInputs(Tokens) {
+    function cleanInput(value, oldValue) {
+        // Remove spaces from the input value
+        value = value.replace(/\s/g, "")
+
+        // Replace any non-digit, non-dot, non-comma characters with an empty string
+        value = value.replace(/[^\d.,]/g, "")
+
+        // Replace commas with dots to handle decimal numbers
+        value = value.replace(/,/g, ".")
+
+        let dotCount = value.split(".").length - 1
+        if (dotCount === 2 || value > 9007199254740991 || (value > 0 && value < 1e-18)) {
+            value = oldValue
+        }
+        return value
+    }
+    function isCleanInput(value) {
+        // Match any character that's not a digit, dot, or comma, or more than one dot
+        if (value.match(/[^\d.,]/) || (value.match(/\./g) || []).length > 1 || value === ".") {
+            return false
+        }
+        return true
+    }
+    function prettyPrint(amount, tkIndex) {
+        if (Tokens.value[tkIndex] === null) {
+            return amount
+        }
+        if (amount === "") {
+            return ""
+        }
+        const decimals =
+            tkIndex === tkEnum.BASE ? Tokens.value[tkEnum.BASE].decimals : Tokens.value[tkEnum.QUOTE].decimals
+
+        const fullResult = formatUnits(amount.toString(), decimals)
+
+        if (tkIndex === tkEnum.QUOTE) {
+            return roundCeiling(fullResult)
+        } else if (tkIndex === tkEnum.BASE) {
+            return roundFloor(fullResult)
+        }
+    }
+    function roundCeiling(stringAmount) {
+        return parseFloat(parseFloat(stringAmount).toPrecision(5)).toString()
+    }
+    function roundFloor(stringAmount) {
+        return parseFloat(toFixedFloor(stringAmount, 4)).toString()
+    }
+    function toFixedFloor(stringAmount, fixed) {
+        let re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?")
+        return stringAmount.match(re)[0]
+    }
+    return {
+        cleanInput,
+        isCleanInput,
+        prettyPrint,
+        roundCeiling,
+        roundFloor,
+    }
 }

@@ -41,7 +41,7 @@
                         class="token-icon token-icon--sm"
                         :src="token.logo_uri"
                     />
-                    <p class="token-name">
+                    <p>
                         {{ token.name }}
                     </p>
                     <Icon
@@ -130,7 +130,8 @@ defineExpose({
 
     &__window {
         width: 300px;
-        height: 50%;
+        height: 70vh;
+        max-height: 500px;
         display: flex;
         flex-direction: column;
         place-self: center;
@@ -158,9 +159,6 @@ defineExpose({
             }
             .list-item {
                 padding: 16px 8px;
-            }
-            .token-name {
-                margin-left: 6px;
             }
             .tick-icon {
                 margin-left: auto;

@@ -379,6 +379,9 @@ svg {
         color: var(--list-click-stroke);
         margin-right: 5px;
     }
+    p {
+        margin-left: 6px;
+    }
 }
 .caption {
     &,

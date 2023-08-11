@@ -119,8 +119,6 @@ export const useStepStore = defineStore("step", (): any => {
         })
     }
 
-    const precision = ref(BigInt(10) ** BigInt(18))
-
     // const state = onboard.state.select()
     // const {unsubscribe} = state.subscribe(update =>
     //     console.log('state update: ', update)
@@ -165,7 +163,6 @@ export const useStepStore = defineStore("step", (): any => {
         onboard,
 
         routerAddress,
-        precision,
         isDark,
         isMobile,
         

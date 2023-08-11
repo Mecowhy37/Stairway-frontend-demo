@@ -226,27 +226,15 @@ import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
 import { formatUnits, parseUnits } from "ethers"
 
-import { useTokens, useBalances, usePools, isSupportedChain } from "~/helpers/index"
+import { useTokens, useBalances, usePools, useInputs, isSupportedChain, tkEnum, precision } from "~/helpers/index"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 
-const { featuredTokens, connectedAccount, connectedChainId, routerAddress, precision } = storeToRefs(stepStore)
+const { featuredTokens, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 
 const { getTokenBalance } = useBalances()
-
-function getInputValue(tkIndex) {
-    if (!price.value) {
-        return Amounts.value[tkIndex]
-    }
-    return state.lastChangedToken === tkIndex ? Amounts.value[tkIndex] : prettyPrint(Amounts.value[tkIndex], tkIndex)
-}
-
-const tkEnum = {
-    QUOTE: 0,
-    BASE: 1,
-}
 
 const state = reactive({
     amountA: "",
@@ -266,6 +254,10 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 // POOL -----------------
 const { pool, poolPending, price, depth, swap } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId)
 // POOL -----------------
+
+// INPUTS -----------------
+const { cleanInput, isCleanInput, prettyPrint } = useInputs(Tokens)
+// INPUTS -----------------
 
 // WIDGET ------------------
 const canSwap = computed(() => {
@@ -310,11 +302,9 @@ const Amounts = computed({
                 list[Number(!Boolean(state.lastChangedToken))] = ""
                 return list
             }
-            if (state.lastChangedToken === tkEnum.QUOTE && isClean(list[tkEnum.QUOTE])) {
+            if (state.lastChangedToken === tkEnum.QUOTE && isCleanInput(list[tkEnum.QUOTE])) {
                 list[tkEnum.BASE] = calcBase(list[tkEnum.QUOTE])
-                // list[tkEnum.QUOTE] = parseUnits(list[tkEnum.QUOTE], Tokens.value[tkEnum.QUOTE].decimals).toString()
-            } else if (state.lastChangedToken === tkEnum.BASE && isClean(list[tkEnum.BASE])) {
-                // list[tkEnum.BASE] = parseUnits(list[tkEnum.BASE], Tokens.value[tkEnum.BASE].decimals).toString()
+            } else if (state.lastChangedToken === tkEnum.BASE && isCleanInput(list[tkEnum.BASE])) {
                 list[tkEnum.QUOTE] = calcQuote(list[tkEnum.BASE])
             }
         }
@@ -325,12 +315,17 @@ const Amounts = computed({
         state.amountB = newVal[1]
     },
 })
-
+function getInputValue(tkIndex) {
+    if (!price.value) {
+        return Amounts.value[tkIndex]
+    }
+    return state.lastChangedToken === tkIndex ? Amounts.value[tkIndex] : prettyPrint(Amounts.value[tkIndex], tkIndex)
+}
 const parsedLastInputed = computed(() => {
     if (
         !Tokens.value[state.lastChangedToken] ||
         !Amounts.value[state.lastChangedToken] ||
-        !isClean(Amounts.value[state.lastChangedToken])
+        !isCleanInput(Amounts.value[state.lastChangedToken])
     ) {
         return null
     }
@@ -353,71 +348,22 @@ function setTokenAmount(event, inputIndex) {
     const newVal = event.target.value
     Amounts.value = Amounts.value.map((el, i) => (inputIndex === i ? newVal : el))
 }
-function prettyPrint(amount, tkIndex) {
-    if (Tokens.value[tkIndex] === null) {
-        return amount
-    }
-    if (amount === "") {
-        return ""
-    }
-    const decimals = tkIndex === tkEnum.BASE ? Tokens.value[tkEnum.BASE].decimals : Tokens.value[tkEnum.QUOTE].decimals
 
-    const fullResult = formatUnits(amount.toString(), decimals)
-
-    if (tkIndex === tkEnum.QUOTE) {
-        return roundCeiling(fullResult)
-    } else if (tkIndex === tkEnum.BASE) {
-        return roundFloor(fullResult)
-    }
-}
 function calcQuote(baseInputed) {
     const baseDecim = Tokens.value[tkEnum.BASE].decimals
-    const baseParsed = BigInt(parseUnits(baseInputed, baseDecim).toString())
+    const baseParsed = BigInt(parseUnits(baseInputed, baseDecim))
     const ask = BigInt(price.value)
-    const quoteAmount = (baseParsed * ask + precision.value - 1n) / precision.value
+    const quoteAmount = (baseParsed * ask + precision - 1n) / precision
     return quoteAmount.toString()
 }
 function calcBase(quoteInputed) {
     const quoteDecim = Tokens.value[tkEnum.QUOTE].decimals
-    const quoteParsed = BigInt(parseUnits(quoteInputed, quoteDecim).toString())
+    const quoteParsed = BigInt(parseUnits(quoteInputed, quoteDecim))
     const ask = BigInt(price.value)
-    const baseAmount = (quoteParsed * precision.value) / ask
+    const baseAmount = (quoteParsed * precision) / ask
     return baseAmount.toString()
 }
-function roundCeiling(stringAmount) {
-    return parseFloat(parseFloat(stringAmount).toPrecision(5)).toString()
-}
-function roundFloor(stringAmount) {
-    return parseFloat(toFixedFloor(stringAmount, 4)).toString()
-}
-function toFixedFloor(stringAmount, fixed) {
-    let re = new RegExp("^-?\\d+(?:\.\\d{0," + (fixed || -1) + "})?")
-    return stringAmount.match(re)[0]
-}
 
-function cleanInput(value, oldValue) {
-    // Remove spaces from the input value
-    value = value.replace(/\s/g, "")
-
-    // Replace any non-digit, non-dot, non-comma characters with an empty string
-    value = value.replace(/[^\d.,]/g, "")
-
-    // Replace commas with dots to handle decimal numbers
-    value = value.replace(/,/g, ".")
-
-    let dotCount = value.split(".").length - 1
-    if (dotCount === 2 || value > 9007199254740991 || (value > 0 && value < 1e-18)) {
-        value = oldValue
-    }
-    return value
-}
-function isClean(value) {
-    // Match any character that's not a digit, dot, or comma, or more than one dot
-    if (value.match(/[^\d.,]/) || (value.match(/\./g) || []).length > 1 || value === ".") {
-        return false
-    }
-    return true
-}
 function canBeBigInt(value) {
     try {
         BigInt(value)
