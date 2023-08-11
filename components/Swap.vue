@@ -240,7 +240,7 @@ function getInputValue(tkIndex) {
     if (!price.value) {
         return Amounts.value[tkIndex]
     }
-    return state.lastChangedToken === tkIndex ? Amounts.value[x] : prettyPrint(Amounts.value[x], x)
+    return state.lastChangedToken === tkIndex ? Amounts.value[tkIndex] : prettyPrint(Amounts.value[tkIndex], tkIndex)
 }
 
 const tkEnum = {

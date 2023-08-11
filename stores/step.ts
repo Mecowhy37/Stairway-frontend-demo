@@ -10,7 +10,8 @@ import gnosisModule from '@web3-onboard/gnosis'
 
 const ledger = ledgerModule({
   projectId: 'Stairway',
-  requiredChains: [137, 80001]
+  requiredChains: [137, 80001],
+  walletConnectVersion: 2,
 })
 const walletConnect = walletConnectModule({
     projectId: 'Stairway',
@@ -70,7 +71,7 @@ export const useStepStore = defineStore("step", (): any => {
             {
                 id: 80001,
                 token: "MATIC",
-                label: "Polygon Mumbaii",
+                label: "Polygon Mumbai",
                 rpcUrl: MUMBAI_RPC_URL,
                 icon: "~/assets/img/polygon_mainnet.webp"
             }

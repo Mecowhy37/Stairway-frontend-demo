@@ -21,14 +21,14 @@ import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseE
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
 
-import poolmanager from "@/ABIs/IPoolManager.sol/IPoolManager.json"
+import poolmanager from "@/ABIs/IPoolManager.json"
 const PoolManagerABI = poolmanager.abi
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chains, chainId, onboard } =
+const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chains, connectedChainId, onboard } =
     storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
@@ -44,12 +44,12 @@ const {
 } = await useAsyncData(
     "tokens",
     () => {
-        if (isSupportedChain(chainId.value)) {
-            return $fetch(getUrl(`/chain/${chainId.value}/tokens/featured`))
+        if (isSupportedChain(connectedChainId.value)) {
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/tokens/featured`))
         }
     },
     {
-        watch: [chainId],
+        watch: [connectedChainId],
     }
 )
 watch(
@@ -73,12 +73,12 @@ const {
 } = await useAsyncData(
     "addresses",
     () => {
-        if (isSupportedChain(chainId.value)) {
-            return $fetch(getUrl(`/chain/${chainId.value}/addresses/local`))
+        if (isSupportedChain(connectedChainId.value)) {
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/addresses/local`))
         }
     },
     {
-        watch: [chainId],
+        watch: [connectedChainId],
     }
 )
 watch(
@@ -101,13 +101,13 @@ const {
 } = await useAsyncData(
     "positions",
     () => {
-        if (connectedAccount.value && isSupportedChain(chainId.value)) {
+        if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
             console.log("fetching positions")
-            return $fetch(getUrl(`/chain/${chainId.value}/user/${connectedAccount.value}/positions`))
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
         }
     },
     {
-        watch: [chainId, connectedAccount],
+        watch: [connectedChainId, connectedAccount],
     }
 )
 stepStore.refreshPositions = refreshPositions
@@ -146,7 +146,7 @@ watch(
 
 // let poolManager = null
 // watch(
-//     () => [connectedAccount.value, chainId.value, addresses.value],
+//     () => [connectedAccount.value, connectedChainId.value, addresses.value],
 //     async ([account, chain, addresses], oldVal) => {
 //         const [oldAccount, oldChain, oldAddresses] = oldVal ? oldVal : [null, null, null]
 //         if (account && isSupportedChain(chain) && addresses) {

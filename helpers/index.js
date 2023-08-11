@@ -1,13 +1,13 @@
 import { ref } from "vue"
 import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
 
-import router from "@/ABIs/IDEX.sol/IDEX.json"
+import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
 
-import token from "@/ABIs/IERC20.sol/IERC20.json"
+import token from "@/ABIs/IERC20.json"
 const TokenABI = token.abi
 
-import poolmanager from "@/ABIs/IPoolManager.sol/IPoolManager.json"
+import poolmanager from "@/ABIs/IPoolManager.json"
 const PoolManagerABI = poolmanager.abi
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -43,7 +43,7 @@ export function listenForTransactionMine(txRes, provider, callback = null) {
     })
 }
 
-export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
+export function usePools(routerAddress, Tokens, connectedAccount, connectedChainId) {
     const {
         data: pool,
         error: poolError,
@@ -55,15 +55,17 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
             if (Tokens?.value) {
                 const bothThere = Tokens.value.every((el) => el !== null)
 
-                if (bothThere && connectedAccount.value && isSupportedChain(chainId.value)) {
+                if (bothThere && connectedAccount.value && isSupportedChain(connectedChainId.value)) {
                     return $fetch(
-                        getUrl(`/chain/${chainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`)
+                        getUrl(
+                            `/chain/${connectedChainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`
+                        )
                     )
                 }
             }
         },
         {
-            watch: [Tokens, chainId],
+            watch: [Tokens, connectedChainId],
         }
     )
 
@@ -80,13 +82,13 @@ export function usePools(routerAddress, Tokens, connectedAccount, chainId) {
         if (!pool.value) {
             return null
         }
-        return pool.value.ask
+        return pool.value.price
     })
     const depth = computed(() => {
         if (!pool.value) {
             return null
         }
-        return pool.value.ask_depth
+        return pool.value.depth
     })
 
     async function addLiquidity(
@@ -344,12 +346,12 @@ export function useTokens() {
 }
 
 export function useBalances() {
-    async function getTokenBalance(token, account, chainId) {
+    async function getTokenBalance(token, account, connectedChainId) {
         if (token === null) {
             return ""
         }
         const { data: balance, error } = await useFetch(
-            getUrl(`/chain/${chainId}/user/${account}/balance/${token.address}`)
+            getUrl(`/chain/${connectedChainId}/user/${account}/balance/${token.address}`)
         )
         if (balance.value) {
             return formatUnits(balance.value, token.decimals)

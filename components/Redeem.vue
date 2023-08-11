@@ -212,7 +212,7 @@
                     Connect wallet
                 </Btn>
                 <Btn
-                    v-else-if="isSupportedChain(chainId)"
+                    v-else-if="isSupportedChain(connectedChainId)"
                     is="h4"
                     wide
                     bulky
@@ -233,9 +233,9 @@ import { storeToRefs } from "pinia"
 import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 const stepStore = useStepStore()
-const { routerAddress, connectedAccount, positions, chainId } = storeToRefs(stepStore)
+const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
 
-const { redeemLiquidity } = usePools(routerAddress, null, connectedAccount, chainId)
+const { redeemLiquidity } = usePools(routerAddress, null, connectedAccount, connectedChainId)
 
 const state = reactive({
     redeemPercent: 100,
@@ -263,13 +263,13 @@ const {
 } = useAsyncData(
     "pool",
     () => {
-        if (chainId.value && isSupportedChain(chainId.value)) {
+        if (connectedChainId.value && isSupportedChain(connectedChainId.value)) {
             console.log("fetching pool")
-            return $fetch(getUrl(`/chain/${chainId.value}/pool/${route.params.address}`))
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
         }
     },
     {
-        watch: [chainId],
+        watch: [connectedChainId],
     }
 )
 
