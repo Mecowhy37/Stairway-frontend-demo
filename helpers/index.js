@@ -142,14 +142,6 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("Failed to get approvals:", error)
         }
         try {
-            console.log("ALERT! HARDCODING PHIL'S VALUES!i");
-            console.log("---------------------------------");
-            var _tokenA_address= "0x9A99605865985fE4E1776bAF0801d38A45237073";
-            var _tokenB_address= "0x2e0D96257F4D29b6CD16232e6F2986AD57B04fff";
-            var _amountA= "15000000000000000";
-            var _amountB= "4000000000000000";
-            var _parsedSlippage= "1000000000000000";
-            var _deadlineStamp= "43839787000";
 
             console.log("VALUES");
             console.log("---------------------------------");
