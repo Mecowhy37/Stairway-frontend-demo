@@ -312,17 +312,23 @@ const Amounts = computed({
             if (state.lastChangedToken === tkEnum.QUOTE && isCleanInput(tokenAmounts[tkEnum.QUOTE])) {
                 tokenAmounts[tkEnum.BASE] = calcBase(
                     tokenAmounts[tkEnum.QUOTE],
-                    pool.value.price,
+                    pool.value.base_token.decimals,
+                    pool.value.quote_token.decimals,
+                    pool.value.base_reserves,
+                    pool.value.quote_reserves
                 )
             } else if ((state.lastChangedToken === tkEnum.BASE) & isCleanInput(tokenAmounts[tkEnum.BASE])) {
                 tokenAmounts[tkEnum.QUOTE] = calcQuote(
                     tokenAmounts[tkEnum.BASE],
-                    pool.value.price,
+                    pool.value.base_token.decimals,
+                    pool.value.quote_token.decimals,
+                    pool.value.base_reserves,
+                    pool.value.quote_reserves
                 )
             }
         }
-        console.log(tokenAmounts)
-        console.log("HEY HEY")
+        console.log("HERE'S THE STATE");
+        console.log(tokenAmounts);
         return tokenAmounts
     },
     set(newValue) {
@@ -331,6 +337,7 @@ const Amounts = computed({
     },
 })
 function getInputValue(tkIndex) {
+    return Amounts.value[tkIndex];
     if (!poolRatio.value) {
         return Amounts.value[tkIndex]
     }
@@ -343,25 +350,23 @@ function setTokenAmount(event, tokenIndex) {
     Amounts.value = Amounts.value.map((el, i) => (tokenIndex === i ? newVal : el))
 }
 
-function bigIntToStringWithDecimal(bigIntValue, decimalPosition) {
-  // Convert the BigInt to a string
-  let strValue = bigIntValue.toString();
-  
-  // Insert the decimal point at the desired position
-  const indexToInsertDecimal = strValue.length - decimalPosition;
-  return strValue.slice(0, indexToInsertDecimal) + "." + strValue.slice(indexToInsertDecimal, indexToInsertDecimal + 3);
-}
-
-function calcBase(_base, _price) {
+function calcBase(_quote, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance) {
     console.log("Hello from calcBase");
-    console.log(_base, _price, typeof(_base), typeof(_price));
-    var res = BigInt(_base)*BigInt(_price);
+    console.log(_quote, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance);
+    var parsed = BigInt(parseUnits(_quote, _quoteDecimals));
+    var res = parsed*BigInt(_quoteBalance)/BigInt(_baseBalance);
+    console.log("RESULT: "+res)
+    //return res;
     return formatEther(res.toString(), 18);
-    return "123";
 }
-function calcQuote(_base, _price) {
+function calcQuote(_base, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance) {
     console.log("Hello from calcQuote");
-    return "543";
+    console.log(_base, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance);
+    var parsed = BigInt(parseUnits(_base, _baseDecimals));
+    var res = parsed*BigInt(_baseBalance)/BigInt(_quoteBalance);
+    console.log("RESULT: "+res)
+    //return res;
+    return formatEther(res.toString(), 18);
 }
 function goo(aInputed, aDecimals, balanceA, balanceB) {
     console.log("Hello from calcB");

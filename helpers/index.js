@@ -151,15 +151,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             var _parsedSlippage= "1000000000000000";
             var _deadlineStamp= "43839787000";
 
-            console.log("tokenA.address:", _tokenA_address)
-            console.log("tokenB.address,:", _tokenB_address)
-            console.log("amountA:", _amountA)
-            console.log("amountB:", _amountB)
-            console.log("parsedSlippage:", _parsedSlippage)
-            console.log("recipient:", recipient)
-            console.log("deadlineStamp:", _deadlineStamp)
-
-            console.log("ORIGINAL");
+            console.log("VALUES");
             console.log("---------------------------------");
             console.log("tokenA.address:", tokenA.address)
             console.log("tokenB.address:", tokenB.address)
@@ -171,8 +163,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             await router.addLiquidity(
                 Web3.utils.toChecksumAddress(tokenA.address),
                 Web3.utils.toChecksumAddress(tokenB.address),
-                amountA,
-                amountB,
+                parseUnits(amountA, 18),
+                parseUnits(amountB, 18),
                 parsedSlippage,
                 Web3.utils.toChecksumAddress(recipient),
                 deadlineStamp
