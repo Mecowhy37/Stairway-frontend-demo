@@ -23,6 +23,7 @@
     "@web3-onboard/vue": "^2.5.4",
     "@web3-onboard/walletconnect": "^2.4.4",
     "ethers": "^6.0.8",
-    "pinia": "^2.0.32"
+    "pinia": "^2.0.32",
+    "web3": "^4.0.3"
   }
 }

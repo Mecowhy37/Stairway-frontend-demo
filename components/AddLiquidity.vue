@@ -217,7 +217,7 @@
 
 <script setup>
 import { inject } from "vue"
-import { BrowserProvider, Contract, parseUnits, formatUnits } from "ethers"
+import { BrowserProvider, Contract, parseUnits, formatEther, formatUnits } from "ethers"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -307,23 +307,22 @@ const Amounts = computed({
                 tokenAmounts[Number(!Boolean(state.lastChangedToken))] = ""
                 return tokenAmounts
             }
+            console.log("POOL")
+            console.log(pool);
             if (state.lastChangedToken === tkEnum.QUOTE && isCleanInput(tokenAmounts[tkEnum.QUOTE])) {
-                tokenAmounts[tkEnum.BASE] = calcB(
+                tokenAmounts[tkEnum.BASE] = calcBase(
                     tokenAmounts[tkEnum.QUOTE],
-                    Tokens.value[tkEnum.QUOTE].decimals,
-                    pool.value.quote_reserves,
-                    pool.value.base_reserves
+                    pool.value.price,
                 )
             } else if ((state.lastChangedToken === tkEnum.BASE) & isCleanInput(tokenAmounts[tkEnum.BASE])) {
-                tokenAmounts[tkEnum.QUOTE] = calcB(
+                tokenAmounts[tkEnum.QUOTE] = calcQuote(
                     tokenAmounts[tkEnum.BASE],
-                    Tokens.value[tkEnum.BASE].decimals,
-                    pool.value.base_reserves,
-                    pool.value.quote_reserves
+                    pool.value.price,
                 )
             }
         }
-
+        console.log(tokenAmounts)
+        console.log("HEY HEY")
         return tokenAmounts
     },
     set(newValue) {
@@ -343,13 +342,33 @@ function setTokenAmount(event, tokenIndex) {
     const newVal = event.target.value
     Amounts.value = Amounts.value.map((el, i) => (tokenIndex === i ? newVal : el))
 }
-function parseValue(input, decimals) {
-    return BigInt(parseUnits(input, decimals))
+
+function bigIntToStringWithDecimal(bigIntValue, decimalPosition) {
+  // Convert the BigInt to a string
+  let strValue = bigIntValue.toString();
+  
+  // Insert the decimal point at the desired position
+  const indexToInsertDecimal = strValue.length - decimalPosition;
+  return strValue.slice(0, indexToInsertDecimal) + "." + strValue.slice(indexToInsertDecimal, indexToInsertDecimal + 3);
 }
 
-function calcB(aInputed, aDecimals, balanceA, balanceB) {
+function calcBase(_base, _price) {
+    console.log("Hello from calcBase");
+    console.log(_base, _price, typeof(_base), typeof(_price));
+    var res = BigInt(_base)*BigInt(_price);
+    return formatEther(res.toString(), 18);
+    return "123";
+}
+function calcQuote(_base, _price) {
+    console.log("Hello from calcQuote");
+    return "543";
+}
+function goo(aInputed, aDecimals, balanceA, balanceB) {
+    console.log("Hello from calcB");
+    console.log(aInputed, aDecimals, balanceA, balanceB);
+    console.log("-------------------------");
     const aParsed = BigInt(parseUnits(aInputed, aDecimals))
-    return (aParsed * BigInt(balanceB) + BigInt(balanceA) - 1n) / BigInt(balanceA)
+    return (aParsed * BigInt(balanceA)) / BigInt(balanceB) * BigInt(aDecimals);
 }
 // const parsedLastInputed = computed(() => {
 //     if (

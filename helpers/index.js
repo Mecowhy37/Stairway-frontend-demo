@@ -1,5 +1,6 @@
 import { ref } from "vue"
 import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
+import Web3 from 'web3';
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
@@ -141,22 +142,39 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("Failed to get approvals:", error)
         }
         try {
+            console.log("ALERT! HARDCODING PHIL'S VALUES!i");
+            console.log("---------------------------------");
+            var _tokenA_address= "0x9A99605865985fE4E1776bAF0801d38A45237073";
+            var _tokenB_address= "0x2e0D96257F4D29b6CD16232e6F2986AD57B04fff";
+            var _amountA= "15000000000000000";
+            var _amountB= "4000000000000000";
+            var _parsedSlippage= "1000000000000000";
+            var _deadlineStamp= "43839787000";
+
+            console.log("tokenA.address:", _tokenA_address)
+            console.log("tokenB.address,:", _tokenB_address)
+            console.log("amountA:", _amountA)
+            console.log("amountB:", _amountB)
+            console.log("parsedSlippage:", _parsedSlippage)
+            console.log("recipient:", recipient)
+            console.log("deadlineStamp:", _deadlineStamp)
+
+            console.log("ORIGINAL");
+            console.log("---------------------------------");
             console.log("tokenA.address:", tokenA.address)
-            console.log("tokenB.address,:", tokenB.address)
+            console.log("tokenB.address:", tokenB.address)
             console.log("amountA:", amountA)
             console.log("amountB:", amountB)
             console.log("parsedSlippage:", parsedSlippage)
             console.log("recipient:", recipient)
-            console.log("deadline:", deadline)
-            console.log("deadline * 60:", deadline * 60)
             console.log("deadlineStamp:", deadlineStamp)
             await router.addLiquidity(
-                tokenA.address,
-                tokenB.address,
-                parsedAmountA,
-                parsedAmountB,
+                Web3.utils.toChecksumAddress(tokenA.address),
+                Web3.utils.toChecksumAddress(tokenB.address),
+                amountA,
+                amountB,
                 parsedSlippage,
-                recipient,
+                Web3.utils.toChecksumAddress(recipient),
                 deadlineStamp
             )
         } catch (error) {
