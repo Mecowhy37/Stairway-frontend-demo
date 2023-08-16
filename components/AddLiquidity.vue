@@ -189,7 +189,7 @@
                     bulky
                     @click="stepStore.connectWallet()"
                 >
-                    Connect wallet2
+                    Connect wallet
                 </Btn>
                 <Btn
                     v-else
