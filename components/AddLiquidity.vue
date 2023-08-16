@@ -1,6 +1,6 @@
 <template>
     <Widget>
-        <template #widget-title>Add liquidity2</template>
+        <template #widget-title>Add liquidity</template>
         <template #right-icon>
             <Dropdown
                 :settings-ref="settingsAdd"
@@ -189,7 +189,7 @@
                     bulky
                     @click="stepStore.connectWallet()"
                 >
-                    Connect wallet
+                    Connect wallet2
                 </Btn>
                 <Btn
                     v-else
