@@ -202,13 +202,22 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 await approveSpending(lpToken.address, providerArg, lpAmountParsed)
             }
 
+            console.log("REDEEMING");
+            console.log(tokenList);
+            console.log(amount0);
+            console.log(amount1);
+            console.log(lpAmountParsed);
+            console.log(connectedAccount.value);
+            console.log(deadlineStamp);
             await router.redeemLiquidity(
-                ...tokenList,
+                Web3.utils.toChecksumAddress(tokenList[0]),
+                Web3.utils.toChecksumAddress(tokenList[1]),
                 amount0,
                 amount1,
                 lpAmountParsed,
-                connectedAccount.value,
-                deadlineStamp
+                Web3.utils.toChecksumAddress(connectedAccount.value),
+                deadlineStamp,
+                "100000000000000000",
             )
         } catch (err) {
             console.log("failed to redeem liquidity: ", err)
