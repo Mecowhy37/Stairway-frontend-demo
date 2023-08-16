@@ -1,6 +1,6 @@
 import { ref } from "vue"
 import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
-import Web3 from 'web3';
+import Web3 from "web3"
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
@@ -142,9 +142,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("Failed to get approvals:", error)
         }
         try {
-
-            console.log("VALUES");
-            console.log("---------------------------------");
+            console.log("VALUES")
+            console.log("---------------------------------")
             console.log("tokenA.address:", tokenA.address)
             console.log("tokenB.address:", tokenB.address)
             console.log("amountA:", amountA)
@@ -393,8 +392,13 @@ export function useInputs(Tokens) {
         value = value.replace(/,/g, ".")
 
         let dotCount = value.split(".").length - 1
+        // if (dotCount === 2) {
         if (dotCount === 2 || value > 9007199254740991 || (value > 0 && value < 1e-18)) {
             value = oldValue
+        }
+        const decimalParts = value.split(".")
+        if (decimalParts.length === 2 && decimalParts[1].length > 18) {
+            value = oldValue // revert to old value if it has more than 18 decimal points
         }
         return value
     }

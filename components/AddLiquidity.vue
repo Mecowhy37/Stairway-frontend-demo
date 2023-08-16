@@ -1,223 +1,256 @@
 <template>
-    <Widget>
-        <template #widget-title>Add liquidity</template>
-        <template #right-icon>
-            <Dropdown
-                :settings-ref="settingsAdd"
-                no-padding
-                solid
-            >
-                <template #dropdown-activator="{ on }">
-                    <Btn
-                        circle
-                        transparent
-                        icon-contrast
-                        class="grey-text"
-                    >
-                        <template #icon>
-                            <Icon
-                                name="cog"
-                                :size="20"
-                            />
-                        </template>
-                    </Btn>
-                </template>
-                <template #dropdown="{ toggleDropdown }">
-                    <Settings
-                        ref="settingsAdd"
-                        :default-slippage="0.5"
-                        :default-deadline="30"
-                        :toggle-dropdown="toggleDropdown"
-                    ></Settings>
-                </template>
-            </Dropdown>
-        </template>
-        <template #widget-content>
-            <div
-                class="tips"
-                v-if="connectedChainId !== 137"
-            >
-                <p>
-                    <span class="text-highlight">Tip: </span>
-                    Get tokens for test
-                    <span
-                        @click="openNewTokenModal"
-                        class="activator-link text-highlight"
-                        >here</span
-                    >
-                </p>
-            </div>
-            <div class="windows">
+    <div class="row">
+        <Widget>
+            <template #widget-title>Add liquidity</template>
+            <template #right-icon>
+                <Dropdown
+                    :settings-ref="settingsAdd"
+                    no-padding
+                    solid
+                >
+                    <template #dropdown-activator="{ on }">
+                        <Btn
+                            circle
+                            transparent
+                            icon-contrast
+                            class="grey-text"
+                        >
+                            <template #icon>
+                                <Icon
+                                    name="cog"
+                                    :size="20"
+                                />
+                            </template>
+                        </Btn>
+                    </template>
+                    <template #dropdown="{ toggleDropdown }">
+                        <Settings
+                            ref="settingsAdd"
+                            :default-slippage="0.5"
+                            :default-deadline="30"
+                            :toggle-dropdown="toggleDropdown"
+                        ></Settings>
+                    </template>
+                </Dropdown>
+            </template>
+            <template #widget-content>
                 <div
-                    class="contents"
-                    v-for="(i, x) in new Array(2)"
+                    class="tips"
+                    v-if="connectedChainId !== 137"
                 >
-                    <div class="window layer-wdg-box">
-                        <div class="window__upper">
-                            <Btn
-                                @click="openTokenSelectModal(x)"
-                                opaque
-                                selectable
-                                custom
-                            >
-                                {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
-                                <template #icon>
-                                    <Icon
-                                        name="chevron"
-                                        :size="16"
-                                    />
-                                </template>
-                            </Btn>
-                            <input
-                                type="text"
-                                placeholder="0"
-                                spellcheck="false"
-                                autocomplete="off"
-                                autocorrect="off"
-                                :value="getInputValue(x)"
-                                @input="setTokenAmount($event, x)"
-                            />
-                            <!-- :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])" -->
-                        </div>
-                        <div class="window__lower row flex-end align-center">
-                            <p class="caption">{{ Number(ABBalance[x]) }}</p>
-                            <Icon
-                                name="wallet"
-                                :size="13"
-                            />
-                        </div>
-                    </div>
+                    <p>
+                        <span class="text-highlight">Tip: </span>
+                        Get tokens for test
+                        <span
+                            @click="openNewTokenModal"
+                            class="activator-link text-highlight"
+                            >here</span
+                        >
+                    </p>
+                </div>
+                <div class="windows">
                     <div
-                        v-if="x === 0"
-                        class="mid-symbol plus grey-text"
+                        class="contents"
+                        v-for="(i, x) in new Array(2)"
                     >
-                        <Icon
-                            name="plus"
-                            :size="16"
-                        />
+                        <div class="window layer-wdg-box">
+                            <div class="window__upper">
+                                <Btn
+                                    @click="openTokenSelectModal(x)"
+                                    opaque
+                                    selectable
+                                    custom
+                                >
+                                    {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
+                                    <template #icon>
+                                        <Icon
+                                            name="chevron"
+                                            :size="16"
+                                        />
+                                    </template>
+                                </Btn>
+                                <input
+                                    type="text"
+                                    placeholder="0"
+                                    spellcheck="false"
+                                    autocomplete="off"
+                                    autocorrect="off"
+                                    @input="amountInputHandler($event, x)"
+                                    :value="userAmounts[amountsLabelOrder[x]]"
+                                />
+                                <!-- v-model="userAmounts[amountsLabelOrder[x]]" -->
+                                <!-- :value="getInputValue(x)"
+                                    @input="setTokenAmount($event, x)" -->
+                                <!-- :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])" -->
+                            </div>
+                            <div class="window__lower row flex-end align-center">
+                                <p class="caption">{{ Number(ABBalance[x]) }}</p>
+                                <Icon
+                                    name="wallet"
+                                    :size="13"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            v-if="x === 0"
+                            class="mid-symbol plus grey-text"
+                        >
+                            <Icon
+                                name="plus"
+                                :size="16"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div
-                v-if="false"
-                class="tables"
-            >
-                <div>
-                    <p>Pool share</p>
-                    <div class="columns row">
-                        <div>
-                            <p>
-                                {{
-                                    basicRound(
-                                        formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
-                                    )
-                                }}
-                            </p>
-                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
-                        </div>
-                        <div>
-                            <p>
-                                {{
-                                    basicRound(
-                                        formatUnits(ownedPosition.quote_amount, ownedPosition.pool.quote_token.decimals)
-                                    )
-                                }}
-                            </p>
-                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}</p>
-                        </div>
+                <div
+                    v-if="false"
+                    class="tables"
+                >
+                    <div>
+                        <p>Pool share</p>
+                        <div class="columns row">
+                            <div>
+                                <p>
+                                    {{
+                                        basicRound(
+                                            formatUnits(
+                                                ownedPosition.base_amount,
+                                                ownedPosition.pool.base_token.decimals
+                                            )
+                                        )
+                                    }}
+                                </p>
+                                <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
+                            </div>
+                            <div>
+                                <p>
+                                    {{
+                                        basicRound(
+                                            formatUnits(
+                                                ownedPosition.quote_amount,
+                                                ownedPosition.pool.quote_token.decimals
+                                            )
+                                        )
+                                    }}
+                                </p>
+                                <p class="caption grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}</p>
+                            </div>
 
-                        <!-- <div>
-                            <p>78%</p>
-                            <p class="caption grey-text">Pool share</p>
-                        </div> -->
+                            <!-- <div>
+                                <p>78%</p>
+                                <p class="caption grey-text">Pool share</p>
+                            </div> -->
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div
-                v-if="ownedPosition"
-                class="pooled"
-            >
-                <div class="pooled__item row align-center">
-                    <img
-                        class="token-icon token-icon--sm"
-                        :src="pool.base_token.logo_uri"
-                    />
-                    <p class="pooled__item__symbol grey-text">Pooled {{ pool.base_token.symbol }}:</p>
-                    <p class="pooled__item__amount">
-                        {{
-                            ownedPosition
-                                ? basicRound(
-                                      (Number(
-                                          formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
-                                      ) *
-                                          state.redeemPercent) /
-                                          100
-                                  )
-                                : 0
-                        }}
-                    </p>
+                <div
+                    v-if="ownedPosition"
+                    class="pooled"
+                >
+                    <div class="pooled__item row align-center">
+                        <img
+                            class="token-icon token-icon--sm"
+                            :src="pool.base_token.logo_uri"
+                        />
+                        <p class="pooled__item__symbol grey-text">Pooled {{ pool.base_token.symbol }}:</p>
+                        <p class="pooled__item__amount">
+                            {{
+                                ownedPosition
+                                    ? basicRound(
+                                          (Number(
+                                              formatUnits(
+                                                  ownedPosition.base_amount,
+                                                  ownedPosition.pool.base_token.decimals
+                                              )
+                                          ) *
+                                              state.redeemPercent) /
+                                              100
+                                      )
+                                    : 0
+                            }}
+                        </p>
+                    </div>
+                    <div class="pooled__item row align-center">
+                        <img
+                            class="token-icon token-icon--sm"
+                            :src="pool.quote_token.logo_uri"
+                        />
+                        <p class="pooled__item__symbol grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
+                        <p class="pooled__item__amount">
+                            {{
+                                ownedPosition
+                                    ? basicRound(
+                                          (Number(
+                                              formatUnits(
+                                                  ownedPosition.quote_amount,
+                                                  ownedPosition.pool.quote_token.decimals
+                                              )
+                                          ) *
+                                              state.redeemPercent) /
+                                              100
+                                      )
+                                    : 0
+                            }}
+                        </p>
+                    </div>
                 </div>
-                <div class="pooled__item row align-center">
-                    <img
-                        class="token-icon token-icon--sm"
-                        :src="pool.quote_token.logo_uri"
-                    />
-                    <p class="pooled__item__symbol grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
-                    <p class="pooled__item__amount">
-                        {{
-                            ownedPosition
-                                ? basicRound(
-                                      (Number(
-                                          formatUnits(
-                                              ownedPosition.quote_amount,
-                                              ownedPosition.pool.quote_token.decimals
-                                          )
-                                      ) *
-                                          state.redeemPercent) /
-                                          100
-                                  )
-                                : 0
-                        }}
-                    </p>
+                <div class="buttons">
+                    <Btn
+                        v-if="!stepStore.connectedWallet"
+                        is="h4"
+                        wide
+                        bulky
+                        @click="stepStore.connectWallet()"
+                    >
+                        Connect wallet
+                    </Btn>
+                    <Btn
+                        v-else
+                        @click="callAddLiquidity()"
+                        is="h4"
+                        wide
+                        bulky
+                        :disabled="!bothAmountsIn || !bothTokensThere"
+                    >
+                        Add liquidity
+                    </Btn>
+                    <Btn
+                        @click="getBothBalances()"
+                        is="h4"
+                        wide
+                        bulky
+                        :disabled="!connectedAccount"
+                    >
+                        refresh balances
+                    </Btn>
                 </div>
-            </div>
-            <div class="buttons">
-                <Btn
-                    v-if="!stepStore.connectedWallet"
-                    is="h4"
-                    wide
-                    bulky
-                    @click="stepStore.connectWallet()"
-                >
-                    Connect wallet
-                </Btn>
-                <Btn
-                    v-else
-                    @click="callAddLiquidity()"
-                    is="h4"
-                    wide
-                    bulky
-                    :disabled="!bothAmountsIn || !bothTokensThere"
-                >
-                    Add liquidity
-                </Btn>
-                <Btn
-                    @click="getBothBalances()"
-                    is="h4"
-                    wide
-                    bulky
-                    :disabled="!connectedAccount"
-                >
-                    refresh balances
-                </Btn>
-            </div>
-        </template>
-    </Widget>
+            </template>
+        </Widget>
+        <Widget no-return>
+            <template #widget-title>temporary display</template>
+            <template #widget-content>
+                <div class="contents temp-display">
+                    <div>
+                        <h4>token A</h4>
+                        <p><span class="grey-text">symbol: </span> {{ tokenA?.symbol }}</p>
+                        <p><span class="grey-text">user amount: </span> {{ userAmounts.quote }}</p>
+                        <p><span class="grey-text">full amount: </span> {{ fullAmounts.quote }}</p>
+                    </div>
+                    <div>
+                        <h4>token B</h4>
+                        <p><span class="grey-text">symbol: </span> {{ tokenB?.symbol }}</p>
+                        <p><span class="grey-text">user amount: </span> {{ userAmounts.base }}</p>
+                        <p><span class="grey-text">full amount: </span> {{ fullAmounts.base }}</p>
+                    </div>
+                </div>
+            </template>
+        </Widget>
+    </div>
 </template>
 
 <script setup>
 import { inject } from "vue"
-import { BrowserProvider, Contract, parseUnits, formatEther, formatUnits } from "ethers"
+import { BrowserProvider, Contract, parseUnits, formatEther, formatUnits, parseEther } from "ethers"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -256,8 +289,80 @@ const { pool, poolRatio, addLiquidity } = usePools(routerAddress, Tokens, connec
 // POOL -----------------
 
 // INPUTS -----------------
-const { cleanInput, isCleanInput, prettyPrint } = useInputs(Tokens)
+const { cleanInput, isCleanInput, prettyPrint, roundCeiling } = useInputs(Tokens)
 // INPUTS -----------------
+
+const amountsLabelOrder = ref(["quote", "base"])
+const userAmounts = reactive({
+    quote: "",
+    base: "",
+})
+const fullAmounts = reactive({
+    quote: 0n,
+    base: 0n,
+})
+
+function amountInputHandler(event, inputIndex) {
+    const currentValue = userAmounts[amountsLabelOrder.value[inputIndex]]
+    const newInput = event.target.value
+    const cleanedInput = cleanInput(newInput, currentValue)
+
+    setUserAmount(cleanedInput, inputIndex)
+    event.target.value = cleanedInput
+
+    let fullAmount = null
+    if (Tokens.value[inputIndex]) {
+        fullAmount = setFromUserToFullAmount(cleanedInput, Tokens.value[inputIndex].decimals, inputIndex)
+    }
+
+    //check if theres a pool - TO DO
+    if (bothTokensThere.value && fullAmount !== null) {
+        const calculatedInputIndex = amountsLabelOrder.value.findIndex((el, index) => index !== inputIndex)
+        if (cleanedInput === "" || Number(cleanedInput) === 0) {
+            setUserAmount("", calculatedInputIndex)
+            return
+        }
+
+        // calculate other input and get reservees form the pool
+        const calculatedInput = calculateFollowingInput(fullAmount, inputIndex, BigInt(561), BigInt(120))
+        setFullAmount(calculatedInput, calculatedInputIndex)
+        setFromFullToUserAmount(calculatedInput, Tokens.value[calculatedInputIndex].decimals, calculatedInputIndex)
+    }
+}
+//Two following functions I will use for handling an event when token is picked
+function setFromUserToFullAmount(amount, decimals, inputIndex) {
+    if (amount === "" || amount === ".") {
+        amount = "0"
+    }
+    const fullAmount = parseInputAmount(amount, decimals)
+    setFullAmount(fullAmount, inputIndex)
+    return fullAmount
+}
+function setFromFullToUserAmount(amount, decimals, inputIndex) {
+    const stringAmount = roundCeiling(formatInputAmount(amount, decimals))
+    setUserAmount(stringAmount, inputIndex)
+    return stringAmount
+}
+
+function setUserAmount(amount, inputIndex) {
+    userAmounts[amountsLabelOrder.value[inputIndex]] = amount
+}
+function setFullAmount(amount, inputIndex) {
+    fullAmounts[amountsLabelOrder.value[inputIndex]] = amount
+}
+function parseInputAmount(amount, decimals) {
+    return BigInt(parseUnits(amount, decimals))
+}
+function formatInputAmount(amount, decimals) {
+    return formatUnits(amount, decimals)
+}
+function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance) {
+    if (inputIndex === tkEnum.QUOTE) {
+        return (inputAmount * baseBalance) / quoteBalance
+    } else if (inputIndex === tkEnum.BASE) {
+        return (inputAmount * quoteBalance) / baseBalance
+    }
+}
 
 // WIDGET ---------------
 const bothAmountsIn = computed(() => {
@@ -302,33 +407,31 @@ function Round(amt) {
 const Amounts = computed({
     get() {
         const tokenAmounts = [state.amountQuote, state.amountBase]
-        if (pool.value) {
-            if (tokenAmounts[state.lastChangedToken] === "") {
-                tokenAmounts[Number(!Boolean(state.lastChangedToken))] = ""
-                return tokenAmounts
-            }
-            console.log("POOL")
-            console.log(pool);
-            if (state.lastChangedToken === tkEnum.QUOTE && isCleanInput(tokenAmounts[tkEnum.QUOTE])) {
-                tokenAmounts[tkEnum.BASE] = calcBase(
-                    tokenAmounts[tkEnum.QUOTE],
-                    pool.value.base_token.decimals,
-                    pool.value.quote_token.decimals,
-                    pool.value.base_reserves,
-                    pool.value.quote_reserves
-                )
-            } else if ((state.lastChangedToken === tkEnum.BASE) & isCleanInput(tokenAmounts[tkEnum.BASE])) {
-                tokenAmounts[tkEnum.QUOTE] = calcQuote(
-                    tokenAmounts[tkEnum.BASE],
-                    pool.value.base_token.decimals,
-                    pool.value.quote_token.decimals,
-                    pool.value.base_reserves,
-                    pool.value.quote_reserves
-                )
-            }
-        }
-        console.log("HERE'S THE STATE");
-        console.log(tokenAmounts);
+        // if (pool.value) {
+        //     if (tokenAmounts[state.lastChangedToken] === "") {
+        //         tokenAmounts[Number(!Boolean(state.lastChangedToken))] = ""
+        //         return tokenAmounts
+        //     }
+        //     console.log("POOL")
+        //     console.log(pool)
+        //     if (state.lastChangedToken === tkEnum.QUOTE && isCleanInput(tokenAmounts[tkEnum.QUOTE])) {
+        //         tokenAmounts[tkEnum.BASE] = calcBase(
+        //             tokenAmounts[tkEnum.QUOTE],
+        //             pool.value.base_token.decimals,
+        //             pool.value.quote_token.decimals,
+        //             pool.value.base_reserves,
+        //             pool.value.quote_reserves
+        //         )
+        //     } else if ((state.lastChangedToken === tkEnum.BASE) & isCleanInput(tokenAmounts[tkEnum.BASE])) {
+        //         tokenAmounts[tkEnum.QUOTE] = calcQuote(
+        //             tokenAmounts[tkEnum.BASE],
+        //             pool.value.base_token.decimals,
+        //             pool.value.quote_token.decimals,
+        //             pool.value.base_reserves,
+        //             pool.value.quote_reserves
+        //         )
+        //     }
+        // }
         return tokenAmounts
     },
     set(newValue) {
@@ -337,7 +440,7 @@ const Amounts = computed({
     },
 })
 function getInputValue(tkIndex) {
-    return Amounts.value[tkIndex];
+    return Amounts.value[tkIndex]
     if (!poolRatio.value) {
         return Amounts.value[tkIndex]
     }
@@ -350,30 +453,21 @@ function setTokenAmount(event, tokenIndex) {
     Amounts.value = Amounts.value.map((el, i) => (tokenIndex === i ? newVal : el))
 }
 
-function calcBase(_quote, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance) {
-    console.log("Hello from calcBase");
-    console.log(_quote, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance);
-    var parsed = BigInt(parseUnits(_quote, _quoteDecimals));
-    var res = parsed*BigInt(_quoteBalance)/BigInt(_baseBalance);
-    console.log("RESULT: "+res)
-    //return res;
-    return formatEther(res.toString(), 18);
-}
 function calcQuote(_base, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance) {
-    console.log("Hello from calcQuote");
-    console.log(_base, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance);
-    var parsed = BigInt(parseUnits(_base, _baseDecimals));
-    var res = parsed*BigInt(_baseBalance)/BigInt(_quoteBalance);
-    console.log("RESULT: "+res)
-    //return res;
-    return formatEther(res.toString(), 18);
+    console.log("Hello from calcQuote")
+    console.log(_base, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance)
+    var parsed = BigInt(parseUnits(_base, _baseDecimals))
+    var res = (parsed * BigInt(_baseBalance)) / BigInt(_quoteBalance)
+    console.log("RESULT: " + res)
+    return res
+    // return formatEther(res.toString(), 18)
 }
 function goo(aInputed, aDecimals, balanceA, balanceB) {
-    console.log("Hello from calcB");
-    console.log(aInputed, aDecimals, balanceA, balanceB);
-    console.log("-------------------------");
+    console.log("Hello from calcB")
+    console.log(aInputed, aDecimals, balanceA, balanceB)
+    console.log("-------------------------")
     const aParsed = BigInt(parseUnits(aInputed, aDecimals))
-    return (aParsed * BigInt(balanceA)) / BigInt(balanceB) * BigInt(aDecimals);
+    return ((aParsed * BigInt(balanceA)) / BigInt(balanceB)) * BigInt(aDecimals)
 }
 // const parsedLastInputed = computed(() => {
 //     if (
@@ -386,21 +480,21 @@ function goo(aInputed, aDecimals, balanceA, balanceB) {
 //     return parseUnits(Amounts.value[state.lastChangedToken], Tokens.value[state.lastChangedToken].decimals).toString()
 // })
 // CLEANS IMPUTED AMOUNT
-watch(
-    Amounts,
-    (newVal, oldVal) => {
-        const [newA, newB] = [...newVal]
-        const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
-        if (state.lastChangedToken === 0) {
-            state.amountQuote = cleanInput(newA, oldA)
-        } else if (state.lastChangedToken === 1) {
-            state.amountBase = cleanInput(newB, oldB)
-        }
-    },
-    {
-        immediate: true,
-    }
-)
+// watch(
+//     Amounts,
+//     (newVal, oldVal) => {
+//         const [newA, newB] = [...newVal]
+//         const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
+//         if (state.lastChangedToken === 0) {
+//             state.amountQuote = cleanInput(newA, oldA)
+//         } else if (state.lastChangedToken === 1) {
+//             state.amountBase = cleanInput(newB, oldB)
+//         }
+//     },
+//     {
+//         immediate: true,
+//     }
+// )
 // AMOUNTS --------------
 
 // BALANCES -------------
