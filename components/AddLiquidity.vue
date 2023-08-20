@@ -423,9 +423,9 @@ function formatInputAmount(amount, decimals) {
 }
 function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance) {
     if (inputIndex === tkEnum.QUOTE) {
-        return (inputAmount * baseBalance) / quoteBalance
-    } else if (inputIndex === tkEnum.BASE) {
         return (inputAmount * quoteBalance) / baseBalance
+    } else if (inputIndex === tkEnum.BASE) {
+        return (inputAmount * baseBalance) / quoteBalance
     }
 }
 // AMOUNTS --------------

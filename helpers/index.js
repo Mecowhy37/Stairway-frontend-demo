@@ -113,9 +113,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
 
-        const parsedSlippage = parseUnits(slippage.toString(), 18).toString()
+        const parsedSlippage = (parseUnits(slippage.toString(), 18) / BigInt(100)).toString()
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
-        const deadlineStamp = blockTimestamp + deadline * 360
+        const deadlineStamp = blockTimestamp + deadline * 60
 
         try {
             const allowanceQuote = await checkAllowance(
