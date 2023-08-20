@@ -57,25 +57,27 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         error: poolError,
         status: poolStatus,
         pending: poolPending,
+        refresh: refreshPool,
     } = useAsyncData(
         "pool",
         () => {
-            if (Tokens?.value) {
-                const bothThere = Tokens.value.every((el) => el !== null)
+            const bothThere = Tokens.value.every((el) => el !== null)
 
-                if (bothThere && connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-                    return $fetch(
-                        getUrl(
-                            `/chain/${connectedChainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`
-                        )
+            if (bothThere && connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+                console.log("usePools - fetchingPool()")
+                return $fetch(
+                    getUrl(
+                        `/chain/${connectedChainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`
                     )
-                }
+                )
             }
         },
         {
-            watch: [Tokens, connectedChainId],
+            watch: [connectedChainId],
         }
     )
+
+    // watch: [Tokens, connectedChainId],
 
     const poolRatio = computed(() => {
         if (!pool.value) {
@@ -98,15 +100,14 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
     })
 
     async function addLiquidity(
-        tokenA,
-        tokenB,
-        amountA,
-        amountB,
+        tokenQuote,
+        tokenBase,
+        amountQuote,
+        amountBase,
         slippage,
         deadline,
         recipient,
-        providerArg,
-        poolManagerAddress
+        providerArg
     ) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
@@ -114,26 +115,36 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
 
         const parsedSlippage = parseUnits(slippage.toString(), 18).toString()
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
-        const deadlineStamp = blockTimestamp + deadline * 60
+        const deadlineStamp = blockTimestamp + deadline * 360
 
         try {
-            const allowanceA = await checkAllowance(tokenA.address, signer.address, routerAddress.value, providerArg)
-            const needApprovalA = allowanceA < amountA
+            const allowanceQuote = await checkAllowance(
+                tokenQuote.address,
+                signer.address,
+                routerAddress.value,
+                providerArg
+            )
+            const quoteNeedsApproval = allowanceQuote < amountQuote
 
-            const allowanceB = await checkAllowance(tokenB.address, signer.address, routerAddress.value, providerArg)
-            const needApprovalB = allowanceB < amountB
+            const allowanceBase = await checkAllowance(
+                tokenBase.address,
+                signer.address,
+                routerAddress.value,
+                providerArg
+            )
+            const baseNeedsApproval = allowanceBase < amountBase
 
-            if (needApprovalA || needApprovalB) {
+            if (quoteNeedsApproval || baseNeedsApproval) {
                 const approvalPromises = []
 
-                if (needApprovalA) {
-                    approvalPromises.unshift(approveSpending(tokenA.address, providerArg, 0))
-                    // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountA))
+                if (quoteNeedsApproval) {
+                    approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountQuote))
                 }
 
-                if (needApprovalB) {
-                    approvalPromises.unshift(approveSpending(tokenB.address, providerArg, 0))
-                    // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountB))
+                if (baseNeedsApproval) {
+                    approvalPromises.unshift(approveSpending(tokenBase.address, providerArg, 0))
+                    // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountBase))
                 }
 
                 await Promise.all(approvalPromises)
@@ -144,18 +155,18 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         try {
             console.log("VALUES")
             console.log("---------------------------------")
-            console.log("tokenA.address:", tokenA.address)
-            console.log("tokenB.address:", tokenB.address)
-            console.log("amountA:", amountA)
-            console.log("amountB:", amountB)
+            console.log("tokenQuote.address:", Web3.utils.toChecksumAddress(tokenQuote.address))
+            console.log("tokenBase.address:", Web3.utils.toChecksumAddress(tokenBase.address))
+            console.log("amountQuote:", amountQuote.toString())
+            console.log("amountBase:", amountBase.toString())
             console.log("parsedSlippage:", parsedSlippage)
             console.log("recipient:", recipient)
             console.log("deadlineStamp:", deadlineStamp)
             await router.addLiquidity(
-                Web3.utils.toChecksumAddress(tokenA.address),
-                Web3.utils.toChecksumAddress(tokenB.address),
-                parseUnits(amountA, 18),
-                parseUnits(amountB, 18),
+                Web3.utils.toChecksumAddress(tokenQuote.address),
+                Web3.utils.toChecksumAddress(tokenBase.address),
+                amountQuote.toString(),
+                amountBase.toString(),
                 parsedSlippage,
                 Web3.utils.toChecksumAddress(recipient),
                 deadlineStamp
@@ -201,13 +212,13 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 await approveSpending(lpToken.address, providerArg, lpAmountParsed)
             }
 
-            console.log("REDEEMING");
-            console.log(tokenList);
-            console.log(amount0);
-            console.log(amount1);
-            console.log(lpAmountParsed);
-            console.log(connectedAccount.value);
-            console.log(deadlineStamp);
+            console.log("REDEEMING")
+            console.log(tokenList)
+            console.log(amount0)
+            console.log(amount1)
+            console.log(lpAmountParsed)
+            console.log(connectedAccount.value)
+            console.log(deadlineStamp)
             await router.redeemLiquidity(
                 Web3.utils.toChecksumAddress(tokenList[0]),
                 Web3.utils.toChecksumAddress(tokenList[1]),
@@ -216,7 +227,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 lpAmountParsed,
                 Web3.utils.toChecksumAddress(connectedAccount.value),
                 deadlineStamp,
-                "100000000000000000",
+                "100000000000000000"
             )
         } catch (err) {
             console.log("failed to redeem liquidity: ", err)
@@ -310,6 +321,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         poolStatus,
         poolPending,
         poolRatio,
+        refreshPool,
         price,
         depth,
         addLiquidity,
@@ -393,13 +405,15 @@ export function useInputs(Tokens) {
 
         let dotCount = value.split(".").length - 1
         // if (dotCount === 2) {
-        if (dotCount === 2 || value > 9007199254740991 || (value > 0 && value < 1e-18)) {
+
+        //bounds for ethers library not to over/under-flow, 2**53 its max uit53 value that JS accepts
+        if (dotCount === 2 || value >= 2 ** 53 || (value > 0 && value < 1e-18)) {
             value = oldValue
         }
-        const decimalParts = value.split(".")
-        if (decimalParts.length === 2 && decimalParts[1].length > 18) {
-            value = oldValue // revert to old value if it has more than 18 decimal points
-        }
+        // const decimalParts = value.split(".")
+        // if (decimalParts.length === 2 && decimalParts[1].length > 18) {
+        //     value = oldValue // revert to old value if it has more than 18 decimal points
+        // }
         return value
     }
     function isCleanInput(value) {

@@ -81,7 +81,7 @@
                                 <!-- v-model="userAmounts[amountsLabelOrder[x]]" -->
                                 <!-- :value="getInputValue(x)"
                                     @input="setTokenAmount($event, x)" -->
-                                <!-- :value="state.lastChangedToken === x ? Amounts[x] : Round(Amounts[x])" -->
+                                <!-- :value="state.lastChangedAmount === x ? Amounts[x] : Round(Amounts[x])" -->
                             </div>
                             <div class="window__lower row flex-end align-center">
                                 <p class="caption">{{ Number(ABBalance[x]) }}</p>
@@ -276,7 +276,7 @@ const state = reactive({
     amountBase: "",
     balanceA: "",
     balanceB: "",
-    lastChangedToken: 0,
+    lastChangedAmount: 0,
     redeemPercent: 100,
 })
 
@@ -285,89 +285,19 @@ const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = 
 // TOKENS ---------------
 
 // POOL -----------------
-const { pool, poolRatio, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId)
+const { pool, poolRatio, refreshPool, addLiquidity } = usePools(
+    routerAddress,
+    Tokens,
+    connectedAccount,
+    connectedChainId
+)
 // POOL -----------------
 
 // INPUTS -----------------
 const { cleanInput, isCleanInput, prettyPrint, roundCeiling } = useInputs(Tokens)
 // INPUTS -----------------
 
-const amountsLabelOrder = ref(["quote", "base"])
-const userAmounts = reactive({
-    quote: "",
-    base: "",
-})
-const fullAmounts = reactive({
-    quote: 0n,
-    base: 0n,
-})
-
-function amountInputHandler(event, inputIndex) {
-    const currentValue = userAmounts[amountsLabelOrder.value[inputIndex]]
-    const newInput = event.target.value
-    const cleanedInput = cleanInput(newInput, currentValue)
-
-    setUserAmount(cleanedInput, inputIndex)
-    event.target.value = cleanedInput
-
-    let fullAmount = null
-    if (Tokens.value[inputIndex]) {
-        fullAmount = setFromUserToFullAmount(cleanedInput, Tokens.value[inputIndex].decimals, inputIndex)
-    }
-
-    //check if theres a pool - TO DO
-    if (bothTokensThere.value && fullAmount !== null) {
-        const calculatedInputIndex = amountsLabelOrder.value.findIndex((el, index) => index !== inputIndex)
-        if (cleanedInput === "" || Number(cleanedInput) === 0) {
-            setUserAmount("", calculatedInputIndex)
-            return
-        }
-
-        // calculate other input and get reservees form the pool
-        const calculatedInput = calculateFollowingInput(fullAmount, inputIndex, BigInt(561), BigInt(120))
-        setFullAmount(calculatedInput, calculatedInputIndex)
-        setFromFullToUserAmount(calculatedInput, Tokens.value[calculatedInputIndex].decimals, calculatedInputIndex)
-    }
-}
-//Two following functions I will use for handling an event when token is picked
-function setFromUserToFullAmount(amount, decimals, inputIndex) {
-    if (amount === "" || amount === ".") {
-        amount = "0"
-    }
-    const fullAmount = parseInputAmount(amount, decimals)
-    setFullAmount(fullAmount, inputIndex)
-    return fullAmount
-}
-function setFromFullToUserAmount(amount, decimals, inputIndex) {
-    const stringAmount = roundCeiling(formatInputAmount(amount, decimals))
-    setUserAmount(stringAmount, inputIndex)
-    return stringAmount
-}
-
-function setUserAmount(amount, inputIndex) {
-    userAmounts[amountsLabelOrder.value[inputIndex]] = amount
-}
-function setFullAmount(amount, inputIndex) {
-    fullAmounts[amountsLabelOrder.value[inputIndex]] = amount
-}
-function parseInputAmount(amount, decimals) {
-    return BigInt(parseUnits(amount, decimals))
-}
-function formatInputAmount(amount, decimals) {
-    return formatUnits(amount, decimals)
-}
-function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance) {
-    if (inputIndex === tkEnum.QUOTE) {
-        return (inputAmount * baseBalance) / quoteBalance
-    } else if (inputIndex === tkEnum.BASE) {
-        return (inputAmount * quoteBalance) / baseBalance
-    }
-}
-
 // WIDGET ---------------
-const bothAmountsIn = computed(() => {
-    return Amounts.value.every((el) => el !== "")
-})
 const ownedPosition = computed(() => {
     if (!pool.value || !positions.value) {
         return null
@@ -381,7 +311,8 @@ const ownedPosition = computed(() => {
 function callAddLiquidity() {
     addLiquidity(
         ...Tokens.value,
-        ...Amounts.value,
+        fullAmounts.quote,
+        fullAmounts.base,
         settingsAdd.value.slippage,
         settingsAdd.value.deadline,
         stepStore.connectedAccount,
@@ -395,8 +326,8 @@ function callAddLiquidity() {
 // WIDGET ---------------
 
 // AMOUNTS --------------
-// Round function trimms down unncessary digits and adds < mark when unsignificant
 function Round(amt) {
+    // Round function trimms down unncessary digits and adds < mark when unsignificant
     let amount = Number(amt)
     if (amount === 0) {
         return ""
@@ -404,97 +335,99 @@ function Round(amt) {
     amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
     return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
 }
-const Amounts = computed({
-    get() {
-        const tokenAmounts = [state.amountQuote, state.amountBase]
-        // if (pool.value) {
-        //     if (tokenAmounts[state.lastChangedToken] === "") {
-        //         tokenAmounts[Number(!Boolean(state.lastChangedToken))] = ""
-        //         return tokenAmounts
-        //     }
-        //     console.log("POOL")
-        //     console.log(pool)
-        //     if (state.lastChangedToken === tkEnum.QUOTE && isCleanInput(tokenAmounts[tkEnum.QUOTE])) {
-        //         tokenAmounts[tkEnum.BASE] = calcBase(
-        //             tokenAmounts[tkEnum.QUOTE],
-        //             pool.value.base_token.decimals,
-        //             pool.value.quote_token.decimals,
-        //             pool.value.base_reserves,
-        //             pool.value.quote_reserves
-        //         )
-        //     } else if ((state.lastChangedToken === tkEnum.BASE) & isCleanInput(tokenAmounts[tkEnum.BASE])) {
-        //         tokenAmounts[tkEnum.QUOTE] = calcQuote(
-        //             tokenAmounts[tkEnum.BASE],
-        //             pool.value.base_token.decimals,
-        //             pool.value.quote_token.decimals,
-        //             pool.value.base_reserves,
-        //             pool.value.quote_reserves
-        //         )
-        //     }
-        // }
-        return tokenAmounts
-    },
-    set(newValue) {
-        state.amountQuote = newValue[tkEnum.QUOTE]
-        state.amountBase = newValue[tkEnum.BASE]
-    },
+
+const userAmounts = reactive({
+    quote: "",
+    base: "",
 })
-function getInputValue(tkIndex) {
-    return Amounts.value[tkIndex]
-    if (!poolRatio.value) {
-        return Amounts.value[tkIndex]
-    }
-    return state.lastChangedToken === tkIndex ? Amounts.value[tkIndex] : prettyPrint(Amounts.value[tkIndex], tkIndex)
-    // return state.lastChangedToken === tkIndex ? Amounts.value[tkIndex] : prettyPrint(Amounts.value[tkIndex], tkIndex)
+const fullAmounts = reactive({
+    quote: 0n,
+    base: 0n,
+})
+const amountsLabelOrder = ref(["quote", "base"])
+function getInputLabel(index) {
+    return amountsLabelOrder.value[index]
 }
-function setTokenAmount(event, tokenIndex) {
-    state.lastChangedToken = tokenIndex
-    const newVal = event.target.value
-    Amounts.value = Amounts.value.map((el, i) => (tokenIndex === i ? newVal : el))
+function oppositeInput(inputIndex) {
+    return 1 - inputIndex
+}
+const bothAmountsIn = computed(() => {
+    return amountsLabelOrder.value.every((el) => userAmounts[el] !== "")
+})
+
+function amountInputHandler(event, inputIndex) {
+    const currentValue = userAmounts[getInputLabel(inputIndex)]
+    const newValue = event.target.value
+
+    const cleanedInput = cleanInput(newValue, currentValue)
+
+    setUserAmount(cleanedInput, inputIndex)
+    event.target.value = cleanedInput
+    state.lastChangedAmount = inputIndex
+
+    let fullAmount = null
+    if (Tokens.value[inputIndex]) {
+        fullAmount = setFromUserToFullAmount(cleanedInput, Tokens.value[inputIndex].decimals, inputIndex)
+    }
+}
+//Two following functions I will use for handling an event when token is picked
+function setFromUserToFullAmount(amount, decimals, inputIndex) {
+    if (amount === "" || amount === ".") {
+        amount = "0"
+    }
+
+    const fullAmount = parseInputAmount(amount, decimals)
+    setFullAmount(fullAmount, inputIndex)
+
+    if (pool.value) {
+        calcAndSetOpposingInput(
+            fullAmount,
+            inputIndex,
+            BigInt(pool.value.base_reserves),
+            BigInt(pool.value.quote_reserves)
+        )
+    }
+    return fullAmount
+}
+function setFromFullToUserAmount(amount, decimals, inputIndex) {
+    let stringAmount = roundCeiling(formatInputAmount(amount, decimals))
+    stringAmount = stringAmount === "0" ? "" : stringAmount
+    setUserAmount(stringAmount, inputIndex)
+    return stringAmount
+}
+function calcAndSetOpposingInput(fullAmount, inputIndex, baseReserves, quote_reserves) {
+    console.log("calcAndSetOpposingInput() - calculating -", getInputLabel(oppositeInput(inputIndex)))
+    const calculatedInput = calculateFollowingInput(fullAmount, inputIndex, baseReserves, quote_reserves)
+    const calculatedInputIndex = oppositeInput(inputIndex)
+    setFullAmount(calculatedInput, calculatedInputIndex)
+    setFromFullToUserAmount(calculatedInput, Tokens.value[calculatedInputIndex].decimals, calculatedInputIndex)
 }
 
-function calcQuote(_base, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance) {
-    console.log("Hello from calcQuote")
-    console.log(_base, _baseDecimals, _quoteDecimals, _baseBalance, _quoteBalance)
-    var parsed = BigInt(parseUnits(_base, _baseDecimals))
-    var res = (parsed * BigInt(_baseBalance)) / BigInt(_quoteBalance)
-    console.log("RESULT: " + res)
-    return res
-    // return formatEther(res.toString(), 18)
+function setUserAmount(amount, inputIndex) {
+    userAmounts[getInputLabel(inputIndex)] = amount
 }
-function goo(aInputed, aDecimals, balanceA, balanceB) {
-    console.log("Hello from calcB")
-    console.log(aInputed, aDecimals, balanceA, balanceB)
-    console.log("-------------------------")
-    const aParsed = BigInt(parseUnits(aInputed, aDecimals))
-    return ((aParsed * BigInt(balanceA)) / BigInt(balanceB)) * BigInt(aDecimals)
+function setFullAmount(amount, inputIndex) {
+    fullAmounts[getInputLabel(inputIndex)] = amount
 }
-// const parsedLastInputed = computed(() => {
-//     if (
-//         !Tokens.value[state.lastChangedToken] ||
-//         !Amounts.value[state.lastChangedToken] ||
-//         !isCleanInput(Amounts.value[state.lastChangedToken])
-//     ) {
-//         return null
-//     }
-//     return parseUnits(Amounts.value[state.lastChangedToken], Tokens.value[state.lastChangedToken].decimals).toString()
-// })
-// CLEANS IMPUTED AMOUNT
-// watch(
-//     Amounts,
-//     (newVal, oldVal) => {
-//         const [newA, newB] = [...newVal]
-//         const [oldA, oldB] = oldVal ? [...oldVal] : [null, null]
-//         if (state.lastChangedToken === 0) {
-//             state.amountQuote = cleanInput(newA, oldA)
-//         } else if (state.lastChangedToken === 1) {
-//             state.amountBase = cleanInput(newB, oldB)
-//         }
-//     },
-//     {
-//         immediate: true,
-//     }
-// )
+function resetAmounts(inputIndex) {
+    console.log("resetAmounts(): ", getInputLabel(inputIndex))
+    setUserAmount("", inputIndex)
+    setFullAmount(0n, inputIndex)
+}
+function parseInputAmount(amount, decimals) {
+    return parseUnits(amount, decimals)
+    // return BigInt(parseUnits(amount, decimals))
+}
+function formatInputAmount(amount, decimals) {
+    return formatUnits(amount, decimals)
+}
+function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance) {
+    if (inputIndex === tkEnum.QUOTE) {
+        return (inputAmount * baseBalance) / quoteBalance
+    } else if (inputIndex === tkEnum.BASE) {
+        return (inputAmount * quoteBalance) / baseBalance
+    }
+}
 // AMOUNTS --------------
 
 // BALANCES -------------
@@ -575,6 +508,36 @@ watch(
                 },
             })
         }
+
+        // setting full amount
+        const newTokenIndex = selectTokenIndex.value
+        const newAmountIndex = state.lastChangedAmount
+        console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
+        console.log("watch(Tokens) - new amount:", getInputLabel(newAmountIndex))
+        if (newTokenIndex === newAmountIndex && Tokens.value[newTokenIndex]) {
+            setFromUserToFullAmount(
+                userAmounts[amountsLabelOrder.value[newAmountIndex]],
+                Tokens.value[newTokenIndex].decimals,
+                newAmountIndex
+            )
+        }
+
+        // fetching pool
+        if (bothTokensThere.value) {
+            resetAmounts(Number(!Boolean(newAmountIndex)))
+            await refreshPool()
+            console.log("watch(Tokens) - pool.value: ", pool.value)
+            if (pool.value) {
+                calcAndSetOpposingInput(
+                    fullAmounts[getInputLabel(newAmountIndex)],
+                    newAmountIndex,
+                    BigInt(pool.value.base_reserves),
+                    BigInt(pool.value.quote_reserves)
+                )
+            }
+        }
+
+        // compute full amount
 
         //getting balance
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
