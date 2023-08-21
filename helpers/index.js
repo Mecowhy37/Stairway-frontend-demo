@@ -375,7 +375,7 @@ export const widgetTypeObj = {
     add: "add",
 }
 
-export function useAmounts(Tokens, pool, lastChangedAmount, widgetType) {
+export function useAmounts(Tokens, pool, widgetType) {
     const userAmounts = reactive({
         quote: "",
         base: "",
@@ -384,6 +384,7 @@ export function useAmounts(Tokens, pool, lastChangedAmount, widgetType) {
         quote: 0n,
         base: 0n,
     })
+    const lastChangedAmount = ref(0)
     const amountsLabelOrder = ref(["quote", "base"])
     function getInputLabel(index) {
         return amountsLabelOrder.value[index]
@@ -413,7 +414,7 @@ export function useAmounts(Tokens, pool, lastChangedAmount, widgetType) {
 
         setUserAmount(cleanedInput, inputIndex)
         event.target.value = cleanedInput
-        lastChangedAmount = inputIndex
+        lastChangedAmount.value = inputIndex
 
         let fullAmount = null
         if (Tokens.value[inputIndex]) {
@@ -481,7 +482,6 @@ export function useAmounts(Tokens, pool, lastChangedAmount, widgetType) {
     }
     function parseInputAmount(amount, decimals) {
         return parseUnits(amount, decimals)
-        // return BigInt(parseUnits(amount, decimals))
     }
     function formatInputAmount(amount, decimals) {
         return formatUnits(amount, decimals)
@@ -489,6 +489,7 @@ export function useAmounts(Tokens, pool, lastChangedAmount, widgetType) {
     function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance, price) {
         if (widgetType === widgetTypeObj.add) {
             if (inputIndex === tkEnum.QUOTE) {
+                // these should be reversed I suppose
                 return (inputAmount * quoteBalance) / baseBalance
             } else if (inputIndex === tkEnum.BASE) {
                 return (inputAmount * baseBalance) / quoteBalance
@@ -583,6 +584,7 @@ export function useAmounts(Tokens, pool, lastChangedAmount, widgetType) {
     return {
         userAmounts,
         fullAmounts,
+        lastChangedAmount,
         amountsLabelOrder,
         getInputLabel,
         oppositeInput,

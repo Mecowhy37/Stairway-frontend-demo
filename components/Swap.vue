@@ -231,7 +231,6 @@ const { pool, refreshPool, poolPending, price, depth, swap } = usePools(
 const state = reactive({
     amountA: "",
     amountB: "",
-    lastChangedAmount: 0,
     balanceA: "",
     balanceB: "",
     showRate: false,
@@ -243,9 +242,9 @@ const canSwap = computed(() => {
     return pool.value && bothAmountsIn.value
 })
 function switchOrder() {
-    Tokens.value = Tokens.value.reverse()
-    state.lastChangedAmount = oppositeInput(state.lastChangedAmount)
+    lastChangedAmount.value = oppositeInput(lastChangedAmount.value)
     selectTokenIndex.value = oppositeInput(selectTokenIndex.value)
+    Tokens.value = Tokens.value.reverse()
     switchAmounts()
     Balances.value = Balances.value.reverse()
 }
@@ -266,6 +265,7 @@ function callSwap() {
 const {
     userAmounts,
     fullAmounts,
+    lastChangedAmount,
     amountsLabelOrder,
     switchAmounts,
     getInputLabel,
@@ -276,7 +276,7 @@ const {
     resetAmounts,
     bothAmountsIn,
     roundCeiling,
-} = useAmounts(Tokens, pool, state.lastChangedAmount, widgetTypeObj.swap)
+} = useAmounts(Tokens, pool, widgetTypeObj.swap)
 
 function Round(amt) {
     let amount = Number(amt)
@@ -366,7 +366,7 @@ watch(
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
-        const newAmountIndex = state.lastChangedAmount
+        const newAmountIndex = lastChangedAmount.value
         console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
         console.log("watch(Tokens) - new amount:", getInputLabel(newAmountIndex))
         if (newTokenIndex === newAmountIndex && Tokens.value[newTokenIndex]) {

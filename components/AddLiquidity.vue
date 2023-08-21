@@ -78,10 +78,6 @@
                                     @input="amountInputHandler($event, x)"
                                     :value="userAmounts[amountsLabelOrder[x]]"
                                 />
-                                <!-- v-model="userAmounts[amountsLabelOrder[x]]" -->
-                                <!-- :value="getInputValue(x)"
-                                    @input="setTokenAmount($event, x)" -->
-                                <!-- :value="state.lastChangedAmount === x ? Amounts[x] : Round(Amounts[x])" -->
                             </div>
                             <div class="window__lower row flex-end align-center">
                                 <p class="caption">{{ Number(ABBalance[x]) }}</p>
@@ -235,12 +231,20 @@
                         <p><span class="grey-text">symbol: </span> {{ tokenA?.symbol }}</p>
                         <p><span class="grey-text">user amount: </span> {{ userAmounts.quote }}</p>
                         <p><span class="grey-text">full amount: </span> {{ fullAmounts.quote }}</p>
+                        <p>
+                            <span class="grey-text">quote_reserves (its off - reversed): </span>
+                            {{ formatUnits(pool?.quote_reserves, pool?.quote_token.decimals) }}
+                        </p>
                     </div>
                     <div>
                         <h4>token B</h4>
                         <p><span class="grey-text">symbol: </span> {{ tokenB?.symbol }}</p>
                         <p><span class="grey-text">user amount: </span> {{ userAmounts.base }}</p>
                         <p><span class="grey-text">full amount: </span> {{ fullAmounts.base }}</p>
+                        <p>
+                            <span class="grey-text">base_reserves (its off - reversed): </span>
+                            {{ formatUnits(pool?.base_reserves, pool?.base_token.decimals) }}
+                        </p>
                     </div>
                 </div>
             </template>
@@ -286,7 +290,6 @@ const state = reactive({
     amountBase: "",
     balanceA: "",
     balanceB: "",
-    lastChangedAmount: 0,
     redeemPercent: 100,
 })
 
@@ -321,15 +324,17 @@ function callAddLiquidity() {
 const {
     userAmounts,
     fullAmounts,
+    lastChangedAmount,
     amountsLabelOrder,
     getInputLabel,
+    oppositeInput,
     amountInputHandler,
     setFromUserToFullAmount,
     calcAndSetOpposingInput,
     resetAmounts,
     bothAmountsIn,
     roundCeiling,
-} = useAmounts(Tokens, pool, state.lastChangedAmount, widgetTypeObj.add)
+} = useAmounts(Tokens, pool, widgetTypeObj.add)
 
 function Round(amt) {
     // Round function trimms down unncessary digits and adds < mark when unsignificant
@@ -423,7 +428,7 @@ watch(
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
-        const newAmountIndex = state.lastChangedAmount
+        const newAmountIndex = lastChangedAmount.value
         console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
         console.log("watch(Tokens) - new amount:", getInputLabel(newAmountIndex))
         if (newTokenIndex === newAmountIndex && Tokens.value[newTokenIndex]) {
@@ -436,7 +441,7 @@ watch(
 
         // fetching pool
         if (bothTokensThere.value) {
-            resetAmounts(Number(!Boolean(newAmountIndex)))
+            resetAmounts(oppositeInput(newAmountIndex))
             await refreshPool()
             console.log("watch(Tokens) - pool: ", pool.value?.name)
             if (pool.value) {
