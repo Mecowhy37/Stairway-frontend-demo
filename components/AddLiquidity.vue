@@ -233,7 +233,7 @@
                         <p><span class="grey-text">full amount: </span> {{ fullAmounts.quote }}</p>
                         <p>
                             <span class="grey-text">quote_reserves (its off - reversed): </span>
-                            {{ formatUnits(pool?.quote_reserves, pool?.quote_token.decimals) }}
+                            {{ pool && formatUnits(pool.quote_reserves, pool.quote_token.decimals) }}
                         </p>
                     </div>
                     <div>
@@ -243,7 +243,7 @@
                         <p><span class="grey-text">full amount: </span> {{ fullAmounts.base }}</p>
                         <p>
                             <span class="grey-text">base_reserves (its off - reversed): </span>
-                            {{ formatUnits(pool?.base_reserves, pool?.base_token.decimals) }}
+                            {{ pool && formatUnits(pool.base_reserves, pool.base_token.decimals) }}
                         </p>
                     </div>
                 </div>
