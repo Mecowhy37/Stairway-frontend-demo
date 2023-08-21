@@ -242,10 +242,17 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
-        const allowance = await checkAllowance(tokenQuote.address, signer.address, routerAddress.value, providerArg)
-        const needApproval = allowance < amountQuote
-        if (needApproval) {
-            await approveSpending(tokenQuote.address, providerArg, amountQuote)
+        try {
+            console.log(" - - - - allowance - - - - - ")
+            const allowance = await checkAllowance(tokenQuote.address, signer.address, routerAddress.value, providerArg)
+            console.log("allowanceQuote:", allowance)
+            console.log("amountQuote:", amountQuote)
+            const needApproval = allowance < amountQuote
+            if (needApproval) {
+                await approveSpending(tokenQuote.address, providerArg, amountQuote)
+            }
+        } catch (error) {
+            console.log("Failed to get approvals:", error)
         }
 
         console.log(" - - - - -s w a p- - - - - - ")
@@ -256,11 +263,11 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         console.log("account:", account)
         console.log("deadlineStamp:", deadlineStamp)
         await router.buy(
-            tokenBase.address,
-            tokenQuote.address,
+            Web3.utils.toChecksumAddress(tokenBase.address),
+            Web3.utils.toChecksumAddress(tokenQuote.address),
             amountBase.toString(),
             maxPrice.toString(),
-            account,
+            Web3.utils.toChecksumAddress(account),
             deadlineStamp
         )
     }
