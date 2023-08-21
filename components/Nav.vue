@@ -35,10 +35,12 @@
                         >
                     </template>
                 </Dropdown>
-                <img
-                    class="navbar__logo"
-                    src="/logox2.png"
-                />
+                <NuxtLink to="/">
+                    <img
+                        class="navbar__logo"
+                        src="/logox2.png"
+                    />
+                </NuxtLink>
             </div>
             <div class="navbar__navigation">
                 <div class="desktop contents">
