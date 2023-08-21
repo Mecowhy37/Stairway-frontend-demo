@@ -259,9 +259,10 @@ import {
     useTokens,
     useBalances,
     usePools,
-    useInputs,
+    useAmounts,
     basicRound,
     isSupportedChain,
+    widgetTypeObj,
     tkEnum,
     precision,
 } from "~/helpers/index"
@@ -271,6 +272,15 @@ const stepStore = useStepStore()
 
 const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 
+// TOKENS ---------------
+const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
+// TOKENS ---------------
+
+// POOL -----------------
+const { pool, refreshPool, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId)
+// POOL -----------------
+
+// WIDGET ---------------
 const state = reactive({
     amountQuote: "",
     amountBase: "",
@@ -280,24 +290,6 @@ const state = reactive({
     redeemPercent: 100,
 })
 
-// TOKENS ---------------
-const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
-// TOKENS ---------------
-
-// POOL -----------------
-const { pool, poolRatio, refreshPool, addLiquidity } = usePools(
-    routerAddress,
-    Tokens,
-    connectedAccount,
-    connectedChainId
-)
-// POOL -----------------
-
-// INPUTS -----------------
-const { cleanInput, isCleanInput, prettyPrint, roundCeiling } = useInputs(Tokens)
-// INPUTS -----------------
-
-// WIDGET ---------------
 const ownedPosition = computed(() => {
     if (!pool.value || !positions.value) {
         return null
@@ -326,6 +318,19 @@ function callAddLiquidity() {
 // WIDGET ---------------
 
 // AMOUNTS --------------
+const {
+    userAmounts,
+    fullAmounts,
+    amountsLabelOrder,
+    getInputLabel,
+    amountInputHandler,
+    setFromUserToFullAmount,
+    calcAndSetOpposingInput,
+    resetAmounts,
+    bothAmountsIn,
+    roundCeiling,
+} = useAmounts(Tokens, pool, state.lastChangedAmount, widgetTypeObj.add)
+
 function Round(amt) {
     // Round function trimms down unncessary digits and adds < mark when unsignificant
     let amount = Number(amt)
@@ -334,99 +339,6 @@ function Round(amt) {
     }
     amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
     return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
-}
-
-const userAmounts = reactive({
-    quote: "",
-    base: "",
-})
-const fullAmounts = reactive({
-    quote: 0n,
-    base: 0n,
-})
-const amountsLabelOrder = ref(["quote", "base"])
-function getInputLabel(index) {
-    return amountsLabelOrder.value[index]
-}
-function oppositeInput(inputIndex) {
-    return 1 - inputIndex
-}
-const bothAmountsIn = computed(() => {
-    return amountsLabelOrder.value.every((el) => userAmounts[el] !== "")
-})
-
-function amountInputHandler(event, inputIndex) {
-    const currentValue = userAmounts[getInputLabel(inputIndex)]
-    const newValue = event.target.value
-
-    const cleanedInput = cleanInput(newValue, currentValue)
-
-    setUserAmount(cleanedInput, inputIndex)
-    event.target.value = cleanedInput
-    state.lastChangedAmount = inputIndex
-
-    let fullAmount = null
-    if (Tokens.value[inputIndex]) {
-        fullAmount = setFromUserToFullAmount(cleanedInput, Tokens.value[inputIndex].decimals, inputIndex)
-    }
-}
-//Two following functions I will use for handling an event when token is picked
-function setFromUserToFullAmount(amount, decimals, inputIndex) {
-    if (amount === "" || amount === ".") {
-        amount = "0"
-    }
-
-    const fullAmount = parseInputAmount(amount, decimals)
-    setFullAmount(fullAmount, inputIndex)
-
-    if (pool.value) {
-        calcAndSetOpposingInput(
-            fullAmount,
-            inputIndex,
-            BigInt(pool.value.base_reserves),
-            BigInt(pool.value.quote_reserves)
-        )
-    }
-    return fullAmount
-}
-function setFromFullToUserAmount(amount, decimals, inputIndex) {
-    let stringAmount = roundCeiling(formatInputAmount(amount, decimals))
-    stringAmount = stringAmount === "0" ? "" : stringAmount
-    setUserAmount(stringAmount, inputIndex)
-    return stringAmount
-}
-function calcAndSetOpposingInput(fullAmount, inputIndex, baseReserves, quote_reserves) {
-    console.log("calcAndSetOpposingInput() - calculating -", getInputLabel(oppositeInput(inputIndex)))
-    const calculatedInput = calculateFollowingInput(fullAmount, inputIndex, baseReserves, quote_reserves)
-    const calculatedInputIndex = oppositeInput(inputIndex)
-    setFullAmount(calculatedInput, calculatedInputIndex)
-    setFromFullToUserAmount(calculatedInput, Tokens.value[calculatedInputIndex].decimals, calculatedInputIndex)
-}
-
-function setUserAmount(amount, inputIndex) {
-    userAmounts[getInputLabel(inputIndex)] = amount
-}
-function setFullAmount(amount, inputIndex) {
-    fullAmounts[getInputLabel(inputIndex)] = amount
-}
-function resetAmounts(inputIndex) {
-    console.log("resetAmounts(): ", getInputLabel(inputIndex))
-    setUserAmount("", inputIndex)
-    setFullAmount(0n, inputIndex)
-}
-function parseInputAmount(amount, decimals) {
-    return parseUnits(amount, decimals)
-    // return BigInt(parseUnits(amount, decimals))
-}
-function formatInputAmount(amount, decimals) {
-    return formatUnits(amount, decimals)
-}
-function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance) {
-    if (inputIndex === tkEnum.QUOTE) {
-        return (inputAmount * quoteBalance) / baseBalance
-    } else if (inputIndex === tkEnum.BASE) {
-        return (inputAmount * baseBalance) / quoteBalance
-    }
 }
 // AMOUNTS --------------
 
@@ -526,25 +438,32 @@ watch(
         if (bothTokensThere.value) {
             resetAmounts(Number(!Boolean(newAmountIndex)))
             await refreshPool()
-            console.log("watch(Tokens) - pool.value: ", pool.value)
+            console.log("watch(Tokens) - pool: ", pool.value?.name)
             if (pool.value) {
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(newAmountIndex)],
                     newAmountIndex,
                     BigInt(pool.value.base_reserves),
-                    BigInt(pool.value.quote_reserves)
+                    BigInt(pool.value.quote_reserves),
+                    BigInt(pool.value.price)
                 )
             }
         }
 
-        // compute full amount
-
         //getting balance
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-            if (selectTokenIndex.value === 0) {
-                state.balanceA = await getTokenBalance(tokens[0], connectedAccount.value, connectedChainId.value)
+            if (selectTokenIndex.value === tkEnum.QUOTE) {
+                state.balanceA = await getTokenBalance(
+                    tokens[tkEnum.QUOTE],
+                    connectedAccount.value,
+                    connectedChainId.value
+                )
             } else {
-                state.balanceB = await getTokenBalance(tokens[1], connectedAccount.value, connectedChainId.value)
+                state.balanceB = await getTokenBalance(
+                    tokens[tkEnum.BASE],
+                    connectedAccount.value,
+                    connectedChainId.value
+                )
             }
         }
     },
@@ -555,8 +474,16 @@ watch(
 
 async function getBothBalances() {
     if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, connectedChainId.value)
-        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, connectedChainId.value)
+        state.balanceA = await getTokenBalance(
+            Tokens.value[tkEnum.QUOTE],
+            connectedAccount.value,
+            connectedChainId.value
+        )
+        state.balanceB = await getTokenBalance(
+            Tokens.value[tkEnum.BASE],
+            connectedAccount.value,
+            connectedChainId.value
+        )
     }
 }
 //GETS BALANCES BY TOKENS AND WALLET
@@ -565,8 +492,8 @@ watch(
     async (newVal) => {
         const [wallet, chain] = newVal
         if (wallet && isSupportedChain(chain)) {
-            state.balanceA = await getTokenBalance(Tokens.value[0], wallet, chain)
-            state.balanceB = await getTokenBalance(Tokens.value[1], wallet, chain)
+            state.balanceA = await getTokenBalance(Tokens.value[tkEnum.QUOTE], wallet, chain)
+            state.balanceB = await getTokenBalance(Tokens.value[tkEnum.BASE], wallet, chain)
         } else {
             ABBalance.value = ["", ""]
         }
