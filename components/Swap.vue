@@ -387,26 +387,26 @@ watch(
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
-        const newAmountIndex = lastChangedAmount.value
+        const lastChangedAmountIndex = lastChangedAmount.value
         console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
-        console.log("watch(Tokens) - new amount:", getInputLabel(newAmountIndex))
-        if (newTokenIndex === newAmountIndex && Tokens.value[newTokenIndex]) {
+        console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
+        if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
             setFromUserToFullAmount(
-                userAmounts[amountsLabelOrder.value[newAmountIndex]],
+                userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
                 Tokens.value[newTokenIndex].decimals,
-                newAmountIndex
+                lastChangedAmountIndex
             )
         }
 
         // fetching pool
         if (bothTokensThere.value) {
-            resetAmounts(oppositeInput(newAmountIndex))
+            resetAmounts(oppositeInput(lastChangedAmountIndex))
             await refreshPool()
             console.log("watch(Tokens) - pool.value: ", pool.value?.name)
             if (pool.value) {
                 calcAndSetOpposingInput(
-                    fullAmounts[getInputLabel(newAmountIndex)],
-                    newAmountIndex,
+                    fullAmounts[getInputLabel(lastChangedAmountIndex)],
+                    lastChangedAmountIndex,
                     BigInt(pool.value.base_reserves),
                     BigInt(pool.value.quote_reserves),
                     BigInt(pool.value.price)
