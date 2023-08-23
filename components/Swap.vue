@@ -108,7 +108,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div
+                <div
                     v-if="bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base"
                     class="infos"
                 >
@@ -120,9 +120,13 @@
                                 :size="25"
                             />
                         </div>
-                        <p>you will only receive {{ prettyDepth }} {{ Tokens[tkEnum.BASE].symbol }} at this price</p>
+                        <p>
+                            you will only receive
+                            {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
+                            {{ Tokens[tkEnum.BASE].symbol }} at this price
+                        </p>
                     </div>
-                </div> -->
+                </div>
                 <div class="buttons">
                     <Btn
                         v-if="!stepStore.connectedWallet"
