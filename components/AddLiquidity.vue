@@ -211,13 +211,12 @@
                         Add liquidity
                     </Btn>
                     <Btn
-                        @click="getBothBalances()"
-                        is="h4"
+                        @click="refresh()"
                         wide
                         bulky
                         :disabled="!connectedAccount"
                     >
-                        refresh balances
+                        refresh data
                     </Btn>
                 </div>
             </template>
@@ -275,6 +274,7 @@ const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
 const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
+const { refreshPositions } = stepStore
 
 // TOKENS ---------------
 const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
@@ -317,6 +317,12 @@ function callAddLiquidity() {
         // state.amountQuote = ""
         // state.amountBase = ""
     })
+}
+
+function refresh() {
+    refreshPool()
+    getBothBalances()
+    refreshPositions()
 }
 // WIDGET ---------------
 

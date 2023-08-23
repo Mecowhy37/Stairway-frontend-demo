@@ -67,7 +67,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 console.log("usePools - fetchingPool()")
                 return $fetch(
                     getUrl(
-                        `/chain/${connectedChainId.value}/pool/${Tokens.value[0].address}/${Tokens.value[1].address}`
+                        `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
+                            Tokens.value[tkEnum.QUOTE].address
+                        }`
                     )
                 )
             }
@@ -448,13 +450,16 @@ export function useAmounts(Tokens, pool, widgetType) {
         } else if (widgetType === widgetTypeObj.swap) {
             console.log("setFromFullToUserAmount(): ", "setting - ", getInputLabel(inputIndex))
             if (inputIndex === tkEnum.QUOTE) {
-                console.log("setFromFullToUserAmount(): ", "rounding - Ceil")
-                stringAmount = roundCeiling(formatInputAmount(amount, decimals))
+                const quoteAmount = roundCeiling(formatInputAmount(amount, decimals))
+                stringAmount = quoteAmount
+                console.log("setFromFullToUserAmount(): ", "Ceil rounding -", quoteAmount)
             } else if (inputIndex === tkEnum.BASE) {
-                console.log("setFromFullToUserAmount(): ", "rounding - Floor")
-                stringAmount = roundFloor(formatInputAmount(amount, decimals))
+                const baseAmount = roundFloor(formatInputAmount(amount, decimals))
+                stringAmount = baseAmount
+                console.log("setFromFullToUserAmount(): ", "Floor rounding -", baseAmount)
             }
         }
+        console.log("- - - - - - - - - - - - - - - - -")
         stringAmount = stringAmount === "0" ? "" : stringAmount
         setUserAmount(stringAmount, inputIndex)
         return stringAmount
@@ -462,7 +467,9 @@ export function useAmounts(Tokens, pool, widgetType) {
     function calcAndSetOpposingInput(fullAmount, inputIndex, baseReserves, quoteReserves, price) {
         console.log("calcAndSetOpposingInput() - calculating -", getInputLabel(oppositeInput(inputIndex)))
 
+        console.log("calcAndSetOpposingInput() - provided amount:", fullAmount)
         const calculatedInput = calculateFollowingInput(fullAmount, inputIndex, baseReserves, quoteReserves, price)
+        console.log("calcAndSetOpposingInput() - calculated:", calculatedInput)
         const calculatedInputIndex = oppositeInput(inputIndex)
 
         setFullAmount(calculatedInput, calculatedInputIndex)
@@ -489,12 +496,14 @@ export function useAmounts(Tokens, pool, widgetType) {
     function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance, price) {
         if (widgetType === widgetTypeObj.add) {
             if (inputIndex === tkEnum.QUOTE) {
-                // these should be reversed I suppose
-                return (inputAmount * quoteBalance) / baseBalance
+                const quoteAmount = inputAmount
+                return (quoteAmount * baseBalance) / quoteBalance
             } else if (inputIndex === tkEnum.BASE) {
-                return (inputAmount * baseBalance) / quoteBalance
+                const baseAmount = inputAmount
+                return (baseAmount * quoteBalance) / baseBalance
             }
         } else if (widgetType === widgetTypeObj.swap) {
+            // these also - SWAP
             if (inputIndex === tkEnum.QUOTE) {
                 return calcBase(inputAmount, price)
             } else if (inputIndex === tkEnum.BASE) {
@@ -502,11 +511,11 @@ export function useAmounts(Tokens, pool, widgetType) {
             }
         }
     }
-    function calcQuote(baseInputed, price) {
-        return (baseInputed * price + precision - 1n) / precision
-    }
     function calcBase(quoteInputed, price) {
         return (quoteInputed * precision) / price
+    }
+    function calcQuote(baseInputed, price) {
+        return (baseInputed * price + precision - 1n) / precision
     }
     // function calcQuote(baseInputed) {
     //     const baseDecim = Tokens.value[tkEnum.BASE].decimals
@@ -596,6 +605,7 @@ export function useAmounts(Tokens, pool, widgetType) {
         cleanInput,
         roundCeiling,
         roundFloor,
+        formatInputAmount,
         switchAmounts,
         prettyPrint,
         isCleanInput,

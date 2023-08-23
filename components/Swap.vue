@@ -144,25 +144,36 @@
                         Swap
                     </Btn>
                     <Btn
-                        @click="getBothBalances()"
-                        is="h4"
+                        @click="refresh()"
                         wide
                         bulky
                         :disabled="!connectedAccount"
                     >
-                        refresh balances
+                        refresh data
                     </Btn>
                 </div>
-                <!-- <div
+                <div
                     v-if="price && bothTokensThere"
                     class="sum-up grey-text caption"
                 >
-                    <p>1 {{ Tokens[tkEnum.BASE].symbol }} = {{ prettyPrice }} {{ Tokens[tkEnum.QUOTE].symbol }}</p>
+                    <p>
+                        1 {{ Tokens[tkEnum.BASE].symbol }} =
+                        {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }}
+                        {{ Tokens[tkEnum.QUOTE].symbol }}
+                    </p>
                     <div class="row space-between">
-                        <p>Volume available at this price ({{ prettyPrice }} {{ Tokens[tkEnum.BASE].symbol }})</p>
-                        <p>{{ prettyDepth }} {{ Tokens[tkEnum.BASE].symbol }}</p>
+                        <p>
+                            Volume available at this price ({{
+                                roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals))
+                            }}
+                            {{ Tokens[tkEnum.BASE].symbol }})
+                        </p>
+                        <p>
+                            {{ roundFloor(formatInputAmount(depth, Tokens[tkEnum.BASE].decimals)) }}
+                            {{ Tokens[tkEnum.BASE].symbol }}
+                        </p>
                     </div>
-                </div> -->
+                </div>
             </template>
         </Widget>
         <Widget no-return>
@@ -259,6 +270,10 @@ function callSwap() {
         stepStore.connectedWallet.provider
     )
 }
+function refresh() {
+    refreshPool()
+    getBothBalances()
+}
 // WIDGET ------------------
 
 // AMOUNTS -----------------
@@ -267,6 +282,7 @@ const {
     fullAmounts,
     lastChangedAmount,
     amountsLabelOrder,
+    formatInputAmount,
     switchAmounts,
     getInputLabel,
     oppositeInput,
@@ -276,6 +292,7 @@ const {
     resetAmounts,
     bothAmountsIn,
     roundCeiling,
+    roundFloor,
 } = useAmounts(Tokens, pool, widgetTypeObj.swap)
 
 function Round(amt) {
