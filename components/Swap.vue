@@ -166,7 +166,7 @@
                             Volume available at this price ({{
                                 roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals))
                             }}
-                            {{ Tokens[tkEnum.BASE].symbol }})
+                            {{ Tokens[tkEnum.QUOTE].symbol }})
                         </p>
                         <p>
                             {{ roundFloor(formatInputAmount(depth, Tokens[tkEnum.BASE].decimals)) }}
