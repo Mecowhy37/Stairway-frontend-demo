@@ -167,7 +167,7 @@
                 </div>
             </div>
             <div
-                v-else-if="status === 'pending' || !ownedPosition"
+                v-else-if="poolStatus === 'pending' || !ownedPosition"
                 class="placeholder"
             >
                 <p>placeholder</p>
@@ -221,6 +221,14 @@
                 >
                     Remove Liquidity
                 </Btn>
+                <Btn
+                    @click="refresh()"
+                    wide
+                    bulky
+                    :disabled="!connectedAccount"
+                >
+                    refresh data
+                </Btn>
             </div>
         </template>
     </Widget>
@@ -234,8 +242,7 @@ import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 const stepStore = useStepStore()
 const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
-
-const { redeemLiquidity } = usePools(routerAddress, null, connectedAccount, connectedChainId)
+const { refreshPositions } = stepStore
 
 const state = reactive({
     redeemPercent: 100,
@@ -255,25 +262,15 @@ function removeSelected() {
 }
 // ROUTES ----------------
 const route = useRoute()
-const {
-    data: pool,
-    error: poolError,
-    status,
-    pending,
-} = useAsyncData(
-    "pool",
-    () => {
-        if (connectedChainId.value && isSupportedChain(connectedChainId.value)) {
-            console.log("fetching pool")
-            return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
-        }
-    },
-    {
-        watch: [connectedChainId],
-    }
+const { pool, poolError, poolStatus, redeemLiquidity, refreshPool } = usePools(
+    routerAddress,
+    [],
+    connectedAccount,
+    connectedChainId,
+    route
 )
-
 // ROUTES ----------------
+
 function redeemLiquidityCall() {
     if (ownedPosition.value && pool.value) {
         redeemLiquidity(
@@ -300,6 +297,11 @@ const ownedPosition = computed(() => {
     }
     return matchedPosition
 })
+
+function refresh() {
+    refreshPool()
+    refreshPositions()
+}
 
 //SETTINGS--------------
 const settingsRedeem = ref(null)

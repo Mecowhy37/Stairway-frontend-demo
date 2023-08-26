@@ -51,7 +51,7 @@ export function listenForTransactionMine(txRes, provider, callback = null) {
     })
 }
 
-export function usePools(routerAddress, Tokens, connectedAccount, connectedChainId) {
+export function usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route) {
     const {
         data: pool,
         error: poolError,
@@ -61,24 +61,30 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
     } = useAsyncData(
         "pool",
         () => {
-            const bothThere = Tokens.value.every((el) => el !== null)
+            if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+                if (route.name === "add-liquidity") {
+                    const bothThere = Tokens.value.every((el) => el !== null)
 
-            if (bothThere && connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-                console.log("usePools - fetchingPool()")
-                return $fetch(
-                    getUrl(
-                        `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
-                            Tokens.value[tkEnum.QUOTE].address
-                        }`
-                    )
-                )
+                    if (bothThere) {
+                        console.log("usePools - fetchingPool() - on", route.name)
+                        return $fetch(
+                            getUrl(
+                                `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
+                                    Tokens.value[tkEnum.QUOTE].address
+                                }`
+                            )
+                        )
+                    }
+                } else if (route.name === "remove-address") {
+                    console.log("usePools - fetchingPool() - on", route.name)
+                    return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
+                }
             }
         },
         {
             watch: [connectedChainId],
         }
     )
-
     // watch: [Tokens, connectedChainId],
 
     const poolRatio = computed(() => {
@@ -155,8 +161,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("Failed to get approvals:", error)
         }
         try {
-            console.log("VALUES")
-            console.log("---------------------------------")
+            console.log(" - - - - -a d d L Q- - - - - - ")
             console.log("tokenQuote.address:", Web3.utils.toChecksumAddress(tokenQuote.address))
             console.log("tokenBase.address:", Web3.utils.toChecksumAddress(tokenBase.address))
             console.log("amountQuote:", amountQuote.toString())
@@ -179,54 +184,55 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
     }
 
     async function redeemLiquidity(
-        tokenA,
-        tokenB,
-        pooledA,
-        pooledB,
+        tokenQuote,
+        tokenBase,
+        pooledQuote,
+        pooledBase,
         redeemPercent,
         lpToken,
-        lpAmount,
+        lpPooled,
         deadline,
         providerArg
     ) {
+        const provider = new BrowserProvider(providerArg)
+        const signer = await provider.getSigner()
+        const router = new Contract(routerAddress.value, RouterABI, signer)
+
+        const amountQuote = calcPercentage(pooledQuote)
+        const amountBase = calcPercentage(pooledBase)
+        const lpAmount = calcPercentage(lpPooled)
+
+        function calcPercentage(amount) {
+            return (BigInt(amount) * BigInt(redeemPercent)) / BigInt(100)
+        }
+
+        const blockTimestamp = (await provider.getBlock("latest")).timestamp
+        const deadlineStamp = blockTimestamp + deadline * 60
+
         try {
-            const provider = new BrowserProvider(providerArg)
-            const signer = await provider.getSigner()
-            const router = new Contract(routerAddress.value, RouterABI, signer)
-
-            const tokenList = [tokenA, tokenB].map((el) => el.address)
-
-            const amount0 = calcPercentage(pooledA)
-            const amount1 = calcPercentage(pooledB)
-            const lpAmountParsed = calcPercentage(lpAmount)
-
-            function calcPercentage(amount) {
-                // temporary fix - bad browser support
-                return String((BigInt(amount) * BigInt(redeemPercent)) / BigInt(100))
-            }
-
-            const blockTimestamp = (await provider.getBlock("latest")).timestamp
-            const deadlineStamp = blockTimestamp + deadline * 60
-
             const allowance = await checkAllowance(lpToken.address, signer.address, routerAddress.value, providerArg)
-            const needApproval = allowance < lpAmountParsed
-            if (needApproval) {
-                await approveSpending(lpToken.address, providerArg, lpAmountParsed)
+            if (allowance < lpAmount) {
+                await approveSpending(lpToken.address, providerArg, lpAmount)
             }
+        } catch (error) {
+            console.log("Failed to get approvals:", error)
+        }
 
-            console.log("REDEEMING")
-            console.log(tokenList)
-            console.log(amount0)
-            console.log(amount1)
-            console.log(lpAmountParsed)
-            console.log(connectedAccount.value)
-            console.log(deadlineStamp)
+        try {
+            console.log(" - - - - -r e m o v e L Q- - - - - - ")
+            console.log("qoute token:", tokenQuote.symbol, tokenQuote.address)
+            console.log("base token:", tokenBase.symbol, tokenBase.address)
+            console.log("amount Quote:", amountQuote)
+            console.log("amount Base:", amountBase)
+            console.log("lpAmount:", lpAmount)
+            console.log("connectedAccount:", connectedAccount.value)
+            console.log("deadlineStamp:", deadlineStamp)
             await router.redeemLiquidity(
-                Web3.utils.toChecksumAddress(tokenList[0]),
-                Web3.utils.toChecksumAddress(tokenList[1]),
-                amount0,
-                amount1,
-                lpAmountParsed,
+                Web3.utils.toChecksumAddress(tokenQuote.address),
+                Web3.utils.toChecksumAddress(tokenBase.address),
+                amountQuote,
+                amountBase,
+                lpAmount,
                 Web3.utils.toChecksumAddress(connectedAccount.value),
                 deadlineStamp,
                 "100000000000000000"

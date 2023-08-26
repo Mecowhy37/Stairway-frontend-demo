@@ -21,9 +21,6 @@ import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseE
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
 
-import poolmanager from "@/ABIs/IPoolManager.json"
-const PoolManagerABI = poolmanager.abi
-
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 

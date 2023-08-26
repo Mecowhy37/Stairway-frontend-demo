@@ -280,8 +280,37 @@ const { refreshPositions } = stepStore
 const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
 // TOKENS ---------------
 
+// ROUTES ----------------
+const router = useRouter()
+const route = useRoute()
+function findTokenByAddress(address) {
+    const token = featuredTokens.value.find((el) => el.address === address)
+    if (!token) {
+        return null
+    }
+    return token
+}
+watch(
+    featuredTokens,
+    (newTokens) => {
+        if (newTokens && newTokens.length > 0) {
+            // Fetch tokenA and tokenB from route.query and update the values
+            if (route.query.tk1) {
+                tokenA.value = findTokenByAddress(route.query.tk1)
+            }
+            if (route.query.tk2) {
+                tokenB.value = findTokenByAddress(route.query.tk2)
+            }
+        }
+    },
+    {
+        immediate: true,
+    }
+)
+// ROUTES ----------------
+
 // POOL -----------------
-const { pool, refreshPool, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId)
+const { pool, refreshPool, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route)
 // POOL -----------------
 
 // WIDGET ---------------
@@ -387,35 +416,6 @@ watch(isNewTokenModalOpen, (newVal) => {
 //SETTINGS--------------
 const settingsAdd = ref()
 //SETTINGS--------------
-
-// ROUTES ----------------
-const router = useRouter()
-const route = useRoute()
-function findTokenByAddress(address) {
-    const token = featuredTokens.value.find((el) => el.address === address)
-    if (!token) {
-        return null
-    }
-    return token
-}
-watch(
-    featuredTokens,
-    (newTokens) => {
-        if (newTokens && newTokens.length > 0) {
-            // Fetch tokenA and tokenB from route.query and update the values
-            if (route.query.tk1) {
-                tokenA.value = findTokenByAddress(route.query.tk1)
-            }
-            if (route.query.tk2) {
-                tokenB.value = findTokenByAddress(route.query.tk2)
-            }
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-// ROUTES ----------------
 
 let intervalId = null
 watch(
