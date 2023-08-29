@@ -1,0 +1,200 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "token",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "token()": "fc0c546a"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IGovernorVotes.sol\":\"IGovernorVotes\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"src/interfaces/IGovernorVotes.sol\":{\"keccak256\":\"0x22dcadb387580ee9bfc0c2846d9798eeb2402553f9ca068d0a1e955a86ce9731\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8e07c191ddb7053427256b8f9ba8f11597ed946e2252d3aa248407960e2845b5\",\"dweb:/ipfs/QmXrfEDKmowfZLd3dZip8cmkvNMN41qtLuSLKN7tGh9wVk\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "token",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@openzeppelin/=lib/openzeppelin-contracts/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        "forge-std/=lib/forge-std/src/",
+        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/interfaces/IGovernorVotes.sol": "IGovernorVotes"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "src/interfaces/IGovernorVotes.sol": {
+        "keccak256": "0x22dcadb387580ee9bfc0c2846d9798eeb2402553f9ca068d0a1e955a86ce9731",
+        "urls": [
+          "bzz-raw://8e07c191ddb7053427256b8f9ba8f11597ed946e2252d3aa248407960e2845b5",
+          "dweb:/ipfs/QmXrfEDKmowfZLd3dZip8cmkvNMN41qtLuSLKN7tGh9wVk"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/interfaces/IGovernorVotes.sol",
+    "id": 65614,
+    "exportedSymbols": {
+      "IGovernorVotes": [
+        65613
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "32:270:85",
+    "nodes": [
+      {
+        "id": 65607,
+        "nodeType": "PragmaDirective",
+        "src": "32:24:85",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 65613,
+        "nodeType": "ContractDefinition",
+        "src": "219:82:85",
+        "nodes": [
+          {
+            "id": 65612,
+            "nodeType": "FunctionDefinition",
+            "src": "250:49:85",
+            "nodes": [],
+            "functionSelector": "fc0c546a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "token",
+            "nameLocation": "259:5:85",
+            "parameters": {
+              "id": 65608,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "264:2:85"
+            },
+            "returnParameters": {
+              "id": 65611,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65610,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65612,
+                  "src": "290:7:85",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 65609,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "290:7:85",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "289:9:85"
+            },
+            "scope": 65613,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IGovernorVotes",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          65613
+        ],
+        "name": "IGovernorVotes",
+        "nameLocation": "229:14:85",
+        "scope": 65614,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 85
+}

@@ -1,0 +1,1838 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "DEX__DeadlinePassed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "DEX__InvalidPath",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "DEX__InvalidPrice",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "DEX__PoolNotFound",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "DEX__Slippage",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "DEX__ZeroAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "tokenA",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IERC20",
+          "name": "tokenB",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountA",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountB",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "acceptedSlippage",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ],
+      "name": "addLiquidity",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20[]",
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "desiredAmountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ],
+      "name": "buy",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "actualAmountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountInUsed",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "baseToken",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IERC20",
+          "name": "quoteToken",
+          "type": "address"
+        }
+      ],
+      "name": "getDepth",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "depth",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "baseToken",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IERC20",
+          "name": "quoteToken",
+          "type": "address"
+        }
+      ],
+      "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "tokenA",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IERC20",
+          "name": "tokenB",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "desiredAmountTokenA",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "desiredAmountTokenB",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lpTokenQty",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "acceptedSlippage",
+          "type": "uint256"
+        }
+      ],
+      "name": "redeemLiquidity",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "unredeemedLpTokens",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "addLiquidity(address,address,uint256,uint256,uint256,address,uint256)": "ba9f20b8",
+    "buy(address[],uint256,uint256,address,uint256)": "2a64b539",
+    "getDepth(address,address)": "4772b4df",
+    "getPrice(address,address)": "ac41865a",
+    "redeemLiquidity(address,address,uint256,uint256,uint256,address,uint256,uint256)": "3118b3c8"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"DEX__DeadlinePassed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__InvalidPath\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__InvalidPrice\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__PoolNotFound\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__Slippage\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__ZeroAmount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"tokenB\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountA\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountB\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptedSlippage\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"provider\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"addLiquidity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20[]\",\"name\":\"path\",\"type\":\"address[]\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maxPrice\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"buy\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"actualAmountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountInUsed\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"getDepth\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"depth\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"getPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"tokenB\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountTokenA\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountTokenB\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lpTokenQty\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptedSlippage\",\"type\":\"uint256\"}],\"name\":\"redeemLiquidity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"unredeemedLpTokens\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for a decentralized exchange (DEX) defining essential functions for token trading, liquidity provision, and liquidity redemption.\",\"kind\":\"dev\",\"methods\":{\"buy(address[],uint256,uint256,address,uint256)\":{\"details\":\"The function determines the best price for the desired output and swaps tokens accordingly. If the user specifies a desired output greater than what's available at the current best price, they'll receive the maximum possible at that best price. If the desired output is less than the available amount at the best price, they'll receive the exact amount they desire.\",\"params\":{\"deadline\":\"The time by which the swap should be completed.\",\"desiredAmountOut\":\"The desired amount of the final token in the path to receive.\",\"maxPrice\":\"The maximum acceptable price for the entire path, scaled by PRECISION.\",\"path\":\"The array of tokens representing the swap path.\",\"recipient\":\"The address to receive the swapped tokens.\"},\"returns\":{\"actualAmountOut\":\"The actual output amount of tokens received.\",\"amountInUsed\":\"The actual input amount of tokens used.\"}},\"getDepth(address,address)\":{\"details\":\"Calculates the total depth of base tokens available for a given maximum price. The function steps through each price level until the maximum price is reached, accumulating the depth available at each price level. NOTE: This function uses a while loop which could potentially run out of gas if the maximum price is set too high compared to the current price. Users should ensure that the maximum price is set to a reasonable level relative to the current price before calling this function.\",\"params\":{\"baseToken\":\"The base token that the user is interested in.\",\"quoteToken\":\"The quote token that would be used to buy the base token.\"},\"returns\":{\"depth\":\"The total depth of base tokens available at the current price\"}}},\"title\":\"IDEX\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"buy(address[],uint256,uint256,address,uint256)\":{\"notice\":\"Executes a token swap following a specified path of pools.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IDEX.sol\":\"IDEX\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"src/interfaces/IDEX.sol\":{\"keccak256\":\"0x41de056bc18ca311c27ee3fb3975a336a0f423e7495e853d3ea27d016eb55290\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://1b3f7643f9ce7b02430cbba80f6852b9aadf801657daf50ea15d2453b8bc2bbb\",\"dweb:/ipfs/QmQc9sQHKU2N1rLUrWMT3JmCYRa4xJg8cCtFFac4WfjXX7\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "DEX__DeadlinePassed"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "DEX__InvalidPath"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "DEX__InvalidPrice"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "DEX__PoolNotFound"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "DEX__Slippage"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "DEX__ZeroAmount"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "tokenA",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IERC20",
+              "name": "tokenB",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amountA",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amountB",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "acceptedSlippage",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "provider",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "addLiquidity",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20[]",
+              "name": "path",
+              "type": "address[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "desiredAmountOut",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "buy",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "actualAmountOut",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amountInUsed",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "baseToken",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IERC20",
+              "name": "quoteToken",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getDepth",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "depth",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "baseToken",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IERC20",
+              "name": "quoteToken",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPrice",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "tokenA",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IERC20",
+              "name": "tokenB",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "desiredAmountTokenA",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "desiredAmountTokenB",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lpTokenQty",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "acceptedSlippage",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "redeemLiquidity",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "unredeemedLpTokens",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "buy(address[],uint256,uint256,address,uint256)": {
+            "details": "The function determines the best price for the desired output and swaps tokens accordingly. If the user specifies a desired output greater than what's available at the current best price, they'll receive the maximum possible at that best price. If the desired output is less than the available amount at the best price, they'll receive the exact amount they desire.",
+            "params": {
+              "deadline": "The time by which the swap should be completed.",
+              "desiredAmountOut": "The desired amount of the final token in the path to receive.",
+              "maxPrice": "The maximum acceptable price for the entire path, scaled by PRECISION.",
+              "path": "The array of tokens representing the swap path.",
+              "recipient": "The address to receive the swapped tokens."
+            },
+            "returns": {
+              "actualAmountOut": "The actual output amount of tokens received.",
+              "amountInUsed": "The actual input amount of tokens used."
+            }
+          },
+          "getDepth(address,address)": {
+            "details": "Calculates the total depth of base tokens available for a given maximum price. The function steps through each price level until the maximum price is reached, accumulating the depth available at each price level. NOTE: This function uses a while loop which could potentially run out of gas if the maximum price is set too high compared to the current price. Users should ensure that the maximum price is set to a reasonable level relative to the current price before calling this function.",
+            "params": {
+              "baseToken": "The base token that the user is interested in.",
+              "quoteToken": "The quote token that would be used to buy the base token."
+            },
+            "returns": {
+              "depth": "The total depth of base tokens available at the current price"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "buy(address[],uint256,uint256,address,uint256)": {
+            "notice": "Executes a token swap following a specified path of pools."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@openzeppelin/=lib/openzeppelin-contracts/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        "forge-std/=lib/forge-std/src/",
+        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/interfaces/IDEX.sol": "IDEX"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+        "keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
+        "urls": [
+          "bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
+          "dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
+        ],
+        "license": "MIT"
+      },
+      "src/interfaces/IDEX.sol": {
+        "keccak256": "0x41de056bc18ca311c27ee3fb3975a336a0f423e7495e853d3ea27d016eb55290",
+        "urls": [
+          "bzz-raw://1b3f7643f9ce7b02430cbba80f6852b9aadf801657daf50ea15d2453b8bc2bbb",
+          "dweb:/ipfs/QmQc9sQHKU2N1rLUrWMT3JmCYRa4xJg8cCtFFac4WfjXX7"
+        ],
+        "license": "GPL-3.0-or-later"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/interfaces/IDEX.sol",
+    "id": 65244,
+    "exportedSymbols": {
+      "IDEX": [
+        65243
+      ],
+      "IERC20": [
+        48295
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "45:4764:81",
+    "nodes": [
+      {
+        "id": 65139,
+        "nodeType": "PragmaDirective",
+        "src": "45:24:81",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 65140,
+        "nodeType": "ImportDirective",
+        "src": "71:56:81",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
+        "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 65244,
+        "sourceUnit": 48296,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 65243,
+        "nodeType": "ContractDefinition",
+        "src": "300:4508:81",
+        "nodes": [
+          {
+            "id": 65143,
+            "nodeType": "ErrorDefinition",
+            "src": "321:28:81",
+            "nodes": [],
+            "errorSelector": "5a9cce58",
+            "name": "DEX__DeadlinePassed",
+            "nameLocation": "327:19:81",
+            "parameters": {
+              "id": 65142,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "346:2:81"
+            }
+          },
+          {
+            "id": 65145,
+            "nodeType": "ErrorDefinition",
+            "src": "354:26:81",
+            "nodes": [],
+            "errorSelector": "5153add0",
+            "name": "DEX__PoolNotFound",
+            "nameLocation": "360:17:81",
+            "parameters": {
+              "id": 65144,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "377:2:81"
+            }
+          },
+          {
+            "id": 65147,
+            "nodeType": "ErrorDefinition",
+            "src": "385:26:81",
+            "nodes": [],
+            "errorSelector": "b472cfc6",
+            "name": "DEX__InvalidPrice",
+            "nameLocation": "391:17:81",
+            "parameters": {
+              "id": 65146,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "408:2:81"
+            }
+          },
+          {
+            "id": 65149,
+            "nodeType": "ErrorDefinition",
+            "src": "416:25:81",
+            "nodes": [],
+            "errorSelector": "5701c3f5",
+            "name": "DEX__InvalidPath",
+            "nameLocation": "422:16:81",
+            "parameters": {
+              "id": 65148,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "438:2:81"
+            }
+          },
+          {
+            "id": 65151,
+            "nodeType": "ErrorDefinition",
+            "src": "446:24:81",
+            "nodes": [],
+            "errorSelector": "8fbdd497",
+            "name": "DEX__ZeroAmount",
+            "nameLocation": "452:15:81",
+            "parameters": {
+              "id": 65150,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "467:2:81"
+            }
+          },
+          {
+            "id": 65153,
+            "nodeType": "ErrorDefinition",
+            "src": "475:22:81",
+            "nodes": [],
+            "errorSelector": "f4622051",
+            "name": "DEX__Slippage",
+            "nameLocation": "481:13:81",
+            "parameters": {
+              "id": 65152,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "494:2:81"
+            }
+          },
+          {
+            "id": 65164,
+            "nodeType": "FunctionDefinition",
+            "src": "503:115:81",
+            "nodes": [],
+            "functionSelector": "ac41865a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPrice",
+            "nameLocation": "512:8:81",
+            "parameters": {
+              "id": 65160,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65156,
+                  "mutability": "mutable",
+                  "name": "baseToken",
+                  "nameLocation": "537:9:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65164,
+                  "src": "530:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65155,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65154,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "530:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "530:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "530:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65159,
+                  "mutability": "mutable",
+                  "name": "quoteToken",
+                  "nameLocation": "563:10:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65164,
+                  "src": "556:17:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65158,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65157,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "556:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "556:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "556:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "520:59:81"
+            },
+            "returnParameters": {
+              "id": 65163,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65162,
+                  "mutability": "mutable",
+                  "name": "price",
+                  "nameLocation": "611:5:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65164,
+                  "src": "603:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65161,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "603:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "602:15:81"
+            },
+            "scope": 65243,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65176,
+            "nodeType": "FunctionDefinition",
+            "src": "1435:115:81",
+            "nodes": [],
+            "documentation": {
+              "id": 65165,
+              "nodeType": "StructuredDocumentation",
+              "src": "624:806:81",
+              "text": " @dev Calculates the total depth of base tokens available for a given maximum price.\n The function steps through each price level until the maximum price is reached,\n accumulating the depth available at each price level.\n NOTE: This function uses a while loop which could potentially run out of gas if the\n maximum price is set too high compared to the current price. Users should ensure that\n the maximum price is set to a reasonable level relative to the current price before calling\n this function.\n @param baseToken The base token that the user is interested in.\n @param quoteToken The quote token that would be used to buy the base token.\n @return depth The total depth of base tokens available at the current price"
+            },
+            "functionSelector": "4772b4df",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getDepth",
+            "nameLocation": "1444:8:81",
+            "parameters": {
+              "id": 65172,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65168,
+                  "mutability": "mutable",
+                  "name": "baseToken",
+                  "nameLocation": "1469:9:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65176,
+                  "src": "1462:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65167,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65166,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1462:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "1462:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "1462:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65171,
+                  "mutability": "mutable",
+                  "name": "quoteToken",
+                  "nameLocation": "1495:10:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65176,
+                  "src": "1488:17:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65170,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65169,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1488:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "1488:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "1488:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1452:59:81"
+            },
+            "returnParameters": {
+              "id": 65175,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65174,
+                  "mutability": "mutable",
+                  "name": "depth",
+                  "nameLocation": "1543:5:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65176,
+                  "src": "1535:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65173,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1535:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1534:15:81"
+            },
+            "scope": 65243,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65199,
+            "nodeType": "FunctionDefinition",
+            "src": "1556:246:81",
+            "nodes": [],
+            "functionSelector": "ba9f20b8",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addLiquidity",
+            "nameLocation": "1565:12:81",
+            "parameters": {
+              "id": 65193,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65179,
+                  "mutability": "mutable",
+                  "name": "tokenA",
+                  "nameLocation": "1594:6:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1587:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65178,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65177,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1587:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "1587:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "1587:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65182,
+                  "mutability": "mutable",
+                  "name": "tokenB",
+                  "nameLocation": "1617:6:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1610:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65181,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65180,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1610:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "1610:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "1610:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65184,
+                  "mutability": "mutable",
+                  "name": "amountA",
+                  "nameLocation": "1641:7:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1633:15:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65183,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1633:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65186,
+                  "mutability": "mutable",
+                  "name": "amountB",
+                  "nameLocation": "1666:7:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1658:15:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65185,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1658:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65188,
+                  "mutability": "mutable",
+                  "name": "acceptedSlippage",
+                  "nameLocation": "1691:16:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1683:24:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65187,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1683:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65190,
+                  "mutability": "mutable",
+                  "name": "provider",
+                  "nameLocation": "1725:8:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1717:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 65189,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1717:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65192,
+                  "mutability": "mutable",
+                  "name": "deadline",
+                  "nameLocation": "1751:8:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1743:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65191,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1743:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1577:188:81"
+            },
+            "returnParameters": {
+              "id": 65198,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65195,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1784:7:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65194,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1784:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65197,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65199,
+                  "src": "1793:7:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65196,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1793:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1783:18:81"
+            },
+            "scope": 65243,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65222,
+            "nodeType": "FunctionDefinition",
+            "src": "1808:312:81",
+            "nodes": [],
+            "functionSelector": "3118b3c8",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "redeemLiquidity",
+            "nameLocation": "1817:15:81",
+            "parameters": {
+              "id": 65218,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65202,
+                  "mutability": "mutable",
+                  "name": "tokenA",
+                  "nameLocation": "1849:6:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "1842:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65201,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65200,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1842:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "1842:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "1842:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65205,
+                  "mutability": "mutable",
+                  "name": "tokenB",
+                  "nameLocation": "1872:6:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "1865:13:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65204,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65203,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1865:6:81"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "1865:6:81"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "1865:6:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65207,
+                  "mutability": "mutable",
+                  "name": "desiredAmountTokenA",
+                  "nameLocation": "1896:19:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "1888:27:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65206,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1888:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65209,
+                  "mutability": "mutable",
+                  "name": "desiredAmountTokenB",
+                  "nameLocation": "1933:19:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "1925:27:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65208,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1925:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65211,
+                  "mutability": "mutable",
+                  "name": "lpTokenQty",
+                  "nameLocation": "1970:10:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "1962:18:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65210,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1962:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65213,
+                  "mutability": "mutable",
+                  "name": "recipient",
+                  "nameLocation": "1998:9:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "1990:17:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 65212,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1990:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65215,
+                  "mutability": "mutable",
+                  "name": "deadline",
+                  "nameLocation": "2025:8:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "2017:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65214,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2017:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65217,
+                  "mutability": "mutable",
+                  "name": "acceptedSlippage",
+                  "nameLocation": "2051:16:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "2043:24:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65216,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2043:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1832:241:81"
+            },
+            "returnParameters": {
+              "id": 65221,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65220,
+                  "mutability": "mutable",
+                  "name": "unredeemedLpTokens",
+                  "nameLocation": "2100:18:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65222,
+                  "src": "2092:26:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65219,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2092:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2091:28:81"
+            },
+            "scope": 65243,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65242,
+            "nodeType": "FunctionDefinition",
+            "src": "4579:227:81",
+            "nodes": [],
+            "documentation": {
+              "id": 65223,
+              "nodeType": "StructuredDocumentation",
+              "src": "3547:1027:81",
+              "text": " @notice Executes a token swap following a specified path of pools.\n @dev The function determines the best price for the desired output and swaps tokens accordingly.\n If the user specifies a desired output greater than what's available at the current best price,\n they'll receive the maximum possible at that best price.\n If the desired output is less than the available amount at the best price, they'll receive the exact amount they desire.\n @param path The array of tokens representing the swap path.\n @param desiredAmountOut The desired amount of the final token in the path to receive.\n @param maxPrice The maximum acceptable price for the entire path, scaled by PRECISION.\n @param recipient The address to receive the swapped tokens.\n @param deadline The time by which the swap should be completed.\n @return actualAmountOut The actual output amount of tokens received.\n @return amountInUsed The actual input amount of tokens used."
+            },
+            "functionSelector": "2a64b539",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "buy",
+            "nameLocation": "4588:3:81",
+            "parameters": {
+              "id": 65236,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65227,
+                  "mutability": "mutable",
+                  "name": "path",
+                  "nameLocation": "4617:4:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65242,
+                  "src": "4601:20:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_contract$_IERC20_$48295_$dyn_memory_ptr",
+                    "typeString": "contract IERC20[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 65225,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 65224,
+                        "name": "IERC20",
+                        "nameLocations": [
+                          "4601:6:81"
+                        ],
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 48295,
+                        "src": "4601:6:81"
+                      },
+                      "referencedDeclaration": 48295,
+                      "src": "4601:6:81",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_IERC20_$48295",
+                        "typeString": "contract IERC20"
+                      }
+                    },
+                    "id": 65226,
+                    "nodeType": "ArrayTypeName",
+                    "src": "4601:8:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_IERC20_$48295_$dyn_storage_ptr",
+                      "typeString": "contract IERC20[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65229,
+                  "mutability": "mutable",
+                  "name": "desiredAmountOut",
+                  "nameLocation": "4639:16:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65242,
+                  "src": "4631:24:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65228,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4631:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65231,
+                  "mutability": "mutable",
+                  "name": "maxPrice",
+                  "nameLocation": "4673:8:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65242,
+                  "src": "4665:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65230,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4665:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65233,
+                  "mutability": "mutable",
+                  "name": "recipient",
+                  "nameLocation": "4699:9:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65242,
+                  "src": "4691:17:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 65232,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4691:7:81",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65235,
+                  "mutability": "mutable",
+                  "name": "deadline",
+                  "nameLocation": "4726:8:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65242,
+                  "src": "4718:16:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65234,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4718:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4591:149:81"
+            },
+            "returnParameters": {
+              "id": 65241,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65238,
+                  "mutability": "mutable",
+                  "name": "actualAmountOut",
+                  "nameLocation": "4767:15:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65242,
+                  "src": "4759:23:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65237,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4759:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65240,
+                  "mutability": "mutable",
+                  "name": "amountInUsed",
+                  "nameLocation": "4792:12:81",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65242,
+                  "src": "4784:20:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65239,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4784:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4758:47:81"
+            },
+            "scope": 65243,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IDEX",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 65141,
+          "nodeType": "StructuredDocumentation",
+          "src": "129:170:81",
+          "text": " @title IDEX\n @dev Interface for a decentralized exchange (DEX) defining essential functions for token trading, liquidity provision, and liquidity redemption."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          65243
+        ],
+        "name": "IDEX",
+        "nameLocation": "310:4:81",
+        "scope": 65244,
+        "usedErrors": [
+          65143,
+          65145,
+          65147,
+          65149,
+          65151,
+          65153
+        ]
+      }
+    ],
+    "license": "GPL-3.0-or-later"
+  },
+  "id": 81
+}

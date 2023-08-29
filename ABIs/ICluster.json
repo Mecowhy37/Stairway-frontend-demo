@@ -1,0 +1,1402 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "Cluster__InsufficientLiquidity",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Cluster__Unauthorized",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IGovernor",
+          "name": "governor",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "support",
+          "type": "uint8"
+        }
+      ],
+      "name": "castVote",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maxCapacity",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IGovernor",
+          "name": "governor",
+          "type": "address"
+        },
+        {
+          "internalType": "address[]",
+          "name": "targets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "calldatas",
+          "type": "bytes[]"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        }
+      ],
+      "name": "propose",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IVotes",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "selfDelegate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "tokenBalances",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "castVote(address,uint256,uint8)": "c0ab2cc6",
+    "deposit(address,uint256)": "47e7ef24",
+    "maxCapacity()": "59b6a0c9",
+    "propose(address,address[],uint256[],bytes[],string)": "c50adadf",
+    "selfDelegate(address)": "82b5e889",
+    "tokenBalances(address)": "523fba7f",
+    "withdraw(address,address,uint256)": "d9caed12"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"Cluster__InsufficientLiquidity\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"Cluster__Unauthorized\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"support\",\"type\":\"uint8\"}],\"name\":\"castVote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"maxCapacity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"address[]\",\"name\":\"targets\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"values\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes[]\",\"name\":\"calldatas\",\"type\":\"bytes[]\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"}],\"name\":\"propose\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IVotes\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"selfDelegate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"tokenBalances\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Defines the interface for the Cluster contract\",\"kind\":\"dev\",\"methods\":{\"maxCapacity()\":{\"details\":\"Gets the maximum balance of the Cluster\",\"returns\":{\"_0\":\"The maximum token balance in the Cluster\"}},\"tokenBalances(address)\":{\"details\":\"Gets the balance of a specific token in the Cluster\",\"params\":{\"token\":\"The address of the ERC20 token to get the balance of\"},\"returns\":{\"_0\":\"The current token balance in the Cluster\"}},\"withdraw(address,address,uint256)\":{\"details\":\"Allows the admin to withdraw a specific amount of tokens to a given address\",\"params\":{\"amount\":\"The amount of tokens to withdraw\",\"to\":\"The address to send the tokens to\",\"token\":\"The address of the ERC20 token to withdraw\"}}},\"title\":\"ICluster interface\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"withdraw(address,address,uint256)\":{\"notice\":\"Only callable by the admin of the Cluster\"}},\"notice\":\"Clusters are containers for tokens in the system,         with an admin who can withdraw tokens\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/ICluster.sol\":\"ICluster\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d\",\"dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96\",\"dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb\",\"dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol\":{\"keccak256\":\"0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6\",\"dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"src/interfaces/ICluster.sol\":{\"keccak256\":\"0x693af53626d81d3fb2c6d442dd7ff143b3b5213379d21dcec1eb4ac1389ca88a\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://dcf7e1028affc5865aa784376aae2f625732e20198ad2968ad8cf3a6ac2e462f\",\"dweb:/ipfs/Qmab2pEPePuFxqe4UWRW8NFDxeAARWtqFwUfxeK3CXmX17\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "Cluster__InsufficientLiquidity"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "Cluster__Unauthorized"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IGovernor",
+              "name": "governor",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "support",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "castVote"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "deposit"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "maxCapacity",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IGovernor",
+              "name": "governor",
+              "type": "address"
+            },
+            {
+              "internalType": "address[]",
+              "name": "targets",
+              "type": "address[]"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "values",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "bytes[]",
+              "name": "calldatas",
+              "type": "bytes[]"
+            },
+            {
+              "internalType": "string",
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "propose",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IVotes",
+              "name": "token",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "selfDelegate"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "token",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "tokenBalances",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdraw"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "maxCapacity()": {
+            "details": "Gets the maximum balance of the Cluster",
+            "returns": {
+              "_0": "The maximum token balance in the Cluster"
+            }
+          },
+          "tokenBalances(address)": {
+            "details": "Gets the balance of a specific token in the Cluster",
+            "params": {
+              "token": "The address of the ERC20 token to get the balance of"
+            },
+            "returns": {
+              "_0": "The current token balance in the Cluster"
+            }
+          },
+          "withdraw(address,address,uint256)": {
+            "details": "Allows the admin to withdraw a specific amount of tokens to a given address",
+            "params": {
+              "amount": "The amount of tokens to withdraw",
+              "to": "The address to send the tokens to",
+              "token": "The address of the ERC20 token to withdraw"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "withdraw(address,address,uint256)": {
+            "notice": "Only callable by the admin of the Cluster"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@openzeppelin/=lib/openzeppelin-contracts/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        "forge-std/=lib/forge-std/src/",
+        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/interfaces/ICluster.sol": "ICluster"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol": {
+        "keccak256": "0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7",
+        "urls": [
+          "bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d",
+          "dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol": {
+        "keccak256": "0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb",
+        "urls": [
+          "bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96",
+          "dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol": {
+        "keccak256": "0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a",
+        "urls": [
+          "bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb",
+          "dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol": {
+        "keccak256": "0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9",
+        "urls": [
+          "bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6",
+          "dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+        "keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
+        "urls": [
+          "bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
+          "dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
+        "keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+        "urls": [
+          "bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+          "dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+        ],
+        "license": "MIT"
+      },
+      "src/interfaces/ICluster.sol": {
+        "keccak256": "0x693af53626d81d3fb2c6d442dd7ff143b3b5213379d21dcec1eb4ac1389ca88a",
+        "urls": [
+          "bzz-raw://dcf7e1028affc5865aa784376aae2f625732e20198ad2968ad8cf3a6ac2e462f",
+          "dweb:/ipfs/Qmab2pEPePuFxqe4UWRW8NFDxeAARWtqFwUfxeK3CXmX17"
+        ],
+        "license": "BSL-1.1"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/interfaces/ICluster.sol",
+    "id": 65118,
+    "exportedSymbols": {
+      "ICluster": [
+        65117
+      ],
+      "IERC165": [
+        52787
+      ],
+      "IERC20": [
+        48295
+      ],
+      "IERC6372": [
+        47524
+      ],
+      "IGovernor": [
+        45314
+      ],
+      "IVotes": [
+        47472
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "36:1865:79",
+    "nodes": [
+      {
+        "id": 65039,
+        "nodeType": "PragmaDirective",
+        "src": "36:24:79",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 65040,
+        "nodeType": "ImportDirective",
+        "src": "62:56:79",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
+        "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 65118,
+        "sourceUnit": 48296,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 65041,
+        "nodeType": "ImportDirective",
+        "src": "119:58:79",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol",
+        "file": "@openzeppelin/contracts/governance/IGovernor.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 65118,
+        "sourceUnit": 45315,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 65042,
+        "nodeType": "ImportDirective",
+        "src": "178:61:79",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol",
+        "file": "@openzeppelin/contracts/governance/utils/IVotes.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 65118,
+        "sourceUnit": 47473,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 65117,
+        "nodeType": "ContractDefinition",
+        "src": "443:1457:79",
+        "nodes": [
+          {
+            "id": 65045,
+            "nodeType": "ErrorDefinition",
+            "src": "489:39:79",
+            "nodes": [],
+            "errorSelector": "3fe8fd1d",
+            "name": "Cluster__InsufficientLiquidity",
+            "nameLocation": "495:30:79",
+            "parameters": {
+              "id": 65044,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "525:2:79"
+            }
+          },
+          {
+            "id": 65047,
+            "nodeType": "ErrorDefinition",
+            "src": "533:30:79",
+            "nodes": [],
+            "errorSelector": "2976566b",
+            "name": "Cluster__Unauthorized",
+            "nameLocation": "539:21:79",
+            "parameters": {
+              "id": 65046,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "560:2:79"
+            }
+          },
+          {
+            "id": 65056,
+            "nodeType": "FunctionDefinition",
+            "src": "778:69:79",
+            "nodes": [],
+            "documentation": {
+              "id": 65048,
+              "nodeType": "StructuredDocumentation",
+              "src": "569:204:79",
+              "text": " @dev Gets the balance of a specific token in the Cluster\n @param token The address of the ERC20 token to get the balance of\n @return The current token balance in the Cluster"
+            },
+            "functionSelector": "523fba7f",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "tokenBalances",
+            "nameLocation": "787:13:79",
+            "parameters": {
+              "id": 65052,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65051,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "808:5:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65056,
+                  "src": "801:12:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65050,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65049,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "801:6:79"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "801:6:79"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "801:6:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "800:14:79"
+            },
+            "returnParameters": {
+              "id": 65055,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65054,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65056,
+                  "src": "838:7:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65053,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "838:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "837:9:79"
+            },
+            "scope": 65117,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65064,
+            "nodeType": "FunctionDefinition",
+            "src": "853:56:79",
+            "nodes": [],
+            "functionSelector": "47e7ef24",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deposit",
+            "nameLocation": "862:7:79",
+            "parameters": {
+              "id": 65062,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65059,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "877:5:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65064,
+                  "src": "870:12:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65058,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65057,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "870:6:79"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "870:6:79"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "870:6:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65061,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "892:6:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65064,
+                  "src": "884:14:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65060,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "884:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "869:30:79"
+            },
+            "returnParameters": {
+              "id": 65063,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "908:0:79"
+            },
+            "scope": 65117,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65075,
+            "nodeType": "FunctionDefinition",
+            "src": "1244:69:79",
+            "nodes": [],
+            "documentation": {
+              "id": 65065,
+              "nodeType": "StructuredDocumentation",
+              "src": "915:324:79",
+              "text": " @dev Allows the admin to withdraw a specific amount of tokens to a given address\n @param token The address of the ERC20 token to withdraw\n @param to The address to send the tokens to\n @param amount The amount of tokens to withdraw\n @notice Only callable by the admin of the Cluster"
+            },
+            "functionSelector": "d9caed12",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdraw",
+            "nameLocation": "1253:8:79",
+            "parameters": {
+              "id": 65073,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65068,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "1269:5:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65075,
+                  "src": "1262:12:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$48295",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 65067,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65066,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1262:6:79"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 48295,
+                      "src": "1262:6:79"
+                    },
+                    "referencedDeclaration": 48295,
+                    "src": "1262:6:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$48295",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65070,
+                  "mutability": "mutable",
+                  "name": "to",
+                  "nameLocation": "1284:2:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65075,
+                  "src": "1276:10:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 65069,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1276:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65072,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "1296:6:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65075,
+                  "src": "1288:14:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65071,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1288:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1261:42:79"
+            },
+            "returnParameters": {
+              "id": 65074,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1312:0:79"
+            },
+            "scope": 65117,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65081,
+            "nodeType": "FunctionDefinition",
+            "src": "1443:55:79",
+            "nodes": [],
+            "documentation": {
+              "id": 65076,
+              "nodeType": "StructuredDocumentation",
+              "src": "1319:119:79",
+              "text": " @dev Gets the maximum balance of the Cluster\n @return The maximum token balance in the Cluster"
+            },
+            "functionSelector": "59b6a0c9",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "maxCapacity",
+            "nameLocation": "1452:11:79",
+            "parameters": {
+              "id": 65077,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1463:2:79"
+            },
+            "returnParameters": {
+              "id": 65080,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65079,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65081,
+                  "src": "1489:7:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65078,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1489:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1488:9:79"
+            },
+            "scope": 65117,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65091,
+            "nodeType": "FunctionDefinition",
+            "src": "1504:112:79",
+            "nodes": [],
+            "functionSelector": "c0ab2cc6",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "castVote",
+            "nameLocation": "1513:8:79",
+            "parameters": {
+              "id": 65089,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65084,
+                  "mutability": "mutable",
+                  "name": "governor",
+                  "nameLocation": "1541:8:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65091,
+                  "src": "1531:18:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IGovernor_$45314",
+                    "typeString": "contract IGovernor"
+                  },
+                  "typeName": {
+                    "id": 65083,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65082,
+                      "name": "IGovernor",
+                      "nameLocations": [
+                        "1531:9:79"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 45314,
+                      "src": "1531:9:79"
+                    },
+                    "referencedDeclaration": 45314,
+                    "src": "1531:9:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IGovernor_$45314",
+                      "typeString": "contract IGovernor"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65086,
+                  "mutability": "mutable",
+                  "name": "proposalId",
+                  "nameLocation": "1567:10:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65091,
+                  "src": "1559:18:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65085,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1559:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65088,
+                  "mutability": "mutable",
+                  "name": "support",
+                  "nameLocation": "1593:7:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65091,
+                  "src": "1587:13:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 65087,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1587:5:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1521:85:79"
+            },
+            "returnParameters": {
+              "id": 65090,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1615:0:79"
+            },
+            "scope": 65117,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65110,
+            "nodeType": "FunctionDefinition",
+            "src": "1622:225:79",
+            "nodes": [],
+            "functionSelector": "c50adadf",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "propose",
+            "nameLocation": "1631:7:79",
+            "parameters": {
+              "id": 65106,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65094,
+                  "mutability": "mutable",
+                  "name": "governor",
+                  "nameLocation": "1658:8:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65110,
+                  "src": "1648:18:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IGovernor_$45314",
+                    "typeString": "contract IGovernor"
+                  },
+                  "typeName": {
+                    "id": 65093,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65092,
+                      "name": "IGovernor",
+                      "nameLocations": [
+                        "1648:9:79"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 45314,
+                      "src": "1648:9:79"
+                    },
+                    "referencedDeclaration": 45314,
+                    "src": "1648:9:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IGovernor_$45314",
+                      "typeString": "contract IGovernor"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65097,
+                  "mutability": "mutable",
+                  "name": "targets",
+                  "nameLocation": "1693:7:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65110,
+                  "src": "1676:24:79",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 65095,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "1676:7:79",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 65096,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1676:9:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65100,
+                  "mutability": "mutable",
+                  "name": "values",
+                  "nameLocation": "1727:6:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65110,
+                  "src": "1710:23:79",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 65098,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "1710:7:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 65099,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1710:9:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65103,
+                  "mutability": "mutable",
+                  "name": "calldatas",
+                  "nameLocation": "1758:9:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65110,
+                  "src": "1743:24:79",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes_memory_ptr_$dyn_memory_ptr",
+                    "typeString": "bytes[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 65101,
+                      "name": "bytes",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "1743:5:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes_storage_ptr",
+                        "typeString": "bytes"
+                      }
+                    },
+                    "id": 65102,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1743:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
+                      "typeString": "bytes[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 65105,
+                  "mutability": "mutable",
+                  "name": "description",
+                  "nameLocation": "1791:11:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65110,
+                  "src": "1777:25:79",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 65104,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1777:6:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1638:170:79"
+            },
+            "returnParameters": {
+              "id": 65109,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65108,
+                  "mutability": "mutable",
+                  "name": "proposalId",
+                  "nameLocation": "1835:10:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65110,
+                  "src": "1827:18:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 65107,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1827:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1826:20:79"
+            },
+            "scope": 65117,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 65116,
+            "nodeType": "FunctionDefinition",
+            "src": "1853:45:79",
+            "nodes": [],
+            "functionSelector": "82b5e889",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "selfDelegate",
+            "nameLocation": "1862:12:79",
+            "parameters": {
+              "id": 65114,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 65113,
+                  "mutability": "mutable",
+                  "name": "token",
+                  "nameLocation": "1882:5:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 65116,
+                  "src": "1875:12:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IVotes_$47472",
+                    "typeString": "contract IVotes"
+                  },
+                  "typeName": {
+                    "id": 65112,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 65111,
+                      "name": "IVotes",
+                      "nameLocations": [
+                        "1875:6:79"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 47472,
+                      "src": "1875:6:79"
+                    },
+                    "referencedDeclaration": 47472,
+                    "src": "1875:6:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IVotes_$47472",
+                      "typeString": "contract IVotes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1874:14:79"
+            },
+            "returnParameters": {
+              "id": 65115,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1897:0:79"
+            },
+            "scope": 65117,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ICluster",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 65043,
+          "nodeType": "StructuredDocumentation",
+          "src": "241:201:79",
+          "text": " @title ICluster interface\n @dev Defines the interface for the Cluster contract\n @notice Clusters are containers for tokens in the system,\n         with an admin who can withdraw tokens"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          65117
+        ],
+        "name": "ICluster",
+        "nameLocation": "453:8:79",
+        "scope": 65118,
+        "usedErrors": [
+          65045,
+          65047
+        ]
+      }
+    ],
+    "license": "BSL-1.1"
+  },
+  "id": 79
+}

@@ -1,0 +1,96 @@
+{
+  "abi": [],
+  "bytecode": {
+    "object": "0x",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "linkReferences": {}
+  },
+  "ast": {
+    "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/draft-ERC20Permit.sol",
+    "id": 49266,
+    "exportedSymbols": {
+      "Context": [
+        51552
+      ],
+      "Counters": [
+        51626
+      ],
+      "ECDSA": [
+        52547
+      ],
+      "EIP712": [
+        52751
+      ],
+      "ERC20": [
+        48217
+      ],
+      "ERC20Permit": [
+        48467
+      ],
+      "IERC20": [
+        48295
+      ],
+      "IERC20Metadata": [
+        49226
+      ],
+      "IERC20Permit": [
+        49262
+      ],
+      "IERC5267": [
+        47500
+      ],
+      "Math": [
+        53653
+      ],
+      "ShortString": [
+        51631
+      ],
+      "ShortStrings": [
+        51842
+      ],
+      "SignedMath": [
+        55299
+      ],
+      "StorageSlot": [
+        51952
+      ],
+      "Strings": [
+        52181
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "128:118:44",
+    "nodes": [
+      {
+        "id": 49264,
+        "nodeType": "PragmaDirective",
+        "src": "128:23:44",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ]
+      },
+      {
+        "id": 49265,
+        "nodeType": "ImportDirective",
+        "src": "218:27:44",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol",
+        "file": "./ERC20Permit.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 49266,
+        "sourceUnit": 48468,
+        "symbolAliases": [],
+        "unitAlias": ""
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 44
+}
