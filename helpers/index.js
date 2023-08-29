@@ -1,6 +1,5 @@
 import { ref } from "vue"
-import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
-import Web3 from "web3"
+import { BrowserProvider, Contract, parseUnits, formatUnits, getAddress } from "ethers"
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
@@ -62,22 +61,21 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         "pool",
         () => {
             if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-                if (route.name === "add-liquidity") {
-                    const bothThere = Tokens.value.every((el) => el !== null)
-
-                    if (bothThere) {
-                        console.log("usePools - fetchingPool() - on", route.name)
-                        return $fetch(
-                            getUrl(
-                                `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
-                                    Tokens.value[tkEnum.QUOTE].address
-                                }`
-                            )
-                        )
-                    }
-                } else if (route.name === "remove-address") {
+                if (route.name === "remove-address") {
                     console.log("usePools - fetchingPool() - on", route.name)
                     return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
+                }
+
+                const bothThere = Tokens.value.every((el) => el !== null)
+                if (bothThere) {
+                    console.log("usePools - fetchingPool() - on", route.name)
+                    return $fetch(
+                        getUrl(
+                            `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
+                                Tokens.value[tkEnum.QUOTE].address
+                            }`
+                        )
+                    )
                 }
             }
         },
@@ -162,20 +160,20 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         }
         try {
             console.log(" - - - - -a d d L Q- - - - - - ")
-            console.log("tokenQuote.address:", Web3.utils.toChecksumAddress(tokenQuote.address))
-            console.log("tokenBase.address:", Web3.utils.toChecksumAddress(tokenBase.address))
+            console.log("tokenQuote.address:", getAddress(tokenQuote.address))
+            console.log("tokenBase.address:", getAddress(tokenBase.address))
             console.log("amountQuote:", amountQuote.toString())
             console.log("amountBase:", amountBase.toString())
             console.log("parsedSlippage:", parsedSlippage)
             console.log("recipient:", recipient)
             console.log("deadlineStamp:", deadlineStamp)
             await router.addLiquidity(
-                Web3.utils.toChecksumAddress(tokenQuote.address),
-                Web3.utils.toChecksumAddress(tokenBase.address),
+                getAddress(tokenQuote.address),
+                getAddress(tokenBase.address),
                 amountQuote.toString(),
                 amountBase.toString(),
                 parsedSlippage,
-                Web3.utils.toChecksumAddress(recipient),
+                getAddress(recipient),
                 deadlineStamp
             )
         } catch (error) {
@@ -228,12 +226,12 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("connectedAccount:", connectedAccount.value)
             console.log("deadlineStamp:", deadlineStamp)
             await router.redeemLiquidity(
-                Web3.utils.toChecksumAddress(tokenQuote.address),
-                Web3.utils.toChecksumAddress(tokenBase.address),
+                getAddress(tokenQuote.address),
+                getAddress(tokenBase.address),
                 amountQuote,
                 amountBase,
                 lpAmount,
-                Web3.utils.toChecksumAddress(connectedAccount.value),
+                getAddress(connectedAccount.value),
                 deadlineStamp,
                 "100000000000000000"
             )
@@ -242,7 +240,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         }
     }
 
-    async function swap(tokenQuote, tokenBase, amountQuote, amountBase, maxPrice, account, deadline, providerArg) {
+    async function swap(path, amountQuote, amountBase, maxPrice, account, deadline, providerArg) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
@@ -250,8 +248,15 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
+        const tokenPath = path.map((el) => {
+            el.address = getAddress(el.address)
+            return el
+        })
+        const tokenPathAddresses = tokenPath.map((el) => el.address)
+
         try {
             console.log(" - - - - allowance - - - - - ")
+            const tokenQuote = path[0]
             const allowance = await checkAllowance(tokenQuote.address, signer.address, routerAddress.value, providerArg)
             console.log("allowanceQuote:", allowance)
             console.log("amountQuote:", amountQuote)
@@ -264,18 +269,18 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         }
 
         console.log(" - - - - -s w a p- - - - - - ")
-        console.log("base token:", tokenBase.symbol, tokenBase.address)
-        console.log("qoute token:", tokenQuote.symbol, tokenQuote.address)
-        console.log("desired_base_amount:", amountBase.toString())
-        console.log("max-price:", maxPrice.toString())
+        tokenPath.forEach((token, index) => {
+            console.log("path token -", index + 1, "-", token.symbol, token.address)
+        })
+        console.log("desiredAmountOut:", amountBase.toString())
+        console.log("maxPrice:", maxPrice.toString())
         console.log("account:", account)
         console.log("deadlineStamp:", deadlineStamp)
         await router.buy(
-            Web3.utils.toChecksumAddress(tokenBase.address),
-            Web3.utils.toChecksumAddress(tokenQuote.address),
+            tokenPathAddresses,
             amountBase.toString(),
             maxPrice.toString(),
-            Web3.utils.toChecksumAddress(account),
+            getAddress(account),
             deadlineStamp
         )
     }

@@ -295,7 +295,7 @@ function switchOrder() {
 }
 function callSwap() {
     swap(
-        ...Tokens.value,
+        pool.value.path,
         fullAmounts.quote,
         fullAmounts.base,
         BigInt(price.value),
