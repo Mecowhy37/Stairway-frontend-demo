@@ -227,7 +227,7 @@
                 </div>
             </template>
         </Widget>
-        <Widget no-return>
+        <!-- <Widget no-return>
             <template #widget-title>temporary display</template>
             <template #widget-content>
                 <div class="contents temp-display">
@@ -253,7 +253,7 @@
                     </div>
                 </div>
             </template>
-        </Widget>
+        </Widget> -->
     </div>
 </template>
 
