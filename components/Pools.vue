@@ -3,15 +3,15 @@
         <div class="positions">
             <div class="positions__top row">
                 <h1>Liquidity</h1>
-                <Btn @click="stepStore.refreshPositions()">refresh positions</Btn>
+                <Btn @click="stepStore.refreshPositions()">refresh positions - {{ positionsStatus }}</Btn>
                 <NuxtLink
-                    v-if="positions && positions.length > 0 && connectedAccount"
                     class="link"
                     to="/add-liquidity"
                 >
                     <Btn
                         is="h4"
                         reverse
+                        :disabled="!positions || !connectedAccount"
                     >
                         Add Liquidity
                         <template #icon>
@@ -23,13 +23,14 @@
                     </Btn>
                 </NuxtLink>
             </div>
+
+            <h3 class="positions__length">
+                Your liquidity pools <span>{{ positions !== null ? positions.length : "0" }}</span>
+            </h3>
             <div
                 v-if="positions && positions.length > 0"
                 class="positions__list"
             >
-                <h3>
-                    Your liquidity pools <span>{{ positions.length }}</span>
-                </h3>
                 <div class="pools">
                     <div
                         v-for="(position, i) in positions"
@@ -90,13 +91,6 @@
                                     </template>
                                 </Dropdown>
                             </div>
-                            <!-- <div
-                            v-if="openedIndex === i"
-                            class="pool__heading_ext row align-center center"
-                        >
-                            <Btn>Add liquidity</Btn>
-                            <Btn>Redeem liquidity</Btn>
-                        </div> -->
                         </div>
                         <div class="pool__stats">
                             <div class="columns row">
@@ -121,6 +115,27 @@
                                 <div>
                                     <p>100%</p>
                                     <p class="caption grey-text">pool share</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                v-else-if="!positions && positionsStatus === 'pending'"
+                class="positions__list"
+            >
+                <div class="pools">
+                    <div
+                        v-for="el in new Array(3)"
+                        class="pool placeholder placeholder--solid"
+                    >
+                        <div class="pool__heading row"><Btn :compact="isMobile">Manage</Btn></div>
+                        <div class="pool__stats">
+                            <div class="columns">
+                                <div>
+                                    <p>a</p>
+                                    <p>a</p>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +190,8 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions, connectedAccount, connectedChainId, isMobile, refreshPositions } = storeToRefs(stepStore)
+const { positions, positionsStatus, connectedAccount, connectedChainId, isMobile, refreshPositions } =
+    storeToRefs(stepStore)
 
 const openedIndex = ref(null)
 
@@ -226,16 +242,16 @@ function Round(amt) {
             text-decoration: none;
         }
     }
-    &__list {
-        h3 {
-            padding: 25px 0;
-            span {
-                color: var(--text-color-reverse);
-                background-color: var(--swap-windows);
-                border-radius: 50px;
-                padding: 0 10px;
-            }
+    &__length {
+        padding: 25px 0;
+        span {
+            color: var(--text-color-reverse);
+            background-color: var(--swap-windows);
+            border-radius: 50px;
+            padding: 0 10px;
         }
+    }
+    &__list {
         .pools {
             height: 50vh;
             overflow-y: auto;

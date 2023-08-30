@@ -121,7 +121,7 @@
                             />
                         </div>
                         <p>
-                            you will only receive
+                            you can only buy
                             {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
                             {{ Tokens[tkEnum.BASE].symbol }} at this price
                         </p>

@@ -25,7 +25,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, positions, connectedAccount, connectedWallet, chains, connectedChainId, onboard } =
+const { featuredTokens, addresses, connectedAccount, connectedWallet, chains, connectedChainId, onboard } =
     storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
@@ -92,7 +92,7 @@ watch(
 const {
     data: PositionsData,
     pending: PositionsPending,
-    refresh: refreshPositions,
+    refresh: RefreshPositions,
     error: PositionsError,
     status: PositionsStatus,
 } = await useAsyncData(
@@ -101,19 +101,21 @@ const {
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
             console.log("fetching positions")
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+        } else {
+            console.log("should fetch null")
+            return null
         }
     },
     {
         watch: [connectedChainId, connectedAccount],
     }
 )
-stepStore.refreshPositions = refreshPositions
+stepStore.refreshPositions = RefreshPositions
 watch(
-    PositionsData,
-    (newVal) => {
-        if (newVal) {
-            positions.value = newVal
-        }
+    () => [PositionsData.value, PositionsStatus.value],
+    ([newPositions, newStatus]) => {
+        stepStore.positions = newPositions
+        stepStore.positionsStatus = newStatus
     },
     {
         immediate: true,
@@ -315,8 +317,11 @@ a {
 .placeholder {
     border-radius: var(--small-wdg-radius);
     padding: 3px;
-    background-color: var(--placeholder) !important;
     color: rgba(0, 0, 0, 0) !important;
+    background-color: var(--placeholder) !important;
+    &--solid {
+        background-color: var(--placeholder-solid) !important;
+    }
     * {
         visibility: hidden;
     }

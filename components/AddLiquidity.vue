@@ -146,17 +146,19 @@
                     <div class="pooled__item row align-center">
                         <img
                             class="token-icon token-icon--sm"
-                            :src="pool.base_token.logo_uri"
+                            :src="pool.quote_token.logo_uri"
                         />
-                        <p class="pooled__item__symbol grey-text">Pooled {{ pool.base_token.symbol }}:</p>
+                        <p class="pooled__item__symbol grey-text">
+                            Pooled {{ ownedPosition.pool.quote_token.symbol }}:
+                        </p>
                         <p class="pooled__item__amount">
                             {{
                                 ownedPosition
                                     ? basicRound(
                                           (Number(
                                               formatUnits(
-                                                  ownedPosition.base_amount,
-                                                  ownedPosition.pool.base_token.decimals
+                                                  ownedPosition.quote_amount,
+                                                  ownedPosition.pool.quote_token.decimals
                                               )
                                           ) *
                                               state.redeemPercent) /
@@ -169,17 +171,17 @@
                     <div class="pooled__item row align-center">
                         <img
                             class="token-icon token-icon--sm"
-                            :src="pool.quote_token.logo_uri"
+                            :src="pool.base_token.logo_uri"
                         />
-                        <p class="pooled__item__symbol grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
+                        <p class="pooled__item__symbol grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}:</p>
                         <p class="pooled__item__amount">
                             {{
                                 ownedPosition
                                     ? basicRound(
                                           (Number(
                                               formatUnits(
-                                                  ownedPosition.quote_amount,
-                                                  ownedPosition.pool.quote_token.decimals
+                                                  ownedPosition.base_amount,
+                                                  ownedPosition.pool.base_token.decimals
                                               )
                                           ) *
                                               state.redeemPercent) /

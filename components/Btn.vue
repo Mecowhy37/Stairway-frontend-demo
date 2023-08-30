@@ -17,6 +17,7 @@
                 'btn--wide': props.wide,
                 'btn--opaque': props.opaque,
                 'btn--active': props.active,
+                'btn--solid-disabled': props.solidDisabled,
                 'btn--selectable': props.selectable,
                 'btn--transparent': props.transparent,
                 'btn--circle': props.circle,
@@ -72,6 +73,7 @@ export interface Props {
     selectable?: boolean
     circle?: boolean
     disabled?: boolean
+    solidDisabled?: boolean
     loading?: boolean
     iconContrast?: boolean
     reverse?: boolean
