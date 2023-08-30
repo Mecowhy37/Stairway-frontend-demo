@@ -79,8 +79,12 @@
                                     :value="userAmounts[amountsLabelOrder[x]]"
                                 />
                             </div>
-                            <div class="window__lower row flex-end align-center">
-                                <p class="caption">{{ Number(ABBalance[x]) }}</p>
+                            <div
+                                class="window__lower row flex-end align-center"
+                                @click="fillInBalance(Balances[x], x)"
+                                :class="{ disabled: !Tokens[x] }"
+                            >
+                                <p class="caption">{{ Number(Balances[x]) }}</p>
                                 <Icon
                                     name="wallet"
                                     :size="13"
@@ -355,6 +359,14 @@ function refresh() {
     getBothBalances()
     refreshPositions()
 }
+function fillInBalance(amount, inputIndex) {
+    if (Tokens.value[inputIndex]) {
+        console.log("fillInBalance(amount, inputIndex)", amount, inputIndex)
+        lastChangedAmount.value = inputIndex
+        setUserAmount(amount, inputIndex)
+        setFromUserToFullAmount(amount, Tokens.value[inputIndex].decimals, inputIndex)
+    }
+}
 // WIDGET ---------------
 
 // AMOUNTS --------------
@@ -366,6 +378,7 @@ const {
     getInputLabel,
     oppositeInput,
     amountInputHandler,
+    setUserAmount,
     setFromUserToFullAmount,
     calcAndSetOpposingInput,
     resetAmounts,
@@ -387,7 +400,7 @@ function Round(amt) {
 // BALANCES -------------
 const { getTokenBalance } = useBalances()
 
-const ABBalance = computed({
+const Balances = computed({
     get() {
         return [state.balanceA, state.balanceB]
     },
@@ -508,7 +521,7 @@ watch(
             state.balanceA = await getTokenBalance(Tokens.value[tkEnum.QUOTE], wallet, chain)
             state.balanceB = await getTokenBalance(Tokens.value[tkEnum.BASE], wallet, chain)
         } else {
-            ABBalance.value = ["", ""]
+            Balances.value = ["", ""]
         }
     },
     {
