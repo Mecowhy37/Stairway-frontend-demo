@@ -177,7 +177,7 @@ watch(claimed, (newVal) => {
 // SELECT TOKEN MODAL -----------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal() {
-    toggleSelectTokenModal([selectedToken.value], setToken)
+    toggleSelectTokenModal([selectedToken.value], setToken, 0)
 }
 function setToken(token) {
     tokenSymbol.value = token?.symbol ? token.symbol : ""

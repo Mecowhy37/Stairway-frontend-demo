@@ -11,7 +11,7 @@
                 thin-line
                 is="h4"
             >
-                <template #widget-title>Select token</template>
+                <template #widget-title>Select token {{ selectedTokenIndex }}</template>
                 <template #right-icon>
                     <Btn
                         @click="toggleModal"
@@ -36,6 +36,10 @@
                     v-for="token in featuredTokens"
                     @click="setToken(token)"
                     class="list-item list-item--padded row align-center"
+                    :class="{
+                        'list-item--opaque':
+                            ABTokensAddresses.indexOf(token.address) === oppositeTokenIndex(selectedTokenIndex),
+                    }"
                 >
                     <img
                         class="token-icon token-icon--sm"
@@ -45,7 +49,7 @@
                         {{ token.name }}
                     </p>
                     <Icon
-                        v-if="ABTokensAddresses.includes(token.address)"
+                        v-if="ABTokensAddresses.indexOf(token.address) === selectedTokenIndex"
                         class="tick-icon"
                         name="tick"
                         :size="9"
@@ -68,7 +72,8 @@ const { featuredTokens } = storeToRefs(stepStore)
 const showModal = ref(false)
 const callbackRef = ref()
 const ABTokens = ref([])
-function toggleModal(tokens = false, callback = false) {
+const selectedTokenIndex = ref()
+function toggleModal(tokens, callback, index) {
     showModal.value = !showModal.value
     if (typeof callback === "function") {
         callbackRef.value = callback
@@ -77,6 +82,8 @@ function toggleModal(tokens = false, callback = false) {
     if (Array.isArray(tokens)) {
         ABTokens.value = tokens
     }
+
+    selectedTokenIndex.value = index
 }
 
 const ABTokensAddresses = computed(() => {
@@ -97,6 +104,10 @@ const ABTokensAddresses = computed(() => {
 function setToken(token) {
     toggleModal()
     callbackRef.value.call(this, token)
+}
+
+function oppositeTokenIndex(tokenIndex) {
+    return 1 - tokenIndex
 }
 
 const tokenListRef = ref()

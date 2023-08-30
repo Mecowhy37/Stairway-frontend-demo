@@ -376,6 +376,12 @@ svg {
     &--all-rounded {
         border-radius: inherit;
     }
+    &--opaque {
+        color: var(--text-color-reverse-opaque);
+        .token-icon {
+            opacity: 0.4;
+        }
+    }
     .tick-icon {
         margin-left: auto;
         color: var(--list-click-stroke);

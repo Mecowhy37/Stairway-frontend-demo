@@ -371,7 +371,7 @@ const Balances = computed({
 // MODAL STUFF -------------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(Tokens.value, setToken)
+    toggleSelectTokenModal(Tokens.value, setToken, index)
     selectTokenIndex.value = index
 }
 const { toggleNewTokenModal, isNewTokenModalOpen } = inject("newTokenModal")
