@@ -7,6 +7,7 @@
                 <NuxtLink
                     class="link"
                     to="/add-liquidity"
+                    v-if="positions !== null || (positions && positions.length === 0)"
                 >
                     <Btn
                         is="h4"
@@ -113,8 +114,8 @@
                                     <p class="caption grey-text">{{ position.pool.quote_token.symbol }} pooled</p>
                                 </div>
                                 <div>
-                                    <p>100%</p>
-                                    <p class="caption grey-text">pool share</p>
+                                    <p>{{ 100 }} %</p>
+                                    <p class="caption grey-text">Pool share</p>
                                 </div>
                             </div>
                         </div>

@@ -280,7 +280,7 @@ html {
 }
 
 h1 {
-    font-size: 3.5rem;
+    font-size: 3.25rem;
 }
 h2 {
     font-size: 2.25rem;

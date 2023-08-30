@@ -5,7 +5,7 @@
     >
         <NuxtLink
             v-if="!noReturn"
-            to="/pools"
+            to="/liquidity"
             class="link"
         >
             <Btn

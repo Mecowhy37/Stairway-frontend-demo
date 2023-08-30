@@ -29,13 +29,13 @@
                             ><p>Swap</p></NuxtLink
                         >
                         <NuxtLink
-                            to="/pools"
+                            to="/liquidity"
                             class="link list-item list-item--padded-sm"
                             ><p>Liquidity</p></NuxtLink
                         >
                     </template>
                 </Dropdown>
-                <NuxtLink to="/">
+                <NuxtLink :to="landingPageUrl">
                     <img
                         class="navbar__logo"
                         src="/logox2.png"
@@ -50,7 +50,7 @@
                         ><p>Swap</p></NuxtLink
                     >
                     <NuxtLink
-                        to="/pools"
+                        to="/liquidity"
                         class="link link--underlined"
                         ><p>Liquidity</p></NuxtLink
                     >
@@ -159,7 +159,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { isMobile, chains, connectedChain, connectedChainId } = storeToRefs(stepStore)
+const { landingPageUrl, isMobile, chains, connectedChain, connectedChainId } = storeToRefs(stepStore)
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark

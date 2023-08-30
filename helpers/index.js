@@ -425,13 +425,13 @@ export function useAmounts(Tokens, pool, widgetType) {
 
         const cleanedInput = cleanInput(newValue, currentValue)
 
-        setUserAmount(cleanedInput, inputIndex)
         event.target.value = cleanedInput
         lastChangedAmount.value = inputIndex
 
-        let fullAmount = null
+        //this is potentially separate function that is used in fillInBalance
+        setUserAmount(cleanedInput, inputIndex)
         if (Tokens.value[inputIndex]) {
-            fullAmount = setFromUserToFullAmount(cleanedInput, Tokens.value[inputIndex].decimals, inputIndex)
+            setFromUserToFullAmount(cleanedInput, Tokens.value[inputIndex].decimals, inputIndex)
         }
     }
     //Two following functions I will use for handling an event when token is picked
@@ -609,6 +609,7 @@ export function useAmounts(Tokens, pool, widgetType) {
         getInputLabel,
         oppositeInput,
         amountInputHandler,
+        setUserAmount,
         setFromUserToFullAmount,
         calcAndSetOpposingInput,
         bothAmountsIn,

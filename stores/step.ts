@@ -7,7 +7,6 @@ import ledgerModule from '@web3-onboard/ledger'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import gnosisModule from '@web3-onboard/gnosis'
 
-
 const ledger = ledgerModule({
   projectId: 'Stairway',
   requiredChains: [137, 80001],
@@ -49,16 +48,16 @@ export const useStepStore = defineStore("step", (): any => {
     
     const POLYGON_MAIN = "https://polygon.llamarpc.com"
     const MUMBAI_RPC_URL = "https://polygon-mumbai.blockpi.network/v1/rpc/public"
-    // const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
 
-    const unhandled = "0x0000000000000000000000000000000000000000"
+    // const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
+    const landingPageUrl: Ref<string> = ref("https://stairway.fi/")
 
     const injected = injectedModule({
         displayUnavailable: [ProviderLabel.MetaMask, ProviderLabel.Coinbase],
     })
-    // id: "0x89",
-        const onboard = init({
+
+    const onboard = init({
         wallets: [injected, ledger, walletConnect, gnosis],
         chains: [
             {
@@ -86,20 +85,9 @@ export const useStepStore = defineStore("step", (): any => {
         },
         connect: {
             autoConnectLastWallet: true,
-        },
-        
+        },       
     })
     const { wallets, connectWallet, connectedChain, setChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
-    // const walletsNotifs = onboard.state.select('notifications')
-    // const { unsubscribe } = walletsNotifs.subscribe((update) =>
-    //     console.log('transaction notifications: ', update)
-    // )
-    
-
-    // const { updateBalance } = useBalances()
-    // const { getBidAsk } = usePools(routerAddress)
-
-
 
     const connectedAccount = computed(() => connectedWallet.value?.accounts[0].address || null)
     const getTruncatedWalletAddress = computed(() => {
@@ -118,14 +106,6 @@ export const useStepStore = defineStore("step", (): any => {
             connectingWallet.value = false
         })
     }
-
-    // const state = onboard.state.select()
-    // const {unsubscribe} = state.subscribe(update =>
-    //     console.log('state update: ', update)
-    // )
-
-    // remember to unsubscribe when updates are no longer needed
-    // unsubscribe()
 
     // TOKENS ---------------
     const featuredTokens = ref(null)
@@ -162,6 +142,7 @@ export const useStepStore = defineStore("step", (): any => {
 
     return {
         onboard,
+        landingPageUrl,
 
         routerAddress,
         isDark,

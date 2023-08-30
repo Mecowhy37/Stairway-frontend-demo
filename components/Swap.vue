@@ -35,11 +35,13 @@
                 </Dropdown>
             </template>
             <template #widget-content>
-                <div
-                    class="tips"
-                    v-if="connectedChainId !== 137"
-                >
+                <div class="tips">
                     <p>
+                        <span class="text-highlight">Tip: </span>
+                        Swap up to your desired amount, based on available liquidity. You'll only pay for what you
+                        actually receive.
+                    </p>
+                    <p v-if="connectedChainId !== 137">
                         <span class="text-highlight">Tip: </span>
                         Get tokens for test
                         <span
@@ -80,7 +82,11 @@
                                     :value="userAmounts[amountsLabelOrder[x]]"
                                 />
                             </div>
-                            <div class="window__lower row flex-end align-center">
+                            <div
+                                class="window__lower row flex-end align-center"
+                                @click="fillInBalance(Balances[x], x)"
+                                :class="{ disabled: !Tokens[x] }"
+                            >
                                 <p class="caption">{{ Number(Balances[x]) }}</p>
                                 <Icon
                                     name="wallet"
@@ -121,9 +127,13 @@
                             />
                         </div>
                         <p>
-                            you can only buy
                             {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
-                            {{ Tokens[tkEnum.BASE].symbol }} at this price
+                            {{ Tokens[tkEnum.BASE].symbol }}
+                            currently available at
+                            <br />
+                            {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }}
+                            {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }}
+                            fixed price.
                         </p>
                     </div>
                 </div>
@@ -308,6 +318,14 @@ function refresh() {
     refreshPool()
     getBothBalances()
 }
+function fillInBalance(amount, inputIndex) {
+    if (Tokens.value[inputIndex]) {
+        console.log("fillInBalance(amount, inputIndex)", amount, inputIndex)
+        lastChangedAmount.value = inputIndex
+        setUserAmount(amount, inputIndex)
+        setFromUserToFullAmount(amount, Tokens.value[inputIndex].decimals, inputIndex)
+    }
+}
 // WIDGET ------------------
 
 // AMOUNTS -----------------
@@ -321,6 +339,7 @@ const {
     getInputLabel,
     oppositeInput,
     amountInputHandler,
+    setUserAmount,
     setFromUserToFullAmount,
     calcAndSetOpposingInput,
     resetAmounts,
