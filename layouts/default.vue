@@ -102,7 +102,6 @@ const {
             console.log("fetching positions")
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
         } else {
-            console.log("should fetch null")
             return null
         }
     },
@@ -180,7 +179,7 @@ function LiquidityAddedHandler(poolIdx, provider, thisToken, thatToken, thisIn, 
     console.log("thatToken:", thatToken)
     console.log("thisIn:", thisIn)
     console.log("thatIn:", thatIn)
-    refreshPositions()
+    RefreshPositions()
 }
 function LiquidityRedeemedHandler(poolIdx, receiver, thisToken, thatToken, thisOut, thatOut) {
     console.log(" - - - - - - lq redeemed - - - - - - -")
@@ -190,7 +189,7 @@ function LiquidityRedeemedHandler(poolIdx, receiver, thisToken, thatToken, thisO
     console.log("thatToken:", thatToken)
     console.log("thisOut:", thisOut)
     console.log("thatOut:", thatOut)
-    refreshPositions()
+    RefreshPositions()
 }
 
 // SCREEN SIZE ------------------
