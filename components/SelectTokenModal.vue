@@ -37,8 +37,7 @@
                     @click="setToken(token)"
                     class="list-item list-item--padded row align-center"
                     :class="{
-                        'list-item--opaque':
-                            ABTokensAddresses.indexOf(token.address) === oppositeTokenIndex(selectedTokenIndex),
+                        'list-item--opaque': ABTokensAddresses.includes(token.address),
                     }"
                 >
                     <img
