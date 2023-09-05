@@ -271,7 +271,7 @@ watch(
 // ROUTES ----------------
 
 // POOL -----------------
-const { pool, refreshPool, poolPending, price, depth, swap } = usePools(
+const { pool, refreshPool, poolPending, poolError, price, depth, swap } = usePools(
     routerAddress,
     Tokens,
     connectedAccount,

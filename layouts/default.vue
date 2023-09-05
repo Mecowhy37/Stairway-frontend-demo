@@ -42,9 +42,8 @@ const {
     "tokens",
     () => {
         if (isSupportedChain(connectedChainId.value)) {
+            console.log("fetching tokens on chain:", connectedChainId.value)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/tokens/featured`))
-        } else if (!connectedChainId.value) {
-            return $fetch(getUrl(`/chain/80001/tokens/featured`))
         }
     },
     {
@@ -73,6 +72,7 @@ const {
     "addresses",
     () => {
         if (isSupportedChain(connectedChainId.value)) {
+            console.log("Fetching addresses on chain:", connectedChainId.value)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/addresses/local`))
         }
     },
@@ -101,7 +101,7 @@ const {
     "positions",
     () => {
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-            console.log("fetching positions")
+            console.log("fetching positions on chain:", connectedChainId.value)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
         } else {
             return []
@@ -115,7 +115,6 @@ stepStore.refreshPositions = RefreshPositions
 watch(
     () => [PositionsData.value, PositionsStatus.value],
     ([newPositions, newStatus]) => {
-        console.log("newStatus:", newStatus)
         stepStore.positions = newPositions
         stepStore.positionsStatus = newStatus
     },

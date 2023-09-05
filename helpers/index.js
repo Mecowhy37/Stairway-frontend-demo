@@ -124,20 +124,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const deadlineStamp = blockTimestamp + deadline * 60
 
         try {
-            const allowanceQuote = await checkAllowance(
-                tokenQuote.address,
-                signer.address,
-                routerAddress.value,
-                providerArg
-            )
+            const allowanceQuote = await checkAllowance(tokenQuote.address, signer.address)
             const quoteNeedsApproval = allowanceQuote < amountQuote
 
-            const allowanceBase = await checkAllowance(
-                tokenBase.address,
-                signer.address,
-                routerAddress.value,
-                providerArg
-            )
+            const allowanceBase = await checkAllowance(tokenBase.address, signer.address)
             const baseNeedsApproval = allowanceBase < amountBase
 
             if (quoteNeedsApproval || baseNeedsApproval) {
@@ -208,7 +198,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const deadlineStamp = blockTimestamp + deadline * 60
 
         try {
-            const allowance = await checkAllowance(lpToken.address, signer.address, routerAddress.value, providerArg)
+            const allowance = await checkAllowance(lpToken.address, signer.address)
             if (allowance < lpAmount) {
                 await approveSpending(lpToken.address, providerArg, lpAmount)
             }
@@ -257,7 +247,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         try {
             console.log(" - - - - allowance - - - - - ")
             const tokenQuote = path[0]
-            const allowance = await checkAllowance(tokenQuote.address, signer.address, routerAddress.value, providerArg)
+            const allowance = await checkAllowance(tokenQuote.address, signer.address)
             console.log("allowanceQuote:", allowance)
             console.log("amountQuote:", amountQuote)
             const needApproval = allowance < amountQuote
@@ -267,7 +257,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         } catch (error) {
             console.log("Failed to get approvals:", error)
         }
-
+        return
         console.log(" - - - - -s w a p- - - - - - ")
         tokenPath.forEach((token, index) => {
             console.log("path token -", index + 1, "-", token.symbol, token.address)
@@ -296,12 +286,13 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         return await listenForTransactionMine(tx, provider, callback)
     }
 
-    async function checkAllowance(tokenAddress, owner, spender, providerArg) {
+    async function checkAllowance(tokenAddress, owner) {
+        // /chain/1/user/2/approved/token__address
         try {
-            const provider = new BrowserProvider(providerArg)
-            const token = new Contract(tokenAddress, TokenABI, provider)
-            const allowance = await token.allowance(owner, spender)
-            return allowance
+            const allowance = await $fetch(
+                getUrl(`/chain/${connectedChainId.value}/user/${owner}/approved/${tokenAddress}`)
+            )
+            return BigInt(allowance)
         } catch (err) {
             return err
         }
