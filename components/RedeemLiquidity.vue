@@ -167,7 +167,7 @@
                 </div>
             </div>
             <div
-                v-else-if="poolStatus === 'pending' || !ownedPosition"
+                v-else-if="poolStatus === 'pending' || positionsStatus === 'pending'"
                 class="placeholder"
             >
                 <p>placeholder</p>
@@ -175,7 +175,12 @@
             </div>
             <div class="infos contents">
                 <div
-                    v-if="pool && ownedPosition === false"
+                    v-if="
+                        connectedAccount &&
+                        !(poolStatus === 'pending' || positionsStatus === 'pending') &&
+                        pool &&
+                        ownedPosition === false
+                    "
                     class="info row"
                 >
                     <div>
@@ -241,7 +246,7 @@ import { storeToRefs } from "pinia"
 import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 const stepStore = useStepStore()
-const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
+const { routerAddress, connectedAccount, positions, positionsStatus, connectedChainId } = storeToRefs(stepStore)
 const { refreshPositions } = stepStore
 
 const state = reactive({

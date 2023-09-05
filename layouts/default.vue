@@ -43,6 +43,8 @@ const {
     () => {
         if (isSupportedChain(connectedChainId.value)) {
             return $fetch(getUrl(`/chain/${connectedChainId.value}/tokens/featured`))
+        } else if (!connectedChainId.value) {
+            return $fetch(getUrl(`/chain/80001/tokens/featured`))
         }
     },
     {
@@ -102,7 +104,7 @@ const {
             console.log("fetching positions")
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
         } else {
-            return null
+            return []
         }
     },
     {
@@ -113,6 +115,7 @@ stepStore.refreshPositions = RefreshPositions
 watch(
     () => [PositionsData.value, PositionsStatus.value],
     ([newPositions, newStatus]) => {
+        console.log("newStatus:", newStatus)
         stepStore.positions = newPositions
         stepStore.positionsStatus = newStatus
     },

@@ -60,7 +60,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
     } = useAsyncData(
         "pool",
         () => {
-            if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+            if (isSupportedChain(connectedChainId.value)) {
                 if (route.name === "remove-address") {
                     console.log("usePools - fetchingPool() - on", route.name)
                     return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))

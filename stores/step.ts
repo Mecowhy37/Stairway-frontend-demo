@@ -134,7 +134,7 @@ export const useStepStore = defineStore("step", (): any => {
     
     const connectedChainId = computed(() => {
         if (!connectedChain.value) {
-            return null
+            return parseInt("0x13881", 16)
         }
         return parseInt(connectedChain.value.id, 16)
     })
