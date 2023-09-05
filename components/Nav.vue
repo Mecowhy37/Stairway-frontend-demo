@@ -81,7 +81,7 @@
                             active
                             :compact="isMobile"
                         >
-                            {{ stepStore.getTruncatedWalletAddress }}
+                            {{ getTruncatedWalletAddress }}
                             <template #icon>
                                 <Icon
                                     name="chevron"
@@ -159,14 +159,27 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { landingPageUrl, isMobile, chains, connectedChain, connectedChainId } = storeToRefs(stepStore)
+const {
+    connectedAccount,
+    getTruncatedWalletAddress,
+    landingPageUrl,
+    isMobile,
+    chains,
+    connectedChain,
+    noWalletChain,
+    connectedChainId,
+} = storeToRefs(stepStore)
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
 }
 
 function setChain(id) {
-    stepStore.setChain({ chainId: id })
+    if (connectedAccount.value) {
+        stepStore.setChain({ chainId: id })
+    } else {
+        noWalletChain.value = id
+    }
 }
 
 const connectedChainFullObj = computed(() => {

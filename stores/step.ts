@@ -131,12 +131,15 @@ export const useStepStore = defineStore("step", (): any => {
 
     // CHAINS ----------------
     const chains = ref(null)
+    const noWalletChain = ref(80001)
     
     const connectedChainId = computed(() => {
-        if (!connectedChain.value) {
-            return parseInt("0x13881", 16)
+        if (!connectedChain.value && noWalletChain.value) {
+            return noWalletChain.value
         }
-        return parseInt(connectedChain.value.id, 16)
+        if( connectedChain.value) {
+            return parseInt(connectedChain.value.id, 16)
+        }
     })
     // CHAINS ----------------
 
@@ -159,6 +162,7 @@ export const useStepStore = defineStore("step", (): any => {
         chains,
         setChain,
         connectedChainId,
+        noWalletChain,
         connectedChain,
         isConnectingText,
         connectWallet,

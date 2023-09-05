@@ -25,7 +25,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, connectedAccount, connectedWallet, chains, connectedChainId, onboard } =
+const { featuredTokens, addresses, connectedAccount, chains, noWalletChain, connectedChainId, onboard } =
     storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"

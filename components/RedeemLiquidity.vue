@@ -193,7 +193,7 @@
                     <p>You dont have any liquidity at this position.</p>
                 </div>
                 <div
-                    v-if="poolError"
+                    v-if="poolError && poolStatus === 'error'"
                     class="info row"
                 >
                     <div>
