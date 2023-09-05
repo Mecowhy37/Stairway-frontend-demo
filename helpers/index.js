@@ -287,7 +287,6 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
     }
 
     async function checkAllowance(tokenAddress, owner) {
-        // /chain/1/user/2/approved/token__address
         try {
             const allowance = await $fetch(
                 getUrl(`/chain/${connectedChainId.value}/user/${owner}/approved/${tokenAddress}`)
