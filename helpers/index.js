@@ -257,7 +257,6 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         } catch (error) {
             console.log("Failed to get approvals:", error)
         }
-        return
         console.log(" - - - - -s w a p- - - - - - ")
         tokenPath.forEach((token, index) => {
             console.log("path token -", index + 1, "-", token.symbol, token.address)
