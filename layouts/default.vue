@@ -460,7 +460,7 @@ svg {
     height: 100%;
     z-index: -2;
     background-color: var(--background-color);
-    background-image: url("~/assets/img/stairway-background.png");
+    background-image: url("~/assets/img/stairway-background.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
 }
