@@ -24,7 +24,7 @@
                     </template>
                     <template #dropdown>
                         <NuxtLink
-                            to="/"
+                            to="/swap"
                             class="link list-item list-item--padded-sm"
                             ><p>Swap</p></NuxtLink
                         >
@@ -45,7 +45,7 @@
             <div class="navbar__navigation">
                 <div class="desktop contents">
                     <NuxtLink
-                        to="/"
+                        to="/swap"
                         class="link link--underlined"
                         ><p>Swap</p></NuxtLink
                     >

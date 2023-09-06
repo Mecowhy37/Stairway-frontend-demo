@@ -85,7 +85,7 @@
                             <div
                                 class="window__lower row flex-end align-center"
                                 @click="fillInBalance(Balances[x], x)"
-                                :class="{ disabled: !Tokens[x] }"
+                                :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                             >
                                 <p class="caption">{{ Number(Balances[x]) }}</p>
                                 <Icon
@@ -317,7 +317,7 @@ function refresh() {
     getBothBalances()
 }
 function fillInBalance(amount, inputIndex) {
-    if (Tokens.value[inputIndex]) {
+    if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
         console.log("fillInBalance(amount, inputIndex)", amount, inputIndex)
         lastChangedAmount.value = inputIndex
         setUserAmount(amount, inputIndex)

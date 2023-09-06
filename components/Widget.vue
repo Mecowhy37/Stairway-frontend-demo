@@ -91,9 +91,12 @@ const props = defineProps({
                 text-align: end;
                 background-color: var(--swap-windows);
                 color: var(--text-grey);
-                &:hover:not(.disabled) {
-                    cursor: pointer;
-                    color: white;
+                &:not(.disabled) {
+                    /* color: var(--primary-btn-bg); */
+                    &:hover {
+                        color: white;
+                        cursor: pointer;
+                    }
                 }
             }
         }

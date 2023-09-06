@@ -1,3 +1,1 @@
-<template>
-    <Swap />
-</template>
+<template></template>
