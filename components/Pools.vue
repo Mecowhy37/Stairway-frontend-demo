@@ -114,13 +114,7 @@
                                     <p class="caption grey-text">{{ position.pool.quote_token.symbol }} pooled</p>
                                 </div>
                                 <div>
-                                    <p>
-                                        {{ (BigInt(position.lp_amount) / BigInt(position.lp_total_amount)).toString() }}
-                                        <!-- {{
-                                            (BigInt(position.lp_amount) / BigInt(position.lp_total_amount)) *
-                                            BigInt(100)
-                                        }}% -->
-                                    </p>
+                                    <p>{{ position.pool_share_pct }}%</p>
                                     <p class="caption grey-text">Pool share</p>
                                 </div>
                             </div>
