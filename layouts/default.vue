@@ -269,7 +269,7 @@ html {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - var(--nav-height));
-    padding: var(--nav-height) 0;
+    padding-top: calc(var(--nav-height) + 20px) 0;
     -webkit-box-align: center;
     align-items: center;
     &--modals {
