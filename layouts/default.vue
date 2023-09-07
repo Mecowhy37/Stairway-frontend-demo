@@ -249,12 +249,13 @@ html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
     color: var(--text-color);
     $size: 16px;
-    /* font-size: calc($size + 0 * ((100vw - 300px) / (1600 - 300))); */
-    font-size: $size;
+    font-size: calc($size * ((100vw - 300px) / (1600 - 300)));
+    /* font-size: $size; */
 }
 .wrapper {
     position: relative;
-    margin: 0 auto;
+    /* margin: 0 auto; */
+    overflow-y: hidden;
     @media (min-width: 1536px) {
         max-width: 1536px;
     }
@@ -268,10 +269,9 @@ html {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - var(--nav-height));
-    padding-bottom: var(--nav-height);
+    padding: var(--nav-height) 0;
     -webkit-box-align: center;
     align-items: center;
-
     &--modals {
         display: contents;
     }
@@ -459,7 +459,7 @@ svg {
 }
 
 .bg-gradient {
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100%;
     height: 100%;

@@ -22,14 +22,16 @@
                             </template>
                         </Btn>
                     </template>
-                    <template #dropdown>
+                    <template #dropdown="{ toggleDropdown }">
                         <NuxtLink
                             to="/swap"
+                            @click="toggleDropdown()"
                             class="link list-item list-item--padded-sm"
                             ><p>Swap</p></NuxtLink
                         >
                         <NuxtLink
                             to="/liquidity"
+                            @click="toggleDropdown()"
                             class="link list-item list-item--padded-sm"
                             ><p>Liquidity</p></NuxtLink
                         >
@@ -191,7 +193,7 @@ const connectedChainFullObj = computed(() => {
 
 <style lang="scss" scoped>
 .navbar {
-    position: sticky;
+    position: fixed;
     top: 0px;
     height: var(--nav-height);
     width: 100%;

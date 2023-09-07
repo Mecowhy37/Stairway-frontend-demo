@@ -424,7 +424,6 @@ watch(
 )
 
 async function getBothBalances() {
-    console.log("getting both")
     if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
         state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, connectedChainId.value)
         state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, connectedChainId.value)
