@@ -34,19 +34,11 @@
                 </Dropdown>
             </template>
             <template #widget-content>
-                <div
-                    class="tips"
-                    v-if="connectedChainId !== 137"
-                >
-                    <p>
-                        <span class="text-highlight">Tip: </span>
-                        Get tokens for test
-                        <span
-                            @click="openNewTokenModal"
-                            class="activator-link text-highlight"
-                            >here</span
-                        >
-                    </p>
+                <div class="tips">
+                    <FaucetTrigger
+                        :closing-callback="getBothBalances"
+                        :connected-chain-id="connectedChainId"
+                    ></FaucetTrigger>
                 </div>
                 <div class="windows">
                     <div
@@ -417,15 +409,6 @@ function openTokenSelectModal(index) {
     toggleSelectTokenModal(Tokens.value, setToken, index)
     selectTokenIndex.value = index
 }
-const { toggleNewTokenModal, isNewTokenModalOpen } = inject("newTokenModal")
-function openNewTokenModal() {
-    toggleNewTokenModal()
-}
-watch(isNewTokenModalOpen, (newVal) => {
-    if (!newVal) {
-        getBothBalances()
-    }
-})
 //MODAL STUFF----------
 
 //SETTINGS--------------

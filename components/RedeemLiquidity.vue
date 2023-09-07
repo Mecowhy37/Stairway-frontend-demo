@@ -25,7 +25,7 @@
                 <template #dropdown="{ toggleDropdown }">
                     <Settings
                         ref="settingsRedeem"
-                        no-slippage
+                        :default-slippage="0.5"
                         :default-deadline="30"
                         :toggle-dropdown="toggleDropdown"
                     ></Settings>
@@ -286,6 +286,7 @@ function redeemLiquidityCall() {
             state.redeemPercent,
             pool.value.lp_token,
             ownedPosition.value.lp_amount,
+            settingsRedeem.value.slippage,
             settingsRedeem.value.deadline,
             stepStore.connectedWallet.provider
         )

@@ -400,6 +400,11 @@ svg {
 }
 .text-highlight {
     color: var(--primary-btn-bg);
+    &--border {
+        border: 1px solid var(--primary-btn-bg);
+        padding: 0 7px;
+        border-radius: 9999px;
+    }
 }
 .activator-link {
     cursor: pointer;

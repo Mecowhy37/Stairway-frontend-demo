@@ -41,15 +41,10 @@
                         Swap up to your desired amount, based on available liquidity. You'll only pay for what you
                         actually receive.
                     </p>
-                    <p v-if="connectedChainId !== 137">
-                        <span class="text-highlight">Tip: </span>
-                        Get tokens for test
-                        <span
-                            @click="openNewTokenModal"
-                            class="activator-link text-highlight"
-                            >here</span
-                        >
-                    </p>
+                    <FaucetTrigger
+                        :closing-callback="getBothBalances"
+                        :connected-chain-id="connectedChainId"
+                    ></FaucetTrigger>
                 </div>
                 <div class="windows">
                     <div
@@ -218,7 +213,6 @@
 <script setup>
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
-import { formatUnits, parseUnits } from "ethers"
 
 import {
     useTokens,
@@ -374,15 +368,6 @@ function openTokenSelectModal(index) {
     toggleSelectTokenModal(Tokens.value, setToken, index)
     selectTokenIndex.value = index
 }
-const { toggleNewTokenModal, isNewTokenModalOpen } = inject("newTokenModal")
-function openNewTokenModal() {
-    toggleNewTokenModal()
-}
-watch(isNewTokenModalOpen, (newVal) => {
-    if (!newVal) {
-        getBothBalances()
-    }
-})
 // MODAL STUFF -------------
 
 //SETTINGS--------------
@@ -439,6 +424,7 @@ watch(
 )
 
 async function getBothBalances() {
+    console.log("getting both")
     if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
         state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, connectedChainId.value)
         state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, connectedChainId.value)

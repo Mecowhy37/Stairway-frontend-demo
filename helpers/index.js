@@ -179,6 +179,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         redeemPercent,
         lpToken,
         lpPooled,
+        slippage,
         deadline,
         providerArg
     ) {
@@ -194,6 +195,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             return (BigInt(amount) * BigInt(redeemPercent)) / BigInt(100)
         }
 
+        const parsedSlippage = (parseUnits(slippage.toString(), 18) / BigInt(100)).toString()
         const blockTimestamp = (await provider.getBlock("latest")).timestamp
         const deadlineStamp = blockTimestamp + deadline * 60
 
@@ -215,6 +217,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("lpAmount:", lpAmount)
             console.log("connectedAccount:", connectedAccount.value)
             console.log("deadlineStamp:", deadlineStamp)
+            console.log("parsedSlippage:", parsedSlippage)
             await router.redeemLiquidity(
                 getAddress(tokenQuote.address),
                 getAddress(tokenBase.address),
@@ -223,7 +226,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 lpAmount,
                 getAddress(connectedAccount.value),
                 deadlineStamp,
-                "100000000000000000"
+                parsedSlippage
             )
         } catch (err) {
             console.log("failed to redeem liquidity: ", err)
