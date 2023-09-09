@@ -195,6 +195,7 @@ const connectedChainFullObj = computed(() => {
 .navbar {
     position: fixed;
     top: 0px;
+    left: 0;
     height: var(--nav-height);
     width: 100%;
     display: flex;

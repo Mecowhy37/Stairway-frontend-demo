@@ -11,6 +11,7 @@
         <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <NewToken ref="newTokenModal"></NewToken>
+            <Notifications></Notifications>
         </div>
     </div>
 </template>
@@ -21,12 +22,23 @@ import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseE
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
 
+import lqRampJson from "@/ABIs/ILiquidityRamp.json"
+const LqRampABI = lqRampJson.abi
+
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, connectedAccount, chains, noWalletChain, connectedChainId, onboard } =
-    storeToRefs(stepStore)
+const {
+    featuredTokens,
+    addresses,
+    connectedWallet,
+    connectedAccount,
+    chains,
+    noWalletChain,
+    connectedChainId,
+    onboard,
+} = storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
 useHead({
@@ -144,34 +156,40 @@ watch(
     }
 )
 
-// let poolManager = null
-// watch(
-//     () => [connectedAccount.value, connectedChainId.value, addresses.value],
-//     async ([account, chain, addresses], oldVal) => {
-//         const [oldAccount, oldChain, oldAddresses] = oldVal ? oldVal : [null, null, null]
-//         if (account && isSupportedChain(chain) && addresses) {
-//             if (poolManager) {
-//                 console.log("switch off - liquidityAdded")
-//                 poolManager.off("LiquidityAdded", LiquidityAddedHandler)
-//                 poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
-//             }
-//             const provider = new BrowserProvider(connectedWallet.value.provider)
-//             poolManager = new Contract(addresses.PoolManager, PoolManagerABI, provider)
-//             console.log("set up - liquidityAdded")
-//             poolManager.on("LiquidityAdded", LiquidityAddedHandler)
-//             poolManager.on("LiquidityRedeemed", LiquidityRedeemedHandler)
-//         } else {
-//             if (poolManager) {
-//                 console.log("switch off - liquidityAdded")
-//                 poolManager.off("LiquidityAdded", LiquidityAddedHandler)
-//                 poolManager.off("LiquidityRedeemed", LiquidityRedeemedHandler)
-//             }
-//         }
-//     },
-//     {
-//         immediate: true,
-//     }
-// )
+let LqRamp = null
+function removeExistingListeners() {
+    if (LqRamp) {
+        console.log("Removing existing LqRamp listeners...")
+        LqRamp.off("LiquidityAdded", LiquidityAddedHandler)
+        LqRamp.off("LiquidityRedeemed", LiquidityRedeemedHandler)
+    }
+}
+
+function addNewListeners(LqRamp) {
+    console.log("Adding new LqRamp listeners...")
+    LqRamp.on("LiquidityAdded", LiquidityAddedHandler)
+    LqRamp.on("LiquidityRedeemed", LiquidityRedeemedHandler)
+}
+
+watch(
+    AddressesData,
+    async (newAddresses) => {
+        if (connectedAccount.value && isSupportedChain(connectedChainId.value) && newAddresses) {
+            removeExistingListeners()
+
+            console.log(`New address for LiquidityRamp: ${newAddresses.LiquidityRamp}`)
+            const provider = new BrowserProvider(connectedWallet.value.provider)
+            LqRamp = new Contract(newAddresses.LiquidityRamp, LqRampABI, provider)
+
+            addNewListeners(LqRamp)
+        } else {
+            removeExistingListeners()
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 
 function LiquidityAddedHandler(poolIdx, provider, thisToken, thatToken, thisIn, thatIn) {
     console.log(" - - - - - - - lq added  - - - - - - -")
@@ -249,12 +267,12 @@ html {
     /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
     color: var(--text-color);
     $size: 16px;
-    font-size: calc($size * ((100vw - 300px) / (1600 - 300)));
-    /* font-size: $size; */
+    /* font-size: calc($size * ((100vw - 300px) / (1600 - 300))); */
+    font-size: $size;
 }
 .wrapper {
     position: relative;
-    /* margin: 0 auto; */
+    margin: 0 auto;
     overflow-y: hidden;
     @media (min-width: 1536px) {
         max-width: 1536px;
@@ -269,7 +287,8 @@ html {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - var(--nav-height));
-    padding-top: calc(var(--nav-height) + 20px) 0;
+    /* margin: 0 auto; */
+    padding: calc(var(--nav-height) + 20px) 0;
     -webkit-box-align: center;
     align-items: center;
     &--modals {
