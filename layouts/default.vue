@@ -8,11 +8,11 @@
         </div>
         <div class="bg-gradient"></div>
 
-        <!-- <div class="page-slot--modals">
+        <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <NewToken ref="newTokenModal"></NewToken>
-            <Notifications></Notifications>
-        </div> -->
+            <!-- <Notifications></Notifications> -->
+        </div>
     </div>
 </template>
 

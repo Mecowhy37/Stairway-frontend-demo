@@ -77,7 +77,7 @@
                             @click="fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                         >
-                            <p class="caption">{{ Number(Balances[x]) }}</p>
+                            <p class="caption">{{ Balances[x] }}</p>
                             <Icon
                                 name="wallet"
                                 :size="13"
