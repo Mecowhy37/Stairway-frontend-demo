@@ -1,191 +1,191 @@
 <template>
-    <div class="row">
-        <Widget no-return>
-            <template #widget-title>Trade</template>
-            <template #right-icon>
-                <Dropdown
-                    :settings-ref="settings"
-                    no-padding
-                    solid
-                >
-                    <template #dropdown-activator="{ on }">
-                        <Btn
-                            transparent
-                            circle
-                            icon-contrast
-                            class="grey-text"
-                        >
-                            <template #icon>
-                                <Icon
-                                    name="cog"
-                                    :size="20"
-                                />
-                            </template>
-                        </Btn>
-                    </template>
-                    <template #dropdown="{ toggleDropdown }">
-                        <Settings
-                            ref="settings"
-                            :default-slippage="0.5"
-                            :default-deadline="30"
-                            :toggle-dropdown="toggleDropdown"
-                            no-slippage
-                        ></Settings>
-                    </template>
-                </Dropdown>
-            </template>
-            <template #widget-content>
-                <div class="tips">
-                    <p>
-                        <span class="text-highlight">Tip: </span>
-                        Swap up to your desired amount, based on available liquidity. You'll only pay for what you
-                        actually receive.
-                    </p>
-                    <FaucetTrigger
-                        :closing-callback="getBothBalances"
-                        :connected-chain-id="connectedChainId"
-                    ></FaucetTrigger>
-                </div>
-                <div class="windows">
-                    <div
-                        class="contents"
-                        v-for="(i, x) in new Array(2)"
+    <!-- <div class="row"> -->
+    <Widget no-return>
+        <template #widget-title>Trade</template>
+        <template #right-icon>
+            <Dropdown
+                :settings-ref="settings"
+                no-padding
+                solid
+            >
+                <template #dropdown-activator="{ on }">
+                    <Btn
+                        transparent
+                        circle
+                        icon-contrast
+                        class="grey-text"
                     >
-                        <div class="window layer-wdg-box">
-                            <div class="window__upper">
-                                <Btn
-                                    @click="openTokenSelectModal(x)"
-                                    opaque
-                                    selectable
-                                    custom
-                                >
-                                    {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
-                                    <template #icon>
-                                        <Icon
-                                            name="chevron"
-                                            :size="16"
-                                        />
-                                    </template>
-                                </Btn>
-                                <input
-                                    type="text"
-                                    placeholder="0"
-                                    spellcheck="false"
-                                    autocomplete="off"
-                                    autocorrect="off"
-                                    @input="amountInputHandler($event, x)"
-                                    :value="userAmounts[amountsLabelOrder[x]]"
-                                />
-                            </div>
-                            <div
-                                class="window__lower row flex-end align-center"
-                                @click="fillInBalance(Balances[x], x)"
-                                :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
-                            >
-                                <p class="caption">{{ Number(Balances[x]) }}</p>
-                                <Icon
-                                    name="wallet"
-                                    :size="13"
-                                />
-                            </div>
-                        </div>
-                        <div
-                            v-if="x === 0"
-                            class="mid-symbol arrow"
-                        >
+                        <template #icon>
+                            <Icon
+                                name="cog"
+                                :size="20"
+                            />
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown="{ toggleDropdown }">
+                    <Settings
+                        ref="settings"
+                        :default-slippage="0.5"
+                        :default-deadline="30"
+                        :toggle-dropdown="toggleDropdown"
+                        no-slippage
+                    ></Settings>
+                </template>
+            </Dropdown>
+        </template>
+        <template #widget-content>
+            <div class="tips">
+                <p>
+                    <span class="text-highlight">Tip: </span>
+                    Swap up to your desired amount, based on available liquidity. You'll only pay for what you actually
+                    receive.
+                </p>
+                <FaucetTrigger
+                    :closing-callback="getBothBalances"
+                    :connected-chain-id="connectedChainId"
+                ></FaucetTrigger>
+            </div>
+            <div class="windows">
+                <div
+                    class="contents"
+                    v-for="(i, x) in new Array(2)"
+                >
+                    <div class="window layer-wdg-box">
+                        <div class="window__upper">
                             <Btn
-                                circle
-                                plain
-                                active
-                                @click="switchOrder()"
+                                @click="openTokenSelectModal(x)"
+                                opaque
+                                selectable
+                                custom
                             >
+                                {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
                                 <template #icon>
                                     <Icon
-                                        name="arrow"
-                                        :size="11"
+                                        name="chevron"
+                                        :size="16"
                                     />
                                 </template>
                             </Btn>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    v-if="bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base"
-                    class="infos"
-                >
-                    <div class="info row">
-                        <div>
-                            <Icon
-                                class="icon"
-                                name="warning"
-                                :size="25"
+                            <input
+                                type="text"
+                                placeholder="0"
+                                spellcheck="false"
+                                autocomplete="off"
+                                autocorrect="off"
+                                @input="amountInputHandler($event, x)"
+                                :value="userAmounts[amountsLabelOrder[x]]"
                             />
                         </div>
-                        <p>
-                            {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
-                            {{ Tokens[tkEnum.BASE].symbol }}
-                            currently available at
-                            <br />
-                            {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }}
-                            {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }}
-                            fixed price.
-                        </p>
+                        <div
+                            class="window__lower row flex-end align-center"
+                            @click="fillInBalance(Balances[x], x)"
+                            :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
+                        >
+                            <p class="caption">{{ Number(Balances[x]) }}</p>
+                            <Icon
+                                name="wallet"
+                                :size="13"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        v-if="x === 0"
+                        class="mid-symbol arrow"
+                    >
+                        <Btn
+                            circle
+                            plain
+                            active
+                            @click="switchOrder()"
+                        >
+                            <template #icon>
+                                <Icon
+                                    name="arrow"
+                                    :size="11"
+                                />
+                            </template>
+                        </Btn>
                     </div>
                 </div>
-                <div class="buttons">
-                    <Btn
-                        v-if="!stepStore.connectedWallet"
-                        is="h4"
-                        wide
-                        bulky
-                        @click="stepStore.connectWallet()"
-                    >
-                        Connect wallet
-                    </Btn>
-                    <Btn
-                        v-else
-                        @click="callSwap"
-                        is="h4"
-                        wide
-                        bulky
-                        :disabled="!canSwap"
-                    >
-                        Swap
-                    </Btn>
-                    <Btn
-                        @click="refresh()"
-                        wide
-                        bulky
-                        :disabled="!connectedAccount"
-                    >
-                        refresh data
-                    </Btn>
-                </div>
-                <div
-                    v-if="price && bothTokensThere"
-                    class="sum-up grey-text caption"
-                >
+            </div>
+            <div
+                v-if="bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base"
+                class="infos"
+            >
+                <div class="info row">
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
                     <p>
-                        1 {{ Tokens[tkEnum.BASE].symbol }} =
+                        {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
+                        {{ Tokens[tkEnum.BASE].symbol }}
+                        currently available at
+                        <br />
                         {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }}
-                        {{ Tokens[tkEnum.QUOTE].symbol }}
+                        {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }}
+                        fixed price.
                     </p>
-                    <div class="row space-between">
-                        <p>
-                            Volume available at this price ({{
-                                roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals))
-                            }}
-                            {{ Tokens[tkEnum.QUOTE].symbol }})
-                        </p>
-                        <p>
-                            {{ roundFloor(formatInputAmount(depth, Tokens[tkEnum.BASE].decimals)) }}
-                            {{ Tokens[tkEnum.BASE].symbol }}
-                        </p>
-                    </div>
                 </div>
-            </template>
-        </Widget>
-        <!-- <Widget no-return>
+            </div>
+            <div class="buttons">
+                <Btn
+                    v-if="!stepStore.connectedWallet"
+                    is="h4"
+                    wide
+                    bulky
+                    @click="stepStore.connectWallet()"
+                >
+                    Connect wallet
+                </Btn>
+                <Btn
+                    v-else
+                    @click="callSwap"
+                    is="h4"
+                    wide
+                    bulky
+                    :disabled="!canSwap"
+                >
+                    Swap
+                </Btn>
+                <Btn
+                    @click="refresh()"
+                    wide
+                    bulky
+                    :disabled="!connectedAccount"
+                >
+                    refresh data
+                </Btn>
+            </div>
+            <div
+                v-if="price && bothTokensThere"
+                class="sum-up grey-text caption"
+            >
+                <p>
+                    1 {{ Tokens[tkEnum.BASE].symbol }} =
+                    {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }}
+                    {{ Tokens[tkEnum.QUOTE].symbol }}
+                </p>
+                <div class="row space-between">
+                    <p>
+                        Volume available at this price ({{
+                            roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals))
+                        }}
+                        {{ Tokens[tkEnum.QUOTE].symbol }})
+                    </p>
+                    <p>
+                        {{ roundFloor(formatInputAmount(depth, Tokens[tkEnum.BASE].decimals)) }}
+                        {{ Tokens[tkEnum.BASE].symbol }}
+                    </p>
+                </div>
+            </div>
+        </template>
+    </Widget>
+    <!-- <Widget no-return>
             <template #widget-title>temporary display</template>
             <template #widget-content>
                 <div class="contents temp-display">
@@ -207,7 +207,7 @@
                 </div>
             </template>
         </Widget> -->
-    </div>
+    <!-- </div> -->
 </template>
 
 <script setup>

@@ -35,6 +35,12 @@
                             class="link list-item list-item--padded-sm"
                             ><p>Liquidity</p></NuxtLink
                         >
+                        <NuxtLink
+                            to="/swap"
+                            @click="toggleDropdown()"
+                            class="link list-item list-item--padded-sm"
+                            ><p>Governance</p></NuxtLink
+                        >
                     </template>
                 </Dropdown>
                 <NuxtLink :to="landingPageUrl">
@@ -55,6 +61,11 @@
                         to="/liquidity"
                         class="link link--underlined"
                         ><p>Liquidity</p></NuxtLink
+                    >
+                    <NuxtLink
+                        to="/swap"
+                        class=""
+                        ><p>Governance</p></NuxtLink
                     >
                 </div>
                 <Btn
@@ -193,19 +204,19 @@ const connectedChainFullObj = computed(() => {
 
 <style lang="scss" scoped>
 .navbar {
-    position: fixed;
-    top: 0px;
+    position: sticky;
+    top: 0;
     left: 0;
     height: var(--nav-height);
     width: 100%;
     display: flex;
     white-space: nowrap;
     z-index: 5;
+    /* margin-bottom: calc(var(--nav-height) - var(--logo-height)); */
 
     &__wrapper {
-        height: var(--logo-height);
         width: 100%;
-        margin-top: auto;
+        margin: auto 0;
         padding: 0 70px;
     }
     &__logo {
@@ -282,6 +293,7 @@ const connectedChainFullObj = computed(() => {
         }
     }
     @media (max-width: 750px) {
+        height: var(--nav-md-height);
         &__logo {
             height: var(--logo-md-height);
         }

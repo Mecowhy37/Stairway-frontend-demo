@@ -8,11 +8,11 @@
         </div>
         <div class="bg-gradient"></div>
 
-        <div class="page-slot--modals">
+        <!-- <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <NewToken ref="newTokenModal"></NewToken>
             <Notifications></Notifications>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -21,9 +21,6 @@ import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseE
 
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
-
-import lqRampJson from "@/ABIs/ILiquidityRamp.json"
-const LqRampABI = lqRampJson.abi
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -44,6 +41,9 @@ import { isSupportedChain, getUrl } from "~/helpers/index"
 useHead({
     title: "Stairway",
 })
+
+// const router = useRouter()
+// const pages = ref(router.getRoutes())
 const {
     data: TokensData,
     pending: TokensPending,
@@ -156,61 +156,17 @@ watch(
     }
 )
 
-let LqRamp = null
-function removeExistingListeners() {
-    if (LqRamp) {
-        console.log("Removing existing LqRamp listeners...")
-        LqRamp.off("LiquidityAdded", LiquidityAddedHandler)
-        LqRamp.off("LiquidityRedeemed", LiquidityRedeemedHandler)
-    }
-}
-
-function addNewListeners(LqRamp) {
-    console.log("Adding new LqRamp listeners...")
-    LqRamp.on("LiquidityAdded", LiquidityAddedHandler)
-    LqRamp.on("LiquidityRedeemed", LiquidityRedeemedHandler)
-}
-
-watch(
-    AddressesData,
-    async (newAddresses) => {
-        if (connectedAccount.value && isSupportedChain(connectedChainId.value) && newAddresses) {
-            removeExistingListeners()
-
-            console.log(`New address for LiquidityRamp: ${newAddresses.LiquidityRamp}`)
-            const provider = new BrowserProvider(connectedWallet.value.provider)
-            LqRamp = new Contract(newAddresses.LiquidityRamp, LqRampABI, provider)
-
-            addNewListeners(LqRamp)
-        } else {
-            removeExistingListeners()
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
-function LiquidityAddedHandler(poolIdx, provider, thisToken, thatToken, thisIn, thatIn) {
-    console.log(" - - - - - - - lq added  - - - - - - -")
-    console.log("poolIdx:", poolIdx)
-    console.log("provider:", provider)
-    console.log("thisToken:", thisToken)
-    console.log("thatToken:", thatToken)
-    console.log("thisIn:", thisIn)
-    console.log("thatIn:", thatIn)
-    RefreshPositions()
-}
-function LiquidityRedeemedHandler(poolIdx, receiver, thisToken, thatToken, thisOut, thatOut) {
-    console.log(" - - - - - - lq redeemed - - - - - - -")
-    console.log("poolIdx:", poolIdx)
-    console.log("receiver:", receiver)
-    console.log("thisToken:", thisToken)
-    console.log("thatToken:", thatToken)
-    console.log("thisOut:", thisOut)
-    console.log("thatOut:", thatOut)
-    RefreshPositions()
-}
+// const {
+//     data: EventsData,
+//     pending: EventsPending,
+//     refresh: refreshEvents,
+//     error: EventsError,
+//     status: EventsStatus,
+// } = await useAsyncData("events", () => {
+//     return $fetch(getUrl(`/chain/${}/events/add-liquidity/${}/${}/${}`))
+// }, {
+//     watch: [connectedChainId, connectedAccount]
+// })
 
 // SCREEN SIZE ------------------
 const { width } = useWindowSize()
@@ -273,7 +229,7 @@ html {
 .wrapper {
     position: relative;
     margin: 0 auto;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
     @media (min-width: 1536px) {
         max-width: 1536px;
     }
@@ -281,16 +237,33 @@ html {
         width: 100%;
         max-width: calc(var(--list-width) + 2 * var(--widget-sides));
         padding: 0 var(--widget-sides);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: calc(100vh - var(--nav-height));
+        padding-bottom: var(--nav-height);
+    }
+    &--widget {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: calc(100vh - var(--nav-height));
+        padding-bottom: var(--nav-height);
+        @media (max-width: 750px) {
+            height: calc(100vh - var(--nav-md-height));
+            padding-bottom: var(--nav-md-height);
+        }
+        @media (max-width: 600px) {
+            height: calc(100vh - var(--nav-sm-height));
+            padding-bottom: var(--nav-sm-height);
+        }
     }
 }
 .page-slot {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - var(--nav-height));
-    /* margin: 0 auto; */
-    padding: calc(var(--nav-height) + 20px) 0;
-    -webkit-box-align: center;
     align-items: center;
+    justify-content: center;
     &--modals {
         display: contents;
     }

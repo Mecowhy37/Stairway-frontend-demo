@@ -1,21 +1,23 @@
 <template>
-    <main class="widget">
-        <TopBar
-            v-if="!noBar"
-            :compact="props.compactBar"
-            :no-return="props.noReturn"
-        >
-            <template #widget-title>
-                <slot name="widget-title"></slot>
-            </template>
-            <template #right-icon>
-                <slot name="right-icon"></slot>
-            </template>
-        </TopBar>
-        <div class="widget__content">
-            <slot name="widget-content"></slot>
-        </div>
-    </main>
+    <div class="wrapper--widget">
+        <main class="widget">
+            <TopBar
+                v-if="!noBar"
+                :compact="props.compactBar"
+                :no-return="props.noReturn"
+            >
+                <template #widget-title>
+                    <slot name="widget-title"></slot>
+                </template>
+                <template #right-icon>
+                    <slot name="right-icon"></slot>
+                </template>
+            </TopBar>
+            <div class="widget__content">
+                <slot name="widget-content"></slot>
+            </div>
+        </main>
+    </div>
 </template>
 
 <script setup>
