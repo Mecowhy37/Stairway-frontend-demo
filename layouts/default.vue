@@ -237,25 +237,15 @@ html {
         width: 100%;
         max-width: calc(var(--list-width) + 2 * var(--widget-sides));
         padding: 0 var(--widget-sides);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        height: calc(100vh - var(--nav-height));
-        padding-bottom: var(--nav-height);
+        padding-top: var(--nav-height);
     }
     &--widget {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        height: calc(100vh - var(--nav-height));
-        padding-bottom: var(--nav-height);
+        padding-top: var(--nav-height);
         @media (max-width: 750px) {
-            height: calc(100vh - var(--nav-md-height));
-            padding-bottom: var(--nav-md-height);
+            padding-top: var(--nav-md-height);
         }
         @media (max-width: 600px) {
-            height: calc(100vh - var(--nav-sm-height));
-            padding-bottom: var(--nav-sm-height);
+            padding-top: var(--nav-sm-height);
         }
     }
 }

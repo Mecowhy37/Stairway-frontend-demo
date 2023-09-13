@@ -36,7 +36,7 @@
                             ><p>Liquidity</p></NuxtLink
                         >
                         <NuxtLink
-                            to="/swap"
+                            to=""
                             @click="toggleDropdown()"
                             class="link list-item list-item--padded-sm"
                             ><p>Governance</p></NuxtLink
@@ -63,8 +63,8 @@
                         ><p>Liquidity</p></NuxtLink
                     >
                     <NuxtLink
-                        to="/swap"
-                        class=""
+                        to="https://vote.stairway.fi/"
+                        class="link link--underlined"
                         ><p>Governance</p></NuxtLink
                     >
                 </div>
