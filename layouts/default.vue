@@ -237,15 +237,15 @@ html {
         width: 100%;
         max-width: calc(var(--list-width) + 2 * var(--widget-sides));
         padding: 0 var(--widget-sides);
-        padding-top: var(--nav-height);
+        padding-top: calc(var(--nav-height) / 2);
     }
     &--widget {
-        padding-top: var(--nav-height);
+        padding-top: calc(var(--nav-height) / 2);
         @media (max-width: 750px) {
-            padding-top: var(--nav-md-height);
+            padding-top: calc(var(--nav-md-height) / 2);
         }
         @media (max-width: 600px) {
-            padding-top: var(--nav-sm-height);
+            padding-top: calc(var(--nav-sm-height) / 2);
         }
     }
 }
