@@ -36,11 +36,6 @@
         </template>
         <template #widget-content>
             <div class="tips">
-                <p>
-                    <span class="text-highlight">Tip: </span>
-                    Swap up to your desired amount, based on available liquidity. You'll only pay for what you actually
-                    receive.
-                </p>
                 <FaucetTrigger
                     :closing-callback="getBothBalances"
                     :connected-chain-id="connectedChainId"

@@ -133,11 +133,7 @@
                             <template #icon>
                                 <img
                                     class="token-icon"
-                                    :src="
-                                        connectedChainFullObj
-                                            ? connectedChainFullObj.logo_url
-                                            : '/_nuxt/assets/img/polygon_mainnet.webp'
-                                    "
+                                    :src="connectedChainFullObj.logo_url"
                                 />
                             </template>
                         </Btn>
@@ -196,8 +192,12 @@ function setChain(id) {
 }
 
 const connectedChainFullObj = computed(() => {
-    if (chains.value && connectedChain.value) {
-        return chains.value.find((el) => el.chain_id === connectedChainId.value)
+    if (chains.value) {
+        if (connectedChain.value) {
+            return chains.value.find((el) => el.chain_id === connectedChainId.value)
+        } else {
+            return chains.value.find((el) => el.chain_id === noWalletChain.value)
+        }
     }
 })
 </script>
