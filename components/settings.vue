@@ -206,7 +206,7 @@ defineExpose({
                 color: #ffcb45;
             }
             &.error {
-                color: #ff4343;
+                color: var(--error-color);
             }
             &.offset {
                 padding-top: 3px;
@@ -225,8 +225,8 @@ defineExpose({
                 flex-grow: 1;
                 text-align: end;
                 &.error {
-                    color: #ff4343;
-                    border: 1px solid #ff4343;
+                    color: var(--error-color);
+                    border: 1px solid var(--error-color);
                 }
             }
         }

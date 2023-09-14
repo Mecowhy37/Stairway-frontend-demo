@@ -147,14 +147,14 @@
                 >
                     Swap
                 </Btn>
-                <Btn
+                <!-- <Btn
                     @click="refresh()"
                     wide
                     bulky
                     :disabled="!connectedAccount"
                 >
                     refresh data
-                </Btn>
+                </Btn> -->
             </div>
             <div
                 v-if="price && bothTokensThere"
@@ -301,7 +301,9 @@ function callSwap() {
         stepStore.connectedWallet.provider
     )
 }
+const refreshEvents = inject("refreshEvents")
 function refresh() {
+    console.log("refresh() - swap")
     refreshPool()
     getBothBalances()
 }

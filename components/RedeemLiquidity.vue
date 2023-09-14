@@ -226,14 +226,14 @@
                 >
                     Remove Liquidity
                 </Btn>
-                <Btn
+                <!-- <Btn
                     @click="refresh()"
                     wide
                     bulky
                     :disabled="!connectedAccount"
                 >
                     refresh data
-                </Btn>
+                </Btn> -->
             </div>
         </template>
     </Widget>
@@ -288,7 +288,8 @@ function redeemLiquidityCall() {
             ownedPosition.value.lp_amount,
             settingsRedeem.value.slippage,
             settingsRedeem.value.deadline,
-            stepStore.connectedWallet.provider
+            stepStore.connectedWallet.provider,
+            refresh
         )
     }
 }
@@ -305,6 +306,7 @@ const ownedPosition = computed(() => {
 })
 
 function refresh() {
+    console.log("refresh()")
     refreshPool()
     refreshPositions()
 }

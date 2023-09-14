@@ -208,14 +208,14 @@
                     >
                         Add liquidity
                     </Btn>
-                    <Btn
+                    <!-- <Btn
                         @click="refresh()"
                         wide
                         bulky
                         :disabled="!connectedAccount"
                     >
                         refresh data
-                    </Btn>
+                    </Btn> -->
                 </div>
             </template>
         </Widget>
@@ -330,6 +330,7 @@ const ownedPosition = computed(() => {
     }
     return matchedPosition
 })
+
 function callAddLiquidity() {
     addLiquidity(
         ...Tokens.value,
@@ -339,7 +340,7 @@ function callAddLiquidity() {
         settingsAdd.value.deadline,
         stepStore.connectedAccount,
         stepStore.connectedWallet.provider,
-        stepStore.addresses.PoolManager
+        refresh
     ).then(() => {
         // state.amountQuote = ""
         // state.amountBase = ""
@@ -347,9 +348,12 @@ function callAddLiquidity() {
 }
 
 function refresh() {
-    refreshPool()
-    getBothBalances()
+    console.log("refresh() - add")
+    resetAmounts(0)
+    resetAmounts(1)
     refreshPositions()
+    getBothBalances()
+    refreshPool()
 }
 function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex]) {
@@ -483,6 +487,7 @@ watch(
 
 async function getBothBalances() {
     if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+        console.log("getBothBalances()")
         state.balanceA = await getTokenBalance(
             Tokens.value[tkEnum.QUOTE],
             connectedAccount.value,

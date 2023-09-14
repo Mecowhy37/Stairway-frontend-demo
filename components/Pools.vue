@@ -191,8 +191,8 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions, positionsStatus, connectedAccount, connectedChainId, isMobile, refreshPositions } =
-    storeToRefs(stepStore)
+const { positions, positionsStatus, connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
+const { refreshPositions } = stepStore
 
 const openedIndex = ref(null)
 
@@ -204,8 +204,8 @@ function toggle(index) {
     openedIndex.value = index
 }
 onMounted(() => {
-    if (connectedAccount.value && refreshPositions.value) {
-        refreshPositions.value.call(this)
+    if (connectedAccount.value && typeof refreshPositions === "function") {
+        refreshPositions()
     }
 })
 const router = useRouter()

@@ -11,7 +11,7 @@
         <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <NewToken ref="newTokenModal"></NewToken>
-            <!-- <Notifications></Notifications> -->
+            <Notifications></Notifications>
         </div>
     </div>
 </template>
@@ -156,17 +156,23 @@ watch(
     }
 )
 
-// const {
-//     data: EventsData,
-//     pending: EventsPending,
-//     refresh: refreshEvents,
-//     error: EventsError,
-//     status: EventsStatus,
-// } = await useAsyncData("events", () => {
-//     return $fetch(getUrl(`/chain/${}/events/add-liquidity/${}/${}/${}`))
-// }, {
-//     watch: [connectedChainId, connectedAccount]
-// })
+const {
+    data: EventsData,
+    pending: EventsPending,
+    refresh: refreshEvents,
+    error: EventsError,
+    status: EventsStatus,
+} = await useAsyncData(
+    "events",
+    () => {
+        console.log("fetching Events for user:", connectedAccount.value)
+        return $fetch(getUrl(`/chain/${connectedChainId.value}/events/${connectedAccount.value}/swap`))
+    },
+    {
+        watch: [connectedChainId, connectedAccount],
+    }
+)
+provide("refreshEvents", refreshEvents)
 
 // SCREEN SIZE ------------------
 const { width } = useWindowSize()
@@ -378,6 +384,7 @@ svg {
     &,
     & * {
         font-size: 13px !important;
+        line-height: 15px;
     }
 }
 .text-highlight {

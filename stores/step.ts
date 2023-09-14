@@ -114,7 +114,8 @@ export const useStepStore = defineStore("step", (): any => {
     
     // POSITIONS ----------------
     const positions = ref(null) 
-    const refreshPositions = ref(null)
+    const refreshPositions = null
+    // const refreshPositions = ref(null)
     const positionsStatus = ref(null)
     // POSITIONS ----------------
     

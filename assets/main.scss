@@ -24,10 +24,12 @@
     --account-center-position-top: 10%;
     --account-center-z-index: auto;
 
-    --text-color: #1b1b1b;
+    --text-color: rgb(27, 27, 27);
     --text-color-reverse: #ffffff;
     --text-color-reverse-opaque: rgba(255, 255, 255, 0.4);
     --text-grey: #b8b8b8;
+
+    --error-color: rgb(255, 67, 67);
 
     // --widget-bg: rgba(30, 30, 30, 0.9);
     // --swap-windows: rgba(0, 0, 0, 0.45);

@@ -37,19 +37,6 @@ export function isSupportedChain(id) {
     return id === 31337 || id === 80001 || id === 137
 }
 
-export function listenForTransactionMine(txRes, provider, callback = null) {
-    console.log(`Mining ${txRes.hash}...`)
-    return new Promise((resolve, reject) => {
-        provider.once(txRes.hash, async (txReciept) => {
-            if (typeof callback === "function") {
-                callback()
-            }
-            resolve()
-            console.log("Done!")
-        })
-    })
-}
-
 export function usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route) {
     const {
         data: pool,
@@ -113,7 +100,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         slippage,
         deadline,
         recipient,
-        providerArg
+        providerArg,
+        callback
     ) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
@@ -157,7 +145,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("parsedSlippage:", parsedSlippage)
             console.log("recipient:", recipient)
             console.log("deadlineStamp:", deadlineStamp)
-            await router.addLiquidity(
+            const tx = await router.addLiquidity(
                 getAddress(tokenQuote.address),
                 getAddress(tokenBase.address),
                 amountQuote.toString(),
@@ -166,6 +154,13 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 getAddress(recipient),
                 deadlineStamp
             )
+
+            console.log("sent AddLQ tx:", tx, "...waiting 1 block")
+            await tx.wait(1)
+            return await listenForTransactionMine(tx, provider, () => {
+                console.log("callback from buy() ... ")
+                callback()
+            })
         } catch (error) {
             console.log("Failed to add lq:", error)
         }
@@ -181,7 +176,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         lpPooled,
         slippage,
         deadline,
-        providerArg
+        providerArg,
+        callback
     ) {
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
@@ -218,7 +214,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("connectedAccount:", connectedAccount.value)
             console.log("deadlineStamp:", deadlineStamp)
             console.log("parsedSlippage:", parsedSlippage)
-            await router.redeemLiquidity(
+            const tx = await router.redeemLiquidity(
                 getAddress(tokenQuote.address),
                 getAddress(tokenBase.address),
                 amountQuote,
@@ -228,6 +224,12 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 deadlineStamp,
                 parsedSlippage
             )
+            console.log("sent RemoveLQ tx:", tx, "...waiting 1 block")
+            await tx.wait(1)
+            return await listenForTransactionMine(tx, provider, () => {
+                console.log("callback from redeem() ... ")
+                callback()
+            })
         } catch (err) {
             console.log("failed to redeem liquidity: ", err)
         }
@@ -268,13 +270,16 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         console.log("maxPrice:", maxPrice.toString())
         console.log("account:", account)
         console.log("deadlineStamp:", deadlineStamp)
-        await router.buy(
+        const tx = await router.buy(
             tokenPathAddresses,
             amountBase.toString(),
             maxPrice.toString(),
             getAddress(account),
             deadlineStamp
         )
+        console.log("buy tx:", tx, "...waiting 1 block")
+        await tx.wait(1)
+        return await listenForTransactionMine(tx, provider, () => console.log("callback from buy()"))
     }
 
     async function approveSpending(tokenAddress, providerArg, amount, callback = false) {
@@ -284,6 +289,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
         const quantity = amount === 0 ? maxUint : amount
         const tx = await erc20.approve(routerAddress.value, quantity)
+        console.log("tx:", tx, "...waiting 1 block")
         await tx.wait(1)
         return await listenForTransactionMine(tx, provider, callback)
     }
@@ -316,6 +322,20 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         // listenForTransactionMine,
         // checkAllowance,
     }
+}
+
+export function listenForTransactionMine(txRes, provider, callback = null) {
+    console.log(`waiting for tx mine: ${txRes.hash}...`)
+    return new Promise((resolve, reject) => {
+        provider.once(txRes.hash, async (txReciept) => {
+            resolve()
+            console.log("tx mined txReciept.hash:", txReciept)
+            if (typeof callback === "function") {
+                callback()
+            }
+            console.log("- - - - - - - - - - - - - - - - -")
+        })
+    })
 }
 
 export function useTokens() {
