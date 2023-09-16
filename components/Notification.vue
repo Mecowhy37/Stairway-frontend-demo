@@ -33,7 +33,23 @@
         </div>
         <div class="notify__content">
             <h4>{{ notify.header }}</h4>
-            <p class="caption">{{ notify.paragraph }}</p>
+            <p class="caption">
+                {{ notify.paragraph }}
+            </p>
+            <!-- <TransitionGroup mode="out-in">
+                <div
+                    class="notify__content__transition"
+                    :key="notify.header"
+                >
+                    <h4 :key="notify.header">{{ notify.header }}</h4>
+                    <p
+                        :key="notify.paragraph"
+                        class="caption"
+                    >
+                        {{ notify.paragraph }}
+                    </p>
+                </div>
+            </TransitionGroup> -->
         </div>
         <div
             class="close"
@@ -99,6 +115,16 @@ watch(
 <style lang="scss" scoped>
 $color-transition: 0.4s 0.3s ease-out;
 $transition: 0.4s ease-out;
+
+.v-enter-active,
+.v-leave-active {
+    /* transition: opacity 0.5s ease; */
+}
+
+.v-enter-from,
+.v-leave-to {
+    /* opacity: 0; */
+}
 .notify {
     $top-padd: 0.9rem;
     $side-padd: 1.3rem;
@@ -115,7 +141,11 @@ $transition: 0.4s ease-out;
     }
 
     &__content {
-        /* align-self: center; */
+        flex-grow: 1;
+        height: 48px;
+        &__transition {
+            position: absolute;
+        }
         h4 {
             margin-bottom: 7px;
         }

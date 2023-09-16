@@ -16,11 +16,7 @@ const stateExectutionOrder = ["approve", "pending", "success", "approve", "pendi
 
 let state = ref(0)
 function increment() {
-    if (state.value === stateExectutionOrder.length - 1) {
-        state.value = 0
-        return
-    }
-    state.value = state.value + 1
+    state.value = state.value === stateExectutionOrder.length - 1 ? 0 : state.value + 1
 }
 watch(state, (newVal) => {
     notifications.value[0] = stateExectutionOrder[newVal]
