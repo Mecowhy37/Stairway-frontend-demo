@@ -192,7 +192,7 @@ $transition: 0.4s ease-out;
             transform-origin: 50% 50%;
             transition: stroke-dasharray $transition, stroke $color-transition;
             &.spinning {
-                animation: spin 2s linear infinite;
+                animation: spin 1.5s linear infinite;
             }
             @keyframes spin {
                 100% {
