@@ -142,7 +142,7 @@ $transition: 0.4s ease-out;
 
     &__content {
         flex-grow: 1;
-        height: 48px;
+        /* height: 48px; */
         &__transition {
             position: absolute;
         }
@@ -150,7 +150,7 @@ $transition: 0.4s ease-out;
             margin-bottom: 7px;
         }
         p {
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
     }
 
