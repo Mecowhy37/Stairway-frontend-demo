@@ -12,7 +12,7 @@
 
 <script setup>
 const notifications = ref(["approve"])
-const stateExectutionOrder = ["approve", "pending", "success", "approve", "pending", "error"]
+const stateExectutionOrder = ["approve", "pending", "success", "pending", "error"]
 
 let state = ref(0)
 function increment() {
