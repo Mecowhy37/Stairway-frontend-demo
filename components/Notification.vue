@@ -30,6 +30,22 @@
                     r="42"
                 ></circle>
             </svg>
+            <TransitionGroup>
+                <Icon
+                    key="tick"
+                    v-show="notify.isDone && notify.state === 'success'"
+                    class="notify__icon__symbol"
+                    name="tick"
+                    :size="9"
+                ></Icon>
+                <Icon
+                    key="soloWarrning"
+                    v-show="notify.isDone && notify.state === 'error'"
+                    class="notify__icon__symbol"
+                    name="soloWarrning"
+                    :size="3"
+                ></Icon>
+            </TransitionGroup>
         </div>
         <div class="notify__content">
             <h4>{{ notify.header }}</h4>
@@ -118,12 +134,12 @@ $transition: 0.4s ease-out;
 
 .v-enter-active,
 .v-leave-active {
-    /* transition: opacity 0.5s ease; */
+    transition: opacity $color-transition;
 }
 
 .v-enter-from,
 .v-leave-to {
-    /* opacity: 0; */
+    opacity: 0;
 }
 .notify {
     $top-padd: 0.9rem;
@@ -164,12 +180,19 @@ $transition: 0.4s ease-out;
     }
 
     &__icon {
+        position: relative;
         height: 35px;
         width: 35px;
         align-self: center;
         flex-shrink: 0;
         margin-right: $side-padd;
 
+        &__symbol {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+        }
         .circle-background,
         .circle-progress {
             fill: none;
@@ -200,8 +223,10 @@ $transition: 0.4s ease-out;
                 }
             }
         }
-        &--done .circle-progress {
-            stroke-dasharray: 251.33 0 !important;
+        &--done {
+            .circle-progress {
+                stroke-dasharray: 251.33 0 !important;
+            }
         }
     }
     &--approve {

@@ -456,7 +456,7 @@ svg {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 100lvh;
+    height: 100vh;
     z-index: -2;
     background-color: var(--background-color);
     background-image: url("~/assets/img/stairway-background.jpeg");
