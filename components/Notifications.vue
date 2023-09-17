@@ -1,26 +1,60 @@
 <template>
     <div class="modal">
         <div class="notify-wrapper">
+            <!-- <Btn @click="notify(null, 'approve')">Notify</Btn> -->
             <Notification
-                v-for="(notify, index) in notifications"
-                :notify="notify"
-                @click="increment()"
+                v-for="notif in notifications"
+                :notif="notif"
+                :delete-notif="deleteNotif"
             ></Notification>
         </div>
     </div>
 </template>
 
 <script setup>
-const notifications = ref(["approve"])
-const stateExectutionOrder = ["approve", "pending", "success", "pending", "error"]
+import { v4 as uuid } from "uuid"
+import { useStepStore } from "@/stores/step"
 
-let state = ref(0)
-function increment() {
-    state.value = state.value === stateExectutionOrder.length - 1 ? 0 : state.value + 1
+const stepStore = useStepStore()
+
+const notifications = ref([])
+const allStates = ["approve", "pending", "success", "error"]
+
+function notify(id, state) {
+    if (!allStates.includes(state)) {
+        console.log("notif(): provided invalid state")
+        return null
+    }
+    const existingNotif = notifications.value.find((el) => el.id === id)
+    if (!existingNotif) {
+        return createNotif(state)
+    } else {
+        return updateNotification(existingNotif, state)
+    }
 }
-watch(state, (newVal) => {
-    notifications.value[0] = stateExectutionOrder[newVal]
-})
+stepStore.notify = notify
+
+function createNotif(state) {
+    const newNotif = {
+        id: uuid(),
+        state,
+    }
+    notifications.value.unshift(newNotif)
+    console.log("created", state, "notification")
+    return newNotif.id
+}
+
+function updateNotification(existingNotif, state) {
+    const notifIndex = notifications.value.indexOf(existingNotif)
+    const updatedNotif = { ...existingNotif, state: state }
+    notifications.value[notifIndex] = updatedNotif
+    console.log("updated notification to", state)
+    return existingNotif.id
+}
+function deleteNotif(id) {
+    console.log("removing notification", id)
+    notifications.value = notifications.value.filter((notif) => notif.id !== id)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -36,6 +70,10 @@ watch(state, (newVal) => {
     height: 50vh;
     padding: 5px;
     z-index: 100;
+    pointer-events: none;
+    & * {
+        pointer-events: all;
+    }
     @media (max-width: 400px) {
         width: 100%;
     }

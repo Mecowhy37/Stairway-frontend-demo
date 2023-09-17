@@ -117,7 +117,6 @@ export const useStepStore = defineStore("step", (): any => {
     // POSITIONS ----------------
     const positions = ref(null) 
     const refreshPositions = null
-    // const refreshPositions = ref(null)
     const positionsStatus = ref(null)
     // POSITIONS ----------------
     
@@ -145,6 +144,10 @@ export const useStepStore = defineStore("step", (): any => {
         }
     })
     // CHAINS ----------------
+
+    // NOTIFICATIONS ---------
+    const notify = null
+    // NOTIFICATIONS ---------
 
     return {
         onboard,
@@ -174,6 +177,8 @@ export const useStepStore = defineStore("step", (): any => {
         connectingWallet,
         disconnectConnectedWallet,
         alreadyConnectedWallets,
+
+        notify,
 
         connectedAccount,
         getTruncatedWalletAddress,

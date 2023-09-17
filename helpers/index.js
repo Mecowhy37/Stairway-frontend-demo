@@ -101,8 +101,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         deadline,
         recipient,
         providerArg,
-        callback
+        callback,
+        notify
     ) {
+        let notifId = null
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
@@ -119,22 +121,28 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             const baseNeedsApproval = allowanceBase < amountBase
 
             if (quoteNeedsApproval || baseNeedsApproval) {
+                // at this moment a notifcation needs to be created
+                notifId = notify(notifId, "approve")
+
                 const approvalPromises = []
 
                 if (quoteNeedsApproval) {
-                    approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, 0))
-                    // approvalPromises.unshift(approveSpending(addressA, providerArg, parsedAmountQuote))
+                    // approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, 0))
+                    approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, amountQuote.toString()))
                 }
 
                 if (baseNeedsApproval) {
-                    approvalPromises.unshift(approveSpending(tokenBase.address, providerArg, 0))
-                    // approvalPromises.unshift(approveSpending(addressB, providerArg, parsedAmountBase))
+                    // approvalPromises.unshift(approveSpending(tokenBase.address, providerArg, 0))
+                    approvalPromises.unshift(approveSpending(tokenBase.address, providerArg, amountBase.toString()))
                 }
 
                 await Promise.all(approvalPromises)
             }
         } catch (error) {
+            //at this moment, previous notification needs to get error or new error created
+            notifId = notify(notifId, "error")
             console.log("Failed to get approvals:", error)
+            return
         }
         try {
             console.log(" - - - - -a d d L Q- - - - - - ")
@@ -145,6 +153,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("parsedSlippage:", parsedSlippage)
             console.log("recipient:", recipient)
             console.log("deadlineStamp:", deadlineStamp)
+
+            //at this moment, previous notification needs to get 'mining' state or new 'mining' created
+            notifId = notify(notifId, "pending")
+
             const tx = await router.addLiquidity(
                 getAddress(tokenQuote.address),
                 getAddress(tokenBase.address),
@@ -159,9 +171,14 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             await tx.wait(1)
             return await listenForTransactionMine(tx, provider, () => {
                 console.log("callback from buy() ... ")
+                //at this moment, previous notification needs to get 'success' state or new 'success' created
+                notifId = notify(notifId, "success")
+
                 callback()
             })
         } catch (error) {
+            //at this moment, previous notification needs to get error or new error created
+            notifId = notify(notifId, "error")
             console.log("Failed to add lq:", error)
         }
     }

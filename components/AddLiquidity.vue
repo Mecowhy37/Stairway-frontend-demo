@@ -340,7 +340,8 @@ function callAddLiquidity() {
         settingsAdd.value.deadline,
         stepStore.connectedAccount,
         stepStore.connectedWallet.provider,
-        refresh
+        refresh,
+        stepStore.notify
     ).then(() => {
         // state.amountQuote = ""
         // state.amountBase = ""

@@ -1,19 +1,20 @@
 <template>
     <div
-        class="notify base-box row"
+        :key="id"
+        class="notif base-box row"
         :class="[
             {
-                'notify--approve': notify.state === 'approve',
-                'notify--pending': notify.state === 'pending',
-                'notify--success': notify.state === 'success',
-                'notify--error': notify.state === 'error',
+                'notif--approve': notif.state === 'approve',
+                'notif--pending': notif.state === 'pending',
+                'notif--success': notif.state === 'success',
+                'notif--error': notif.state === 'error',
             },
         ]"
     >
         <!-- @click.self="complete" -->
         <div
-            class="notify__icon"
-            :class="{ 'notify__icon--done': notify.isDone }"
+            class="notif__icon"
+            :class="{ 'notif__icon--done': notif.isDone }"
         >
             <svg viewBox="0 0 100 100">
                 <circle
@@ -33,48 +34,54 @@
             <TransitionGroup>
                 <Icon
                     key="tick"
-                    v-show="notify.isDone && notify.state === 'success'"
-                    class="notify__icon__symbol"
+                    v-show="notif.isDone && notif.state === 'success'"
+                    class="notif__icon__symbol"
                     name="tick"
                     :size="9"
                 ></Icon>
                 <Icon
                     key="soloWarrning"
-                    v-show="notify.isDone && notify.state === 'error'"
-                    class="notify__icon__symbol"
+                    v-show="notif.isDone && notif.state === 'error'"
+                    class="notif__icon__symbol"
                     name="soloWarrning"
                     :size="3"
                 ></Icon>
             </TransitionGroup>
         </div>
-        <div class="notify__content">
-            <h4>{{ notify.header }}</h4>
+        <div class="notif__content">
+            <h4>{{ notif.header }}</h4>
             <p class="caption">
-                {{ notify.paragraph }}
+                {{ notif.paragraph }}
             </p>
             <!-- <TransitionGroup mode="out-in">
                 <div
-                    class="notify__content__transition"
-                    :key="notify.header"
+                    class="notif__content__transition"
+                    :key="notif.header"
                 >
-                    <h4 :key="notify.header">{{ notify.header }}</h4>
+                    <h4 :key="notif.header">{{ notif.header }}</h4>
                     <p
-                        :key="notify.paragraph"
+                        :key="notif.paragraph"
                         class="caption"
                     >
-                        {{ notify.paragraph }}
+                        {{ notif.paragraph }}
                     </p>
                 </div>
             </TransitionGroup> -->
         </div>
-        <div
-            class="close"
-            :class="{ grey: notify.state === 'approve' || notify.state === 'pending' }"
-        >
-            <Icon
-                name="cross"
-                :size="13"
-            />
+        <div class="close">
+            <Btn
+                @click="deleteNotif(id)"
+                circle
+                transparent
+                :class="{ 'grey-text': notif.state === 'approve' || notif.state === 'pending' }"
+            >
+                <template #icon>
+                    <Icon
+                        name="cross"
+                        :size="13"
+                    />
+                </template>
+            </Btn>
         </div>
     </div>
 </template>
@@ -107,12 +114,15 @@ const notifications = {
     },
 }
 const props = defineProps({
-    notify: String,
+    notif: Object,
+    deleteNotif: Function,
 })
-const notify = computed(() => notifications[props.notify])
+const notif = computed(() => notifications[props.notif.state])
+const id = computed(() => props.notif.id)
+
 const spinning = ref(true)
 watch(
-    () => notify.value.isDone,
+    () => notif.value.isDone,
     (newVal) => {
         if (newVal) {
             setTimeout(() => {
@@ -141,7 +151,7 @@ $transition: 0.4s ease-out;
 .v-leave-to {
     opacity: 0;
 }
-.notify {
+.notif {
     $top-padd: 0.9rem;
     $side-padd: 1.3rem;
     margin-top: 5px;
@@ -149,12 +159,7 @@ $transition: 0.4s ease-out;
     padding-right: 0;
     border-radius: var(--semi-wdg-radius);
     box-shadow: var(--modal-box-shadow);
-    cursor: pointer;
-    pointer-events: all;
     transition: $color-transition;
-    & * {
-        pointer-events: none;
-    }
 
     &__content {
         flex-grow: 1;
@@ -191,7 +196,7 @@ $transition: 0.4s ease-out;
             position: absolute;
             transform: translate(-50%, -50%);
             top: 50%;
-            left: 50%;
+            left: 51%;
         }
         .circle-background,
         .circle-progress {
