@@ -124,10 +124,13 @@ defineExpose({
 
 <style lang="scss">
 .modal {
-    position: absolute;
+    /* position: absolute; */
+    position: fixed;
+    bottom: 0;
+    right: 0;
     top: 0;
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
     display: grid;
     &--focus {
         background-color: rgba(232, 232, 232, 0.5);
