@@ -262,6 +262,11 @@ html {
     justify-content: center;
     &--modals {
         display: contents;
+        & > div {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+        }
     }
     & > div {
         margin: auto 0;

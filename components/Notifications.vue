@@ -28,13 +28,13 @@ watch(state, (newVal) => {
     pointer-events: none;
 }
 .notify-wrapper {
-    place-self: end;
-    width: 400px;
-    height: 50vh;
-    padding: 5px;
+    place-self: flex-end;
     display: flex;
+    width: 100%;
     flex-direction: column;
     justify-content: flex-end;
+    height: 50vh;
+    padding: 5px;
     z-index: 100;
 }
 </style>
