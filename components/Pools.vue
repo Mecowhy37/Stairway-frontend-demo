@@ -2,8 +2,8 @@
     <div class="wrapper--wide-list">
         <div class="positions">
             <div class="positions__top row">
-                <h1>Liquidity</h1>
-                <Btn @click="stepStore.refreshPositions()">refresh positions - {{ positionsStatus }}</Btn>
+                <h1 class="scale">Liquidity</h1>
+                <!-- <Btn @click="stepStore.refreshPositions()">refresh positions - {{ positionsStatus }}</Btn> -->
                 <NuxtLink
                     class="link"
                     to="/add-liquidity"
@@ -12,6 +12,7 @@
                     <Btn
                         is="h4"
                         reverse
+                        :compact="isMobile"
                         :disabled="!positions || !connectedAccount"
                     >
                         Add Liquidity
@@ -98,7 +99,9 @@
                                 <div>
                                     <p>
                                         {{
-                                            Round(formatUnits(position.base_amount, position.pool.base_token.decimals))
+                                            basicRound(
+                                                formatUnits(position.base_amount, position.pool.base_token.decimals)
+                                            )
                                         }}
                                     </p>
                                     <p class="caption grey-text">{{ position.pool.base_token.symbol }} pooled</p>
@@ -106,7 +109,7 @@
                                 <div>
                                     <p>
                                         {{
-                                            Round(
+                                            basicRound(
                                                 formatUnits(position.quote_amount, position.pool.quote_token.decimals)
                                             )
                                         }}
@@ -114,7 +117,7 @@
                                     <p class="caption grey-text">{{ position.pool.quote_token.symbol }} pooled</p>
                                 </div>
                                 <div>
-                                    <p>{{ position.pool_share_pct }}%</p>
+                                    <p>{{ basicRound(position.pool_share_pct) }}%</p>
                                     <p class="caption grey-text">Pool share</p>
                                 </div>
                             </div>
@@ -187,6 +190,8 @@
 <script setup>
 import { formatUnits } from "ethers"
 
+import { basicRound } from "~/helpers/index"
+
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
@@ -223,12 +228,6 @@ function removeRedirect(pool) {
     router.push({
         path: `/remove/${pool.pool_index}`,
     })
-}
-
-function Round(amt) {
-    let amount = Number(amt)
-    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-    return String(parseFloat(amount))
 }
 </script>
 

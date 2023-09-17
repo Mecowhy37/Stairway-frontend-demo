@@ -78,14 +78,16 @@ export const useStepStore = defineStore("step", (): any => {
         accountCenter: {
             desktop: {
                 enabled: false,
+                containerElement: "web3onboard"    
             },
             mobile: {
                 enabled: false,
+                containerElement: "web3onboard"    
             },
         },
         connect: {
             autoConnectLastWallet: true,
-        },       
+        },   
     })
     const { wallets, connectWallet, connectedChain, setChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
 

@@ -12,6 +12,7 @@
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <NewToken ref="newTokenModal"></NewToken>
             <Notifications></Notifications>
+            <div class="web3onboard modal"></div>
         </div>
     </div>
 </template>
@@ -262,6 +263,9 @@ html {
     justify-content: center;
     &--modals {
         display: contents;
+        .web3onboard {
+            pointer-events: none;
+        }
     }
     & > div {
         margin: auto 0;
@@ -270,6 +274,11 @@ html {
 
 h1 {
     font-size: 3.25rem;
+    &.scale {
+        @media (max-width: 400px) {
+            font-size: 2.75rem;
+        }
+    }
 }
 h2 {
     font-size: 2.25rem;

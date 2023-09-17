@@ -30,11 +30,14 @@ watch(state, (newVal) => {
 .notify-wrapper {
     place-self: flex-end;
     display: flex;
-    width: 100%;
+    width: 400px;
     flex-direction: column;
     justify-content: flex-end;
     height: 50vh;
     padding: 5px;
     z-index: 100;
+    @media (max-width: 400px) {
+        width: 100%;
+    }
 }
 </style>
