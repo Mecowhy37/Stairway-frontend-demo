@@ -262,11 +262,6 @@ html {
     justify-content: center;
     &--modals {
         display: contents;
-        & > div {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-        }
     }
     & > div {
         margin: auto 0;
@@ -456,7 +451,7 @@ svg {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: 100lvh;
     z-index: -2;
     background-color: var(--background-color);
     background-image: url("~/assets/img/stairway-background.jpeg");
