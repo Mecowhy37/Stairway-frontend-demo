@@ -422,8 +422,16 @@ watch(
 
 async function getBothBalances() {
     if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-        state.balanceA = await getTokenBalance(Tokens.value[0], connectedAccount.value, connectedChainId.value)
-        state.balanceB = await getTokenBalance(Tokens.value[1], connectedAccount.value, connectedChainId.value)
+        state.balanceA = await getTokenBalance(
+            Tokens.value[tkEnum.QUOTE],
+            connectedAccount.value,
+            connectedChainId.value
+        )
+        state.balanceB = await getTokenBalance(
+            Tokens.value[tkEnum.BASE],
+            connectedAccount.value,
+            connectedChainId.value
+        )
     }
 }
 
@@ -433,8 +441,8 @@ watch(
     async (newVal) => {
         const [wallet, chain] = newVal
         if (wallet && isSupportedChain(chain)) {
-            state.balanceA = await getTokenBalance(Tokens.value[0], wallet, chain)
-            state.balanceB = await getTokenBalance(Tokens.value[1], wallet, chain)
+            state.balanceA = await getTokenBalance(Tokens.value[tkEnum.QUOTE], wallet, chain)
+            state.balanceB = await getTokenBalance(Tokens.value[tkEnum.BASE], wallet, chain)
         } else {
             Balances.value = ["", ""]
         }

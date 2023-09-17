@@ -7,13 +7,12 @@
                 <NuxtLink
                     class="link"
                     to="/add-liquidity"
-                    v-if="positions !== null || (positions && positions.length === 0)"
+                    v-if="positions && positions.length !== 0"
                 >
                     <Btn
                         is="h4"
                         reverse
                         :compact="isMobile"
-                        :disabled="!positions || !connectedAccount"
                     >
                         Add Liquidity
                         <template #icon>

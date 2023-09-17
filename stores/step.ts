@@ -78,11 +78,11 @@ export const useStepStore = defineStore("step", (): any => {
         accountCenter: {
             desktop: {
                 enabled: false,
-                containerElement: "web3onboard"    
+                // containerElement: "#__nuxt > div.web3onboard"    
             },
             mobile: {
                 enabled: false,
-                containerElement: "web3onboard"    
+                // containerElement: "#__nuxt > div.web3onboard"    
             },
         },
         connect: {
