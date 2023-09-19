@@ -119,7 +119,7 @@ const props = defineProps({
             }
         }
         &.plus .icon {
-            margin: 12px 0 !important;
+            padding: 7.445px 0 !important;
         }
     }
     .tables {

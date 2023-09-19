@@ -27,8 +27,9 @@
             :is="props.is"
             class="widget-title"
             :class="{ 'widget-title--margin': !props.noReturn }"
-            ><slot name="widget-title"></slot
-        ></component>
+        >
+            <slot name="widget-title"></slot>
+        </component>
         <div>
             <slot name="right-icon"></slot>
         </div>
@@ -72,6 +73,7 @@ const props = defineProps({
     .back-btn {
         color: var(--text-color-reverse);
         margin-left: -4px;
+        margin: -3px 0;
         .icon {
             margin: 0 6.75px !important;
         }

@@ -91,25 +91,25 @@ const notifications = {
     approve: {
         state: "approve",
         header: "Approve spending",
-        paragraph: "Please approve spending funds.",
+        paragraph: "Please approve spending funds",
         isDone: false,
     },
     pending: {
         state: "pending",
         header: "Transaction mining",
-        paragraph: "Your transaction is being processed.",
+        paragraph: "Your transaction is being processed",
         isDone: false,
     },
     success: {
         state: "success",
         header: "Transaction succeeded",
-        paragraph: "funds added / swaped / redeemed.",
+        paragraph: "Your transaction was successfully processed",
         isDone: true,
     },
     error: {
         state: "error",
         header: "Transaction failed",
-        paragraph: "There was an error.",
+        paragraph: "Your transaction was not completed",
         isDone: true,
     },
 }
@@ -259,6 +259,9 @@ $transition: 0.4s ease-out;
         background-color: var(--error-color);
         .circle-progress {
             stroke: var(--text-color-reverse);
+        }
+        .close .btn {
+            color: inherit;
         }
     }
 }
