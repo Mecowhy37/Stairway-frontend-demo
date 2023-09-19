@@ -42,8 +42,8 @@ useHead({
     title: "Stairway",
 })
 
-// const router = useRouter()
-// const pages = ref(router.getRoutes())
+const router = useRouter()
+const route = useRoute()
 const {
     data: TokensData,
     pending: TokensPending,
@@ -113,8 +113,10 @@ const {
     "positions",
     () => {
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-            console.log("fetching positions on chain:", connectedChainId.value)
-            return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+            if (router.currentRoute.value.name === "liquidity") {
+                console.log("fetching positions on chain:", connectedChainId.value)
+                return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+            }
         } else {
             return []
         }
@@ -156,23 +158,23 @@ watch(
     }
 )
 
-const {
-    data: EventsData,
-    pending: EventsPending,
-    refresh: refreshEvents,
-    error: EventsError,
-    status: EventsStatus,
-} = await useAsyncData(
-    "events",
-    () => {
-        console.log("fetching Events for user:", connectedAccount.value)
-        return $fetch(getUrl(`/chain/${connectedChainId.value}/events/${connectedAccount.value}/swap`))
-    },
-    {
-        watch: [connectedChainId, connectedAccount],
-    }
-)
-provide("refreshEvents", refreshEvents)
+// const {
+//     data: EventsData,
+//     pending: EventsPending,
+//     refresh: refreshEvents,
+//     error: EventsError,
+//     status: EventsStatus,
+// } = await useAsyncData(
+//     "events",
+//     () => {
+//         console.log("fetching Events for user:", connectedAccount.value)
+//         return $fetch(getUrl(`/chain/${connectedChainId.value}/events/${connectedAccount.value}/swap`))
+//     },
+//     {
+//         watch: [connectedChainId, connectedAccount],
+//     }
+// )
+// provide("refreshEvents", refreshEvents)
 
 // SCREEN SIZE ------------------
 const { width } = useWindowSize()

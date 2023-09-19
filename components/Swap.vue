@@ -301,7 +301,7 @@ function callSwap() {
         stepStore.connectedWallet.provider
     )
 }
-const refreshEvents = inject("refreshEvents")
+// const refreshEvents = inject("refreshEvents")
 function refresh() {
     console.log("refresh() - swap")
     refreshPool()

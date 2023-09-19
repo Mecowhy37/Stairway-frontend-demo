@@ -7,7 +7,7 @@
                 <NuxtLink
                     class="link"
                     to="/add-liquidity"
-                    v-if="positions && positions.length !== 0"
+                    v-if="positions?.length !== 0"
                 >
                     <Btn
                         is="h4"
@@ -26,7 +26,7 @@
             </div>
 
             <h3 class="positions__length">
-                Your liquidity pools <span>{{ positions !== null ? positions.length : "0" }}</span>
+                Your liquidity pools <span>{{ positions?.length ? positions.length : "0" }}</span>
             </h3>
             <div
                 v-if="positions && positions.length > 0"
