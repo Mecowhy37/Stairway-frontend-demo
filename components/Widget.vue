@@ -88,6 +88,7 @@ const props = defineProps({
                 }
             }
             &__lower {
+                height: 25px;
                 gap: 5px;
                 padding: 5px 8px;
                 text-align: end;
