@@ -1,7 +1,7 @@
 <template>
     <!-- <div class="row"> -->
     <Widget no-return>
-        <template #widget-title>Trade</template>
+        <template #widget-title>Swap</template>
         <template #right-icon>
             <Dropdown
                 :settings-ref="settings"
