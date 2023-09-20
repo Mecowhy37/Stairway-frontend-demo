@@ -18,7 +18,7 @@ import { useStepStore } from "@/stores/step"
 const stepStore = useStepStore()
 
 const notifications = ref([])
-const allStates = ["approve", "pending", "success", "error"]
+const allStates = ["approve", "sign", "confirming", "pending", "success", "error"]
 
 function notify(id, state) {
     if (!allStates.includes(state)) {
@@ -52,8 +52,9 @@ function updateNotification(existingNotif, state) {
     return existingNotif.id
 }
 function deleteNotif(id) {
-    console.log("removing notification", id)
-    notifications.value = notifications.value.filter((notif) => notif.id !== id)
+    const targetNotification = notifications.value.find((notif) => notif.id === id)
+    console.log("removing notification:", targetNotification.state)
+    notifications.value = notifications.value.filter((notif) => notif !== targetNotification)
 }
 </script>
 

@@ -5,6 +5,7 @@
         :class="[
             {
                 'notif--approve': notif.state === 'approve',
+                'notif--sign': notif.state === 'sign',
                 'notif--pending': notif.state === 'pending',
                 'notif--success': notif.state === 'success',
                 'notif--error': notif.state === 'error',
@@ -92,6 +93,18 @@ const notifications = {
         state: "approve",
         header: "Approve spending",
         paragraph: "Please approve spending funds",
+        isDone: false,
+    },
+    sign: {
+        state: "sign",
+        header: "Please sign a transaction",
+        paragraph: "Sign to complete a transaction",
+        isDone: false,
+    },
+    confirming: {
+        state: "confirming",
+        header: "Waiting for confirmation",
+        paragraph: "Your signature is getting confirmed",
         isDone: false,
     },
     pending: {
@@ -236,10 +249,16 @@ $transition: 0.4s ease-out;
     }
     &--approve {
     }
-    &--pending {
+    &--sign {
         .circle-progress {
             /* Adjusted for 135 degrees */
             stroke-dasharray: 106.03 176.71;
+        }
+    }
+    &--pending {
+        .circle-progress {
+            /* Adjusted for 202.5 degrees */
+            stroke-dasharray: 140.74, 110.59;
 
             /* Adjusted for 240 degrees */
             /* stroke-dasharray: 167.55, 83.78;  */

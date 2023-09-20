@@ -248,12 +248,18 @@ html {
         padding-top: calc(var(--nav-height) / 2);
     }
     &--widget {
-        padding-top: calc(var(--nav-height) / 2);
+        $padding-multiplyer: 1;
+        display: flex;
+        flex-direction: column;
+        height: calc(100dvh - var(--nav-height));
+        padding-bottom: calc(var(--nav-height) * $padding-multiplyer);
         @media (max-width: 750px) {
-            padding-top: calc(var(--nav-md-height) / 2);
+            height: calc(100dvh - var(--nav-md-height));
+            padding-bottom: calc(var(--nav-md-height) * $padding-multiplyer);
         }
         @media (max-width: 600px) {
-            padding-top: calc(var(--nav-sm-height) / 2);
+            height: calc(100dvh - var(--nav-sm-height));
+            padding-bottom: calc(var(--nav-sm-height) * $padding-multiplyer);
         }
     }
 }

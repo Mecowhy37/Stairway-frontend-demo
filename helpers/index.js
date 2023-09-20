@@ -126,6 +126,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
 
                 const approvalPromises = []
 
+                // each approve spending should notify about confirming a signature and it should also show
+                // token symbol in the notification
+                // notifId = notify(notifId, "confirming")
+
                 if (quoteNeedsApproval) {
                     // approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, 0))
                     approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, amountQuote.toString()))
@@ -155,7 +159,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("deadlineStamp:", deadlineStamp)
 
             //at this moment, previous notification needs to get 'mining' state or new 'mining' created
-            notifId = notify(notifId, "pending")
+            notifId = notify(notifId, "sign")
 
             const tx = await router.addLiquidity(
                 getAddress(tokenQuote.address),
@@ -166,6 +170,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 getAddress(recipient),
                 deadlineStamp
             )
+            notifId = notify(notifId, "pending")
 
             console.log("sent AddLQ tx:", tx, "...waiting 1 block")
             await tx.wait(1)

@@ -1,214 +1,203 @@
 <template>
-    <div class="row">
-        <Widget>
-            <template #widget-title>Add liquidity</template>
-            <template #right-icon>
-                <Dropdown
-                    :settings-ref="settingsAdd"
-                    no-padding
-                    solid
-                >
-                    <template #dropdown-activator="{ on }">
-                        <Btn
-                            circle
-                            transparent
-                            icon-contrast
-                            class="grey-text"
-                        >
-                            <template #icon>
-                                <Icon
-                                    name="cog"
-                                    :size="20"
-                                />
-                            </template>
-                        </Btn>
-                    </template>
-                    <template #dropdown="{ toggleDropdown }">
-                        <Settings
-                            ref="settingsAdd"
-                            :default-slippage="0.5"
-                            :default-deadline="30"
-                            :toggle-dropdown="toggleDropdown"
-                        ></Settings>
-                    </template>
-                </Dropdown>
-            </template>
-            <template #widget-content>
-                <div class="tips">
-                    <FaucetTrigger
-                        :closing-callback="getBothBalances"
-                        :connected-chain-id="connectedChainId"
-                    ></FaucetTrigger>
-                </div>
-                <div class="windows">
-                    <div
-                        class="contents"
-                        v-for="(i, x) in new Array(2)"
+    <!-- <div class="row"> -->
+    <Widget>
+        <template #widget-title>Add liquidity</template>
+        <template #right-icon>
+            <Dropdown
+                :settings-ref="settingsAdd"
+                no-padding
+                solid
+            >
+                <template #dropdown-activator="{ on }">
+                    <Btn
+                        circle
+                        transparent
+                        icon-contrast
+                        class="grey-text"
                     >
-                        <div class="window layer-wdg-box">
-                            <div class="window__upper">
-                                <Btn
-                                    @click="openTokenSelectModal(x)"
-                                    opaque
-                                    selectable
-                                    custom
-                                >
-                                    {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
-                                    <template #icon>
-                                        <Icon
-                                            name="chevron"
-                                            :size="16"
-                                        />
-                                    </template>
-                                </Btn>
-                                <input
-                                    type="text"
-                                    placeholder="0"
-                                    spellcheck="false"
-                                    autocomplete="off"
-                                    autocorrect="off"
-                                    @input="amountInputHandler($event, x)"
-                                    :value="userAmounts[amountsLabelOrder[x]]"
-                                />
-                            </div>
-                            <div
-                                class="window__lower row flex-end align-center"
-                                @click="fillInBalance(Balances[x], x)"
-                                :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
+                        <template #icon>
+                            <Icon
+                                name="cog"
+                                :size="20"
+                            />
+                        </template>
+                    </Btn>
+                </template>
+                <template #dropdown="{ toggleDropdown }">
+                    <Settings
+                        ref="settingsAdd"
+                        :default-slippage="0.5"
+                        :default-deadline="30"
+                        :toggle-dropdown="toggleDropdown"
+                    ></Settings>
+                </template>
+            </Dropdown>
+        </template>
+        <template #widget-content>
+            <div class="tips">
+                <FaucetTrigger
+                    :closing-callback="getBothBalances"
+                    :connected-chain-id="connectedChainId"
+                ></FaucetTrigger>
+            </div>
+            <div class="windows">
+                <div
+                    class="contents"
+                    v-for="(i, x) in new Array(2)"
+                >
+                    <div class="window layer-wdg-box">
+                        <div class="window__upper">
+                            <Btn
+                                @click="openTokenSelectModal(x)"
+                                opaque
+                                selectable
+                                custom
                             >
-                                <p class="caption">{{ Balances[x] }}</p>
-                                <Icon
-                                    name="wallet"
-                                    :size="13"
-                                />
-                            </div>
+                                {{ Tokens[x] !== null ? Tokens[x]?.symbol : "Select token" }}
+                                <template #icon>
+                                    <Icon
+                                        name="chevron"
+                                        :size="16"
+                                    />
+                                </template>
+                            </Btn>
+                            <input
+                                type="text"
+                                placeholder="0"
+                                spellcheck="false"
+                                autocomplete="off"
+                                autocorrect="off"
+                                @input="amountInputHandler($event, x)"
+                                :value="userAmounts[amountsLabelOrder[x]]"
+                            />
                         </div>
                         <div
-                            v-if="x === 0"
-                            class="mid-symbol plus grey-text"
+                            class="window__lower row flex-end align-center"
+                            @click="fillInBalance(Balances[x], x)"
+                            :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                         >
+                            <p class="caption">{{ Balances[x] }}</p>
                             <Icon
-                                name="plus"
-                                :size="16"
+                                name="wallet"
+                                :size="13"
                             />
                         </div>
                     </div>
+                    <div
+                        v-if="x === 0"
+                        class="mid-symbol plus grey-text"
+                    >
+                        <Icon
+                            name="plus"
+                            :size="16"
+                        />
+                    </div>
                 </div>
-                <div
-                    v-if="false"
-                    class="tables"
-                >
-                    <div>
-                        <p>Pool share</p>
-                        <div class="columns row">
-                            <div>
-                                <p>
-                                    {{
-                                        basicRound(
-                                            formatUnits(
-                                                ownedPosition.base_amount,
-                                                ownedPosition.pool.base_token.decimals
-                                            )
-                                        )
-                                    }}
-                                </p>
-                                <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
-                            </div>
-                            <div>
-                                <p>
-                                    {{
-                                        basicRound(
-                                            formatUnits(
-                                                ownedPosition.quote_amount,
-                                                ownedPosition.pool.quote_token.decimals
-                                            )
-                                        )
-                                    }}
-                                </p>
-                                <p class="caption grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}</p>
-                            </div>
+            </div>
+            <div
+                v-if="false"
+                class="tables"
+            >
+                <div>
+                    <p>Pool share</p>
+                    <div class="columns row">
+                        <div>
+                            <p>
+                                {{
+                                    basicRound(
+                                        formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
+                                    )
+                                }}
+                            </p>
+                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
+                        </div>
+                        <div>
+                            <p>
+                                {{
+                                    basicRound(
+                                        formatUnits(ownedPosition.quote_amount, ownedPosition.pool.quote_token.decimals)
+                                    )
+                                }}
+                            </p>
+                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}</p>
+                        </div>
 
-                            <!-- <div>
+                        <!-- <div>
                                 <p>78%</p>
                                 <p class="caption grey-text">Pool share</p>
                             </div> -->
-                        </div>
                     </div>
                 </div>
-                <div
-                    v-if="ownedPosition"
-                    class="pooled"
+            </div>
+            <div
+                v-if="ownedPosition"
+                class="pooled"
+            >
+                <div class="pooled__item row align-center">
+                    <img
+                        class="token-icon token-icon--sm"
+                        :src="pool.quote_token.logo_uri"
+                    />
+                    <p class="pooled__item__symbol grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}:</p>
+                    <p class="pooled__item__amount">
+                        {{
+                            ownedPosition
+                                ? basicRound(
+                                      (Number(
+                                          formatUnits(
+                                              ownedPosition.quote_amount,
+                                              ownedPosition.pool.quote_token.decimals
+                                          )
+                                      ) *
+                                          state.redeemPercent) /
+                                          100
+                                  )
+                                : 0
+                        }}
+                    </p>
+                </div>
+                <div class="pooled__item row align-center">
+                    <img
+                        class="token-icon token-icon--sm"
+                        :src="pool.base_token.logo_uri"
+                    />
+                    <p class="pooled__item__symbol grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}:</p>
+                    <p class="pooled__item__amount">
+                        {{
+                            ownedPosition
+                                ? basicRound(
+                                      (Number(
+                                          formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
+                                      ) *
+                                          state.redeemPercent) /
+                                          100
+                                  )
+                                : 0
+                        }}
+                    </p>
+                </div>
+            </div>
+            <div class="buttons">
+                <Btn
+                    v-if="!stepStore.connectedWallet"
+                    is="h4"
+                    wide
+                    bulky
+                    @click="stepStore.connectWallet()"
                 >
-                    <div class="pooled__item row align-center">
-                        <img
-                            class="token-icon token-icon--sm"
-                            :src="pool.quote_token.logo_uri"
-                        />
-                        <p class="pooled__item__symbol grey-text">
-                            Pooled {{ ownedPosition.pool.quote_token.symbol }}:
-                        </p>
-                        <p class="pooled__item__amount">
-                            {{
-                                ownedPosition
-                                    ? basicRound(
-                                          (Number(
-                                              formatUnits(
-                                                  ownedPosition.quote_amount,
-                                                  ownedPosition.pool.quote_token.decimals
-                                              )
-                                          ) *
-                                              state.redeemPercent) /
-                                              100
-                                      )
-                                    : 0
-                            }}
-                        </p>
-                    </div>
-                    <div class="pooled__item row align-center">
-                        <img
-                            class="token-icon token-icon--sm"
-                            :src="pool.base_token.logo_uri"
-                        />
-                        <p class="pooled__item__symbol grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}:</p>
-                        <p class="pooled__item__amount">
-                            {{
-                                ownedPosition
-                                    ? basicRound(
-                                          (Number(
-                                              formatUnits(
-                                                  ownedPosition.base_amount,
-                                                  ownedPosition.pool.base_token.decimals
-                                              )
-                                          ) *
-                                              state.redeemPercent) /
-                                              100
-                                      )
-                                    : 0
-                            }}
-                        </p>
-                    </div>
-                </div>
-                <div class="buttons">
-                    <Btn
-                        v-if="!stepStore.connectedWallet"
-                        is="h4"
-                        wide
-                        bulky
-                        @click="stepStore.connectWallet()"
-                    >
-                        Connect wallet
-                    </Btn>
-                    <Btn
-                        v-else
-                        @click="callAddLiquidity()"
-                        is="h4"
-                        wide
-                        bulky
-                        :disabled="!bothAmountsIn || !bothTokensThere"
-                    >
-                        Add liquidity
-                    </Btn>
-                    <!-- <Btn
+                    Connect wallet
+                </Btn>
+                <Btn
+                    v-else
+                    @click="callAddLiquidity()"
+                    is="h4"
+                    wide
+                    bulky
+                    :disabled="!bothAmountsIn || !bothTokensThere"
+                >
+                    Add liquidity
+                </Btn>
+                <!-- <Btn
                         @click="refresh()"
                         wide
                         bulky
@@ -216,10 +205,10 @@
                     >
                         refresh data
                     </Btn> -->
-                </div>
-            </template>
-        </Widget>
-        <!-- <Widget no-return>
+            </div>
+        </template>
+    </Widget>
+    <!-- <Widget no-return>
             <template #widget-title>temporary display</template>
             <template #widget-content>
                 <div class="contents temp-display">
@@ -246,7 +235,7 @@
                 </div>
             </template>
         </Widget> -->
-    </div>
+    <!-- </div> -->
 </template>
 
 <script setup>
