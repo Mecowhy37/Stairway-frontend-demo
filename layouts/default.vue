@@ -38,8 +38,10 @@ const {
 } = storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
-useHead({
-    title: "Stairway",
+useSeoMeta({
+    title: "Stairway.fi",
+    description:
+        "Decentralized AMM for crypto trading. Introducing fixed price intervals, liquidity provision and decision-making in a new way",
 })
 
 const router = useRouter()

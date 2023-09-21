@@ -88,7 +88,7 @@
                                             class="list-item"
                                             :class="isMobile ? 'list-item--padded-sm' : 'list-item--padded'"
                                         >
-                                            Redeem liquidity
+                                            Remove liquidity
                                         </p>
                                     </template>
                                 </Dropdown>

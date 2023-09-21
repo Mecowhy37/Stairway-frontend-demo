@@ -1,6 +1,6 @@
 <template>
     <Widget>
-        <template #widget-title>Redeem liquidity</template>
+        <template #widget-title>Remove liquidity</template>
         <template #right-icon>
             <Dropdown
                 :settings-ref="settingsRedeem"
