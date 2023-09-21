@@ -35,7 +35,7 @@
                 <div
                     v-for="token in featuredTokens"
                     @click="setToken(token)"
-                    class="list-item list-item--padded row align-center"
+                    class="list-item list-item--padded list-item--bottom-border row align-center"
                     :class="{
                         'list-item--opaque': ABTokensAddresses.includes(token.address),
                     }"

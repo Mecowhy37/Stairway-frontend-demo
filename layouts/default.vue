@@ -126,6 +126,10 @@ const {
     }
 )
 stepStore.refreshPositions = RefreshPositions
+
+// function refreshOnePosition(poolIdx) {
+
+// }
 watch(
     () => [PositionsData.value, PositionsStatus.value],
     ([newPositions, newStatus]) => {
@@ -358,10 +362,24 @@ svg {
     &:hover {
         background-color: var(--list-hover-bg);
         border: 1px solid var(--list-hover-stroke);
+        &--bottom-border {
+            border: none;
+            border-bottom: 1px solid var(--list-hover-stroke);
+        }
     }
     &:active {
         background-color: var(--list-click-bg);
         border: 1px solid var(--list-click-stroke);
+    }
+    &--bottom-border {
+        &:hover {
+            border: 1px solid transparent;
+            border-bottom: 1px solid var(--list-hover-stroke);
+        }
+        &:active {
+            border: 1px solid transparent;
+            border-bottom: 1px solid var(--list-click-stroke);
+        }
     }
     &--padded {
         padding: 1rem;

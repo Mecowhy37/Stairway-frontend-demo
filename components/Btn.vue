@@ -205,10 +205,10 @@ $horiz-padd: 1.3rem; */
             border-radius: inherit;
         }
         &:not(:disabled):hover::before {
-            background-color: var(--blue-hover);
+            background-color: var(--list-hover-stroke);
         }
         &:not(:disabled):active::before {
-            background-color: var(--blue-active);
+            background-color: var(--list-click-bg-darker);
         }
     }
     &--selectable {

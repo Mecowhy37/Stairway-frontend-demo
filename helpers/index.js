@@ -477,6 +477,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
 
     return { Balances, getTokenBalance, getBothBalances, reverseBalances }
 }
+
 export const widgetTypeObj = {
     swap: "swap",
     add: "add",

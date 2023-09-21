@@ -117,7 +117,7 @@
                         />
                     </div>
                     <p>
-                        {{ formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals).toExponential() }}
+                        {{ Number(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)).toExponential() }}
                         <!-- {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }} -->
                         {{ Tokens[tkEnum.BASE].symbol }}
                         currently available at

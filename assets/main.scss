@@ -55,20 +55,18 @@
     --flat-bg-solid: rgb(48, 51, 50);
     --flat-outline: var(--primary-btn-bg);
 
-    --blue-hover: rgba(57, 171, 219, 0.3);
-    --blue-active: rgb(57, 171, 219);
-
     --trans-hover: var(--swap-windows);
 
     --info-bg: rgb(255, 36, 245);
     --info-bg-opaque: rgba(255, 36, 245, 0.1);
 
-    --list-hover-bg: rgba(57, 171, 219, 0.2);
-    --list-hover-stroke: rgba(57, 171, 219, 0.3);
+    --list-hover-bg: rgba(69, 255, 197, 0.2);
+    --list-hover-stroke: rgba(69, 255, 197, 0.3);
 
-    --list-click-bg: rgba(57, 171, 219, 0.6);
-    --list-click-bg-lighter: rgba(57, 171, 219, 0.4);
-    --list-click-stroke: rgb(57, 171, 219);
+    --list-click-bg-lighter: rgba(69, 255, 197, 0.4);
+    --list-click-bg: rgba(69, 255, 197, 0.5);
+    --list-click-bg-darker: rgba(69, 255, 197, 0.6);
+    --list-click-stroke: rgb(69, 255, 197);
 
     --placeholder: rgba(240, 248, 255, 0.3);
     --placeholder-solid: rgb(105, 108, 110);
