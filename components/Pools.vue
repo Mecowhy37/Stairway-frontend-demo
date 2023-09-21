@@ -54,6 +54,7 @@
                                     solid
                                     no-padding
                                     class="manage-btn"
+                                    :width="170"
                                 >
                                     <template #dropdown-activator="{ on }">
                                         <Btn
@@ -77,14 +78,14 @@
                                     <template #dropdown>
                                         <p
                                             @click="addRedirect(position.pool)"
-                                            class="list-item list-item--centered"
+                                            class="list-item"
                                             :class="isMobile ? 'list-item--padded-sm' : 'list-item--padded'"
                                         >
                                             Add liquidity
                                         </p>
                                         <p
                                             @click="removeRedirect(position.pool)"
-                                            class="list-item list-item--centered"
+                                            class="list-item"
                                             :class="isMobile ? 'list-item--padded-sm' : 'list-item--padded'"
                                         >
                                             Redeem liquidity
