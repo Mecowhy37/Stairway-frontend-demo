@@ -385,19 +385,19 @@ watch(
             })
         }
 
-        console.log("tokens:", tokens)
-        const newTokensAddresses = tokens.map((tkn) => tkn?.address)
-        const areNewOldReversered = oldTokens?.every((oldTkn) => newTokensAddresses.includes(oldTkn?.address))
+        const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
+        const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
+        console.log("areNewTokensOldReversered:", areNewOldReversered)
 
-        if (!areNewOldReversered) {
+        if (!areNewOldReversered && tokens[selectTokenIndex.value]) {
             getBothBalances(selectTokenIndex.value)
         }
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
         const lastChangedAmountIndex = lastChangedAmount.value
-        console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
-        console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
+        // console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
+        // console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
         if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
             setFromUserToFullAmount(
                 userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
@@ -410,7 +410,7 @@ watch(
         if (bothTokensThere.value) {
             resetAmounts(oppositeInput(lastChangedAmountIndex))
             await refreshPool()
-            console.log("watch(Tokens) - pool.value: ", pool.value?.name)
+            // console.log("watch(Tokens) - pool.value: ", pool.value?.name)
             if (pool.value) {
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(lastChangedAmountIndex)],
@@ -428,7 +428,8 @@ watch(
 )
 
 async function getBothBalances(tokenIndex = false) {
-    console.log("getBothBalances:")
+    console.log("- - - - - - - - - - -")
+    console.log("getBothBalances()")
     if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
         if (tokenIndex === false || tokenIndex === tkEnum.QUOTE) {
             console.log("getting A balance")
