@@ -385,6 +385,14 @@ watch(
             })
         }
 
+        console.log("tokens:", tokens)
+        const newTokensAddresses = tokens.map((tkn) => tkn?.address)
+        const areNewOldReversered = oldTokens?.every((oldTkn) => newTokensAddresses.includes(oldTkn?.address))
+
+        if (!areNewOldReversered) {
+            getBothBalances(selectTokenIndex.value)
+        }
+
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
         const lastChangedAmountIndex = lastChangedAmount.value
@@ -413,25 +421,33 @@ watch(
                 )
             }
         }
-        getBothBalances()
     },
     {
         immediate: true,
     }
 )
 
-async function getBothBalances() {
+async function getBothBalances(tokenIndex = false) {
+    console.log("getBothBalances:")
     if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-        state.balanceA = await getTokenBalance(
-            Tokens.value[tkEnum.QUOTE],
-            connectedAccount.value,
-            connectedChainId.value
-        )
-        state.balanceB = await getTokenBalance(
-            Tokens.value[tkEnum.BASE],
-            connectedAccount.value,
-            connectedChainId.value
-        )
+        if (tokenIndex === false || tokenIndex === tkEnum.QUOTE) {
+            console.log("getting A balance")
+            state.balanceA = ""
+            state.balanceA = await getTokenBalance(
+                Tokens.value[tkEnum.QUOTE],
+                connectedAccount.value,
+                connectedChainId.value
+            )
+        }
+        if (tokenIndex === false || tokenIndex === tkEnum.BASE) {
+            console.log("getting B balance")
+            state.balanceB = ""
+            state.balanceB = await getTokenBalance(
+                Tokens.value[tkEnum.BASE],
+                connectedAccount.value,
+                connectedChainId.value
+            )
+        }
     }
 }
 
