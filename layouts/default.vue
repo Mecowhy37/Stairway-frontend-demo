@@ -10,7 +10,7 @@
 
         <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
-            <NewToken ref="newTokenModal"></NewToken>
+            <Faucet ref="newTokenModal"></Faucet>
             <Notifications></Notifications>
         </div>
     </div>

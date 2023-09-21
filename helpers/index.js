@@ -360,7 +360,7 @@ export function listenForTransactionMine(txRes, provider, callback = null) {
     })
 }
 
-export function useTokens() {
+export function useTokens(reverseBalances) {
     const tokenA = ref(null)
     const tokenB = ref(null)
     const selectTokenIndex = ref(0)
@@ -377,15 +377,21 @@ export function useTokens() {
 
     const bothTokensThere = computed(() => Tokens.value.every((el) => el !== null))
 
-    function setToken(token) {
+    function setToken(token, reverseBalances = false) {
         if (token) {
             const sameTokenIndex = Tokens.value.findIndex((el) => el?.address === token.address)
             if (sameTokenIndex !== -1 && sameTokenIndex !== selectTokenIndex.value) {
-                Tokens.value = Tokens.value.reverse()
+                reverseTokens()
+                if (typeof reverseBalances === "function") {
+                    reverseBalances()
+                }
                 return
             }
         }
         Tokens.value = Tokens.value.map((el, index) => (index === selectTokenIndex.value ? token : el))
+    }
+    function reverseTokens() {
+        Tokens.value = Tokens.value.reverse()
     }
 
     return {
@@ -398,13 +404,27 @@ export function useTokens() {
     }
 }
 
-export function useBalances() {
-    async function getTokenBalance(token, account, connectedChainId) {
+export function useBalances(Tokens, connectedAccount, connectedChainId) {
+    const balanceState = reactive({
+        quote: "",
+        base: "",
+    })
+    const Balances = computed({
+        get() {
+            return [balanceState.quote, balanceState.base]
+        },
+        set(newVal) {
+            balanceState.quote = newVal[0]
+            balanceState.base = newVal[1]
+        },
+    })
+    async function getTokenBalance(tokenIndex) {
+        const token = Tokens.value[tokenIndex]
         if (token === null) {
             return ""
         }
         const { data: balance, error } = await useFetch(
-            getUrl(`/chain/${connectedChainId}/user/${account}/balance/${token.address}`)
+            getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/balance/${token.address}`)
         )
         if (balance.value) {
             return formatUnits(balance.value, token.decimals)
@@ -414,8 +434,45 @@ export function useBalances() {
             return ""
         }
     }
+    async function getBothBalances(tokenIndex = false, clearOld = true) {
+        console.log("- - - - - - - - - - -")
+        console.log("getBothBalances()")
+        if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+            if (tokenIndex === false || tokenIndex === tkEnum.QUOTE) {
+                console.log("getting A balance")
+                if (clearOld) {
+                    balanceState.quote = ""
+                }
+                balanceState.quote = await getTokenBalance(tkEnum.QUOTE)
+            }
+            if (tokenIndex === false || tokenIndex === tkEnum.BASE) {
+                console.log("getting B balance")
+                if (clearOld) {
+                    balanceState.base = ""
+                }
+                balanceState.base = await getTokenBalance(tkEnum.BASE)
+            }
+        }
+    }
+    function reverseBalances() {
+        Balances.value = Balances.value.reverse()
+    }
+    watch(
+        () => [connectedAccount.value, connectedChainId.value],
+        async (newVal) => {
+            const [wallet, chain] = newVal
+            if (wallet && isSupportedChain(chain)) {
+                getBothBalances(false, false)
+            } else {
+                Balances.value = ["", ""]
+            }
+        },
+        {
+            immediate: true,
+        }
+    )
 
-    return { getTokenBalance }
+    return { Balances, getTokenBalance, getBothBalances, reverseBalances }
 }
 export const widgetTypeObj = {
     swap: "swap",

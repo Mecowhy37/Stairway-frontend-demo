@@ -69,13 +69,17 @@ const stepStore = useStepStore()
 const { featuredTokens } = storeToRefs(stepStore)
 
 const showModal = ref(false)
-const callbackRef = ref()
+const setTokenCallback = ref()
+const reverseBalancesCallback = ref()
 const ABTokens = ref([])
 const selectedTokenIndex = ref()
-function toggleModal(tokens, callback, index) {
+function toggleModal(tokens, setToken, index, reverseBalances = false) {
     showModal.value = !showModal.value
-    if (typeof callback === "function") {
-        callbackRef.value = callback
+    if (typeof setToken === "function") {
+        setTokenCallback.value = setToken
+    }
+    if (typeof reverseBalances === "function") {
+        reverseBalancesCallback.value = reverseBalances
     }
 
     if (Array.isArray(tokens)) {
@@ -102,7 +106,8 @@ const ABTokensAddresses = computed(() => {
 
 function setToken(token) {
     toggleModal()
-    callbackRef.value.call(this, token)
+    setTokenCallback.value.call(this, token)
+    reverseBalancesCallback.value?.call(this)
 }
 
 function oppositeTokenIndex(tokenIndex) {

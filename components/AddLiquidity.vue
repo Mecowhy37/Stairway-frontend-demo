@@ -36,7 +36,7 @@
         <template #widget-content>
             <div class="tips">
                 <FaucetTrigger
-                    :closing-callback="getBothBalances"
+                    :closing-callback="() => getBothBalances(false, false)"
                     :connected-chain-id="connectedChainId"
                 ></FaucetTrigger>
             </div>
@@ -267,6 +267,10 @@ const { refreshPositions } = stepStore
 const { tokenA, tokenB, Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
 // TOKENS ---------------
 
+// BALANCES -------------
+const { Balances, getBothBalances, reverseBalances } = useBalances(Tokens, connectedAccount, connectedChainId)
+// BALANCES -------------
+
 // ROUTES ----------------
 const router = useRouter()
 const route = useRoute()
@@ -342,7 +346,7 @@ function refresh() {
     resetAmounts(0)
     resetAmounts(1)
     refreshPositions()
-    getBothBalances()
+    getBothBalances(false, false)
     refreshPool()
 }
 function fillInBalance(amount, inputIndex) {
@@ -383,24 +387,10 @@ function Round(amt) {
 }
 // AMOUNTS --------------
 
-// BALANCES -------------
-const { getTokenBalance } = useBalances()
-
-const Balances = computed({
-    get() {
-        return [state.balanceA, state.balanceB]
-    },
-    set(newVal) {
-        state.balanceA = newVal[0]
-        state.balanceB = newVal[1]
-    },
-})
-// BALANCES -------------
-
 //MODAL STUFF----------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(Tokens.value, setToken, index)
+    toggleSelectTokenModal(Tokens.value, setToken, index, reverseBalances)
     selectTokenIndex.value = index
 }
 //MODAL STUFF----------
@@ -412,7 +402,9 @@ const settingsAdd = ref()
 let intervalId = null
 watch(
     Tokens,
-    async (tokens) => {
+    async (tokens, oldTokens) => {
+        console.log("- - - - - - - - - - - - - - -\nwatch(Tokens)")
+
         // adding query params to url
         if (featuredTokens.value && featuredTokens.value.length > 0) {
             const obj = {}
@@ -422,6 +414,15 @@ watch(
                     ...obj,
                 },
             })
+        }
+
+        //getting balance
+        const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
+        const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
+        console.log("areNewTokensOldReversered:", areNewOldReversered)
+
+        if (!areNewOldReversered && tokens[selectTokenIndex.value]) {
+            getBothBalances(selectTokenIndex.value)
         }
 
         // setting full amount
@@ -451,55 +452,6 @@ watch(
                     BigInt(pool.value.price)
                 )
             }
-        }
-
-        //getting balance
-        if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-            if (selectTokenIndex.value === tkEnum.QUOTE) {
-                state.balanceA = await getTokenBalance(
-                    tokens[tkEnum.QUOTE],
-                    connectedAccount.value,
-                    connectedChainId.value
-                )
-            } else {
-                state.balanceB = await getTokenBalance(
-                    tokens[tkEnum.BASE],
-                    connectedAccount.value,
-                    connectedChainId.value
-                )
-            }
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
-async function getBothBalances() {
-    if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-        console.log("getBothBalances()")
-        state.balanceA = await getTokenBalance(
-            Tokens.value[tkEnum.QUOTE],
-            connectedAccount.value,
-            connectedChainId.value
-        )
-        state.balanceB = await getTokenBalance(
-            Tokens.value[tkEnum.BASE],
-            connectedAccount.value,
-            connectedChainId.value
-        )
-    }
-}
-//GETS BALANCES BY TOKENS AND WALLET
-watch(
-    () => [connectedAccount.value, connectedChainId.value],
-    async (newVal) => {
-        const [wallet, chain] = newVal
-        if (wallet && isSupportedChain(chain)) {
-            state.balanceA = await getTokenBalance(Tokens.value[tkEnum.QUOTE], wallet, chain)
-            state.balanceB = await getTokenBalance(Tokens.value[tkEnum.BASE], wallet, chain)
-        } else {
-            Balances.value = ["", ""]
         }
     },
     {

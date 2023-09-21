@@ -37,7 +37,7 @@
         <template #widget-content>
             <div class="tips">
                 <FaucetTrigger
-                    :closing-callback="getBothBalances"
+                    :closing-callback="() => getBothBalances(false, false)"
                     :connected-chain-id="connectedChainId"
                 ></FaucetTrigger>
             </div>
@@ -230,6 +230,10 @@ const { featuredTokens, connectedAccount, connectedChainId, routerAddress } = st
 const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = useTokens()
 // TOKENS ------------------
 
+// BALANCES ----------------
+const { Balances, getBothBalances, reverseBalances } = useBalances(Tokens, connectedAccount, connectedChainId)
+// BALANCES ----------------
+
 // ROUTES ----------------
 const router = useRouter()
 const route = useRoute()
@@ -288,7 +292,7 @@ function switchOrder() {
     selectTokenIndex.value = oppositeInput(selectTokenIndex.value)
     Tokens.value = Tokens.value.reverse()
     switchAmounts()
-    Balances.value = Balances.value.reverse()
+    reverseBalances()
 }
 function callSwap() {
     swap(
@@ -305,7 +309,7 @@ function callSwap() {
 function refresh() {
     console.log("refresh() - swap")
     refreshPool()
-    getBothBalances()
+    getBothBalances(false, false)
 }
 function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
@@ -345,24 +349,11 @@ function Round(amt) {
     }
     return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
 }
-// BALANCES ----------------
-const { getTokenBalance } = useBalances()
-
-const Balances = computed({
-    get() {
-        return [state.balanceA, state.balanceB]
-    },
-    set(newVal) {
-        state.balanceA = newVal[0]
-        state.balanceB = newVal[1]
-    },
-})
-// BALANCES ----------------
 
 // MODAL STUFF -------------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(Tokens.value, setToken, index)
+    toggleSelectTokenModal(Tokens.value, setToken, index, reverseBalances)
     selectTokenIndex.value = index
 }
 // MODAL STUFF -------------
@@ -374,6 +365,8 @@ const settings = ref()
 watch(
     Tokens,
     async (tokens, oldTokens) => {
+        console.log("- - - - - - - - - - - - - - -\nwatch(Tokens)")
+
         // adding query params to url
         if (featuredTokens.value && featuredTokens.value.length > 0) {
             const obj = {}
@@ -385,6 +378,7 @@ watch(
             })
         }
 
+        //getting balance
         const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
         const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
         console.log("areNewTokensOldReversered:", areNewOldReversered)
@@ -396,8 +390,8 @@ watch(
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
         const lastChangedAmountIndex = lastChangedAmount.value
-        // console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
-        // console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
+        console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
+        console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
         if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
             setFromUserToFullAmount(
                 userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
@@ -410,7 +404,7 @@ watch(
         if (bothTokensThere.value) {
             resetAmounts(oppositeInput(lastChangedAmountIndex))
             await refreshPool()
-            // console.log("watch(Tokens) - pool.value: ", pool.value?.name)
+            console.log("watch(Tokens) - pool.value: ", pool.value?.name)
             if (pool.value) {
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(lastChangedAmountIndex)],
@@ -420,48 +414,6 @@ watch(
                     BigInt(pool.value.price)
                 )
             }
-        }
-    },
-    {
-        immediate: true,
-    }
-)
-
-async function getBothBalances(tokenIndex = false) {
-    console.log("- - - - - - - - - - -")
-    console.log("getBothBalances()")
-    if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-        if (tokenIndex === false || tokenIndex === tkEnum.QUOTE) {
-            console.log("getting A balance")
-            state.balanceA = ""
-            state.balanceA = await getTokenBalance(
-                Tokens.value[tkEnum.QUOTE],
-                connectedAccount.value,
-                connectedChainId.value
-            )
-        }
-        if (tokenIndex === false || tokenIndex === tkEnum.BASE) {
-            console.log("getting B balance")
-            state.balanceB = ""
-            state.balanceB = await getTokenBalance(
-                Tokens.value[tkEnum.BASE],
-                connectedAccount.value,
-                connectedChainId.value
-            )
-        }
-    }
-}
-
-//GETS BALANCES BY TOKENS AND WALLET
-watch(
-    () => [connectedAccount.value, connectedChainId.value],
-    async (newVal) => {
-        const [wallet, chain] = newVal
-        if (wallet && isSupportedChain(chain)) {
-            state.balanceA = await getTokenBalance(Tokens.value[tkEnum.QUOTE], wallet, chain)
-            state.balanceB = await getTokenBalance(Tokens.value[tkEnum.BASE], wallet, chain)
-        } else {
-            Balances.value = ["", ""]
         }
     },
     {
