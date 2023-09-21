@@ -360,7 +360,7 @@ export function listenForTransactionMine(txRes, provider, callback = null) {
     })
 }
 
-export function useTokens(reverseBalances) {
+export function useTokens() {
     const tokenA = ref(null)
     const tokenB = ref(null)
     const selectTokenIndex = ref(0)
@@ -441,6 +441,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             if (tokenIndex === false || tokenIndex === tkEnum.QUOTE) {
                 console.log("getting A balance")
                 if (clearOld) {
+                    console.log("reset A balance")
                     balanceState.quote = ""
                 }
                 balanceState.quote = await getTokenBalance(tkEnum.QUOTE)
@@ -448,6 +449,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             if (tokenIndex === false || tokenIndex === tkEnum.BASE) {
                 console.log("getting B balance")
                 if (clearOld) {
+                    console.log("reset B balance")
                     balanceState.base = ""
                 }
                 balanceState.base = await getTokenBalance(tkEnum.BASE)
@@ -455,6 +457,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         }
     }
     function reverseBalances() {
+        console.log("useBalances: reverseBalances()")
         Balances.value = Balances.value.reverse()
     }
     watch(

@@ -390,7 +390,7 @@ function Round(amt) {
 //MODAL STUFF----------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(Tokens.value, setToken, index, reverseBalances)
+    toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg, reverseBalances), index)
     selectTokenIndex.value = index
 }
 //MODAL STUFF----------

@@ -73,13 +73,10 @@ const setTokenCallback = ref()
 const reverseBalancesCallback = ref()
 const ABTokens = ref([])
 const selectedTokenIndex = ref()
-function toggleModal(tokens, setToken, index, reverseBalances = false) {
+function toggleModal(tokens, setToken, index) {
     showModal.value = !showModal.value
     if (typeof setToken === "function") {
         setTokenCallback.value = setToken
-    }
-    if (typeof reverseBalances === "function") {
-        reverseBalancesCallback.value = reverseBalances
     }
 
     if (Array.isArray(tokens)) {
@@ -107,7 +104,6 @@ const ABTokensAddresses = computed(() => {
 function setToken(token) {
     toggleModal()
     setTokenCallback.value.call(this, token)
-    reverseBalancesCallback.value?.call(this)
 }
 
 function oppositeTokenIndex(tokenIndex) {

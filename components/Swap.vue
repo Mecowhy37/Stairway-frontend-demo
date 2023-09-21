@@ -117,7 +117,7 @@
                         />
                     </div>
                     <p>
-                        {{ formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals) }}
+                        {{ formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals).toExponential() }}
                         <!-- {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }} -->
                         {{ Tokens[tkEnum.BASE].symbol }}
                         currently available at
@@ -354,7 +354,7 @@ function Round(amt) {
 // MODAL STUFF -------------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(Tokens.value, setToken, index, reverseBalances)
+    toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg, reverseBalances), index)
     selectTokenIndex.value = index
 }
 // MODAL STUFF -------------
@@ -383,9 +383,10 @@ watch(
         const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
         const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
         console.log("areNewTokensOldReversered:", areNewOldReversered)
-
-        if (!areNewOldReversered && tokens[selectTokenIndex.value]) {
-            getBothBalances(selectTokenIndex.value)
+        const selectIndex = selectTokenIndex.value
+        console.log("selectIndex:", selectIndex)
+        if (!areNewOldReversered && tokens[selectIndex]) {
+            getBothBalances(selectIndex)
         }
 
         // setting full amount
