@@ -50,6 +50,7 @@
                         <div class="window__upper">
                             <Btn
                                 @click="openTokenSelectModal(x)"
+                                :disabled="swappingDisabled"
                                 opaque
                                 selectable
                                 custom
@@ -68,13 +69,14 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
+                                :disabled="swappingDisabled"
                                 @input="amountInputHandler($event, x)"
                                 :value="userAmounts[amountsLabelOrder[x]]"
                             />
                         </div>
                         <div
                             class="window__lower row flex-end align-center"
-                            @click="fillInBalance(Balances[x], x)"
+                            @click="!swappingDisabled && fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                         >
                             <p class="caption">{{ Balances[x] }}</p>
@@ -144,18 +146,10 @@
                     is="h4"
                     wide
                     bulky
-                    :disabled="!canSwap"
+                    :disabled="!canSwap || swappingDisabled"
                 >
                     Swap
                 </Btn>
-                <!-- <Btn
-                    @click="refresh()"
-                    wide
-                    bulky
-                    :disabled="!connectedAccount"
-                >
-                    refresh data
-                </Btn> -->
             </div>
             <div
                 v-if="price && bothTokensThere"
@@ -295,7 +289,10 @@ function switchOrder() {
     switchAmounts()
     reverseBalances()
 }
+
+const swappingDisabled = ref(false)
 function callSwap() {
+    swappingDisabled.value = true
     swap(
         pool.value.path,
         fullAmounts.quote,
@@ -303,8 +300,12 @@ function callSwap() {
         BigInt(price.value),
         connectedAccount.value,
         settings.value.deadline,
-        stepStore.connectedWallet.provider
-    )
+        stepStore.connectedWallet.provider,
+        refresh,
+        stepStore.notify
+    ).then(() => {
+        swappingDisabled.value = false
+    })
 }
 // const refreshEvents = inject("refreshEvents")
 function refresh() {

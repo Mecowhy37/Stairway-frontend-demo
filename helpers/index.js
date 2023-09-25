@@ -123,7 +123,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             for (const { token, amount } of tokens) {
                 if (await checkAllowance(token.address, amount, signer.address)) {
                     try {
-                        await approveSpending(token, providerArg, amount, false, notify, notifHolder)
+                        await approveSpending(token, amount, providerArg, false, notify, notifHolder)
                     } catch (error) {
                         console.log("Error caught in approve loop:", error)
                         errorOccured = true
@@ -165,7 +165,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("sent AddLQ tx:", tx, "...waiting 1 block")
             await tx.wait(1)
             return await listenForTransactionMine(tx, provider, () => {
-                console.log("callback from buy() ... ")
+                console.log("callback from addLq() ... ")
                 notify(notifHolder, "success")
 
                 callback()
@@ -245,7 +245,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         }
     }
 
-    async function swap(path, amountQuote, amountBase, maxPrice, account, deadline, providerArg) {
+    async function swap(path, amountQuote, amountBase, maxPrice, account, deadline, providerArg, callback, notify) {
+        let notifHolder = { id: null }
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
@@ -261,38 +262,49 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
 
         try {
             console.log(" - - - - allowance - - - - - ")
-            const tokenQuote = path[0]
-            const allowance = await checkAllowance(tokenQuote.address, signer.address)
-            console.log("allowanceQuote:", allowance)
-            console.log("amountQuote:", amountQuote)
-            const needApproval = allowance < amountQuote
-            if (needApproval) {
-                await approveSpending(tokenQuote.address, providerArg, amountQuote)
+            if (await checkAllowance(tokenQuote.address, amountQuote, signer.address)) {
+                await approveSpending(tokenQuote, amountQuote, providerArg, false, notify, notifHolder)
             }
         } catch (error) {
             console.log("Failed to get approvals:", error)
         }
-        console.log(" - - - - -s w a p- - - - - - ")
-        tokenPath.forEach((token, index) => {
-            console.log("path token -", index + 1, "-", token.symbol, token.address)
-        })
-        console.log("desiredAmountOut:", amountBase.toString())
-        console.log("maxPrice:", maxPrice.toString())
-        console.log("account:", account)
-        console.log("deadlineStamp:", deadlineStamp)
-        const tx = await router.buy(
-            tokenPathAddresses,
-            amountBase.toString(),
-            maxPrice.toString(),
-            getAddress(account),
-            deadlineStamp
-        )
-        console.log("buy tx:", tx, "...waiting 1 block")
-        await tx.wait(1)
-        return await listenForTransactionMine(tx, provider, () => console.log("callback from buy()"))
+
+        try {
+            console.log(" - - - - -s w a p- - - - - - ")
+            tokenPath.forEach((token, index) => {
+                console.log("path token -", index + 1, "-", token.symbol, token.address)
+            })
+            console.log("desiredAmountOut:", amountBase.toString())
+            console.log("maxPrice:", maxPrice.toString())
+            console.log("account:", account)
+            console.log("deadlineStamp:", deadlineStamp)
+
+            notify(notifHolder, "sign")
+
+            const tx = await router.buy(
+                tokenPathAddresses,
+                amountBase.toString(),
+                maxPrice.toString(),
+                getAddress(account),
+                deadlineStamp
+            )
+
+            notify(notifHolder, "pending")
+
+            console.log("buy tx:", tx, "...waiting 1 block")
+            await tx.wait(1)
+            return await listenForTransactionMine(tx, provider, () => {
+                console.log("callback from swap()")
+                notify(notifHolder, "success")
+                callback()
+            })
+        } catch (error) {
+            notify(notifHolder, "error")
+            console.log("Failed to swap", error)
+        }
     }
 
-    async function approveSpending(token, providerArg, amount, callback = false, notify, notifHolder) {
+    async function approveSpending(token, amount, providerArg, callback = false, notify, notifHolder) {
         console.log("approve token:", token)
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
