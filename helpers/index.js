@@ -262,11 +262,18 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
 
         try {
             console.log(" - - - - allowance - - - - - ")
+            const tokenQuote = path[tkEnum.QUOTE]
             if (await checkAllowance(tokenQuote.address, amountQuote, signer.address)) {
-                await approveSpending(tokenQuote, amountQuote, providerArg, false, notify, notifHolder)
+                try {
+                    await approveSpending(tokenQuote, amountQuote, providerArg, false, notify, notifHolder)
+                } catch (error) {
+                    throw new Error()
+                }
             }
         } catch (error) {
+            notify(notifHolder, "error")
             console.log("Failed to get approvals:", error)
+            return
         }
 
         try {

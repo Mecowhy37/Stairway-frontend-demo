@@ -349,8 +349,8 @@ function callAddLiquidity() {
 
 function refresh() {
     console.log("refresh() - add")
-    resetAmounts(0)
-    resetAmounts(1)
+    resetAmounts(tkEnum.QUOTE)
+    resetAmounts(tkEnum.BASE)
     // refreshPositions()
     getBothBalances(false, false)
     refreshPool()

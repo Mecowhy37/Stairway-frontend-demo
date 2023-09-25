@@ -310,8 +310,10 @@ function callSwap() {
 // const refreshEvents = inject("refreshEvents")
 function refresh() {
     console.log("refresh() - swap")
-    refreshPool()
+    resetAmounts(tkEnum.QUOTE)
+    resetAmounts(tkEnum.BASE)
     getBothBalances(false, false)
+    refreshPool()
 }
 function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
