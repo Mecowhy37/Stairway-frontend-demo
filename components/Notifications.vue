@@ -20,33 +20,34 @@ const stepStore = useStepStore()
 const notifications = ref([])
 const allStates = ["approve", "sign", "confirming", "pending", "success", "error"]
 
-function notify(id, state) {
+function notify(notifyHolder, state, symbol = false) {
     if (!allStates.includes(state)) {
         console.log("notif(): provided invalid state")
         return null
     }
-    const existingNotif = notifications.value.find((el) => el.id === id)
+    const existingNotif = notifications.value.find((el) => el.id === notifyHolder.id)
     if (!existingNotif) {
-        return createNotif(state)
+        notifyHolder.id = createNotif(state, symbol)
     } else {
-        return updateNotification(existingNotif, state)
+        notifyHolder.id = updateNotification(existingNotif, state, symbol)
     }
 }
 stepStore.notify = notify
 
-function createNotif(state) {
+function createNotif(state, symbol) {
     const newNotif = {
         id: uuid(),
         state,
+        symbol,
     }
     notifications.value.unshift(newNotif)
     console.log("created", state, "notification")
     return newNotif.id
 }
 
-function updateNotification(existingNotif, state) {
+function updateNotification(existingNotif, state, symbol) {
     const notifIndex = notifications.value.indexOf(existingNotif)
-    const updatedNotif = { ...existingNotif, state: state }
+    const updatedNotif = { ...existingNotif, state, symbol }
     notifications.value[notifIndex] = updatedNotif
     console.log("updated notification to", state)
     return existingNotif.id

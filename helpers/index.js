@@ -8,6 +8,7 @@ import token from "@/ABIs/IERC20.json"
 const TokenABI = token.abi
 
 import poolmanager from "@/ABIs/IPoolManager.json"
+import { breakpointsAntDesign } from "@vueuse/core"
 const PoolManagerABI = poolmanager.abi
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -104,7 +105,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         callback,
         notify
     ) {
-        let notifId = null
+        let notifHolder = { id: null }
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
@@ -114,38 +115,28 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const deadlineStamp = blockTimestamp + deadline * 60
 
         try {
-            const allowanceQuote = await checkAllowance(tokenQuote.address, signer.address)
-            const quoteNeedsApproval = allowanceQuote < amountQuote
-
-            const allowanceBase = await checkAllowance(tokenBase.address, signer.address)
-            const baseNeedsApproval = allowanceBase < amountBase
-
-            if (quoteNeedsApproval || baseNeedsApproval) {
-                // at this moment a notifcation needs to be created
-                notifId = notify(notifId, "approve")
-
-                const approvalPromises = []
-
-                // each approve spending should notify about confirming a signature and it should also show
-                // token symbol in the notification
-                // notifId = notify(notifId, "confirming")
-
-                if (quoteNeedsApproval) {
-                    // approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, 0))
-                    approvalPromises.unshift(approveSpending(tokenQuote.address, providerArg, amountQuote.toString()))
+            const tokens = [
+                { token: tokenQuote, amount: amountQuote },
+                { token: tokenBase, amount: amountBase },
+            ]
+            let errorOccured = false
+            for (const { token, amount } of tokens) {
+                if (await checkAllowance(token.address, amount, signer.address)) {
+                    try {
+                        await approveSpending(token, providerArg, amount, false, notify, notifHolder)
+                    } catch (error) {
+                        console.log("Error caught in approve loop:", error)
+                        errorOccured = true
+                        break
+                    }
                 }
-
-                if (baseNeedsApproval) {
-                    // approvalPromises.unshift(approveSpending(tokenBase.address, providerArg, 0))
-                    approvalPromises.unshift(approveSpending(tokenBase.address, providerArg, amountBase.toString()))
-                }
-
-                await Promise.all(approvalPromises)
+            }
+            if (errorOccured) {
+                throw new Error("An error occurred inside the loop.")
             }
         } catch (error) {
-            //at this moment, previous notification needs to get error or new error created
-            notifId = notify(notifId, "error")
-            console.log("Failed to get approvals:", error)
+            notify(notifHolder, "error")
+            console.log("Failed to get approvals - Add execution stops:", error)
             return
         }
         try {
@@ -158,8 +149,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("recipient:", recipient)
             console.log("deadlineStamp:", deadlineStamp)
 
-            //at this moment, previous notification needs to get 'mining' state or new 'mining' created
-            notifId = notify(notifId, "sign")
+            notify(notifHolder, "sign")
 
             const tx = await router.addLiquidity(
                 getAddress(tokenQuote.address),
@@ -170,20 +160,18 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 getAddress(recipient),
                 deadlineStamp
             )
-            notifId = notify(notifId, "pending")
+            notify(notifHolder, "pending")
 
             console.log("sent AddLQ tx:", tx, "...waiting 1 block")
             await tx.wait(1)
             return await listenForTransactionMine(tx, provider, () => {
                 console.log("callback from buy() ... ")
-                //at this moment, previous notification needs to get 'success' state or new 'success' created
-                notifId = notify(notifId, "success")
+                notify(notifHolder, "success")
 
                 callback()
             })
         } catch (error) {
-            //at this moment, previous notification needs to get error or new error created
-            notifId = notify(notifId, "error")
+            notify(notifHolder, "error")
             console.log("Failed to add lq:", error)
         }
     }
@@ -304,26 +292,36 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         return await listenForTransactionMine(tx, provider, () => console.log("callback from buy()"))
     }
 
-    async function approveSpending(tokenAddress, providerArg, amount, callback = false) {
+    async function approveSpending(token, providerArg, amount, callback = false, notify, notifHolder) {
+        console.log("approve token:", token)
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
-        const erc20 = new Contract(tokenAddress, TokenABI, signer)
+        const erc20 = new Contract(token.address, TokenABI, signer)
         const maxUint = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
         const quantity = amount === 0 ? maxUint : amount
-        const tx = await erc20.approve(routerAddress.value, quantity)
-        console.log("tx:", tx, "...waiting 1 block")
-        await tx.wait(1)
-        return await listenForTransactionMine(tx, provider, callback)
+        notify(notifHolder, "approve", token.symbol)
+        try {
+            const tx = await erc20.approve(routerAddress.value, quantity)
+            console.log("tx:", tx, "...waiting 1 block")
+            await tx.wait(1)
+            return await listenForTransactionMine(tx, provider, callback)
+        } catch (err) {
+            console.log("error while getting approval")
+            throw new Error("approveSpending():", approveSpending)
+        }
     }
 
-    async function checkAllowance(tokenAddress, owner) {
+    async function checkAllowance(tokenAddress, tokenAmount, owner) {
         try {
+            console.log("tokenAmount:", tokenAmount)
+            console.log("tokenAmount:", typeof tokenAmount)
+            console.log("if allowance", BigInt(allowance) < tokenAmount)
             const allowance = await $fetch(
                 getUrl(`/chain/${connectedChainId.value}/user/${owner}/approved/${tokenAddress}`)
             )
-            return BigInt(allowance)
+            return BigInt(allowance) < tokenAmount
         } catch (err) {
-            return err
+            return "allowance fails", err
         }
     }
 

@@ -50,7 +50,7 @@
             </TransitionGroup>
         </div>
         <div class="notif__content">
-            <h4>{{ notif.header }}</h4>
+            <h4>{{ notif.header + (approveHeading ? " " + approveHeading : "") }}</h4>
             <p class="caption">
                 {{ notif.paragraph }}
             </p>
@@ -74,7 +74,9 @@
                 @click="deleteNotif(id)"
                 circle
                 transparent
-                :class="{ 'grey-text': notif.state === 'approve' || notif.state === 'pending' }"
+                :class="{
+                    'grey-text': notif.state === 'approve' || notif.state === 'sign' || notif.state === 'pending',
+                }"
             >
                 <template #icon>
                     <Icon
@@ -132,6 +134,8 @@ const props = defineProps({
 })
 const notif = computed(() => notifications[props.notif.state])
 const id = computed(() => props.notif.id)
+
+const approveHeading = computed(() => props.notif?.symbol)
 
 const spinning = ref(true)
 watch(

@@ -49,6 +49,7 @@
                         <div class="window__upper">
                             <Btn
                                 @click="openTokenSelectModal(x)"
+                                :disabled="addingDisabled"
                                 opaque
                                 selectable
                                 custom
@@ -67,13 +68,14 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
+                                :disabled="addingDisabled"
                                 @input="amountInputHandler($event, x)"
                                 :value="userAmounts[amountsLabelOrder[x]]"
                             />
                         </div>
                         <div
                             class="window__lower row flex-end align-center"
-                            @click="fillInBalance(Balances[x], x)"
+                            @click="!addingDisabled && fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                         >
                             <p class="caption">{{ Balances[x] }}</p>
@@ -193,7 +195,7 @@
                     is="h4"
                     wide
                     bulky
-                    :disabled="!bothAmountsIn || !bothTokensThere"
+                    :disabled="!bothAmountsIn || !bothTokensThere || addingDisabled"
                 >
                     Add liquidity
                 </Btn>
@@ -324,7 +326,9 @@ const ownedPosition = computed(() => {
     return matchedPosition
 })
 
+const addingDisabled = ref(false)
 function callAddLiquidity() {
+    addingDisabled.value = true
     addLiquidity(
         ...Tokens.value,
         fullAmounts.quote,
@@ -336,6 +340,11 @@ function callAddLiquidity() {
         refresh,
         stepStore.notify
     ).then(() => {
+        //this bit and listenForTransationMine need some imporvement not to pass callbacks - listenForTranasaction mine should be more error safe
+        addingDisabled.value = false
+        setTimeout(() => {
+            navigateTo({ path: "/liquidity" })
+        }, 1000)
         // state.amountQuote = ""
         // state.amountBase = ""
     })
