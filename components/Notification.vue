@@ -147,7 +147,7 @@ watch(
             }, 700)
             setTimeout(() => {
                 props.deleteNotif(id.value)
-            }, 4000)
+            }, 5000)
         } else {
             spinning.value = true
         }
