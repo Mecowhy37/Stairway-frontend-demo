@@ -342,9 +342,6 @@ function callAddLiquidity() {
     ).then(() => {
         //this bit and listenForTransationMine need some imporvement not to pass callbacks - listenForTranasaction mine should be more error safe
         addingDisabled.value = false
-        setTimeout(() => {
-            navigateTo({ path: "/liquidity" })
-        }, 1000)
         // state.amountQuote = ""
         // state.amountBase = ""
     })
@@ -354,9 +351,12 @@ function refresh() {
     console.log("refresh() - add")
     resetAmounts(0)
     resetAmounts(1)
-    refreshPositions()
+    // refreshPositions()
     getBothBalances(false, false)
     refreshPool()
+    setTimeout(() => {
+        navigateTo({ path: "/liquidity" })
+    }, 1000)
 }
 function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex]) {
