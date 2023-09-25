@@ -313,12 +313,12 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
 
     async function checkAllowance(tokenAddress, tokenAmount, owner) {
         try {
-            console.log("tokenAmount:", tokenAmount)
-            console.log("tokenAmount:", typeof tokenAmount)
-            console.log("if allowance", BigInt(allowance) < tokenAmount)
             const allowance = await $fetch(
                 getUrl(`/chain/${connectedChainId.value}/user/${owner}/approved/${tokenAddress}`)
             )
+            console.log("BigInt(allowance):", BigInt(allowance))
+            console.log("tokenAmount:", tokenAmount)
+            console.log("BigInt(allowance) < tokenAmount:", BigInt(allowance) < tokenAmount)
             return BigInt(allowance) < tokenAmount
         } catch (err) {
             return "allowance fails", err

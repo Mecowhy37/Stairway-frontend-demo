@@ -4,6 +4,7 @@
             <!-- <Btn @click="notify(null, 'approve')">Notify</Btn> -->
             <Notification
                 v-for="notif in notifications"
+                :key="notif.id"
                 :notif="notif"
                 :delete-notif="deleteNotif"
             ></Notification>
