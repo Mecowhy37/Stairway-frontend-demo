@@ -640,20 +640,6 @@ export function useAmounts(Tokens, pool, widgetType) {
     function calcQuote(baseInputed, price) {
         return (baseInputed * price + precision - 1n) / precision
     }
-    // function calcQuote(baseInputed) {
-    //     const baseDecim = Tokens.value[tkEnum.BASE].decimals
-    //     const baseParsed = BigInt(parseUnits(baseInputed, baseDecim))
-    //     const ask = BigInt(price.value)
-    //     const quoteAmount = (baseParsed * ask + precision - 1n) / precision
-    //     return quoteAmount.toString()
-    // }
-    // function calcBase(quoteInputed) {
-    //     const quoteDecim = Tokens.value[tkEnum.QUOTE].decimals
-    //     const quoteParsed = BigInt(parseUnits(quoteInputed, quoteDecim))
-    //     const ask = BigInt(price.value)
-    //     const baseAmount = (quoteParsed * precision) / ask
-    //     return baseAmount.toString()
-    // }
     function cleanInput(value, oldValue) {
         // Remove spaces from the input value
         value = value.replace(/\s/g, "")
@@ -723,8 +709,10 @@ export function useAmounts(Tokens, pool, widgetType) {
         amountInputHandler,
         setUserAmount,
         setFromUserToFullAmount,
+        setFromFullToUserAmount,
         calcAndSetOpposingInput,
         bothAmountsIn,
+        calcQuote,
         resetAmounts,
         cleanInput,
         roundCeiling,

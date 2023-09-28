@@ -119,14 +119,27 @@
                         />
                     </div>
                     <p>
-                        {{ Number(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)).toExponential() }}
-                        <!-- {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }} -->
+                        There's currently
+                        {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
                         {{ Tokens[tkEnum.BASE].symbol }}
-                        currently available at
-                        <br />
-                        {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }}
-                        {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }}
-                        fixed price.
+                        available for
+                        {{
+                            roundFloor(
+                                formatInputAmount(
+                                    calcQuote(BigInt(pool.depth), BigInt(price)),
+                                    Tokens[tkEnum.QUOTE].decimals
+                                )
+                            )
+                        }}
+                        {{ Tokens[tkEnum.QUOTE].symbol }}. You might still receive up to a desired amount at a fixed
+                        price visible below. <br />
+                        <span
+                            class="text-highlight--underlined"
+                            @click="fillInDepth(pool.depth)"
+                            >Adjust my swap</span
+                        >
+                        <!-- {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }} -->
+                        <!-- {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }} -->
                     </p>
                 </div>
             </div>
@@ -323,6 +336,13 @@ function fillInBalance(amount, inputIndex) {
         setFromUserToFullAmount(amount, Tokens.value[inputIndex].decimals, inputIndex)
     }
 }
+function fillInDepth(depth) {
+    const formatedDepth = formatInputAmount(depth, Tokens.value[tkEnum.BASE].decimals)
+    console.log("fillInDepth()")
+    lastChangedAmount.value = tkEnum.BASE
+    setUserAmount(formatedDepth, tkEnum.BASE)
+    setFromUserToFullAmount(formatedDepth, Tokens.value[tkEnum.BASE].decimals, tkEnum.BASE)
+}
 // WIDGET ------------------
 
 // AMOUNTS -----------------
@@ -331,14 +351,16 @@ const {
     fullAmounts,
     lastChangedAmount,
     amountsLabelOrder,
-    formatInputAmount,
     switchAmounts,
     getInputLabel,
     oppositeInput,
     amountInputHandler,
     setUserAmount,
     setFromUserToFullAmount,
+    setFromFullToUserAmount,
     calcAndSetOpposingInput,
+    calcQuote,
+    formatInputAmount,
     resetAmounts,
     bothAmountsIn,
     roundCeiling,

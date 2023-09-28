@@ -423,9 +423,13 @@ svg {
 .text-highlight {
     color: var(--primary-btn-bg);
     &--border {
-        border: 1px solid var(--primary-btn-bg);
         padding: 0 7px;
         border-radius: 9999px;
+        border: 1px solid var(--primary-btn-bg);
+    }
+    &--underlined {
+        cursor: pointer;
+        text-decoration: underline;
     }
 }
 .activator-link {
