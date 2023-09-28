@@ -34,6 +34,17 @@ export function basicRound(amt) {
     return String(parseFloat(amount))
 }
 
+export function roundCeiling(stringAmount) {
+    return parseFloat(parseFloat(stringAmount).toPrecision(5)).toString()
+}
+export function roundFloor(stringAmount) {
+    return parseFloat(toFixedFloor(stringAmount, 4)).toString()
+}
+export function toFixedFloor(stringAmount, fixed) {
+    let re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?")
+    return stringAmount.match(re)[0]
+}
+
 export function isSupportedChain(id) {
     return id === 31337 || id === 80001 || id === 137
 }
@@ -423,8 +434,8 @@ export function useTokens() {
 
 export function useBalances(Tokens, connectedAccount, connectedChainId) {
     const balanceState = reactive({
-        quote: "",
-        base: "",
+        quote: 0n,
+        base: 0n,
     })
     const Balances = computed({
         get() {
@@ -435,31 +446,41 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             balanceState.base = newVal[1]
         },
     })
+    const formatedBalances = computed(() => {
+        return Balances.value.map((bal, idx) => {
+            const token = Tokens.value[idx]
+            if (!token) {
+                return ""
+            } else {
+                return roundFloor(formatUnits(bal, token.decimals))
+            }
+        })
+    })
     async function getTokenBalance(tokenIndex) {
         const token = Tokens.value[tokenIndex]
         if (token === null) {
-            return ""
+            return 0n
         }
         const { data: balance, error } = await useFetch(
             getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/balance/${token.address}`)
         )
         if (balance.value) {
-            return formatUnits(balance.value, token.decimals)
+            return BigInt(balance.value)
         }
         if (error.value) {
             console.error("failed to fetch balance", error.value)
-            return ""
+            return 0n
         }
     }
     async function getBothBalances(tokenIndex = false, clearOld = true) {
         console.log("- - - - - - - - - - -")
-        console.log("getBothBalances()")
+        console.log("getBothBalances(), tokenIndex", tokenIndex)
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
             if (tokenIndex === false || tokenIndex === tkEnum.QUOTE) {
                 console.log("getting A balance")
                 if (clearOld) {
                     console.log("reset A balance")
-                    balanceState.quote = ""
+                    balanceState.quote = 0n
                 }
                 balanceState.quote = await getTokenBalance(tkEnum.QUOTE)
             }
@@ -467,7 +488,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
                 console.log("getting B balance")
                 if (clearOld) {
                     console.log("reset B balance")
-                    balanceState.base = ""
+                    balanceState.base = 0n
                 }
                 balanceState.base = await getTokenBalance(tkEnum.BASE)
             }
@@ -484,7 +505,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             if (wallet && isSupportedChain(chain)) {
                 getBothBalances(false, false)
             } else {
-                Balances.value = ["", ""]
+                Balances.value = [0n, 0n]
             }
         },
         {
@@ -492,7 +513,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         }
     )
 
-    return { Balances, getTokenBalance, getBothBalances, reverseBalances }
+    return { Balances, formatedBalances, getTokenBalance, getBothBalances, reverseBalances }
 }
 
 export const widgetTypeObj = {
@@ -508,6 +529,9 @@ export function useAmounts(Tokens, pool, widgetType) {
     const fullAmounts = reactive({
         quote: 0n,
         base: 0n,
+    })
+    const fullAmountsMap = computed(() => {
+        return [fullAmounts.quote, fullAmounts.base]
     })
     const lastChangedAmount = ref(0)
     const amountsLabelOrder = ref(["quote", "base"])
@@ -552,7 +576,7 @@ export function useAmounts(Tokens, pool, widgetType) {
             amount = "0"
         }
 
-        const fullAmount = parseInputAmount(amount, decimals)
+        const fullAmount = parseUnits(amount, decimals)
         setFullAmount(fullAmount, inputIndex)
 
         if (pool.value) {
@@ -569,15 +593,15 @@ export function useAmounts(Tokens, pool, widgetType) {
     function setFromFullToUserAmount(amount, decimals, inputIndex) {
         let stringAmount
         if (widgetType === widgetTypeObj.add) {
-            stringAmount = roundCeiling(formatInputAmount(amount, decimals))
+            stringAmount = roundCeiling(formatUnits(amount, decimals))
         } else if (widgetType === widgetTypeObj.swap) {
             console.log("setFromFullToUserAmount(): ", "setting - ", getInputLabel(inputIndex))
             if (inputIndex === tkEnum.QUOTE) {
-                const quoteAmount = roundCeiling(formatInputAmount(amount, decimals))
+                const quoteAmount = roundCeiling(formatUnits(amount, decimals))
                 stringAmount = quoteAmount
                 console.log("setFromFullToUserAmount(): ", "Ceil rounding -", quoteAmount)
             } else if (inputIndex === tkEnum.BASE) {
-                const baseAmount = roundFloor(formatInputAmount(amount, decimals))
+                const baseAmount = roundFloor(formatUnits(amount, decimals))
                 stringAmount = baseAmount
                 console.log("setFromFullToUserAmount(): ", "Floor rounding -", baseAmount)
             }
@@ -610,12 +634,7 @@ export function useAmounts(Tokens, pool, widgetType) {
         setUserAmount("", inputIndex)
         setFullAmount(0n, inputIndex)
     }
-    function parseInputAmount(amount, decimals) {
-        return parseUnits(amount, decimals)
-    }
-    function formatInputAmount(amount, decimals) {
-        return formatUnits(amount, decimals)
-    }
+
     function calculateFollowingInput(inputAmount, inputIndex, baseBalance, quoteBalance, price) {
         if (widgetType === widgetTypeObj.add) {
             if (inputIndex === tkEnum.QUOTE) {
@@ -663,16 +682,6 @@ export function useAmounts(Tokens, pool, widgetType) {
         // }
         return value
     }
-    function roundCeiling(stringAmount) {
-        return parseFloat(parseFloat(stringAmount).toPrecision(5)).toString()
-    }
-    function roundFloor(stringAmount) {
-        return parseFloat(toFixedFloor(stringAmount, 4)).toString()
-    }
-    function toFixedFloor(stringAmount, fixed) {
-        let re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?")
-        return stringAmount.match(re)[0]
-    }
     function isCleanInput(value) {
         // Match any character that's not a digit, dot, or comma, or more than one dot
         if (value.match(/[^\d.,]/) || (value.match(/\./g) || []).length > 1 || value === ".") {
@@ -702,6 +711,7 @@ export function useAmounts(Tokens, pool, widgetType) {
     return {
         userAmounts,
         fullAmounts,
+        fullAmountsMap,
         lastChangedAmount,
         amountsLabelOrder,
         getInputLabel,
@@ -715,9 +725,6 @@ export function useAmounts(Tokens, pool, widgetType) {
         calcQuote,
         resetAmounts,
         cleanInput,
-        roundCeiling,
-        roundFloor,
-        formatInputAmount,
         switchAmounts,
         prettyPrint,
         isCleanInput,

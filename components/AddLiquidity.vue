@@ -78,7 +78,9 @@
                             @click="!addingDisabled && fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                         >
-                            <p class="caption">{{ Balances[x] }}</p>
+                            <p class="caption">
+                                {{ Balances[x] && roundFloor(formatUnits(Balances[x], Tokens[x].decimals)) }}
+                            </p>
                             <Icon
                                 name="wallet"
                                 :size="13"
@@ -257,6 +259,7 @@ import {
     widgetTypeObj,
     tkEnum,
     precision,
+    roundFloor,
 } from "~/helpers/index"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -359,11 +362,12 @@ function refresh() {
     }, 1000)
 }
 function fillInBalance(amount, inputIndex) {
-    if (Tokens.value[inputIndex]) {
-        console.log("fillInBalance(amount, inputIndex)", amount, inputIndex)
+    if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
+        const formatedAmount = formatUnits(amount, Tokens.value[inputIndex].decimals)
+        console.log("fillInBalance(amount, inputIndex)", formatedAmount, inputIndex)
         lastChangedAmount.value = inputIndex
-        setUserAmount(amount, inputIndex)
-        setFromUserToFullAmount(amount, Tokens.value[inputIndex].decimals, inputIndex)
+        setUserAmount(formatedAmount, inputIndex)
+        setFromUserToFullAmount(formatedAmount, Tokens.value[inputIndex].decimals, inputIndex)
     }
 }
 // WIDGET ---------------
@@ -382,7 +386,6 @@ const {
     calcAndSetOpposingInput,
     resetAmounts,
     bothAmountsIn,
-    roundCeiling,
 } = useAmounts(Tokens, pool, widgetTypeObj.add)
 
 function Round(amt) {

@@ -14,7 +14,7 @@
                 </template>
             </TopBar>
             <div class="widget__content">
-                <slot name="widget-content"></slot>
+                <slot name="widget-content"> </slot>
             </div>
         </main>
     </div>
@@ -51,12 +51,9 @@ const props = defineProps({
         grid-gap: 20px;
     }
     .tips {
-        p {
-            margin-bottom: 12px;
-            &:last-of-type {
-                margin-bottom: 0px;
-            }
-        }
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
     }
     .windows {
         .window {
@@ -81,6 +78,10 @@ const props = defineProps({
                     text-align: right;
                     font-size: 2rem;
                     padding-left: 8px;
+
+                    &.error {
+                        color: var(--error-color);
+                    }
 
                     &::placeholder {
                         color: var(--text-grey);
@@ -144,16 +145,25 @@ const props = defineProps({
         gap: 12px;
     }
     .infos {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
         .info {
             padding: 10px;
             border-radius: var(--inner-wdg-radius);
             align-items: center;
             background-color: var(--info-bg-opaque);
             .icon {
-                color: #ff24f5;
+                color: var(--info-bg);
             }
             p {
                 margin-left: 10px;
+            }
+            &--warn {
+                background-color: var(--error-color-opaque);
+                .icon {
+                    color: var(--error-color);
+                }
             }
         }
     }

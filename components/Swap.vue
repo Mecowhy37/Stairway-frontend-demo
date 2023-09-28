@@ -69,6 +69,9 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
+                                :class="{
+                                    error: insufficientBalanceIndexes.includes(tkEnum.QUOTE) && x === tkEnum.QUOTE,
+                                }"
                                 :disabled="swappingDisabled"
                                 @input="amountInputHandler($event, x)"
                                 :value="userAmounts[amountsLabelOrder[x]]"
@@ -77,9 +80,11 @@
                         <div
                             class="window__lower row flex-end align-center"
                             @click="!swappingDisabled && fillInBalance(Balances[x], x)"
-                            :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
+                            :class="{ disabled: !Tokens[x] || Balances[x] === 0n }"
                         >
-                            <p class="caption">{{ Balances[x] }}</p>
+                            <p class="caption">
+                                {{ formatedBalances[x] }}
+                            </p>
                             <Icon
                                 name="wallet"
                                 :size="13"
@@ -107,10 +112,29 @@
                 </div>
             </div>
             <div
-                v-if="bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base"
+                v-if="
+                    (bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base) ||
+                    insufficientBalanceIndexes.includes(tkEnum.QUOTE)
+                "
                 class="infos"
             >
-                <div class="info row">
+                <div
+                    v-if="insufficientBalanceIndexes.includes(tkEnum.QUOTE)"
+                    class="info info--warn row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>Insufficient {{ Tokens[tkEnum.QUOTE].symbol }} funds</p>
+                </div>
+                <div
+                    v-if="bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base"
+                    class="info row"
+                >
                     <div>
                         <Icon
                             class="icon"
@@ -120,15 +144,12 @@
                     </div>
                     <p>
                         There's currently
-                        {{ roundFloor(formatInputAmount(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
+                        {{ roundFloor(formatUnits(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
                         {{ Tokens[tkEnum.BASE].symbol }}
                         available for
                         {{
                             roundFloor(
-                                formatInputAmount(
-                                    calcQuote(BigInt(pool.depth), BigInt(price)),
-                                    Tokens[tkEnum.QUOTE].decimals
-                                )
+                                formatUnits(calcQuote(BigInt(pool.depth), BigInt(price)), Tokens[tkEnum.QUOTE].decimals)
                             )
                         }}
                         {{ Tokens[tkEnum.QUOTE].symbol }}. You might still receive up to a desired amount at a fixed
@@ -138,7 +159,7 @@
                             @click="fillInDepth(pool.depth)"
                             >Adjust my swap</span
                         >
-                        <!-- {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }} -->
+                        <!-- {{ roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals)) }} -->
                         <!-- {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }} -->
                     </p>
                 </div>
@@ -170,18 +191,18 @@
             >
                 <p>
                     1 {{ Tokens[tkEnum.BASE].symbol }} =
-                    {{ roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals)) }}
+                    {{ roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals)) }}
                     {{ Tokens[tkEnum.QUOTE].symbol }}
                 </p>
                 <div class="row space-between">
                     <p>
                         Volume available at this price ({{
-                            roundCeiling(formatInputAmount(price, Tokens[tkEnum.QUOTE].decimals))
+                            roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals))
                         }}
                         {{ Tokens[tkEnum.QUOTE].symbol }})
                     </p>
                     <p>
-                        {{ roundFloor(formatInputAmount(depth, Tokens[tkEnum.BASE].decimals)) }}
+                        {{ roundFloor(formatUnits(depth, Tokens[tkEnum.BASE].decimals)) }}
                         {{ Tokens[tkEnum.BASE].symbol }}
                     </p>
                 </div>
@@ -214,6 +235,8 @@
 </template>
 
 <script setup>
+import { formatUnits } from "ethers"
+
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
 
@@ -226,6 +249,8 @@ import {
     widgetTypeObj,
     tkEnum,
     precision,
+    roundCeiling,
+    roundFloor,
 } from "~/helpers/index"
 
 const unhandled = "0x0000000000000000000000000000000000000000"
@@ -239,7 +264,11 @@ const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = 
 // TOKENS ------------------
 
 // BALANCES ----------------
-const { Balances, getBothBalances, reverseBalances } = useBalances(Tokens, connectedAccount, connectedChainId)
+const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBalances(
+    Tokens,
+    connectedAccount,
+    connectedChainId
+)
 // BALANCES ----------------
 
 // ROUTES ----------------
@@ -330,25 +359,40 @@ function refresh() {
 }
 function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
-        console.log("fillInBalance(amount, inputIndex)", amount, inputIndex)
+        const formatedAmount = formatUnits(amount, Tokens.value[inputIndex].decimals)
+        console.log("fillInBalance(amount, inputIndex)", formatedAmount, inputIndex)
         lastChangedAmount.value = inputIndex
-        setUserAmount(amount, inputIndex)
-        setFromUserToFullAmount(amount, Tokens.value[inputIndex].decimals, inputIndex)
+        setUserAmount(formatedAmount, inputIndex)
+        setFromUserToFullAmount(formatedAmount, Tokens.value[inputIndex].decimals, inputIndex)
     }
 }
 function fillInDepth(depth) {
-    const formatedDepth = formatInputAmount(depth, Tokens.value[tkEnum.BASE].decimals)
+    const formatedDepth = formatUnits(depth, Tokens.value[tkEnum.BASE].decimals)
     console.log("fillInDepth()")
     lastChangedAmount.value = tkEnum.BASE
     setUserAmount(formatedDepth, tkEnum.BASE)
     setFromUserToFullAmount(formatedDepth, Tokens.value[tkEnum.BASE].decimals, tkEnum.BASE)
 }
+
+const insufficientBalanceIndexes = computed(() => {
+    let balanceIndexes = []
+    Tokens.value.forEach((token, idx) => {
+        if (!token) {
+            return
+        }
+        if (Balances.value[idx] < fullAmountsMap.value[idx]) {
+            balanceIndexes.push(idx)
+        }
+    })
+    return balanceIndexes
+})
 // WIDGET ------------------
 
 // AMOUNTS -----------------
 const {
     userAmounts,
     fullAmounts,
+    fullAmountsMap,
     lastChangedAmount,
     amountsLabelOrder,
     switchAmounts,
@@ -360,11 +404,8 @@ const {
     setFromFullToUserAmount,
     calcAndSetOpposingInput,
     calcQuote,
-    formatInputAmount,
     resetAmounts,
     bothAmountsIn,
-    roundCeiling,
-    roundFloor,
 } = useAmounts(Tokens, pool, widgetTypeObj.swap)
 
 function Round(amt) {
@@ -409,7 +450,6 @@ watch(
         const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
         console.log("areNewTokensOldReversered:", areNewOldReversered)
         const selectIndex = selectTokenIndex.value
-        console.log("selectIndex:", selectIndex)
         if (!areNewOldReversered && tokens[selectIndex]) {
             getBothBalances(selectIndex)
         }

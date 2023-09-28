@@ -55,8 +55,10 @@ function updateNotification(existingNotif, state, symbol) {
 }
 function deleteNotif(id) {
     const targetNotification = notifications.value.find((notif) => notif.id === id)
-    console.log("removing notification:", targetNotification.state)
-    notifications.value = notifications.value.filter((notif) => notif !== targetNotification)
+    if (targetNotification) {
+        console.log("removing notification:", targetNotification.state)
+        notifications.value = notifications.value.filter((notif) => notif !== targetNotification)
+    }
 }
 </script>
 
