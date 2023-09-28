@@ -64,14 +64,14 @@
                                 </template>
                             </Btn>
                             <input
+                                :class="{
+                                    error: insufficientBalanceIndexes.includes(tkEnum.QUOTE) && x === tkEnum.QUOTE,
+                                }"
                                 type="text"
                                 placeholder="0"
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :class="{
-                                    error: insufficientBalanceIndexes.includes(tkEnum.QUOTE) && x === tkEnum.QUOTE,
-                                }"
                                 :disabled="swappingDisabled"
                                 @input="amountInputHandler($event, x)"
                                 :value="userAmounts[amountsLabelOrder[x]]"

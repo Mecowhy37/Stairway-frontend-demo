@@ -63,6 +63,9 @@
                                 </template>
                             </Btn>
                             <input
+                                :class="{
+                                    error: insufficientBalanceIndexes.includes(x),
+                                }"
                                 type="text"
                                 placeholder="0"
                                 spellcheck="false"
@@ -96,6 +99,24 @@
                             :size="16"
                         />
                     </div>
+                </div>
+            </div>
+            <div
+                v-if="insufficientBalanceIndexes.length > 0"
+                class="infos"
+            >
+                <div class="info info--warn row">
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>
+                        Insufficient
+                        {{ insufficientBalanceIndexes.map((el) => Tokens[el].symbol).join(" and ") }} funds
+                    </p>
                 </div>
             </div>
             <div
@@ -370,12 +391,25 @@ function fillInBalance(amount, inputIndex) {
         setFromUserToFullAmount(formatedAmount, Tokens.value[inputIndex].decimals, inputIndex)
     }
 }
+const insufficientBalanceIndexes = computed(() => {
+    let balanceIndexes = []
+    Tokens.value.forEach((token, idx) => {
+        if (!token) {
+            return
+        }
+        if (Balances.value[idx] < fullAmountsMap.value[idx]) {
+            balanceIndexes.push(idx)
+        }
+    })
+    return balanceIndexes
+})
 // WIDGET ---------------
 
 // AMOUNTS --------------
 const {
     userAmounts,
     fullAmounts,
+    fullAmountsMap,
     lastChangedAmount,
     amountsLabelOrder,
     getInputLabel,
