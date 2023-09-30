@@ -105,45 +105,6 @@ watch(
         immediate: true,
     }
 )
-// const {
-//     data: PositionsData,
-//     pending: PositionsPending,
-//     refresh: RefreshPositions,
-//     error: PositionsError,
-//     status: PositionsStatus,
-// } = await useAsyncData(
-//     "positions",
-//     () => {
-//         if (
-//             connectedAccount.value &&
-//             isSupportedChain(connectedChainId.value) &&
-//             router.currentRoute.value.name === "liquidity"
-//         ) {
-//             console.log("fetching positions on chain:", connectedChainId.value)
-//             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
-//         } else {
-//             return []
-//         }
-//     },
-//     {
-//         watch: [connectedChainId, connectedAccount],
-//     }
-// )
-// stepStore.refreshPositions = RefreshPositions
-
-// function refreshOnePosition(poolIdx) {
-
-// }
-// watch(
-//     () => [PositionsData.value, PositionsStatus.value],
-//     ([newPositions, newStatus]) => {
-//         stepStore.positions = newPositions
-//         stepStore.positionsStatus = newStatus
-//     },
-//     {
-//         immediate: true,
-//     }
-// )
 
 const {
     data: ChainsData,

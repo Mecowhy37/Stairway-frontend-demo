@@ -1,4 +1,5 @@
 import type { Ref } from "vue"
+import { getUrl, isSupportedChain } from "~/helpers/index"
 import { defineStore } from "pinia"
 import { init, useOnboard } from "@web3-onboard/vue"
 import injectedModule, { ProviderLabel } from "@web3-onboard/injected-wallets"
@@ -119,6 +120,27 @@ export const useStepStore = defineStore("step", (): any => {
     const refreshPositions = null
     const positionsStatus = ref(null)
     const positionsPending = ref(null)
+
+    async function getSinglePostion(poolIndex: Number) {
+        if (isSupportedChain(connectedChainId.value) && connectedAccount.value) {
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
+        } else {
+            null
+        }
+        // console.log('position:', position)
+        // return position;
+    }
+    function updatePositionsWithNewSingle(newPosition: Object) {
+        let positionToUpdate = positions.value.find(pos => pos.pool.pool_index === newPosition.pool.pool_index)
+        if (!positionToUpdate) {
+            console.log("pushing to positions", newPosition.pool.pool_index)
+            positions.value.push(newPosition)
+        } else {
+            console.log('updating positions with pool:', newPosition.pool.pool_index)
+            const indexToUpate = positions.value.indexOf(positionToUpdate)
+            positions.value[indexToUpate] = newPosition
+        }
+    }
     // POSITIONS ----------------
     
     // ADDRESSES ----------------
@@ -164,6 +186,8 @@ export const useStepStore = defineStore("step", (): any => {
         refreshPositions,
         positionsStatus,
         positionsPending,
+        getSinglePostion,
+        updatePositionsWithNewSingle,
         
         addresses,
         

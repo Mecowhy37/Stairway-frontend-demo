@@ -243,8 +243,6 @@ const {
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
             console.log("fetching positions on chain:", connectedChainId.value)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
-        } else {
-            return []
         }
     },
     {
@@ -258,7 +256,10 @@ const {
 watch(
     () => [PositionsData.value, PositionsStatus.value, PositionsPending.value],
     ([newPositions, newStatus, newPending]) => {
-        stepStore.positions = newPositions
+        console.log("newPositions:", newPositions)
+        if (newPositions) {
+            stepStore.positions = newPositions
+        }
         stepStore.positionsStatus = newStatus
         stepStore.positionsPending = newPending
     },

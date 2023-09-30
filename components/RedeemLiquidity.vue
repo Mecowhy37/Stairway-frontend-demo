@@ -167,7 +167,7 @@
                 </div>
             </div>
             <div
-                v-else-if="poolStatus === 'pending' || positionsStatus === 'pending'"
+                v-else-if="poolStatus === 'pending' || SinglePositionStatus === 'pending'"
                 class="placeholder"
             >
                 <p>placeholder</p>
@@ -177,7 +177,7 @@
                 <div
                     v-if="
                         connectedAccount &&
-                        !(poolStatus === 'pending' || positionsStatus === 'pending') &&
+                        !(poolStatus === 'pending' || SinglePositionStatus === 'pending') &&
                         pool &&
                         ownedPosition === false
                     "
@@ -247,7 +247,7 @@ import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 const stepStore = useStepStore()
 const { routerAddress, connectedAccount, positions, positionsStatus, connectedChainId } = storeToRefs(stepStore)
-const { refreshPositions } = stepStore
+const { refreshPositions, getSinglePostion, updatePositionsWithNewSingle } = stepStore
 
 const state = reactive({
     redeemPercent: 100,
@@ -293,7 +293,28 @@ function redeemLiquidityCall() {
         )
     }
 }
+const {
+    data: SinglePositionData,
+    pending: SinglePositionPending,
+    refresh: RefreshSinglePosition,
+    error: SinglePositionError,
+    status: SinglePositionStatus,
+} = await useAsyncData(
+    "SinglePosition",
+    () => {
+        return getSinglePostion(route.params.address)
+    },
+    {
+        lazy: true,
+        server: false,
+    }
+)
 
+watch(SinglePositionData, (newSinglePosition) => {
+    if (newSinglePosition) {
+        updatePositionsWithNewSingle(newSinglePosition)
+    }
+})
 const ownedPosition = computed(() => {
     if (!pool.value || !positions.value) {
         return null
