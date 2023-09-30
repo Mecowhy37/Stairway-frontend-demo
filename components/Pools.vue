@@ -5,9 +5,9 @@
                 <h1 class="scale">Liquidity</h1>
                 <!-- <Btn @click="stepStore.refreshPositions()">refresh positions - {{ positionsStatus }}</Btn> -->
                 <NuxtLink
-                    class="link"
+                    v-if="positions.length > 0"
                     to="/add-liquidity"
-                    v-if="positions?.length !== 0"
+                    class="link"
                 >
                     <Btn
                         is="h4"
@@ -26,16 +26,39 @@
             </div>
 
             <h3 class="positions__length">
-                Your liquidity pools <span>{{ positions?.length ? positions.length : "0" }}</span>
+                Your liquidity pools <span>{{ positions.length }}</span>
             </h3>
             <div
-                v-if="positions && positions.length > 0"
+                v-if="positionsPending && !positions.length > 0"
+                class="positions__list"
+            >
+                <div class="pools">
+                    <div
+                        v-for="el in new Array(3)"
+                        class="pool placeholder placeholder--solid"
+                    >
+                        <div class="pool__heading row"><Btn :compact="isMobile">Manage</Btn></div>
+                        <div class="pool__stats">
+                            <div class="columns">
+                                <div>
+                                    <p>a</p>
+                                    <p>a</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                v-else-if="positions.length > 0"
                 class="positions__list"
             >
                 <div class="pools">
                     <div
                         v-for="(position, i) in positions"
                         class="pool"
+                        :key="position.pool.pool_index"
                     >
                         <div>
                             <div class="pool__heading row">
@@ -71,7 +94,6 @@
                                                     :size="16"
                                                     :rotate="on ? 180 : 0"
                                                 />
-                                                <!-- :rotate="openedIndex === i" -->
                                             </template>
                                         </Btn>
                                     </template>
@@ -125,27 +147,7 @@
                     </div>
                 </div>
             </div>
-            <div
-                v-else-if="!positions && positionsStatus === 'pending'"
-                class="positions__list"
-            >
-                <div class="pools">
-                    <div
-                        v-for="el in new Array(3)"
-                        class="pool placeholder placeholder--solid"
-                    >
-                        <div class="pool__heading row"><Btn :compact="isMobile">Manage</Btn></div>
-                        <div class="pool__stats">
-                            <div class="columns">
-                                <div>
-                                    <p>a</p>
-                                    <p>a</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div
                 v-else
                 class="positions__list"
@@ -190,13 +192,14 @@
 <script setup>
 import { formatUnits } from "ethers"
 
-import { basicRound } from "~/helpers/index"
+import { basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions, positionsStatus, connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
+// const { connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
+const { positions, positionsPending, connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
 const { refreshPositions } = stepStore
 
 const openedIndex = ref(null)
@@ -208,11 +211,7 @@ function toggle(index) {
     }
     openedIndex.value = index
 }
-onMounted(() => {
-    if (connectedAccount.value && typeof refreshPositions === "function") {
-        refreshPositions()
-    }
-})
+
 const router = useRouter()
 function addRedirect(pool) {
     router.push({
@@ -229,6 +228,45 @@ function removeRedirect(pool) {
         path: `/remove/${pool.pool_index}`,
     })
 }
+
+// const positions = ref([])
+// const PositionsPending = ref(true)
+const {
+    data: PositionsData,
+    pending: PositionsPending,
+    refresh: RefreshPositions,
+    error: PositionsError,
+    status: PositionsStatus,
+} = await useAsyncData(
+    "positions",
+    () => {
+        if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+            console.log("fetching positions on chain:", connectedChainId.value)
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+        } else {
+            return []
+        }
+    },
+    {
+        default: () => [],
+        lazy: true,
+        server: false,
+        watch: [connectedChainId, connectedAccount],
+    }
+)
+
+watch(
+    () => [PositionsData.value, PositionsStatus.value, PositionsPending.value],
+    ([newPositions, newStatus, newPending]) => {
+        stepStore.positions = newPositions
+        stepStore.positionsStatus = newStatus
+        stepStore.positionsPending = newPending
+    },
+    {
+        immediate: true,
+    }
+)
+// stepStore.refreshPositions = RefreshPositions
 </script>
 
 <style lang="scss" scoped>

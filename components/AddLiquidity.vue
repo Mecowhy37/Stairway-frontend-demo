@@ -130,21 +130,21 @@
                             <p>
                                 {{
                                     basicRound(
-                                        formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
-                                    )
-                                }}
-                            </p>
-                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
-                        </div>
-                        <div>
-                            <p>
-                                {{
-                                    basicRound(
                                         formatUnits(ownedPosition.quote_amount, ownedPosition.pool.quote_token.decimals)
                                     )
                                 }}
                             </p>
                             <p class="caption grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}</p>
+                        </div>
+                        <div>
+                            <p>
+                                {{
+                                    basicRound(
+                                        formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
+                                    )
+                                }}
+                            </p>
+                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
                         </div>
 
                         <!-- <div>
