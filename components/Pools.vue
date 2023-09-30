@@ -246,7 +246,7 @@ const {
         }
     },
     {
-        default: () => [],
+        default: () => [...positions.value],
         lazy: true,
         server: false,
         watch: [connectedChainId, connectedAccount],
