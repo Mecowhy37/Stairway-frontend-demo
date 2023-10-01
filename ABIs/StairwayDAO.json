@@ -2963,12 +2963,12 @@
     },
     "settings": {
       "remappings": [
-        "@openzeppelin/=lib/openzeppelin-contracts/",
-        "ds-test/=lib/forge-std/lib/ds-test/src/",
-        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-        "forge-std/=lib/forge-std/src/",
-        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
       ],
       "optimizer": {
         "enabled": true,
@@ -3252,7 +3252,7 @@
   },
   "ast": {
     "absolutePath": "src/dao/StairwayDAO.sol",
-    "id": 65038,
+    "id": 65112,
     "exportedSymbols": {
       "AccessControl": [
         43207
@@ -3342,7 +3342,7 @@
         55299
       ],
       "StairwayDAO": [
-        65037
+        65111
       ],
       "StorageSlot": [
         51952
@@ -3358,7 +3358,7 @@
     "src": "45:3374:77",
     "nodes": [
       {
-        "id": 64799,
+        "id": 64873,
         "nodeType": "PragmaDirective",
         "src": "45:24:77",
         "nodes": [],
@@ -3370,95 +3370,95 @@
         ]
       },
       {
-        "id": 64800,
+        "id": 64874,
         "nodeType": "ImportDirective",
         "src": "71:57:77",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/Governor.sol",
         "file": "@openzeppelin/contracts/governance/Governor.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65038,
+        "scope": 65112,
         "sourceUnit": 44976,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 64801,
+        "id": 64875,
         "nodeType": "ImportDirective",
         "src": "129:82:77",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/extensions/GovernorCountingSimple.sol",
         "file": "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65038,
+        "scope": 65112,
         "sourceUnit": 46487,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 64802,
+        "id": 64876,
         "nodeType": "ImportDirective",
         "src": "212:76:77",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/extensions/GovernorSettings.sol",
         "file": "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65038,
+        "scope": 65112,
         "sourceUnit": 46665,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 64803,
+        "id": 64877,
         "nodeType": "ImportDirective",
         "src": "289:73:77",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/extensions/GovernorVotes.sol",
         "file": "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65038,
+        "scope": 65112,
         "sourceUnit": 47139,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 64804,
+        "id": 64878,
         "nodeType": "ImportDirective",
         "src": "363:87:77",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/extensions/GovernorVotesQuorumFraction.sol",
         "file": "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65038,
+        "scope": 65112,
         "sourceUnit": 47354,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 64805,
+        "id": 64879,
         "nodeType": "ImportDirective",
         "src": "451:83:77",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/extensions/GovernorTimelockControl.sol",
         "file": "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65038,
+        "scope": 65112,
         "sourceUnit": 47042,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 65037,
+        "id": 65111,
         "nodeType": "ContractDefinition",
         "src": "536:2882:77",
         "nodes": [
           {
-            "id": 64849,
+            "id": 64923,
             "nodeType": "FunctionDefinition",
             "src": "710:333:77",
             "nodes": [],
             "body": {
-              "id": 64848,
+              "id": 64922,
               "nodeType": "Block",
               "src": "1041:2:77",
               "nodes": [],
@@ -3471,7 +3471,7 @@
                 "arguments": [
                   {
                     "hexValue": "5374616972776179",
-                    "id": 64825,
+                    "id": 64899,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -3486,10 +3486,10 @@
                     "value": "Stairway"
                   }
                 ],
-                "id": 64826,
+                "id": 64900,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 64824,
+                  "id": 64898,
                   "name": "Governor",
                   "nameLocations": [
                     "808:8:77"
@@ -3505,7 +3505,7 @@
                 "arguments": [
                   {
                     "hexValue": "31",
-                    "id": 64828,
+                    "id": 64902,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -3521,7 +3521,7 @@
                   },
                   {
                     "hexValue": "3530343030",
-                    "id": 64829,
+                    "id": 64903,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -3540,14 +3540,14 @@
                       "typeIdentifier": "t_rational_100000000000000000000_by_1",
                       "typeString": "int_const 100000000000000000000"
                     },
-                    "id": 64834,
+                    "id": 64908,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "lValueRequested": false,
                     "leftExpression": {
                       "hexValue": "313030",
-                      "id": 64830,
+                      "id": 64904,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -3568,14 +3568,14 @@
                         "typeIdentifier": "t_rational_1000000000000000000_by_1",
                         "typeString": "int_const 1000000000000000000"
                       },
-                      "id": 64833,
+                      "id": 64907,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "lValueRequested": false,
                       "leftExpression": {
                         "hexValue": "3130",
-                        "id": 64831,
+                        "id": 64905,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -3593,7 +3593,7 @@
                       "operator": "**",
                       "rightExpression": {
                         "hexValue": "3138",
-                        "id": 64832,
+                        "id": 64906,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -3620,10 +3620,10 @@
                     }
                   }
                 ],
-                "id": 64835,
+                "id": 64909,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 64827,
+                  "id": 64901,
                   "name": "GovernorSettings",
                   "nameLocations": [
                     "837:16:77"
@@ -3640,11 +3640,11 @@
                   {
                     "arguments": [
                       {
-                        "id": 64838,
+                        "id": 64912,
                         "name": "daotoken_address",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64819,
+                        "referencedDeclaration": 64893,
                         "src": "936:16:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -3659,7 +3659,7 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 64837,
+                      "id": 64911,
                       "name": "IVotes",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
@@ -3670,7 +3670,7 @@
                         "typeString": "type(contract IVotes)"
                       }
                     },
-                    "id": 64839,
+                    "id": 64913,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3687,10 +3687,10 @@
                     }
                   }
                 ],
-                "id": 64840,
+                "id": 64914,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 64836,
+                  "id": 64910,
                   "name": "GovernorVotes",
                   "nameLocations": [
                     "915:13:77"
@@ -3706,7 +3706,7 @@
                 "arguments": [
                   {
                     "hexValue": "34",
-                    "id": 64842,
+                    "id": 64916,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -3721,10 +3721,10 @@
                     "value": "4"
                   }
                 ],
-                "id": 64843,
+                "id": 64917,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 64841,
+                  "id": 64915,
                   "name": "GovernorVotesQuorumFraction",
                   "nameLocations": [
                     "963:27:77"
@@ -3739,11 +3739,11 @@
               {
                 "arguments": [
                   {
-                    "id": 64845,
+                    "id": 64919,
                     "name": "_timelock",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 64822,
+                    "referencedDeclaration": 64896,
                     "src": "1026:9:77",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_TimelockController_$46260",
@@ -3751,10 +3751,10 @@
                     }
                   }
                 ],
-                "id": 64846,
+                "id": 64920,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 64844,
+                  "id": 64918,
                   "name": "GovernorTimelockControl",
                   "nameLocations": [
                     "1002:23:77"
@@ -3770,17 +3770,17 @@
             "name": "",
             "nameLocation": "-1:-1:-1",
             "parameters": {
-              "id": 64823,
+              "id": 64897,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64819,
+                  "id": 64893,
                   "mutability": "mutable",
                   "name": "daotoken_address",
                   "nameLocation": "739:16:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64849,
+                  "scope": 64923,
                   "src": "731:24:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3789,7 +3789,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 64818,
+                    "id": 64892,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "731:7:77",
@@ -3803,12 +3803,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64822,
+                  "id": 64896,
                   "mutability": "mutable",
                   "name": "_timelock",
                   "nameLocation": "784:9:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64849,
+                  "scope": 64923,
                   "src": "765:28:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3817,10 +3817,10 @@
                     "typeString": "contract TimelockController"
                   },
                   "typeName": {
-                    "id": 64821,
+                    "id": 64895,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 64820,
+                      "id": 64894,
                       "name": "TimelockController",
                       "nameLocations": [
                         "765:18:77"
@@ -3842,23 +3842,23 @@
               "src": "721:78:77"
             },
             "returnParameters": {
-              "id": 64847,
+              "id": 64921,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1041:0:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           },
           {
-            "id": 64862,
+            "id": 64936,
             "nodeType": "FunctionDefinition",
             "src": "1049:170:77",
             "nodes": [],
             "body": {
-              "id": 64861,
+              "id": 64935,
               "nodeType": "Block",
               "src": "1176:43:77",
               "nodes": [],
@@ -3869,18 +3869,18 @@
                     "expression": {
                       "argumentTypes": [],
                       "expression": {
-                        "id": 64857,
+                        "id": 64931,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "1193:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64858,
+                      "id": 64932,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -3895,7 +3895,7 @@
                         "typeString": "function () view returns (uint256)"
                       }
                     },
-                    "id": 64859,
+                    "id": 64933,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3911,8 +3911,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 64856,
-                  "id": 64860,
+                  "functionReturnParameters": 64930,
+                  "id": 64934,
                   "nodeType": "Return",
                   "src": "1186:26:77"
                 }
@@ -3929,11 +3929,11 @@
             "name": "votingDelay",
             "nameLocation": "1058:11:77",
             "overrides": {
-              "id": 64853,
+              "id": 64927,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64851,
+                  "id": 64925,
                   "name": "IGovernor",
                   "nameLocations": [
                     "1117:9:77"
@@ -3943,7 +3943,7 @@
                   "src": "1117:9:77"
                 },
                 {
-                  "id": 64852,
+                  "id": 64926,
                   "name": "GovernorSettings",
                   "nameLocations": [
                     "1128:16:77"
@@ -3956,23 +3956,23 @@
               "src": "1108:37:77"
             },
             "parameters": {
-              "id": 64850,
+              "id": 64924,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1069:2:77"
             },
             "returnParameters": {
-              "id": 64856,
+              "id": 64930,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64855,
+                  "id": 64929,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64862,
+                  "scope": 64936,
                   "src": "1163:7:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3981,7 +3981,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64854,
+                    "id": 64928,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1163:7:77",
@@ -3995,18 +3995,18 @@
               ],
               "src": "1162:9:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
-            "id": 64875,
+            "id": 64949,
             "nodeType": "FunctionDefinition",
             "src": "1225:172:77",
             "nodes": [],
             "body": {
-              "id": 64874,
+              "id": 64948,
               "nodeType": "Block",
               "src": "1353:44:77",
               "nodes": [],
@@ -4017,18 +4017,18 @@
                     "expression": {
                       "argumentTypes": [],
                       "expression": {
-                        "id": 64870,
+                        "id": 64944,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "1370:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64871,
+                      "id": 64945,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4043,7 +4043,7 @@
                         "typeString": "function () view returns (uint256)"
                       }
                     },
-                    "id": 64872,
+                    "id": 64946,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4059,8 +4059,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 64869,
-                  "id": 64873,
+                  "functionReturnParameters": 64943,
+                  "id": 64947,
                   "nodeType": "Return",
                   "src": "1363:27:77"
                 }
@@ -4077,11 +4077,11 @@
             "name": "votingPeriod",
             "nameLocation": "1234:12:77",
             "overrides": {
-              "id": 64866,
+              "id": 64940,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64864,
+                  "id": 64938,
                   "name": "IGovernor",
                   "nameLocations": [
                     "1294:9:77"
@@ -4091,7 +4091,7 @@
                   "src": "1294:9:77"
                 },
                 {
-                  "id": 64865,
+                  "id": 64939,
                   "name": "GovernorSettings",
                   "nameLocations": [
                     "1305:16:77"
@@ -4104,23 +4104,23 @@
               "src": "1285:37:77"
             },
             "parameters": {
-              "id": 64863,
+              "id": 64937,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1246:2:77"
             },
             "returnParameters": {
-              "id": 64869,
+              "id": 64943,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64868,
+                  "id": 64942,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64875,
+                  "scope": 64949,
                   "src": "1340:7:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4129,7 +4129,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64867,
+                    "id": 64941,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1340:7:77",
@@ -4143,18 +4143,18 @@
               ],
               "src": "1339:9:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
-            "id": 64891,
+            "id": 64965,
             "nodeType": "FunctionDefinition",
             "src": "1471:215:77",
             "nodes": [],
             "body": {
-              "id": 64890,
+              "id": 64964,
               "nodeType": "Block",
               "src": "1637:49:77",
               "nodes": [],
@@ -4163,11 +4163,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 64887,
+                        "id": 64961,
                         "name": "blockNumber",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64877,
+                        "referencedDeclaration": 64951,
                         "src": "1667:11:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -4183,18 +4183,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 64885,
+                        "id": 64959,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "1654:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64886,
+                      "id": 64960,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4209,7 +4209,7 @@
                         "typeString": "function (uint256) view returns (uint256)"
                       }
                     },
-                    "id": 64888,
+                    "id": 64962,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4225,8 +4225,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 64884,
-                  "id": 64889,
+                  "functionReturnParameters": 64958,
+                  "id": 64963,
                   "nodeType": "Return",
                   "src": "1647:32:77"
                 }
@@ -4243,11 +4243,11 @@
             "name": "quorum",
             "nameLocation": "1480:6:77",
             "overrides": {
-              "id": 64881,
+              "id": 64955,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64879,
+                  "id": 64953,
                   "name": "IGovernor",
                   "nameLocations": [
                     "1567:9:77"
@@ -4257,7 +4257,7 @@
                   "src": "1567:9:77"
                 },
                 {
-                  "id": 64880,
+                  "id": 64954,
                   "name": "GovernorVotesQuorumFraction",
                   "nameLocations": [
                     "1578:27:77"
@@ -4270,17 +4270,17 @@
               "src": "1558:48:77"
             },
             "parameters": {
-              "id": 64878,
+              "id": 64952,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64877,
+                  "id": 64951,
                   "mutability": "mutable",
                   "name": "blockNumber",
                   "nameLocation": "1504:11:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64891,
+                  "scope": 64965,
                   "src": "1496:19:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4289,7 +4289,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64876,
+                    "id": 64950,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1496:7:77",
@@ -4304,17 +4304,17 @@
               "src": "1486:35:77"
             },
             "returnParameters": {
-              "id": 64884,
+              "id": 64958,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64883,
+                  "id": 64957,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64891,
+                  "scope": 64965,
                   "src": "1624:7:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4323,7 +4323,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64882,
+                    "id": 64956,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1624:7:77",
@@ -4337,18 +4337,18 @@
               ],
               "src": "1623:9:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
-            "id": 64908,
+            "id": 64982,
             "nodeType": "FunctionDefinition",
             "src": "1692:212:77",
             "nodes": [],
             "body": {
-              "id": 64907,
+              "id": 64981,
               "nodeType": "Block",
               "src": "1857:47:77",
               "nodes": [],
@@ -4357,11 +4357,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 64904,
+                        "id": 64978,
                         "name": "proposalId",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64893,
+                        "referencedDeclaration": 64967,
                         "src": "1886:10:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -4377,18 +4377,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 64902,
+                        "id": 64976,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "1874:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64903,
+                      "id": 64977,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4403,7 +4403,7 @@
                         "typeString": "function (uint256) view returns (enum IGovernor.ProposalState)"
                       }
                     },
-                    "id": 64905,
+                    "id": 64979,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4419,8 +4419,8 @@
                       "typeString": "enum IGovernor.ProposalState"
                     }
                   },
-                  "functionReturnParameters": 64901,
-                  "id": 64906,
+                  "functionReturnParameters": 64975,
+                  "id": 64980,
                   "nodeType": "Return",
                   "src": "1867:30:77"
                 }
@@ -4437,11 +4437,11 @@
             "name": "state",
             "nameLocation": "1701:5:77",
             "overrides": {
-              "id": 64897,
+              "id": 64971,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64895,
+                  "id": 64969,
                   "name": "Governor",
                   "nameLocations": [
                     "1786:8:77"
@@ -4451,7 +4451,7 @@
                   "src": "1786:8:77"
                 },
                 {
-                  "id": 64896,
+                  "id": 64970,
                   "name": "GovernorTimelockControl",
                   "nameLocations": [
                     "1796:23:77"
@@ -4464,17 +4464,17 @@
               "src": "1777:43:77"
             },
             "parameters": {
-              "id": 64894,
+              "id": 64968,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64893,
+                  "id": 64967,
                   "mutability": "mutable",
                   "name": "proposalId",
                   "nameLocation": "1724:10:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64908,
+                  "scope": 64982,
                   "src": "1716:18:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4483,7 +4483,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64892,
+                    "id": 64966,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1716:7:77",
@@ -4498,17 +4498,17 @@
               "src": "1706:34:77"
             },
             "returnParameters": {
-              "id": 64901,
+              "id": 64975,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64900,
+                  "id": 64974,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64908,
+                  "scope": 64982,
                   "src": "1838:13:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4517,10 +4517,10 @@
                     "typeString": "enum IGovernor.ProposalState"
                   },
                   "typeName": {
-                    "id": 64899,
+                    "id": 64973,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 64898,
+                      "id": 64972,
                       "name": "ProposalState",
                       "nameLocations": [
                         "1838:13:77"
@@ -4541,18 +4541,18 @@
               ],
               "src": "1837:15:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
-            "id": 64936,
+            "id": 65010,
             "nodeType": "FunctionDefinition",
             "src": "1910:292:77",
             "nodes": [],
             "body": {
-              "id": 64935,
+              "id": 65009,
               "nodeType": "Block",
               "src": "2124:78:77",
               "nodes": [],
@@ -4561,11 +4561,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 64929,
+                        "id": 65003,
                         "name": "targets",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64911,
+                        "referencedDeclaration": 64985,
                         "src": "2155:7:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
@@ -4573,11 +4573,11 @@
                         }
                       },
                       {
-                        "id": 64930,
+                        "id": 65004,
                         "name": "values",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64914,
+                        "referencedDeclaration": 64988,
                         "src": "2164:6:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
@@ -4585,11 +4585,11 @@
                         }
                       },
                       {
-                        "id": 64931,
+                        "id": 65005,
                         "name": "calldatas",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64917,
+                        "referencedDeclaration": 64991,
                         "src": "2172:9:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_bytes_memory_ptr_$dyn_memory_ptr",
@@ -4597,11 +4597,11 @@
                         }
                       },
                       {
-                        "id": 64932,
+                        "id": 65006,
                         "name": "description",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64919,
+                        "referencedDeclaration": 64993,
                         "src": "2183:11:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -4629,18 +4629,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 64927,
+                        "id": 65001,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "2141:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64928,
+                      "id": 65002,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4655,7 +4655,7 @@
                         "typeString": "function (address[] memory,uint256[] memory,bytes memory[] memory,string memory) returns (uint256)"
                       }
                     },
-                    "id": 64933,
+                    "id": 65007,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4671,8 +4671,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 64926,
-                  "id": 64934,
+                  "functionReturnParameters": 65000,
+                  "id": 65008,
                   "nodeType": "Return",
                   "src": "2134:61:77"
                 }
@@ -4689,11 +4689,11 @@
             "name": "propose",
             "nameLocation": "1919:7:77",
             "overrides": {
-              "id": 64923,
+              "id": 64997,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64921,
+                  "id": 64995,
                   "name": "Governor",
                   "nameLocations": [
                     "2085:8:77"
@@ -4703,7 +4703,7 @@
                   "src": "2085:8:77"
                 },
                 {
-                  "id": 64922,
+                  "id": 64996,
                   "name": "IGovernor",
                   "nameLocations": [
                     "2095:9:77"
@@ -4716,17 +4716,17 @@
               "src": "2076:29:77"
             },
             "parameters": {
-              "id": 64920,
+              "id": 64994,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64911,
+                  "id": 64985,
                   "mutability": "mutable",
                   "name": "targets",
                   "nameLocation": "1953:7:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64936,
+                  "scope": 65010,
                   "src": "1936:24:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -4736,7 +4736,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64909,
+                      "id": 64983,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
                       "src": "1936:7:77",
@@ -4746,7 +4746,7 @@
                         "typeString": "address"
                       }
                     },
-                    "id": 64910,
+                    "id": 64984,
                     "nodeType": "ArrayTypeName",
                     "src": "1936:9:77",
                     "typeDescriptions": {
@@ -4758,12 +4758,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64914,
+                  "id": 64988,
                   "mutability": "mutable",
                   "name": "values",
                   "nameLocation": "1987:6:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64936,
+                  "scope": 65010,
                   "src": "1970:23:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -4773,7 +4773,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64912,
+                      "id": 64986,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
                       "src": "1970:7:77",
@@ -4782,7 +4782,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 64913,
+                    "id": 64987,
                     "nodeType": "ArrayTypeName",
                     "src": "1970:9:77",
                     "typeDescriptions": {
@@ -4794,12 +4794,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64917,
+                  "id": 64991,
                   "mutability": "mutable",
                   "name": "calldatas",
                   "nameLocation": "2018:9:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64936,
+                  "scope": 65010,
                   "src": "2003:24:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -4809,7 +4809,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64915,
+                      "id": 64989,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
                       "src": "2003:5:77",
@@ -4818,7 +4818,7 @@
                         "typeString": "bytes"
                       }
                     },
-                    "id": 64916,
+                    "id": 64990,
                     "nodeType": "ArrayTypeName",
                     "src": "2003:7:77",
                     "typeDescriptions": {
@@ -4830,12 +4830,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64919,
+                  "id": 64993,
                   "mutability": "mutable",
                   "name": "description",
                   "nameLocation": "2051:11:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64936,
+                  "scope": 65010,
                   "src": "2037:25:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -4844,7 +4844,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 64918,
+                    "id": 64992,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "2037:6:77",
@@ -4859,17 +4859,17 @@
               "src": "1926:142:77"
             },
             "returnParameters": {
-              "id": 64926,
+              "id": 65000,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64925,
+                  "id": 64999,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64936,
+                  "scope": 65010,
                   "src": "2115:7:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4878,7 +4878,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64924,
+                    "id": 64998,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2115:7:77",
@@ -4892,18 +4892,18 @@
               ],
               "src": "2114:9:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           },
           {
-            "id": 64949,
+            "id": 65023,
             "nodeType": "FunctionDefinition",
             "src": "2208:181:77",
             "nodes": [],
             "body": {
-              "id": 64948,
+              "id": 65022,
               "nodeType": "Block",
               "src": "2340:49:77",
               "nodes": [],
@@ -4914,18 +4914,18 @@
                     "expression": {
                       "argumentTypes": [],
                       "expression": {
-                        "id": 64944,
+                        "id": 65018,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "2357:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64945,
+                      "id": 65019,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4940,7 +4940,7 @@
                         "typeString": "function () view returns (uint256)"
                       }
                     },
-                    "id": 64946,
+                    "id": 65020,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4956,8 +4956,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 64943,
-                  "id": 64947,
+                  "functionReturnParameters": 65017,
+                  "id": 65021,
                   "nodeType": "Return",
                   "src": "2350:32:77"
                 }
@@ -4974,11 +4974,11 @@
             "name": "proposalThreshold",
             "nameLocation": "2217:17:77",
             "overrides": {
-              "id": 64940,
+              "id": 65014,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64938,
+                  "id": 65012,
                   "name": "Governor",
                   "nameLocations": [
                     "2282:8:77"
@@ -4988,7 +4988,7 @@
                   "src": "2282:8:77"
                 },
                 {
-                  "id": 64939,
+                  "id": 65013,
                   "name": "GovernorSettings",
                   "nameLocations": [
                     "2292:16:77"
@@ -5001,23 +5001,23 @@
               "src": "2273:36:77"
             },
             "parameters": {
-              "id": 64937,
+              "id": 65011,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "2234:2:77"
             },
             "returnParameters": {
-              "id": 64943,
+              "id": 65017,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64942,
+                  "id": 65016,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64949,
+                  "scope": 65023,
                   "src": "2327:7:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -5026,7 +5026,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64941,
+                    "id": 65015,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2327:7:77",
@@ -5040,18 +5040,18 @@
               ],
               "src": "2326:9:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
-            "id": 64979,
+            "id": 65053,
             "nodeType": "FunctionDefinition",
             "src": "2395:327:77",
             "nodes": [],
             "body": {
-              "id": 64978,
+              "id": 65052,
               "nodeType": "Block",
               "src": "2634:88:77",
               "nodes": [],
@@ -5060,11 +5060,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 64971,
+                        "id": 65045,
                         "name": "proposalId",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64951,
+                        "referencedDeclaration": 65025,
                         "src": "2659:10:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -5072,11 +5072,11 @@
                         }
                       },
                       {
-                        "id": 64972,
+                        "id": 65046,
                         "name": "targets",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64954,
+                        "referencedDeclaration": 65028,
                         "src": "2671:7:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
@@ -5084,11 +5084,11 @@
                         }
                       },
                       {
-                        "id": 64973,
+                        "id": 65047,
                         "name": "values",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64957,
+                        "referencedDeclaration": 65031,
                         "src": "2680:6:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
@@ -5096,11 +5096,11 @@
                         }
                       },
                       {
-                        "id": 64974,
+                        "id": 65048,
                         "name": "calldatas",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64960,
+                        "referencedDeclaration": 65034,
                         "src": "2688:9:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_bytes_memory_ptr_$dyn_memory_ptr",
@@ -5108,11 +5108,11 @@
                         }
                       },
                       {
-                        "id": 64975,
+                        "id": 65049,
                         "name": "descriptionHash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64962,
+                        "referencedDeclaration": 65036,
                         "src": "2699:15:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -5144,18 +5144,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 64968,
+                        "id": 65042,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "2644:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64970,
+                      "id": 65044,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -5170,7 +5170,7 @@
                         "typeString": "function (uint256,address[] memory,uint256[] memory,bytes memory[] memory,bytes32)"
                       }
                     },
-                    "id": 64976,
+                    "id": 65050,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -5186,7 +5186,7 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 64977,
+                  "id": 65051,
                   "nodeType": "ExpressionStatement",
                   "src": "2644:71:77"
                 }
@@ -5202,11 +5202,11 @@
             "name": "_execute",
             "nameLocation": "2404:8:77",
             "overrides": {
-              "id": 64966,
+              "id": 65040,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64964,
+                  "id": 65038,
                   "name": "Governor",
                   "nameLocations": [
                     "2599:8:77"
@@ -5216,7 +5216,7 @@
                   "src": "2599:8:77"
                 },
                 {
-                  "id": 64965,
+                  "id": 65039,
                   "name": "GovernorTimelockControl",
                   "nameLocations": [
                     "2609:23:77"
@@ -5229,17 +5229,17 @@
               "src": "2590:43:77"
             },
             "parameters": {
-              "id": 64963,
+              "id": 65037,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64951,
+                  "id": 65025,
                   "mutability": "mutable",
                   "name": "proposalId",
                   "nameLocation": "2430:10:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64979,
+                  "scope": 65053,
                   "src": "2422:18:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -5248,7 +5248,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64950,
+                    "id": 65024,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2422:7:77",
@@ -5261,12 +5261,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64954,
+                  "id": 65028,
                   "mutability": "mutable",
                   "name": "targets",
                   "nameLocation": "2467:7:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64979,
+                  "scope": 65053,
                   "src": "2450:24:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -5276,7 +5276,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64952,
+                      "id": 65026,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
                       "src": "2450:7:77",
@@ -5286,7 +5286,7 @@
                         "typeString": "address"
                       }
                     },
-                    "id": 64953,
+                    "id": 65027,
                     "nodeType": "ArrayTypeName",
                     "src": "2450:9:77",
                     "typeDescriptions": {
@@ -5298,12 +5298,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64957,
+                  "id": 65031,
                   "mutability": "mutable",
                   "name": "values",
                   "nameLocation": "2501:6:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64979,
+                  "scope": 65053,
                   "src": "2484:23:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -5313,7 +5313,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64955,
+                      "id": 65029,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
                       "src": "2484:7:77",
@@ -5322,7 +5322,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 64956,
+                    "id": 65030,
                     "nodeType": "ArrayTypeName",
                     "src": "2484:9:77",
                     "typeDescriptions": {
@@ -5334,12 +5334,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64960,
+                  "id": 65034,
                   "mutability": "mutable",
                   "name": "calldatas",
                   "nameLocation": "2532:9:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64979,
+                  "scope": 65053,
                   "src": "2517:24:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -5349,7 +5349,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64958,
+                      "id": 65032,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
                       "src": "2517:5:77",
@@ -5358,7 +5358,7 @@
                         "typeString": "bytes"
                       }
                     },
-                    "id": 64959,
+                    "id": 65033,
                     "nodeType": "ArrayTypeName",
                     "src": "2517:7:77",
                     "typeDescriptions": {
@@ -5370,12 +5370,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64962,
+                  "id": 65036,
                   "mutability": "mutable",
                   "name": "descriptionHash",
                   "nameLocation": "2559:15:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 64979,
+                  "scope": 65053,
                   "src": "2551:23:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -5384,7 +5384,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 64961,
+                    "id": 65035,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "2551:7:77",
@@ -5399,23 +5399,23 @@
               "src": "2412:168:77"
             },
             "returnParameters": {
-              "id": 64967,
+              "id": 65041,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "2634:0:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 65007,
+            "id": 65081,
             "nodeType": "FunctionDefinition",
             "src": "2728:310:77",
             "nodes": [],
             "body": {
-              "id": 65006,
+              "id": 65080,
               "nodeType": "Block",
               "src": "2956:82:77",
               "nodes": [],
@@ -5424,11 +5424,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 65000,
+                        "id": 65074,
                         "name": "targets",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64982,
+                        "referencedDeclaration": 65056,
                         "src": "2987:7:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
@@ -5436,11 +5436,11 @@
                         }
                       },
                       {
-                        "id": 65001,
+                        "id": 65075,
                         "name": "values",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64985,
+                        "referencedDeclaration": 65059,
                         "src": "2996:6:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
@@ -5448,11 +5448,11 @@
                         }
                       },
                       {
-                        "id": 65002,
+                        "id": 65076,
                         "name": "calldatas",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64988,
+                        "referencedDeclaration": 65062,
                         "src": "3004:9:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_bytes_memory_ptr_$dyn_memory_ptr",
@@ -5460,11 +5460,11 @@
                         }
                       },
                       {
-                        "id": 65003,
+                        "id": 65077,
                         "name": "descriptionHash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 64990,
+                        "referencedDeclaration": 65064,
                         "src": "3015:15:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -5492,18 +5492,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 64998,
+                        "id": 65072,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "2973:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 64999,
+                      "id": 65073,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -5518,7 +5518,7 @@
                         "typeString": "function (address[] memory,uint256[] memory,bytes memory[] memory,bytes32) returns (uint256)"
                       }
                     },
-                    "id": 65004,
+                    "id": 65078,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -5534,8 +5534,8 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 64997,
-                  "id": 65005,
+                  "functionReturnParameters": 65071,
+                  "id": 65079,
                   "nodeType": "Return",
                   "src": "2966:65:77"
                 }
@@ -5551,11 +5551,11 @@
             "name": "_cancel",
             "nameLocation": "2737:7:77",
             "overrides": {
-              "id": 64994,
+              "id": 65068,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 64992,
+                  "id": 65066,
                   "name": "Governor",
                   "nameLocations": [
                     "2903:8:77"
@@ -5565,7 +5565,7 @@
                   "src": "2903:8:77"
                 },
                 {
-                  "id": 64993,
+                  "id": 65067,
                   "name": "GovernorTimelockControl",
                   "nameLocations": [
                     "2913:23:77"
@@ -5578,17 +5578,17 @@
               "src": "2894:43:77"
             },
             "parameters": {
-              "id": 64991,
+              "id": 65065,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64982,
+                  "id": 65056,
                   "mutability": "mutable",
                   "name": "targets",
                   "nameLocation": "2771:7:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65007,
+                  "scope": 65081,
                   "src": "2754:24:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -5598,7 +5598,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64980,
+                      "id": 65054,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
                       "src": "2754:7:77",
@@ -5608,7 +5608,7 @@
                         "typeString": "address"
                       }
                     },
-                    "id": 64981,
+                    "id": 65055,
                     "nodeType": "ArrayTypeName",
                     "src": "2754:9:77",
                     "typeDescriptions": {
@@ -5620,12 +5620,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64985,
+                  "id": 65059,
                   "mutability": "mutable",
                   "name": "values",
                   "nameLocation": "2805:6:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65007,
+                  "scope": 65081,
                   "src": "2788:23:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -5635,7 +5635,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64983,
+                      "id": 65057,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
                       "src": "2788:7:77",
@@ -5644,7 +5644,7 @@
                         "typeString": "uint256"
                       }
                     },
-                    "id": 64984,
+                    "id": 65058,
                     "nodeType": "ArrayTypeName",
                     "src": "2788:9:77",
                     "typeDescriptions": {
@@ -5656,12 +5656,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64988,
+                  "id": 65062,
                   "mutability": "mutable",
                   "name": "calldatas",
                   "nameLocation": "2836:9:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65007,
+                  "scope": 65081,
                   "src": "2821:24:77",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -5671,7 +5671,7 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 64986,
+                      "id": 65060,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
                       "src": "2821:5:77",
@@ -5680,7 +5680,7 @@
                         "typeString": "bytes"
                       }
                     },
-                    "id": 64987,
+                    "id": 65061,
                     "nodeType": "ArrayTypeName",
                     "src": "2821:7:77",
                     "typeDescriptions": {
@@ -5692,12 +5692,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 64990,
+                  "id": 65064,
                   "mutability": "mutable",
                   "name": "descriptionHash",
                   "nameLocation": "2863:15:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65007,
+                  "scope": 65081,
                   "src": "2855:23:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -5706,7 +5706,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 64989,
+                    "id": 65063,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "2855:7:77",
@@ -5721,17 +5721,17 @@
               "src": "2744:140:77"
             },
             "returnParameters": {
-              "id": 64997,
+              "id": 65071,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 64996,
+                  "id": 65070,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65007,
+                  "scope": 65081,
                   "src": "2947:7:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -5740,7 +5740,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 64995,
+                    "id": 65069,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2947:7:77",
@@ -5754,18 +5754,18 @@
               ],
               "src": "2946:9:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 65020,
+            "id": 65094,
             "nodeType": "FunctionDefinition",
             "src": "3044:174:77",
             "nodes": [],
             "body": {
-              "id": 65019,
+              "id": 65093,
               "nodeType": "Block",
               "src": "3177:41:77",
               "nodes": [],
@@ -5776,18 +5776,18 @@
                     "expression": {
                       "argumentTypes": [],
                       "expression": {
-                        "id": 65015,
+                        "id": 65089,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "3194:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 65016,
+                      "id": 65090,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -5802,7 +5802,7 @@
                         "typeString": "function () view returns (address)"
                       }
                     },
-                    "id": 65017,
+                    "id": 65091,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -5818,8 +5818,8 @@
                       "typeString": "address"
                     }
                   },
-                  "functionReturnParameters": 65014,
-                  "id": 65018,
+                  "functionReturnParameters": 65088,
+                  "id": 65092,
                   "nodeType": "Return",
                   "src": "3187:24:77"
                 }
@@ -5835,11 +5835,11 @@
             "name": "_executor",
             "nameLocation": "3053:9:77",
             "overrides": {
-              "id": 65011,
+              "id": 65085,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 65009,
+                  "id": 65083,
                   "name": "Governor",
                   "nameLocations": [
                     "3112:8:77"
@@ -5849,7 +5849,7 @@
                   "src": "3112:8:77"
                 },
                 {
-                  "id": 65010,
+                  "id": 65084,
                   "name": "GovernorTimelockControl",
                   "nameLocations": [
                     "3122:23:77"
@@ -5862,23 +5862,23 @@
               "src": "3103:43:77"
             },
             "parameters": {
-              "id": 65008,
+              "id": 65082,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "3062:2:77"
             },
             "returnParameters": {
-              "id": 65014,
+              "id": 65088,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65013,
+                  "id": 65087,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65020,
+                  "scope": 65094,
                   "src": "3164:7:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -5887,7 +5887,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 65012,
+                    "id": 65086,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "3164:7:77",
@@ -5902,18 +5902,18 @@
               ],
               "src": "3163:9:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "internal"
           },
           {
-            "id": 65036,
+            "id": 65110,
             "nodeType": "FunctionDefinition",
             "src": "3224:192:77",
             "nodes": [],
             "body": {
-              "id": 65035,
+              "id": 65109,
               "nodeType": "Block",
               "src": "3356:60:77",
               "nodes": [],
@@ -5922,11 +5922,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 65032,
+                        "id": 65106,
                         "name": "interfaceId",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 65022,
+                        "referencedDeclaration": 65096,
                         "src": "3397:11:77",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes4",
@@ -5942,18 +5942,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 65030,
+                        "id": 65104,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": -25,
                         "src": "3373:5:77",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65037_$",
+                          "typeIdentifier": "t_type$_t_super$_StairwayDAO_$65111_$",
                           "typeString": "type(contract super StairwayDAO)"
                         }
                       },
-                      "id": 65031,
+                      "id": 65105,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -5968,7 +5968,7 @@
                         "typeString": "function (bytes4) view returns (bool)"
                       }
                     },
-                    "id": 65033,
+                    "id": 65107,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -5984,8 +5984,8 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 65029,
-                  "id": 65034,
+                  "functionReturnParameters": 65103,
+                  "id": 65108,
                   "nodeType": "Return",
                   "src": "3366:43:77"
                 }
@@ -6002,11 +6002,11 @@
             "name": "supportsInterface",
             "nameLocation": "3233:17:77",
             "overrides": {
-              "id": 65026,
+              "id": 65100,
               "nodeType": "OverrideSpecifier",
               "overrides": [
                 {
-                  "id": 65024,
+                  "id": 65098,
                   "name": "Governor",
                   "nameLocations": [
                     "3306:8:77"
@@ -6016,7 +6016,7 @@
                   "src": "3306:8:77"
                 },
                 {
-                  "id": 65025,
+                  "id": 65099,
                   "name": "GovernorTimelockControl",
                   "nameLocations": [
                     "3316:23:77"
@@ -6029,17 +6029,17 @@
               "src": "3297:43:77"
             },
             "parameters": {
-              "id": 65023,
+              "id": 65097,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65022,
+                  "id": 65096,
                   "mutability": "mutable",
                   "name": "interfaceId",
                   "nameLocation": "3267:11:77",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65036,
+                  "scope": 65110,
                   "src": "3260:18:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -6048,7 +6048,7 @@
                     "typeString": "bytes4"
                   },
                   "typeName": {
-                    "id": 65021,
+                    "id": 65095,
                     "name": "bytes4",
                     "nodeType": "ElementaryTypeName",
                     "src": "3260:6:77",
@@ -6063,17 +6063,17 @@
               "src": "3250:34:77"
             },
             "returnParameters": {
-              "id": 65029,
+              "id": 65103,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65028,
+                  "id": 65102,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65036,
+                  "scope": 65110,
                   "src": "3350:4:77",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -6082,7 +6082,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 65027,
+                    "id": 65101,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "3350:4:77",
@@ -6096,7 +6096,7 @@
               ],
               "src": "3349:6:77"
             },
-            "scope": 65037,
+            "scope": 65111,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
@@ -6106,7 +6106,7 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 64806,
+              "id": 64880,
               "name": "Governor",
               "nameLocations": [
                 "564:8:77"
@@ -6115,13 +6115,13 @@
               "referencedDeclaration": 44975,
               "src": "564:8:77"
             },
-            "id": 64807,
+            "id": 64881,
             "nodeType": "InheritanceSpecifier",
             "src": "564:8:77"
           },
           {
             "baseName": {
-              "id": 64808,
+              "id": 64882,
               "name": "GovernorSettings",
               "nameLocations": [
                 "578:16:77"
@@ -6130,13 +6130,13 @@
               "referencedDeclaration": 46664,
               "src": "578:16:77"
             },
-            "id": 64809,
+            "id": 64883,
             "nodeType": "InheritanceSpecifier",
             "src": "578:16:77"
           },
           {
             "baseName": {
-              "id": 64810,
+              "id": 64884,
               "name": "GovernorCountingSimple",
               "nameLocations": [
                 "600:22:77"
@@ -6145,13 +6145,13 @@
               "referencedDeclaration": 46486,
               "src": "600:22:77"
             },
-            "id": 64811,
+            "id": 64885,
             "nodeType": "InheritanceSpecifier",
             "src": "600:22:77"
           },
           {
             "baseName": {
-              "id": 64812,
+              "id": 64886,
               "name": "GovernorVotes",
               "nameLocations": [
                 "628:13:77"
@@ -6160,13 +6160,13 @@
               "referencedDeclaration": 47138,
               "src": "628:13:77"
             },
-            "id": 64813,
+            "id": 64887,
             "nodeType": "InheritanceSpecifier",
             "src": "628:13:77"
           },
           {
             "baseName": {
-              "id": 64814,
+              "id": 64888,
               "name": "GovernorVotesQuorumFraction",
               "nameLocations": [
                 "647:27:77"
@@ -6175,13 +6175,13 @@
               "referencedDeclaration": 47353,
               "src": "647:27:77"
             },
-            "id": 64815,
+            "id": 64889,
             "nodeType": "InheritanceSpecifier",
             "src": "647:27:77"
           },
           {
             "baseName": {
-              "id": 64816,
+              "id": 64890,
               "name": "GovernorTimelockControl",
               "nameLocations": [
                 "680:23:77"
@@ -6190,7 +6190,7 @@
               "referencedDeclaration": 47041,
               "src": "680:23:77"
             },
-            "id": 64817,
+            "id": 64891,
             "nodeType": "InheritanceSpecifier",
             "src": "680:23:77"
           }
@@ -6200,7 +6200,7 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          65037,
+          65111,
           47041,
           47353,
           47138,
@@ -6220,7 +6220,7 @@
         ],
         "name": "StairwayDAO",
         "nameLocation": "545:11:77",
-        "scope": 65038,
+        "scope": 65112,
         "usedErrors": [
           51639,
           51641,

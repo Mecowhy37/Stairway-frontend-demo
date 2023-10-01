@@ -1873,12 +1873,12 @@
     },
     "settings": {
       "remappings": [
-        "@openzeppelin/=lib/openzeppelin-contracts/",
-        "ds-test/=lib/forge-std/lib/ds-test/src/",
-        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-        "forge-std/=lib/forge-std/src/",
-        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
       ],
       "optimizer": {
         "enabled": true,
@@ -2250,7 +2250,7 @@
   },
   "ast": {
     "absolutePath": "src/dao/StairwayTimelock.sol",
-    "id": 65071,
+    "id": 65145,
     "exportedSymbols": {
       "AccessControl": [
         43207
@@ -2268,7 +2268,7 @@
         51626
       ],
       "DAOToken": [
-        64797
+        64871
       ],
       "DoubleEndedQueue": [
         55640
@@ -2367,10 +2367,10 @@
         55299
       ],
       "StairwayDAO": [
-        65037
+        65111
       ],
       "StairwayTimelock": [
-        65070
+        65144
       ],
       "StorageSlot": [
         51952
@@ -2386,7 +2386,7 @@
     "src": "33:474:78",
     "nodes": [
       {
-        "id": 65039,
+        "id": 65113,
         "nodeType": "PragmaDirective",
         "src": "33:24:78",
         "nodes": [],
@@ -2398,69 +2398,69 @@
         ]
       },
       {
-        "id": 65040,
+        "id": 65114,
         "nodeType": "ImportDirective",
         "src": "59:52:78",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/access/Ownable.sol",
         "file": "@openzeppelin/contracts/access/Ownable.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65071,
+        "scope": 65145,
         "sourceUnit": 43394,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 65041,
+        "id": 65115,
         "nodeType": "ImportDirective",
         "src": "112:33:78",
         "nodes": [],
         "absolutePath": "src/dao/StairwayDAO.sol",
         "file": "src/dao/StairwayDAO.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65071,
-        "sourceUnit": 65038,
+        "scope": 65145,
+        "sourceUnit": 65112,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 65042,
+        "id": 65116,
         "nodeType": "ImportDirective",
         "src": "146:67:78",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/TimelockController.sol",
         "file": "@openzeppelin/contracts/governance/TimelockController.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65071,
+        "scope": 65145,
         "sourceUnit": 46261,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 65043,
+        "id": 65117,
         "nodeType": "ImportDirective",
         "src": "214:30:78",
         "nodes": [],
         "absolutePath": "src/dao/DAOToken.sol",
         "file": "src/dao/DAOToken.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65071,
-        "sourceUnit": 64798,
+        "scope": 65145,
+        "sourceUnit": 64872,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 65070,
+        "id": 65144,
         "nodeType": "ContractDefinition",
         "src": "246:260:78",
         "nodes": [
           {
-            "id": 65069,
+            "id": 65143,
             "nodeType": "FunctionDefinition",
             "src": "300:204:78",
             "nodes": [],
             "body": {
-              "id": 65068,
+              "id": 65142,
               "nodeType": "Block",
               "src": "502:2:78",
               "nodes": [],
@@ -2476,7 +2476,7 @@
                       "typeIdentifier": "t_rational_1209600_by_1",
                       "typeString": "int_const 1209600"
                     },
-                    "id": 65054,
+                    "id": 65128,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -2486,14 +2486,14 @@
                         "typeIdentifier": "t_rational_604800_by_1",
                         "typeString": "int_const 604800"
                       },
-                      "id": 65052,
+                      "id": 65126,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "lValueRequested": false,
                       "leftExpression": {
                         "hexValue": "3836343030",
-                        "id": 65050,
+                        "id": 65124,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -2511,7 +2511,7 @@
                       "operator": "*",
                       "rightExpression": {
                         "hexValue": "37",
-                        "id": 65051,
+                        "id": 65125,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -2535,7 +2535,7 @@
                     "operator": "*",
                     "rightExpression": {
                       "hexValue": "32",
-                      "id": 65053,
+                      "id": 65127,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -2559,7 +2559,7 @@
                     "arguments": [
                       {
                         "hexValue": "30",
-                        "id": 65058,
+                        "id": 65132,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -2581,7 +2581,7 @@
                           "typeString": "int_const 0"
                         }
                       ],
-                      "id": 65057,
+                      "id": 65131,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -2594,7 +2594,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 65055,
+                          "id": 65129,
                           "name": "address",
                           "nodeType": "ElementaryTypeName",
                           "src": "426:7:78",
@@ -2604,7 +2604,7 @@
                             "typeString": "address"
                           }
                         },
-                        "id": 65056,
+                        "id": 65130,
                         "nodeType": "ArrayTypeName",
                         "src": "426:9:78",
                         "typeDescriptions": {
@@ -2613,7 +2613,7 @@
                         }
                       }
                     },
-                    "id": 65059,
+                    "id": 65133,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -2633,7 +2633,7 @@
                     "arguments": [
                       {
                         "hexValue": "30",
-                        "id": 65063,
+                        "id": 65137,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -2655,7 +2655,7 @@
                           "typeString": "int_const 0"
                         }
                       ],
-                      "id": 65062,
+                      "id": 65136,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -2668,7 +2668,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 65060,
+                          "id": 65134,
                           "name": "address",
                           "nodeType": "ElementaryTypeName",
                           "src": "456:7:78",
@@ -2678,7 +2678,7 @@
                             "typeString": "address"
                           }
                         },
-                        "id": 65061,
+                        "id": 65135,
                         "nodeType": "ArrayTypeName",
                         "src": "456:9:78",
                         "typeDescriptions": {
@@ -2687,7 +2687,7 @@
                         }
                       }
                     },
-                    "id": 65064,
+                    "id": 65138,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -2704,11 +2704,11 @@
                     }
                   },
                   {
-                    "id": 65065,
+                    "id": 65139,
                     "name": "admin",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 65047,
+                    "referencedDeclaration": 65121,
                     "src": "482:5:78",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2716,10 +2716,10 @@
                     }
                   }
                 ],
-                "id": 65066,
+                "id": 65140,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 65049,
+                  "id": 65123,
                   "name": "TimelockController",
                   "nameLocations": [
                     "349:18:78"
@@ -2735,17 +2735,17 @@
             "name": "",
             "nameLocation": "-1:-1:-1",
             "parameters": {
-              "id": 65048,
+              "id": 65122,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65047,
+                  "id": 65121,
                   "mutability": "mutable",
                   "name": "admin",
                   "nameLocation": "329:5:78",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65069,
+                  "scope": 65143,
                   "src": "321:13:78",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2754,7 +2754,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 65046,
+                    "id": 65120,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "321:7:78",
@@ -2770,12 +2770,12 @@
               "src": "311:29:78"
             },
             "returnParameters": {
-              "id": 65067,
+              "id": 65141,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "502:0:78"
             },
-            "scope": 65070,
+            "scope": 65144,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
@@ -2785,7 +2785,7 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 65044,
+              "id": 65118,
               "name": "TimelockController",
               "nameLocations": [
                 "275:18:78"
@@ -2794,7 +2794,7 @@
               "referencedDeclaration": 46260,
               "src": "275:18:78"
             },
-            "id": 65045,
+            "id": 65119,
             "nodeType": "InheritanceSpecifier",
             "src": "275:18:78"
           }
@@ -2804,7 +2804,7 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          65070,
+          65144,
           46260,
           47630,
           49659,
@@ -2816,7 +2816,7 @@
         ],
         "name": "StairwayTimelock",
         "nameLocation": "255:16:78",
-        "scope": 65071,
+        "scope": 65145,
         "usedErrors": []
       }
     ],

@@ -62,12 +62,12 @@
     },
     "settings": {
       "remappings": [
-        "@openzeppelin/=lib/openzeppelin-contracts/",
-        "ds-test/=lib/forge-std/lib/ds-test/src/",
-        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-        "forge-std/=lib/forge-std/src/",
-        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
       ],
       "optimizer": {
         "enabled": true,
@@ -95,17 +95,17 @@
   },
   "ast": {
     "absolutePath": "src/interfaces/IGovernorVotes.sol",
-    "id": 65614,
+    "id": 65743,
     "exportedSymbols": {
       "IGovernorVotes": [
-        65613
+        65742
       ]
     },
     "nodeType": "SourceUnit",
     "src": "32:270:85",
     "nodes": [
       {
-        "id": 65607,
+        "id": 65736,
         "nodeType": "PragmaDirective",
         "src": "32:24:85",
         "nodes": [],
@@ -117,12 +117,12 @@
         ]
       },
       {
-        "id": 65613,
+        "id": 65742,
         "nodeType": "ContractDefinition",
         "src": "219:82:85",
         "nodes": [
           {
-            "id": 65612,
+            "id": 65741,
             "nodeType": "FunctionDefinition",
             "src": "250:49:85",
             "nodes": [],
@@ -133,23 +133,23 @@
             "name": "token",
             "nameLocation": "259:5:85",
             "parameters": {
-              "id": 65608,
+              "id": 65737,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "264:2:85"
             },
             "returnParameters": {
-              "id": 65611,
+              "id": 65740,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65610,
+                  "id": 65739,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65612,
+                  "scope": 65741,
                   "src": "290:7:85",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -158,7 +158,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 65609,
+                    "id": 65738,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "290:7:85",
@@ -173,7 +173,7 @@
               ],
               "src": "289:9:85"
             },
-            "scope": 65613,
+            "scope": 65742,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -186,11 +186,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          65613
+          65742
         ],
         "name": "IGovernorVotes",
         "nameLocation": "229:14:85",
-        "scope": 65614,
+        "scope": 65743,
         "usedErrors": []
       }
     ],

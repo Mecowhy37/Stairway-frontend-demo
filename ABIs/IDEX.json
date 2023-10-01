@@ -72,12 +72,12 @@
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "newAmountA",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "newAmountB",
           "type": "uint256"
         }
       ],
@@ -107,6 +107,11 @@
           "type": "address"
         },
         {
+          "internalType": "address",
+          "name": "routingAgent",
+          "type": "address"
+        },
+        {
           "internalType": "uint256",
           "name": "deadline",
           "type": "uint256"
@@ -126,6 +131,30 @@
         }
       ],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20[]",
+          "name": "path",
+          "type": "address[]"
+        }
+      ],
+      "name": "calculateSwapAmounts",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountInRequired",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountOutMax",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -243,12 +272,13 @@
   },
   "methodIdentifiers": {
     "addLiquidity(address,address,uint256,uint256,uint256,address,uint256)": "ba9f20b8",
-    "buy(address[],uint256,uint256,address,uint256)": "2a64b539",
+    "buy(address[],uint256,uint256,address,address,uint256)": "41f12688",
+    "calculateSwapAmounts(address[])": "63730975",
     "getDepth(address,address)": "4772b4df",
     "getPrice(address,address)": "ac41865a",
     "redeemLiquidity(address,address,uint256,uint256,uint256,address,uint256,uint256)": "3118b3c8"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"DEX__DeadlinePassed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__InvalidPath\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__InvalidPrice\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__PoolNotFound\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__Slippage\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__ZeroAmount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"tokenB\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountA\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountB\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptedSlippage\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"provider\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"addLiquidity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20[]\",\"name\":\"path\",\"type\":\"address[]\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maxPrice\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"buy\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"actualAmountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountInUsed\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"getDepth\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"depth\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"getPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"tokenB\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountTokenA\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountTokenB\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lpTokenQty\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptedSlippage\",\"type\":\"uint256\"}],\"name\":\"redeemLiquidity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"unredeemedLpTokens\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for a decentralized exchange (DEX) defining essential functions for token trading, liquidity provision, and liquidity redemption.\",\"kind\":\"dev\",\"methods\":{\"buy(address[],uint256,uint256,address,uint256)\":{\"details\":\"The function determines the best price for the desired output and swaps tokens accordingly. If the user specifies a desired output greater than what's available at the current best price, they'll receive the maximum possible at that best price. If the desired output is less than the available amount at the best price, they'll receive the exact amount they desire.\",\"params\":{\"deadline\":\"The time by which the swap should be completed.\",\"desiredAmountOut\":\"The desired amount of the final token in the path to receive.\",\"maxPrice\":\"The maximum acceptable price for the entire path, scaled by PRECISION.\",\"path\":\"The array of tokens representing the swap path.\",\"recipient\":\"The address to receive the swapped tokens.\"},\"returns\":{\"actualAmountOut\":\"The actual output amount of tokens received.\",\"amountInUsed\":\"The actual input amount of tokens used.\"}},\"getDepth(address,address)\":{\"details\":\"Calculates the total depth of base tokens available for a given maximum price. The function steps through each price level until the maximum price is reached, accumulating the depth available at each price level. NOTE: This function uses a while loop which could potentially run out of gas if the maximum price is set too high compared to the current price. Users should ensure that the maximum price is set to a reasonable level relative to the current price before calling this function.\",\"params\":{\"baseToken\":\"The base token that the user is interested in.\",\"quoteToken\":\"The quote token that would be used to buy the base token.\"},\"returns\":{\"depth\":\"The total depth of base tokens available at the current price\"}}},\"title\":\"IDEX\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"buy(address[],uint256,uint256,address,uint256)\":{\"notice\":\"Executes a token swap following a specified path of pools.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IDEX.sol\":\"IDEX\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"src/interfaces/IDEX.sol\":{\"keccak256\":\"0x41de056bc18ca311c27ee3fb3975a336a0f423e7495e853d3ea27d016eb55290\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://1b3f7643f9ce7b02430cbba80f6852b9aadf801657daf50ea15d2453b8bc2bbb\",\"dweb:/ipfs/QmQc9sQHKU2N1rLUrWMT3JmCYRa4xJg8cCtFFac4WfjXX7\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"DEX__DeadlinePassed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__InvalidPath\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__InvalidPrice\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__PoolNotFound\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__Slippage\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"DEX__ZeroAmount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"tokenB\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountA\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountB\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptedSlippage\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"provider\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"addLiquidity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"newAmountA\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"newAmountB\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20[]\",\"name\":\"path\",\"type\":\"address[]\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maxPrice\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"routingAgent\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"buy\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"actualAmountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountInUsed\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20[]\",\"name\":\"path\",\"type\":\"address[]\"}],\"name\":\"calculateSwapAmounts\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amountInRequired\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountOutMax\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"getDepth\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"depth\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"quoteToken\",\"type\":\"address\"}],\"name\":\"getPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"tokenB\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountTokenA\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmountTokenB\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lpTokenQty\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptedSlippage\",\"type\":\"uint256\"}],\"name\":\"redeemLiquidity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"unredeemedLpTokens\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for a decentralized exchange (DEX) for functions like trading, liquidity provision, and liquidity redemption.\",\"kind\":\"dev\",\"methods\":{\"addLiquidity(address,address,uint256,uint256,uint256,address,uint256)\":{\"details\":\"Adds liquidity to a liquidity pool.\",\"params\":{\"acceptedSlippage\":\"Maximum acceptable slippage.\",\"amountA\":\"The quantity of the first token.\",\"amountB\":\"The quantity of the second token.\",\"deadline\":\"Transaction deadline.\",\"provider\":\"Address of the liquidity provider.\",\"tokenA\":\"The first token in the pool.\",\"tokenB\":\"The second token in the pool.\"},\"returns\":{\"newAmountA\":\"Amount of token A added.\",\"newAmountB\":\"Amount of token B added.\"}},\"buy(address[],uint256,uint256,address,address,uint256)\":{\"details\":\"Executes a token swap.\",\"params\":{\"deadline\":\"Transaction deadline.\",\"desiredAmountOut\":\"Desired amount of the final token.\",\"maxPrice\":\"Maximum acceptable price across the token pairs in the path.\",\"path\":\"Sequence of tokens to be swapped.\",\"recipient\":\"Address to receive the final tokens.\",\"routingAgent\":\"Agent responsible for routing the swap.\"},\"returns\":{\"actualAmountOut\":\"Actual amount of tokens received.\",\"amountInUsed\":\"Tokens spent for the swap.\"}},\"calculateSwapAmounts(address[])\":{\"details\":\"Computes input and output quantities for a token swap.\",\"params\":{\"path\":\"Sequence of tokens to be swapped.\"},\"returns\":{\"amountInRequired\":\"Required amount of initial tokens.\",\"amountOutMax\":\"Maximum amount of final tokens to be received.\"}},\"getDepth(address,address)\":{\"details\":\"Calculates the trading depth available for a token pair.\",\"params\":{\"baseToken\":\"The base token.\",\"quoteToken\":\"The quote token.\"},\"returns\":{\"depth\":\"Available trading depth for the base token.\"}},\"getPrice(address,address)\":{\"details\":\"Queries the current price for a token pair.\",\"params\":{\"baseToken\":\"The base token.\",\"quoteToken\":\"The quote token.\"},\"returns\":{\"price\":\"The present market price.\"}},\"redeemLiquidity(address,address,uint256,uint256,uint256,address,uint256,uint256)\":{\"details\":\"Redeems liquidity tokens for underlying assets.\",\"params\":{\"acceptedSlippage\":\"Maximum acceptable slippage.\",\"deadline\":\"Transaction deadline.\",\"desiredAmountTokenA\":\"Desired amount of the first token.\",\"desiredAmountTokenB\":\"Desired amount of the second token.\",\"lpTokenQty\":\"Quantity of liquidity tokens.\",\"recipient\":\"Recipient of the withdrawn assets.\",\"tokenA\":\"The first token in the pool.\",\"tokenB\":\"The second token in the pool.\"},\"returns\":{\"unredeemedLpTokens\":\"Remaining unredeemed liquidity tokens.\"}}},\"title\":\"IDEX\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IDEX.sol\":\"IDEX\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"src/interfaces/IDEX.sol\":{\"keccak256\":\"0x464dae38e8879dfd10ad796d0ed0768430a6ddc2d5ef51ef2536a960d5742d07\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://6cd88a245d6189e7d9fc44a89953785cef46684b07df982d759631068dc4cf4a\",\"dweb:/ipfs/QmTh8oxemT4Zjss1oxBieAXwKTyhbZxByN9u22W5cr9mTs\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -330,12 +360,12 @@
           "outputs": [
             {
               "internalType": "uint256",
-              "name": "",
+              "name": "newAmountA",
               "type": "uint256"
             },
             {
               "internalType": "uint256",
-              "name": "",
+              "name": "newAmountB",
               "type": "uint256"
             }
           ]
@@ -363,6 +393,11 @@
               "type": "address"
             },
             {
+              "internalType": "address",
+              "name": "routingAgent",
+              "type": "address"
+            },
+            {
               "internalType": "uint256",
               "name": "deadline",
               "type": "uint256"
@@ -380,6 +415,30 @@
             {
               "internalType": "uint256",
               "name": "amountInUsed",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20[]",
+              "name": "path",
+              "type": "address[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "calculateSwapAmounts",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "amountInRequired",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amountOutMax",
               "type": "uint256"
             }
           ]
@@ -490,28 +549,81 @@
       "devdoc": {
         "kind": "dev",
         "methods": {
-          "buy(address[],uint256,uint256,address,uint256)": {
-            "details": "The function determines the best price for the desired output and swaps tokens accordingly. If the user specifies a desired output greater than what's available at the current best price, they'll receive the maximum possible at that best price. If the desired output is less than the available amount at the best price, they'll receive the exact amount they desire.",
+          "addLiquidity(address,address,uint256,uint256,uint256,address,uint256)": {
+            "details": "Adds liquidity to a liquidity pool.",
             "params": {
-              "deadline": "The time by which the swap should be completed.",
-              "desiredAmountOut": "The desired amount of the final token in the path to receive.",
-              "maxPrice": "The maximum acceptable price for the entire path, scaled by PRECISION.",
-              "path": "The array of tokens representing the swap path.",
-              "recipient": "The address to receive the swapped tokens."
+              "acceptedSlippage": "Maximum acceptable slippage.",
+              "amountA": "The quantity of the first token.",
+              "amountB": "The quantity of the second token.",
+              "deadline": "Transaction deadline.",
+              "provider": "Address of the liquidity provider.",
+              "tokenA": "The first token in the pool.",
+              "tokenB": "The second token in the pool."
             },
             "returns": {
-              "actualAmountOut": "The actual output amount of tokens received.",
-              "amountInUsed": "The actual input amount of tokens used."
+              "newAmountA": "Amount of token A added.",
+              "newAmountB": "Amount of token B added."
+            }
+          },
+          "buy(address[],uint256,uint256,address,address,uint256)": {
+            "details": "Executes a token swap.",
+            "params": {
+              "deadline": "Transaction deadline.",
+              "desiredAmountOut": "Desired amount of the final token.",
+              "maxPrice": "Maximum acceptable price across the token pairs in the path.",
+              "path": "Sequence of tokens to be swapped.",
+              "recipient": "Address to receive the final tokens.",
+              "routingAgent": "Agent responsible for routing the swap."
+            },
+            "returns": {
+              "actualAmountOut": "Actual amount of tokens received.",
+              "amountInUsed": "Tokens spent for the swap."
+            }
+          },
+          "calculateSwapAmounts(address[])": {
+            "details": "Computes input and output quantities for a token swap.",
+            "params": {
+              "path": "Sequence of tokens to be swapped."
+            },
+            "returns": {
+              "amountInRequired": "Required amount of initial tokens.",
+              "amountOutMax": "Maximum amount of final tokens to be received."
             }
           },
           "getDepth(address,address)": {
-            "details": "Calculates the total depth of base tokens available for a given maximum price. The function steps through each price level until the maximum price is reached, accumulating the depth available at each price level. NOTE: This function uses a while loop which could potentially run out of gas if the maximum price is set too high compared to the current price. Users should ensure that the maximum price is set to a reasonable level relative to the current price before calling this function.",
+            "details": "Calculates the trading depth available for a token pair.",
             "params": {
-              "baseToken": "The base token that the user is interested in.",
-              "quoteToken": "The quote token that would be used to buy the base token."
+              "baseToken": "The base token.",
+              "quoteToken": "The quote token."
             },
             "returns": {
-              "depth": "The total depth of base tokens available at the current price"
+              "depth": "Available trading depth for the base token."
+            }
+          },
+          "getPrice(address,address)": {
+            "details": "Queries the current price for a token pair.",
+            "params": {
+              "baseToken": "The base token.",
+              "quoteToken": "The quote token."
+            },
+            "returns": {
+              "price": "The present market price."
+            }
+          },
+          "redeemLiquidity(address,address,uint256,uint256,uint256,address,uint256,uint256)": {
+            "details": "Redeems liquidity tokens for underlying assets.",
+            "params": {
+              "acceptedSlippage": "Maximum acceptable slippage.",
+              "deadline": "Transaction deadline.",
+              "desiredAmountTokenA": "Desired amount of the first token.",
+              "desiredAmountTokenB": "Desired amount of the second token.",
+              "lpTokenQty": "Quantity of liquidity tokens.",
+              "recipient": "Recipient of the withdrawn assets.",
+              "tokenA": "The first token in the pool.",
+              "tokenB": "The second token in the pool."
+            },
+            "returns": {
+              "unredeemedLpTokens": "Remaining unredeemed liquidity tokens."
             }
           }
         },
@@ -519,22 +631,18 @@
       },
       "userdoc": {
         "kind": "user",
-        "methods": {
-          "buy(address[],uint256,uint256,address,uint256)": {
-            "notice": "Executes a token swap following a specified path of pools."
-          }
-        },
+        "methods": {},
         "version": 1
       }
     },
     "settings": {
       "remappings": [
-        "@openzeppelin/=lib/openzeppelin-contracts/",
-        "ds-test/=lib/forge-std/lib/ds-test/src/",
-        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-        "forge-std/=lib/forge-std/src/",
-        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
       ],
       "optimizer": {
         "enabled": true,
@@ -558,10 +666,10 @@
         "license": "MIT"
       },
       "src/interfaces/IDEX.sol": {
-        "keccak256": "0x41de056bc18ca311c27ee3fb3975a336a0f423e7495e853d3ea27d016eb55290",
+        "keccak256": "0x464dae38e8879dfd10ad796d0ed0768430a6ddc2d5ef51ef2536a960d5742d07",
         "urls": [
-          "bzz-raw://1b3f7643f9ce7b02430cbba80f6852b9aadf801657daf50ea15d2453b8bc2bbb",
-          "dweb:/ipfs/QmQc9sQHKU2N1rLUrWMT3JmCYRa4xJg8cCtFFac4WfjXX7"
+          "bzz-raw://6cd88a245d6189e7d9fc44a89953785cef46684b07df982d759631068dc4cf4a",
+          "dweb:/ipfs/QmTh8oxemT4Zjss1oxBieAXwKTyhbZxByN9u22W5cr9mTs"
         ],
         "license": "GPL-3.0-or-later"
       }
@@ -570,22 +678,22 @@
   },
   "ast": {
     "absolutePath": "src/interfaces/IDEX.sol",
-    "id": 65244,
+    "id": 62147,
     "exportedSymbols": {
       "IDEX": [
-        65243
+        62146
       ],
       "IERC20": [
         48295
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "45:4764:81",
+    "src": "45:4082:79",
     "nodes": [
       {
-        "id": 65139,
+        "id": 62025,
         "nodeType": "PragmaDirective",
-        "src": "45:24:81",
+        "src": "45:24:79",
         "nodes": [],
         "literals": [
           "solidity",
@@ -595,137 +703,143 @@
         ]
       },
       {
-        "id": 65140,
+        "id": 62026,
         "nodeType": "ImportDirective",
-        "src": "71:56:81",
+        "src": "71:56:79",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65244,
+        "scope": 62147,
         "sourceUnit": 48296,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 65243,
+        "id": 62146,
         "nodeType": "ContractDefinition",
-        "src": "300:4508:81",
+        "src": "280:3846:79",
         "nodes": [
           {
-            "id": 65143,
+            "id": 62029,
             "nodeType": "ErrorDefinition",
-            "src": "321:28:81",
+            "src": "301:28:79",
             "nodes": [],
             "errorSelector": "5a9cce58",
             "name": "DEX__DeadlinePassed",
-            "nameLocation": "327:19:81",
+            "nameLocation": "307:19:79",
             "parameters": {
-              "id": 65142,
+              "id": 62028,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "346:2:81"
+              "src": "326:2:79"
             }
           },
           {
-            "id": 65145,
+            "id": 62031,
             "nodeType": "ErrorDefinition",
-            "src": "354:26:81",
+            "src": "334:26:79",
             "nodes": [],
             "errorSelector": "5153add0",
             "name": "DEX__PoolNotFound",
-            "nameLocation": "360:17:81",
+            "nameLocation": "340:17:79",
             "parameters": {
-              "id": 65144,
+              "id": 62030,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "377:2:81"
+              "src": "357:2:79"
             }
           },
           {
-            "id": 65147,
+            "id": 62033,
             "nodeType": "ErrorDefinition",
-            "src": "385:26:81",
+            "src": "365:26:79",
             "nodes": [],
             "errorSelector": "b472cfc6",
             "name": "DEX__InvalidPrice",
-            "nameLocation": "391:17:81",
+            "nameLocation": "371:17:79",
             "parameters": {
-              "id": 65146,
+              "id": 62032,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "408:2:81"
+              "src": "388:2:79"
             }
           },
           {
-            "id": 65149,
+            "id": 62035,
             "nodeType": "ErrorDefinition",
-            "src": "416:25:81",
+            "src": "396:25:79",
             "nodes": [],
             "errorSelector": "5701c3f5",
             "name": "DEX__InvalidPath",
-            "nameLocation": "422:16:81",
+            "nameLocation": "402:16:79",
             "parameters": {
-              "id": 65148,
+              "id": 62034,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "438:2:81"
+              "src": "418:2:79"
             }
           },
           {
-            "id": 65151,
+            "id": 62037,
             "nodeType": "ErrorDefinition",
-            "src": "446:24:81",
+            "src": "426:24:79",
             "nodes": [],
             "errorSelector": "8fbdd497",
             "name": "DEX__ZeroAmount",
-            "nameLocation": "452:15:81",
+            "nameLocation": "432:15:79",
             "parameters": {
-              "id": 65150,
+              "id": 62036,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "467:2:81"
+              "src": "447:2:79"
             }
           },
           {
-            "id": 65153,
+            "id": 62039,
             "nodeType": "ErrorDefinition",
-            "src": "475:22:81",
+            "src": "455:22:79",
             "nodes": [],
             "errorSelector": "f4622051",
             "name": "DEX__Slippage",
-            "nameLocation": "481:13:81",
+            "nameLocation": "461:13:79",
             "parameters": {
-              "id": 65152,
+              "id": 62038,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "494:2:81"
+              "src": "474:2:79"
             }
           },
           {
-            "id": 65164,
+            "id": 62051,
             "nodeType": "FunctionDefinition",
-            "src": "503:115:81",
+            "src": "684:115:79",
             "nodes": [],
+            "documentation": {
+              "id": 62040,
+              "nodeType": "StructuredDocumentation",
+              "src": "483:196:79",
+              "text": " @dev Queries the current price for a token pair.\n @param baseToken The base token.\n @param quoteToken The quote token.\n @return price The present market price."
+            },
             "functionSelector": "ac41865a",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getPrice",
-            "nameLocation": "512:8:81",
+            "nameLocation": "693:8:79",
             "parameters": {
-              "id": 65160,
+              "id": 62047,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65156,
+                  "id": 62043,
                   "mutability": "mutable",
                   "name": "baseToken",
-                  "nameLocation": "537:9:81",
+                  "nameLocation": "718:9:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65164,
-                  "src": "530:16:81",
+                  "scope": 62051,
+                  "src": "711:16:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -733,20 +847,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65155,
+                    "id": 62042,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65154,
+                      "id": 62041,
                       "name": "IERC20",
                       "nameLocations": [
-                        "530:6:81"
+                        "711:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "530:6:81"
+                      "src": "711:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "530:6:81",
+                    "src": "711:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -756,13 +870,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65159,
+                  "id": 62046,
                   "mutability": "mutable",
                   "name": "quoteToken",
-                  "nameLocation": "563:10:81",
+                  "nameLocation": "744:10:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65164,
-                  "src": "556:17:81",
+                  "scope": 62051,
+                  "src": "737:17:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -770,20 +884,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65158,
+                    "id": 62045,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65157,
+                      "id": 62044,
                       "name": "IERC20",
                       "nameLocations": [
-                        "556:6:81"
+                        "737:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "556:6:81"
+                      "src": "737:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "556:6:81",
+                    "src": "737:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -792,21 +906,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "520:59:81"
+              "src": "701:59:79"
             },
             "returnParameters": {
-              "id": 65163,
+              "id": 62050,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65162,
+                  "id": 62049,
                   "mutability": "mutable",
                   "name": "price",
-                  "nameLocation": "611:5:81",
+                  "nameLocation": "792:5:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65164,
-                  "src": "603:13:81",
+                  "scope": 62051,
+                  "src": "784:13:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -814,10 +928,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65161,
+                    "id": 62048,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "603:7:81",
+                    "src": "784:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -826,43 +940,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "602:15:81"
+              "src": "783:15:79"
             },
-            "scope": 65243,
+            "scope": 62146,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 65176,
+            "id": 62063,
             "nodeType": "FunctionDefinition",
-            "src": "1435:115:81",
+            "src": "1037:115:79",
             "nodes": [],
             "documentation": {
-              "id": 65165,
+              "id": 62052,
               "nodeType": "StructuredDocumentation",
-              "src": "624:806:81",
-              "text": " @dev Calculates the total depth of base tokens available for a given maximum price.\n The function steps through each price level until the maximum price is reached,\n accumulating the depth available at each price level.\n NOTE: This function uses a while loop which could potentially run out of gas if the\n maximum price is set too high compared to the current price. Users should ensure that\n the maximum price is set to a reasonable level relative to the current price before calling\n this function.\n @param baseToken The base token that the user is interested in.\n @param quoteToken The quote token that would be used to buy the base token.\n @return depth The total depth of base tokens available at the current price"
+              "src": "805:227:79",
+              "text": " @dev Calculates the trading depth available for a token pair.\n @param baseToken The base token.\n @param quoteToken The quote token.\n @return depth Available trading depth for the base token."
             },
             "functionSelector": "4772b4df",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getDepth",
-            "nameLocation": "1444:8:81",
+            "nameLocation": "1046:8:79",
             "parameters": {
-              "id": 65172,
+              "id": 62059,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65168,
+                  "id": 62055,
                   "mutability": "mutable",
                   "name": "baseToken",
-                  "nameLocation": "1469:9:81",
+                  "nameLocation": "1071:9:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65176,
-                  "src": "1462:16:81",
+                  "scope": 62063,
+                  "src": "1064:16:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -870,20 +984,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65167,
+                    "id": 62054,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65166,
+                      "id": 62053,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1462:6:81"
+                        "1064:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1462:6:81"
+                      "src": "1064:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1462:6:81",
+                    "src": "1064:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -893,13 +1007,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65171,
+                  "id": 62058,
                   "mutability": "mutable",
                   "name": "quoteToken",
-                  "nameLocation": "1495:10:81",
+                  "nameLocation": "1097:10:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65176,
-                  "src": "1488:17:81",
+                  "scope": 62063,
+                  "src": "1090:17:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -907,20 +1021,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65170,
+                    "id": 62057,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65169,
+                      "id": 62056,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1488:6:81"
+                        "1090:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1488:6:81"
+                      "src": "1090:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1488:6:81",
+                    "src": "1090:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -929,21 +1043,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1452:59:81"
+              "src": "1054:59:79"
             },
             "returnParameters": {
-              "id": 65175,
+              "id": 62062,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65174,
+                  "id": 62061,
                   "mutability": "mutable",
                   "name": "depth",
-                  "nameLocation": "1543:5:81",
+                  "nameLocation": "1145:5:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65176,
-                  "src": "1535:13:81",
+                  "scope": 62063,
+                  "src": "1137:13:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -951,10 +1065,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65173,
+                    "id": 62060,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1535:7:81",
+                    "src": "1137:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -963,37 +1077,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1534:15:81"
+              "src": "1136:15:79"
             },
-            "scope": 65243,
+            "scope": 62146,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 65199,
+            "id": 62087,
             "nodeType": "FunctionDefinition",
-            "src": "1556:246:81",
+            "src": "1699:268:79",
             "nodes": [],
+            "documentation": {
+              "id": 62064,
+              "nodeType": "StructuredDocumentation",
+              "src": "1158:536:79",
+              "text": " @dev Adds liquidity to a liquidity pool.\n @param tokenA The first token in the pool.\n @param tokenB The second token in the pool.\n @param amountA The quantity of the first token.\n @param amountB The quantity of the second token.\n @param acceptedSlippage Maximum acceptable slippage.\n @param provider Address of the liquidity provider.\n @param deadline Transaction deadline.\n @return newAmountA Amount of token A added.\n @return newAmountB Amount of token B added."
+            },
             "functionSelector": "ba9f20b8",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "addLiquidity",
-            "nameLocation": "1565:12:81",
+            "nameLocation": "1708:12:79",
             "parameters": {
-              "id": 65193,
+              "id": 62081,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65179,
+                  "id": 62067,
                   "mutability": "mutable",
                   "name": "tokenA",
-                  "nameLocation": "1594:6:81",
+                  "nameLocation": "1737:6:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1587:13:81",
+                  "scope": 62087,
+                  "src": "1730:13:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1001,20 +1121,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65178,
+                    "id": 62066,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65177,
+                      "id": 62065,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1587:6:81"
+                        "1730:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1587:6:81"
+                      "src": "1730:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1587:6:81",
+                    "src": "1730:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1024,13 +1144,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65182,
+                  "id": 62070,
                   "mutability": "mutable",
                   "name": "tokenB",
-                  "nameLocation": "1617:6:81",
+                  "nameLocation": "1760:6:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1610:13:81",
+                  "scope": 62087,
+                  "src": "1753:13:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1038,20 +1158,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65181,
+                    "id": 62069,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65180,
+                      "id": 62068,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1610:6:81"
+                        "1753:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1610:6:81"
+                      "src": "1753:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1610:6:81",
+                    "src": "1753:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1061,13 +1181,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65184,
+                  "id": 62072,
                   "mutability": "mutable",
                   "name": "amountA",
-                  "nameLocation": "1641:7:81",
+                  "nameLocation": "1784:7:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1633:15:81",
+                  "scope": 62087,
+                  "src": "1776:15:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1075,10 +1195,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65183,
+                    "id": 62071,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1633:7:81",
+                    "src": "1776:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1088,13 +1208,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65186,
+                  "id": 62074,
                   "mutability": "mutable",
                   "name": "amountB",
-                  "nameLocation": "1666:7:81",
+                  "nameLocation": "1809:7:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1658:15:81",
+                  "scope": 62087,
+                  "src": "1801:15:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1102,10 +1222,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65185,
+                    "id": 62073,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1658:7:81",
+                    "src": "1801:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1115,13 +1235,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65188,
+                  "id": 62076,
                   "mutability": "mutable",
                   "name": "acceptedSlippage",
-                  "nameLocation": "1691:16:81",
+                  "nameLocation": "1834:16:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1683:24:81",
+                  "scope": 62087,
+                  "src": "1826:24:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1129,10 +1249,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65187,
+                    "id": 62075,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1683:7:81",
+                    "src": "1826:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1142,13 +1262,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65190,
+                  "id": 62078,
                   "mutability": "mutable",
                   "name": "provider",
-                  "nameLocation": "1725:8:81",
+                  "nameLocation": "1868:8:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1717:16:81",
+                  "scope": 62087,
+                  "src": "1860:16:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1156,10 +1276,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 65189,
+                    "id": 62077,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1717:7:81",
+                    "src": "1860:7:79",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1170,13 +1290,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65192,
+                  "id": 62080,
                   "mutability": "mutable",
                   "name": "deadline",
-                  "nameLocation": "1751:8:81",
+                  "nameLocation": "1894:8:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1743:16:81",
+                  "scope": 62087,
+                  "src": "1886:16:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1184,10 +1304,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65191,
+                    "id": 62079,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1743:7:81",
+                    "src": "1886:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1196,21 +1316,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1577:188:81"
+              "src": "1720:188:79"
             },
             "returnParameters": {
-              "id": 65198,
+              "id": 62086,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65195,
+                  "id": 62083,
                   "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
+                  "name": "newAmountA",
+                  "nameLocation": "1935:10:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1784:7:81",
+                  "scope": 62087,
+                  "src": "1927:18:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1218,10 +1338,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65194,
+                    "id": 62082,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1784:7:81",
+                    "src": "1927:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1231,13 +1351,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65197,
+                  "id": 62085,
                   "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
+                  "name": "newAmountB",
+                  "nameLocation": "1955:10:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65199,
-                  "src": "1793:7:81",
+                  "scope": 62087,
+                  "src": "1947:18:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1245,10 +1365,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65196,
+                    "id": 62084,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1793:7:81",
+                    "src": "1947:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1257,37 +1377,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1783:18:81"
+              "src": "1926:40:79"
             },
-            "scope": 65243,
+            "scope": 62146,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 65222,
+            "id": 62111,
             "nodeType": "FunctionDefinition",
-            "src": "1808:312:81",
+            "src": "2581:312:79",
             "nodes": [],
+            "documentation": {
+              "id": 62088,
+              "nodeType": "StructuredDocumentation",
+              "src": "1973:603:79",
+              "text": " @dev Redeems liquidity tokens for underlying assets.\n @param tokenA The first token in the pool.\n @param tokenB The second token in the pool.\n @param desiredAmountTokenA Desired amount of the first token.\n @param desiredAmountTokenB Desired amount of the second token.\n @param lpTokenQty Quantity of liquidity tokens.\n @param recipient Recipient of the withdrawn assets.\n @param deadline Transaction deadline.\n @param acceptedSlippage Maximum acceptable slippage.\n @return unredeemedLpTokens Remaining unredeemed liquidity tokens."
+            },
             "functionSelector": "3118b3c8",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "redeemLiquidity",
-            "nameLocation": "1817:15:81",
+            "nameLocation": "2590:15:79",
             "parameters": {
-              "id": 65218,
+              "id": 62107,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65202,
+                  "id": 62091,
                   "mutability": "mutable",
                   "name": "tokenA",
-                  "nameLocation": "1849:6:81",
+                  "nameLocation": "2622:6:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "1842:13:81",
+                  "scope": 62111,
+                  "src": "2615:13:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1295,20 +1421,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65201,
+                    "id": 62090,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65200,
+                      "id": 62089,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1842:6:81"
+                        "2615:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1842:6:81"
+                      "src": "2615:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1842:6:81",
+                    "src": "2615:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1318,13 +1444,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65205,
+                  "id": 62094,
                   "mutability": "mutable",
                   "name": "tokenB",
-                  "nameLocation": "1872:6:81",
+                  "nameLocation": "2645:6:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "1865:13:81",
+                  "scope": 62111,
+                  "src": "2638:13:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1332,20 +1458,20 @@
                     "typeString": "contract IERC20"
                   },
                   "typeName": {
-                    "id": 65204,
+                    "id": 62093,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65203,
+                      "id": 62092,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1865:6:81"
+                        "2638:6:79"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1865:6:81"
+                      "src": "2638:6:79"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1865:6:81",
+                    "src": "2638:6:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1355,13 +1481,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65207,
+                  "id": 62096,
                   "mutability": "mutable",
                   "name": "desiredAmountTokenA",
-                  "nameLocation": "1896:19:81",
+                  "nameLocation": "2669:19:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "1888:27:81",
+                  "scope": 62111,
+                  "src": "2661:27:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1369,10 +1495,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65206,
+                    "id": 62095,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1888:7:81",
+                    "src": "2661:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1382,13 +1508,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65209,
+                  "id": 62098,
                   "mutability": "mutable",
                   "name": "desiredAmountTokenB",
-                  "nameLocation": "1933:19:81",
+                  "nameLocation": "2706:19:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "1925:27:81",
+                  "scope": 62111,
+                  "src": "2698:27:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1396,10 +1522,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65208,
+                    "id": 62097,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1925:7:81",
+                    "src": "2698:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1409,13 +1535,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65211,
+                  "id": 62100,
                   "mutability": "mutable",
                   "name": "lpTokenQty",
-                  "nameLocation": "1970:10:81",
+                  "nameLocation": "2743:10:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "1962:18:81",
+                  "scope": 62111,
+                  "src": "2735:18:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1423,10 +1549,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65210,
+                    "id": 62099,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1962:7:81",
+                    "src": "2735:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1436,13 +1562,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65213,
+                  "id": 62102,
                   "mutability": "mutable",
                   "name": "recipient",
-                  "nameLocation": "1998:9:81",
+                  "nameLocation": "2771:9:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "1990:17:81",
+                  "scope": 62111,
+                  "src": "2763:17:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1450,10 +1576,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 65212,
+                    "id": 62101,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1990:7:81",
+                    "src": "2763:7:79",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1464,13 +1590,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65215,
+                  "id": 62104,
                   "mutability": "mutable",
                   "name": "deadline",
-                  "nameLocation": "2025:8:81",
+                  "nameLocation": "2798:8:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "2017:16:81",
+                  "scope": 62111,
+                  "src": "2790:16:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1478,10 +1604,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65214,
+                    "id": 62103,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2017:7:81",
+                    "src": "2790:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1491,13 +1617,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65217,
+                  "id": 62106,
                   "mutability": "mutable",
                   "name": "acceptedSlippage",
-                  "nameLocation": "2051:16:81",
+                  "nameLocation": "2824:16:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "2043:24:81",
+                  "scope": 62111,
+                  "src": "2816:24:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1505,10 +1631,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65216,
+                    "id": 62105,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2043:7:81",
+                    "src": "2816:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1517,21 +1643,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1832:241:81"
+              "src": "2605:241:79"
             },
             "returnParameters": {
-              "id": 65221,
+              "id": 62110,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65220,
+                  "id": 62109,
                   "mutability": "mutable",
                   "name": "unredeemedLpTokens",
-                  "nameLocation": "2100:18:81",
+                  "nameLocation": "2873:18:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65222,
-                  "src": "2092:26:81",
+                  "scope": 62111,
+                  "src": "2865:26:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1539,10 +1665,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65219,
+                    "id": 62108,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2092:7:81",
+                    "src": "2865:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1551,43 +1677,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2091:28:81"
+              "src": "2864:28:79"
             },
-            "scope": 65243,
+            "scope": 62146,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 65242,
+            "id": 62133,
             "nodeType": "FunctionDefinition",
-            "src": "4579:227:81",
+            "src": "3446:257:79",
             "nodes": [],
             "documentation": {
-              "id": 65223,
+              "id": 62112,
               "nodeType": "StructuredDocumentation",
-              "src": "3547:1027:81",
-              "text": " @notice Executes a token swap following a specified path of pools.\n @dev The function determines the best price for the desired output and swaps tokens accordingly.\n If the user specifies a desired output greater than what's available at the current best price,\n they'll receive the maximum possible at that best price.\n If the desired output is less than the available amount at the best price, they'll receive the exact amount they desire.\n @param path The array of tokens representing the swap path.\n @param desiredAmountOut The desired amount of the final token in the path to receive.\n @param maxPrice The maximum acceptable price for the entire path, scaled by PRECISION.\n @param recipient The address to receive the swapped tokens.\n @param deadline The time by which the swap should be completed.\n @return actualAmountOut The actual output amount of tokens received.\n @return amountInUsed The actual input amount of tokens used."
+              "src": "2899:542:79",
+              "text": " @dev Executes a token swap.\n @param path Sequence of tokens to be swapped.\n @param desiredAmountOut Desired amount of the final token.\n @param maxPrice Maximum acceptable price across the token pairs in the path.\n @param recipient Address to receive the final tokens.\n @param routingAgent Agent responsible for routing the swap.\n @param deadline Transaction deadline.\n @return actualAmountOut Actual amount of tokens received.\n @return amountInUsed Tokens spent for the swap."
             },
-            "functionSelector": "2a64b539",
+            "functionSelector": "41f12688",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "buy",
-            "nameLocation": "4588:3:81",
+            "nameLocation": "3455:3:79",
             "parameters": {
-              "id": 65236,
+              "id": 62127,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65227,
+                  "id": 62116,
                   "mutability": "mutable",
                   "name": "path",
-                  "nameLocation": "4617:4:81",
+                  "nameLocation": "3484:4:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65242,
-                  "src": "4601:20:81",
+                  "scope": 62133,
+                  "src": "3468:20:79",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1596,28 +1722,28 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 65225,
+                      "id": 62114,
                       "nodeType": "UserDefinedTypeName",
                       "pathNode": {
-                        "id": 65224,
+                        "id": 62113,
                         "name": "IERC20",
                         "nameLocations": [
-                          "4601:6:81"
+                          "3468:6:79"
                         ],
                         "nodeType": "IdentifierPath",
                         "referencedDeclaration": 48295,
-                        "src": "4601:6:81"
+                        "src": "3468:6:79"
                       },
                       "referencedDeclaration": 48295,
-                      "src": "4601:6:81",
+                      "src": "3468:6:79",
                       "typeDescriptions": {
                         "typeIdentifier": "t_contract$_IERC20_$48295",
                         "typeString": "contract IERC20"
                       }
                     },
-                    "id": 65226,
+                    "id": 62115,
                     "nodeType": "ArrayTypeName",
-                    "src": "4601:8:81",
+                    "src": "3468:8:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_contract$_IERC20_$48295_$dyn_storage_ptr",
                       "typeString": "contract IERC20[]"
@@ -1627,13 +1753,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65229,
+                  "id": 62118,
                   "mutability": "mutable",
                   "name": "desiredAmountOut",
-                  "nameLocation": "4639:16:81",
+                  "nameLocation": "3506:16:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65242,
-                  "src": "4631:24:81",
+                  "scope": 62133,
+                  "src": "3498:24:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1641,10 +1767,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65228,
+                    "id": 62117,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4631:7:81",
+                    "src": "3498:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1654,13 +1780,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65231,
+                  "id": 62120,
                   "mutability": "mutable",
                   "name": "maxPrice",
-                  "nameLocation": "4673:8:81",
+                  "nameLocation": "3540:8:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65242,
-                  "src": "4665:16:81",
+                  "scope": 62133,
+                  "src": "3532:16:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1668,10 +1794,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65230,
+                    "id": 62119,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4665:7:81",
+                    "src": "3532:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1681,13 +1807,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65233,
+                  "id": 62122,
                   "mutability": "mutable",
                   "name": "recipient",
-                  "nameLocation": "4699:9:81",
+                  "nameLocation": "3566:9:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65242,
-                  "src": "4691:17:81",
+                  "scope": 62133,
+                  "src": "3558:17:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1695,10 +1821,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 65232,
+                    "id": 62121,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4691:7:81",
+                    "src": "3558:7:79",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1709,13 +1835,41 @@
                 },
                 {
                   "constant": false,
-                  "id": 65235,
+                  "id": 62124,
+                  "mutability": "mutable",
+                  "name": "routingAgent",
+                  "nameLocation": "3593:12:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62133,
+                  "src": "3585:20:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 62123,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3585:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 62126,
                   "mutability": "mutable",
                   "name": "deadline",
-                  "nameLocation": "4726:8:81",
+                  "nameLocation": "3623:8:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65242,
-                  "src": "4718:16:81",
+                  "scope": 62133,
+                  "src": "3615:16:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1723,10 +1877,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65234,
+                    "id": 62125,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4718:7:81",
+                    "src": "3615:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1735,21 +1889,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4591:149:81"
+              "src": "3458:179:79"
             },
             "returnParameters": {
-              "id": 65241,
+              "id": 62132,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65238,
+                  "id": 62129,
                   "mutability": "mutable",
                   "name": "actualAmountOut",
-                  "nameLocation": "4767:15:81",
+                  "nameLocation": "3664:15:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65242,
-                  "src": "4759:23:81",
+                  "scope": 62133,
+                  "src": "3656:23:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1757,10 +1911,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65237,
+                    "id": 62128,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4759:7:81",
+                    "src": "3656:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1770,13 +1924,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 65240,
+                  "id": 62131,
                   "mutability": "mutable",
                   "name": "amountInUsed",
-                  "nameLocation": "4792:12:81",
+                  "nameLocation": "3689:12:79",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65242,
-                  "src": "4784:20:81",
+                  "scope": 62133,
+                  "src": "3681:20:79",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1784,10 +1938,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65239,
+                    "id": 62130,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4784:7:81",
+                    "src": "3681:7:79",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1796,10 +1950,146 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4758:47:81"
+              "src": "3655:47:79"
             },
-            "scope": 65243,
+            "scope": 62146,
             "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 62145,
+            "nodeType": "FunctionDefinition",
+            "src": "3987:137:79",
+            "nodes": [],
+            "documentation": {
+              "id": 62134,
+              "nodeType": "StructuredDocumentation",
+              "src": "3709:273:79",
+              "text": " @dev Computes input and output quantities for a token swap.\n @param path Sequence of tokens to be swapped.\n @return amountInRequired Required amount of initial tokens.\n @return amountOutMax Maximum amount of final tokens to be received."
+            },
+            "functionSelector": "63730975",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "calculateSwapAmounts",
+            "nameLocation": "3996:20:79",
+            "parameters": {
+              "id": 62139,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 62138,
+                  "mutability": "mutable",
+                  "name": "path",
+                  "nameLocation": "4042:4:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62145,
+                  "src": "4026:20:79",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_contract$_IERC20_$48295_$dyn_memory_ptr",
+                    "typeString": "contract IERC20[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 62136,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 62135,
+                        "name": "IERC20",
+                        "nameLocations": [
+                          "4026:6:79"
+                        ],
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 48295,
+                        "src": "4026:6:79"
+                      },
+                      "referencedDeclaration": 48295,
+                      "src": "4026:6:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_IERC20_$48295",
+                        "typeString": "contract IERC20"
+                      }
+                    },
+                    "id": 62137,
+                    "nodeType": "ArrayTypeName",
+                    "src": "4026:8:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_IERC20_$48295_$dyn_storage_ptr",
+                      "typeString": "contract IERC20[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4016:36:79"
+            },
+            "returnParameters": {
+              "id": 62144,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 62141,
+                  "mutability": "mutable",
+                  "name": "amountInRequired",
+                  "nameLocation": "4084:16:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62145,
+                  "src": "4076:24:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 62140,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4076:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 62143,
+                  "mutability": "mutable",
+                  "name": "amountOutMax",
+                  "nameLocation": "4110:12:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62145,
+                  "src": "4102:20:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 62142,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4102:7:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4075:48:79"
+            },
+            "scope": 62146,
+            "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
@@ -1810,29 +2100,29 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 65141,
+          "id": 62027,
           "nodeType": "StructuredDocumentation",
-          "src": "129:170:81",
-          "text": " @title IDEX\n @dev Interface for a decentralized exchange (DEX) defining essential functions for token trading, liquidity provision, and liquidity redemption."
+          "src": "129:150:79",
+          "text": " @title IDEX\n @dev Interface for a decentralized exchange (DEX) for functions like trading, liquidity provision, and liquidity redemption."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          65243
+          62146
         ],
         "name": "IDEX",
-        "nameLocation": "310:4:81",
-        "scope": 65244,
+        "nameLocation": "290:4:79",
+        "scope": 62147,
         "usedErrors": [
-          65143,
-          65145,
-          65147,
-          65149,
-          65151,
-          65153
+          62029,
+          62031,
+          62033,
+          62035,
+          62037,
+          62039
         ]
       }
     ],
     "license": "GPL-3.0-or-later"
   },
-  "id": 81
+  "id": 79
 }

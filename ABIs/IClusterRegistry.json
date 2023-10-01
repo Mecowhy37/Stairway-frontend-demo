@@ -55,7 +55,7 @@
     "initializeIfNecessary()": "ab08f044",
     "isInitialized()": "392e53cd"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"clusterIdx\",\"type\":\"uint256\"}],\"name\":\"clusters\",\"outputs\":[{\"internalType\":\"contract ICluster\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initializeIfNecessary\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isInitialized\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IClusterRegistry.sol\":\"IClusterRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d\",\"dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96\",\"dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb\",\"dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol\":{\"keccak256\":\"0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6\",\"dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"src/interfaces/ICluster.sol\":{\"keccak256\":\"0x693af53626d81d3fb2c6d442dd7ff143b3b5213379d21dcec1eb4ac1389ca88a\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://dcf7e1028affc5865aa784376aae2f625732e20198ad2968ad8cf3a6ac2e462f\",\"dweb:/ipfs/Qmab2pEPePuFxqe4UWRW8NFDxeAARWtqFwUfxeK3CXmX17\"]},\"src/interfaces/IClusterRegistry.sol\":{\"keccak256\":\"0xc09eb136978210746839423be19750f115db435571d5d75598a4335f41ff3543\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://e1873f05c3f9d9cbc9c596a8176361a77d0bf02672cafa0deaa4f5f2943441c4\",\"dweb:/ipfs/QmbcMJy3ifxSFQJMK9kPCNvwuFe3q5aHVXC76cVnJZTTTi\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"clusterIdx\",\"type\":\"uint256\"}],\"name\":\"clusters\",\"outputs\":[{\"internalType\":\"contract ICluster\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initializeIfNecessary\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isInitialized\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Specifies the interface for the ClusterRegistry contract\",\"kind\":\"dev\",\"methods\":{\"clusters(uint256)\":{\"details\":\"Fetches the Cluster contract at the specified index\",\"params\":{\"clusterIdx\":\"The index of the Cluster in the clusters array\"},\"returns\":{\"_0\":\"An ICluster interface pointing to the Cluster contract\"}},\"initializeIfNecessary()\":{\"details\":\"Initializes the ClusterRegistry if not already initialized\"},\"isInitialized()\":{\"details\":\"Checks whether the ClusterRegistry has been fully initialized\",\"returns\":{\"_0\":\"A boolean value representing the initialization status\"}}},\"title\":\"IClusterRegistry Interface\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"initializeIfNecessary()\":{\"notice\":\"This method deploys new Cluster contracts as necessary\"}},\"notice\":\"This interface defines the methods for managing and querying Cluster contracts\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IClusterRegistry.sol\":\"IClusterRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d\",\"dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96\",\"dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb\",\"dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol\":{\"keccak256\":\"0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6\",\"dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"src/interfaces/ICluster.sol\":{\"keccak256\":\"0x219ba33744f5d53803dc00bd506578550fb96c0207e11f735fd3e706312c34cc\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://5423507eddfb5f0147b951f7589916b0fc1dd62a4ba5fc36415dc34a9b053b5c\",\"dweb:/ipfs/Qmc6QvrLffWicKYucBXS5E4frfqQWWZXAiaVTfUNuiRgTU\"]},\"src/interfaces/IClusterRegistry.sol\":{\"keccak256\":\"0x757b3d4e8f07444ab9cdd82b560eb4d06e92e50c668ef0fb2eb550442f54c295\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://8181ee22ce05ac0d6295f431c2974ffc97c33cff6768aeb1c8e79ce1c1270471\",\"dweb:/ipfs/QmWW4MY4j3aSTkqNuezvKYSR2mJ84mm2WzGtMJP1dGSoGk\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -104,23 +104,46 @@
       ],
       "devdoc": {
         "kind": "dev",
-        "methods": {},
+        "methods": {
+          "clusters(uint256)": {
+            "details": "Fetches the Cluster contract at the specified index",
+            "params": {
+              "clusterIdx": "The index of the Cluster in the clusters array"
+            },
+            "returns": {
+              "_0": "An ICluster interface pointing to the Cluster contract"
+            }
+          },
+          "initializeIfNecessary()": {
+            "details": "Initializes the ClusterRegistry if not already initialized"
+          },
+          "isInitialized()": {
+            "details": "Checks whether the ClusterRegistry has been fully initialized",
+            "returns": {
+              "_0": "A boolean value representing the initialization status"
+            }
+          }
+        },
         "version": 1
       },
       "userdoc": {
         "kind": "user",
-        "methods": {},
+        "methods": {
+          "initializeIfNecessary()": {
+            "notice": "This method deploys new Cluster contracts as necessary"
+          }
+        },
         "version": 1
       }
     },
     "settings": {
       "remappings": [
-        "@openzeppelin/=lib/openzeppelin-contracts/",
-        "ds-test/=lib/forge-std/lib/ds-test/src/",
-        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-        "forge-std/=lib/forge-std/src/",
-        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-        "openzeppelin/=lib/openzeppelin-contracts/contracts/"
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
       ],
       "optimizer": {
         "enabled": true,
@@ -184,18 +207,18 @@
         "license": "MIT"
       },
       "src/interfaces/ICluster.sol": {
-        "keccak256": "0x693af53626d81d3fb2c6d442dd7ff143b3b5213379d21dcec1eb4ac1389ca88a",
+        "keccak256": "0x219ba33744f5d53803dc00bd506578550fb96c0207e11f735fd3e706312c34cc",
         "urls": [
-          "bzz-raw://dcf7e1028affc5865aa784376aae2f625732e20198ad2968ad8cf3a6ac2e462f",
-          "dweb:/ipfs/Qmab2pEPePuFxqe4UWRW8NFDxeAARWtqFwUfxeK3CXmX17"
+          "bzz-raw://5423507eddfb5f0147b951f7589916b0fc1dd62a4ba5fc36415dc34a9b053b5c",
+          "dweb:/ipfs/Qmc6QvrLffWicKYucBXS5E4frfqQWWZXAiaVTfUNuiRgTU"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/IClusterRegistry.sol": {
-        "keccak256": "0xc09eb136978210746839423be19750f115db435571d5d75598a4335f41ff3543",
+        "keccak256": "0x757b3d4e8f07444ab9cdd82b560eb4d06e92e50c668ef0fb2eb550442f54c295",
         "urls": [
-          "bzz-raw://e1873f05c3f9d9cbc9c596a8176361a77d0bf02672cafa0deaa4f5f2943441c4",
-          "dweb:/ipfs/QmbcMJy3ifxSFQJMK9kPCNvwuFe3q5aHVXC76cVnJZTTTi"
+          "bzz-raw://8181ee22ce05ac0d6295f431c2974ffc97c33cff6768aeb1c8e79ce1c1270471",
+          "dweb:/ipfs/QmWW4MY4j3aSTkqNuezvKYSR2mJ84mm2WzGtMJP1dGSoGk"
         ],
         "license": "BSL-1.1"
       }
@@ -204,13 +227,13 @@
   },
   "ast": {
     "absolutePath": "src/interfaces/IClusterRegistry.sol",
-    "id": 65138,
+    "id": 62024,
     "exportedSymbols": {
       "ICluster": [
-        65117
+        61999
       ],
       "IClusterRegistry": [
-        65137
+        62023
       ],
       "IERC165": [
         52787
@@ -229,12 +252,12 @@
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "36:326:80",
+    "src": "36:1104:78",
     "nodes": [
       {
-        "id": 65119,
+        "id": 62001,
         "nodeType": "PragmaDirective",
-        "src": "36:24:80",
+        "src": "36:24:78",
         "nodes": [],
         "literals": [
           "solidity",
@@ -244,47 +267,53 @@
         ]
       },
       {
-        "id": 65120,
+        "id": 62002,
         "nodeType": "ImportDirective",
-        "src": "62:36:80",
+        "src": "148:36:78",
         "nodes": [],
         "absolutePath": "src/interfaces/ICluster.sol",
         "file": "../interfaces/ICluster.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 65138,
-        "sourceUnit": 65118,
+        "scope": 62024,
+        "sourceUnit": 62000,
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
-        "id": 65137,
+        "id": 62023,
         "nodeType": "ContractDefinition",
-        "src": "100:261:80",
+        "src": "386:753:78",
         "nodes": [
           {
-            "id": 65128,
+            "id": 62012,
             "nodeType": "FunctionDefinition",
-            "src": "163:71:80",
+            "src": "641:71:78",
             "nodes": [],
+            "documentation": {
+              "id": 62004,
+              "nodeType": "StructuredDocumentation",
+              "src": "419:217:78",
+              "text": " @dev Fetches the Cluster contract at the specified index\n @param clusterIdx The index of the Cluster in the clusters array\n @return An ICluster interface pointing to the Cluster contract"
+            },
             "functionSelector": "919500c0",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "clusters",
-            "nameLocation": "172:8:80",
+            "nameLocation": "650:8:78",
             "parameters": {
-              "id": 65123,
+              "id": 62007,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65122,
+                  "id": 62006,
                   "mutability": "mutable",
                   "name": "clusterIdx",
-                  "nameLocation": "189:10:80",
+                  "nameLocation": "667:10:78",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65128,
-                  "src": "181:18:80",
+                  "scope": 62012,
+                  "src": "659:18:78",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -292,10 +321,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 65121,
+                    "id": 62005,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "181:7:80",
+                    "src": "659:7:78",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -304,87 +333,93 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "180:20:80"
+              "src": "658:20:78"
             },
             "returnParameters": {
-              "id": 65127,
+              "id": 62011,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65126,
+                  "id": 62010,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65128,
-                  "src": "224:8:80",
+                  "scope": 62012,
+                  "src": "702:8:78",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ICluster_$65117",
+                    "typeIdentifier": "t_contract$_ICluster_$61999",
                     "typeString": "contract ICluster"
                   },
                   "typeName": {
-                    "id": 65125,
+                    "id": 62009,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 65124,
+                      "id": 62008,
                       "name": "ICluster",
                       "nameLocations": [
-                        "224:8:80"
+                        "702:8:78"
                       ],
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 65117,
-                      "src": "224:8:80"
+                      "referencedDeclaration": 61999,
+                      "src": "702:8:78"
                     },
-                    "referencedDeclaration": 65117,
-                    "src": "224:8:80",
+                    "referencedDeclaration": 61999,
+                    "src": "702:8:78",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ICluster_$65117",
+                      "typeIdentifier": "t_contract$_ICluster_$61999",
                       "typeString": "contract ICluster"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "223:10:80"
+              "src": "701:10:78"
             },
-            "scope": 65137,
+            "scope": 62023,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 65133,
+            "id": 62018,
             "nodeType": "FunctionDefinition",
-            "src": "257:54:80",
+            "src": "878:54:78",
             "nodes": [],
+            "documentation": {
+              "id": 62013,
+              "nodeType": "StructuredDocumentation",
+              "src": "718:155:78",
+              "text": " @dev Checks whether the ClusterRegistry has been fully initialized\n @return A boolean value representing the initialization status"
+            },
             "functionSelector": "392e53cd",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "isInitialized",
-            "nameLocation": "266:13:80",
+            "nameLocation": "887:13:78",
             "parameters": {
-              "id": 65129,
+              "id": 62014,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "279:2:80"
+              "src": "900:2:78"
             },
             "returnParameters": {
-              "id": 65132,
+              "id": 62017,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65131,
+                  "id": 62016,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65133,
-                  "src": "305:4:80",
+                  "scope": 62018,
+                  "src": "926:4:78",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -392,10 +427,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 65130,
+                    "id": 62015,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "305:4:80",
+                    "src": "926:4:78",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -404,37 +439,43 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "304:6:80"
+              "src": "925:6:78"
             },
-            "scope": 65137,
+            "scope": 62023,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 65136,
+            "id": 62022,
             "nodeType": "FunctionDefinition",
-            "src": "317:42:80",
+            "src": "1095:42:78",
             "nodes": [],
+            "documentation": {
+              "id": 62019,
+              "nodeType": "StructuredDocumentation",
+              "src": "938:152:78",
+              "text": " @dev Initializes the ClusterRegistry if not already initialized\n @notice This method deploys new Cluster contracts as necessary"
+            },
             "functionSelector": "ab08f044",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "initializeIfNecessary",
-            "nameLocation": "326:21:80",
+            "nameLocation": "1104:21:78",
             "parameters": {
-              "id": 65134,
+              "id": 62020,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "347:2:80"
+              "src": "1125:2:78"
             },
             "returnParameters": {
-              "id": 65135,
+              "id": 62021,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "358:0:80"
+              "src": "1136:0:78"
             },
-            "scope": 65137,
+            "scope": 62023,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -445,17 +486,23 @@
         "canonicalName": "IClusterRegistry",
         "contractDependencies": [],
         "contractKind": "interface",
+        "documentation": {
+          "id": 62003,
+          "nodeType": "StructuredDocumentation",
+          "src": "186:199:78",
+          "text": " @title IClusterRegistry Interface\n @dev Specifies the interface for the ClusterRegistry contract\n @notice This interface defines the methods for managing and querying Cluster contracts"
+        },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          65137
+          62023
         ],
         "name": "IClusterRegistry",
-        "nameLocation": "110:16:80",
-        "scope": 65138,
+        "nameLocation": "396:16:78",
+        "scope": 62024,
         "usedErrors": []
       }
     ],
     "license": "BSL-1.1"
   },
-  "id": 80
+  "id": 78
 }
