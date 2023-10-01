@@ -1,0 +1,748 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_proposalId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum IGovernorProxy.VoteType",
+          "name": "_vote",
+          "type": "uint8"
+        }
+      ],
+      "name": "castVote",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_proposalId",
+          "type": "uint256"
+        }
+      ],
+      "name": "commitVotes",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "targets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "calldatas",
+          "type": "bytes[]"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        }
+      ],
+      "name": "createProposal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_proposalId",
+          "type": "uint256"
+        }
+      ],
+      "name": "registerProposal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "castVote(uint256,uint8)": "56781388",
+    "commitVotes(uint256)": "20ca8488",
+    "createProposal(address[],uint256[],bytes[],string)": "280e25fa",
+    "registerProposal(uint256)": "aa67fab4"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_proposalId\",\"type\":\"uint256\"},{\"internalType\":\"enum IGovernorProxy.VoteType\",\"name\":\"_vote\",\"type\":\"uint8\"}],\"name\":\"castVote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_proposalId\",\"type\":\"uint256\"}],\"name\":\"commitVotes\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"targets\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"values\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes[]\",\"name\":\"calldatas\",\"type\":\"bytes[]\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"}],\"name\":\"createProposal\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_proposalId\",\"type\":\"uint256\"}],\"name\":\"registerProposal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IGovernorProxy.sol\":\"IGovernorProxy\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":flexible-voting/=lib/flexible-voting/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0xa52d593ff06a2353f78fa149da31f2ca94f03d1eff99bde41977fa2fe985a92f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4d275abef31363d629e2a1a06f439bb7d2f26f66545ddb61f74b174de6f034a8\",\"dweb:/ipfs/QmPfjkyNcfiiZnPtYCvGfSHikbYzZxut3D4pBhBZ2VwfoT\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"src/interfaces/IGovernorProxy.sol\":{\"keccak256\":\"0x8e58c433fe0cf766f89531e10d796ef42cfccd97312df8a38964ed81809e1858\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://a701376c5a6c4c415ea8b3aa0e65387ca08643a57065a7695376a4c0672baf6d\",\"dweb:/ipfs/QmVLyhZP7jBqDQRYQ1pR9KvcFsu1AXLWTekGW8GnrHVoND\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.16+commit.07a7930e"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_proposalId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum IGovernorProxy.VoteType",
+              "name": "_vote",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "castVote"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_proposalId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "commitVotes"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address[]",
+              "name": "targets",
+              "type": "address[]"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "values",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "bytes[]",
+              "name": "calldatas",
+              "type": "bytes[]"
+            },
+            {
+              "internalType": "string",
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "createProposal",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_proposalId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "registerProposal"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":flexible-voting/=lib/flexible-voting/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/interfaces/IGovernorProxy.sol": "IGovernorProxy"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol": {
+        "keccak256": "0xa52d593ff06a2353f78fa149da31f2ca94f03d1eff99bde41977fa2fe985a92f",
+        "urls": [
+          "bzz-raw://4d275abef31363d629e2a1a06f439bb7d2f26f66545ddb61f74b174de6f034a8",
+          "dweb:/ipfs/QmPfjkyNcfiiZnPtYCvGfSHikbYzZxut3D4pBhBZ2VwfoT"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol": {
+        "keccak256": "0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b",
+        "urls": [
+          "bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d",
+          "dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
+        "keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+        "urls": [
+          "bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+          "dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+        ],
+        "license": "MIT"
+      },
+      "src/interfaces/IGovernorProxy.sol": {
+        "keccak256": "0x8e58c433fe0cf766f89531e10d796ef42cfccd97312df8a38964ed81809e1858",
+        "urls": [
+          "bzz-raw://a701376c5a6c4c415ea8b3aa0e65387ca08643a57065a7695376a4c0672baf6d",
+          "dweb:/ipfs/QmVLyhZP7jBqDQRYQ1pR9KvcFsu1AXLWTekGW8GnrHVoND"
+        ],
+        "license": "GPL-3.0-or-later"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/interfaces/IGovernorProxy.sol",
+    "id": 44181,
+    "exportedSymbols": {
+      "ERC165": [
+        36861
+      ],
+      "IERC165": [
+        36873
+      ],
+      "IGovernor": [
+        29038
+      ],
+      "IGovernorProxy": [
+        44180
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "45:574:71",
+    "nodes": [
+      {
+        "id": 44140,
+        "nodeType": "PragmaDirective",
+        "src": "45:23:71",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".16"
+        ]
+      },
+      {
+        "id": 44141,
+        "nodeType": "ImportDirective",
+        "src": "70:58:71",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol",
+        "file": "@openzeppelin/contracts/governance/IGovernor.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 44181,
+        "sourceUnit": 29039,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 44180,
+        "nodeType": "ContractDefinition",
+        "src": "130:488:71",
+        "nodes": [
+          {
+            "id": 44145,
+            "nodeType": "EnumDefinition",
+            "src": "161:67:71",
+            "nodes": [],
+            "canonicalName": "IGovernorProxy.VoteType",
+            "members": [
+              {
+                "id": 44142,
+                "name": "Against",
+                "nameLocation": "185:7:71",
+                "nodeType": "EnumValue",
+                "src": "185:7:71"
+              },
+              {
+                "id": 44143,
+                "name": "For",
+                "nameLocation": "202:3:71",
+                "nodeType": "EnumValue",
+                "src": "202:3:71"
+              },
+              {
+                "id": 44144,
+                "name": "Abstain",
+                "nameLocation": "215:7:71",
+                "nodeType": "EnumValue",
+                "src": "215:7:71"
+              }
+            ],
+            "name": "VoteType",
+            "nameLocation": "166:8:71"
+          },
+          {
+            "id": 44161,
+            "nodeType": "FunctionDefinition",
+            "src": "234:193:71",
+            "nodes": [],
+            "functionSelector": "280e25fa",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "createProposal",
+            "nameLocation": "243:14:71",
+            "parameters": {
+              "id": 44157,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44148,
+                  "mutability": "mutable",
+                  "name": "targets",
+                  "nameLocation": "284:7:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44161,
+                  "src": "267:24:71",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 44146,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "267:7:71",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 44147,
+                    "nodeType": "ArrayTypeName",
+                    "src": "267:9:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44151,
+                  "mutability": "mutable",
+                  "name": "values",
+                  "nameLocation": "318:6:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44161,
+                  "src": "301:23:71",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_memory_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 44149,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "301:7:71",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 44150,
+                    "nodeType": "ArrayTypeName",
+                    "src": "301:9:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44154,
+                  "mutability": "mutable",
+                  "name": "calldatas",
+                  "nameLocation": "349:9:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44161,
+                  "src": "334:24:71",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes_memory_ptr_$dyn_memory_ptr",
+                    "typeString": "bytes[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 44152,
+                      "name": "bytes",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "334:5:71",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes_storage_ptr",
+                        "typeString": "bytes"
+                      }
+                    },
+                    "id": 44153,
+                    "nodeType": "ArrayTypeName",
+                    "src": "334:7:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
+                      "typeString": "bytes[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44156,
+                  "mutability": "mutable",
+                  "name": "description",
+                  "nameLocation": "382:11:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44161,
+                  "src": "368:25:71",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 44155,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "368:6:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "257:142:71"
+            },
+            "returnParameters": {
+              "id": 44160,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44159,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44161,
+                  "src": "418:7:71",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44158,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "418:7:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "417:9:71"
+            },
+            "scope": 44180,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44166,
+            "nodeType": "FunctionDefinition",
+            "src": "433:56:71",
+            "nodes": [],
+            "functionSelector": "aa67fab4",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "registerProposal",
+            "nameLocation": "442:16:71",
+            "parameters": {
+              "id": 44164,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44163,
+                  "mutability": "mutable",
+                  "name": "_proposalId",
+                  "nameLocation": "467:11:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44166,
+                  "src": "459:19:71",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44162,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "459:7:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "458:21:71"
+            },
+            "returnParameters": {
+              "id": 44165,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "488:0:71"
+            },
+            "scope": 44180,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44174,
+            "nodeType": "FunctionDefinition",
+            "src": "495:64:71",
+            "nodes": [],
+            "functionSelector": "56781388",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "castVote",
+            "nameLocation": "504:8:71",
+            "parameters": {
+              "id": 44172,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44168,
+                  "mutability": "mutable",
+                  "name": "_proposalId",
+                  "nameLocation": "521:11:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44174,
+                  "src": "513:19:71",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44167,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "513:7:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44171,
+                  "mutability": "mutable",
+                  "name": "_vote",
+                  "nameLocation": "543:5:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44174,
+                  "src": "534:14:71",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_VoteType_$44145",
+                    "typeString": "enum IGovernorProxy.VoteType"
+                  },
+                  "typeName": {
+                    "id": 44170,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44169,
+                      "name": "VoteType",
+                      "nameLocations": [
+                        "534:8:71"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 44145,
+                      "src": "534:8:71"
+                    },
+                    "referencedDeclaration": 44145,
+                    "src": "534:8:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_VoteType_$44145",
+                      "typeString": "enum IGovernorProxy.VoteType"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "512:37:71"
+            },
+            "returnParameters": {
+              "id": 44173,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "558:0:71"
+            },
+            "scope": 44180,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44179,
+            "nodeType": "FunctionDefinition",
+            "src": "565:51:71",
+            "nodes": [],
+            "functionSelector": "20ca8488",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "commitVotes",
+            "nameLocation": "574:11:71",
+            "parameters": {
+              "id": 44177,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44176,
+                  "mutability": "mutable",
+                  "name": "_proposalId",
+                  "nameLocation": "594:11:71",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44179,
+                  "src": "586:19:71",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44175,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "586:7:71",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "585:21:71"
+            },
+            "returnParameters": {
+              "id": 44178,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "615:0:71"
+            },
+            "scope": 44180,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IGovernorProxy",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          44180
+        ],
+        "name": "IGovernorProxy",
+        "nameLocation": "140:14:71",
+        "scope": 44181,
+        "usedErrors": []
+      }
+    ],
+    "license": "GPL-3.0-or-later"
+  },
+  "id": 71
+}

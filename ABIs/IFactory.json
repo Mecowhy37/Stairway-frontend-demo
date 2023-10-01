@@ -1,0 +1,1764 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "contract IERC20",
+          "name": "thisToken",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "contract IERC20",
+          "name": "thatToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IPool",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "name": "PoolCreated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "PRIVILEGED_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "thisToken",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IERC20",
+          "name": "thatToken",
+          "type": "address"
+        }
+      ],
+      "name": "createPool",
+      "outputs": [
+        {
+          "internalType": "contract IPool",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "developmentFundAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllPools",
+      "outputs": [
+        {
+          "internalType": "contract IPool[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "thisToken",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IERC20",
+          "name": "thatToken",
+          "type": "address"
+        }
+      ],
+      "name": "getPool",
+      "outputs": [
+        {
+          "internalType": "contract IPool",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "grantPrivilege",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "revokePrivilege",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "routingAgentShare",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_developmentFundAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setDevelopmentFundAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_routingAgentShare",
+          "type": "uint256"
+        }
+      ],
+      "name": "setRoutingAgentShare",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_upkeepAllocation",
+          "type": "uint256"
+        }
+      ],
+      "name": "setUpkeepAllocation",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "upkeepAllocation",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "PRIVILEGED_ROLE()": "93fb8f76",
+    "createPool(address,address)": "e3433615",
+    "developmentFundAddress()": "b88fd16e",
+    "getAllPools()": "d88ff1f4",
+    "getPool(address,address)": "531aa03e",
+    "grantPrivilege(address)": "42b735e6",
+    "revokePrivilege(address)": "6fe99db2",
+    "routingAgentShare()": "02f1ce01",
+    "setDevelopmentFundAddress(address)": "b2461417",
+    "setRoutingAgentShare(uint256)": "d0e34b9f",
+    "setUpkeepAllocation(uint256)": "ba7b5fd0",
+    "upkeepAllocation()": "c614368e"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"contract IERC20\",\"name\":\"thisToken\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"contract IERC20\",\"name\":\"thatToken\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"contract IPool\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"PoolCreated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"PRIVILEGED_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"thisToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"thatToken\",\"type\":\"address\"}],\"name\":\"createPool\",\"outputs\":[{\"internalType\":\"contract IPool\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"developmentFundAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllPools\",\"outputs\":[{\"internalType\":\"contract IPool[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"thisToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"thatToken\",\"type\":\"address\"}],\"name\":\"getPool\",\"outputs\":[{\"internalType\":\"contract IPool\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantPrivilege\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokePrivilege\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"routingAgentShare\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_developmentFundAddress\",\"type\":\"address\"}],\"name\":\"setDevelopmentFundAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_routingAgentShare\",\"type\":\"uint256\"}],\"name\":\"setRoutingAgentShare\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_upkeepAllocation\",\"type\":\"uint256\"}],\"name\":\"setUpkeepAllocation\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upkeepAllocation\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Factory contract that deploys and keeps track of all pools and their addresses\",\"kind\":\"dev\",\"methods\":{\"createPool(address,address)\":{\"details\":\"Creates a new Pool contract for the provided token pair and stores the pool address.\",\"params\":{\"thatToken\":\"The address of the second token in the pool.\",\"thisToken\":\"The address of the first token in the pool.\"},\"returns\":{\"_0\":\"The address of the newly created Pool contract.\"}},\"getAllPools()\":{\"details\":\"Returns the list of all pool addresses.\",\"returns\":{\"_0\":\"An array containing the addresses of all pools.\"}},\"grantPrivilege(address)\":{\"details\":\"Can only be called by the owner.\",\"params\":{\"account\":\"The address to grant the privileged role.\"}},\"revokePrivilege(address)\":{\"details\":\"This function can only be called by the owner.\",\"params\":{\"account\":\"The address of the account to have its PRIVILEGED_ROLE revoked.\"}},\"setDevelopmentFundAddress(address)\":{\"details\":\"Sets the development fund address to the provided address. Can only be called by the owner of the contract.\",\"params\":{\"_developmentFundAddress\":\"The new address to be set as the development fund address.\"}},\"setRoutingAgentShare(uint256)\":{\"details\":\"Sets the share of the routing agent in the form of a percentage (using full precision, e.g., 10 ** 18 = 100%). Can only be called by the owner of the contract. Routing agent share cannot exceed 100% (expressed as 10 ** 18 for full precision).\",\"params\":{\"_routingAgentShare\":\"The new routing agent share amount (using full precision).\"}},\"setUpkeepAllocation(uint256)\":{\"details\":\"Sets the allocation for the upkeep of the protocol in the form of a percentage (using full precision, e.g., 10 ** 18 = 100%). Can only be called by the owner of the contract. Allocation cannot exceed 100% (expressed as 10 ** 18 for full precision).\",\"params\":{\"_upkeepAllocation\":\"The new upkeep allocation (using full precision).\"}}},\"title\":\"Factory\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"grantPrivilege(address)\":{\"notice\":\"Grants privilege to the specified account.\"},\"revokePrivilege(address)\":{\"notice\":\"Revokes the PRIVILEGED_ROLE from the specified account.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IFactory.sol\":\"IFactory\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":flexible-voting/=lib/flexible-voting/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0xa52d593ff06a2353f78fa149da31f2ca94f03d1eff99bde41977fa2fe985a92f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4d275abef31363d629e2a1a06f439bb7d2f26f66545ddb61f74b174de6f034a8\",\"dweb:/ipfs/QmPfjkyNcfiiZnPtYCvGfSHikbYzZxut3D4pBhBZ2VwfoT\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0xf5324a55ee9c0b4a840ea57c055ac9d046f88986ceef567e1cf68113e46a79c0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f41fe2bddc33c17ccccfc25379b1869354e9ee62d8b28d2acc95229eeba37a86\",\"dweb:/ipfs/Qmb6SF2XL2uSvH6k5JSjtx4Xoqz41ACkhdAhtbW1Yh3RiY\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34\",\"dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol\":{\"keccak256\":\"0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd\",\"dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"src/interfaces/IFactory.sol\":{\"keccak256\":\"0x9364b6983e159ebec20ffa3d08c340f2a9fd3900a9f374b5419d76b1d4dbee18\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://fdb86076fc2d799ddd14f1ec6dbd2a5f8e3135aabbdce2abdf8753963b2bce51\",\"dweb:/ipfs/QmVMu42N1Dq31Qkb9BFmrQx4iMmZ3e3ZtuCoH8DmSZSXE7\"]},\"src/interfaces/ILPToken.sol\":{\"keccak256\":\"0x80da8a452a4ea032813cb66ada33361d2600b6b8fcbe223d118f2c07b2ff5a1c\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://69b7c93551336048aed6216ab95f453953253fd7b654f4b4ef54273e18e3ed5e\",\"dweb:/ipfs/QmWW83nYTAEBTtf3SQHoJYvry42joC2DprW3MPhAxCRCZF\"]},\"src/interfaces/IPool.sol\":{\"keccak256\":\"0x66989357228fb04ef48c16664c02b32ebd49175765589899722b7240af0fac15\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://e228280bef41d4423afdf40a058e88fbc0f2a938be44344a50bb5b20fa4aa4f2\",\"dweb:/ipfs/QmYMsZM15on278E6P7EydVhA9tjXDu5pWDSqhk9sW2SZWt\"]},\"src/interfaces/ITokenManager.sol\":{\"keccak256\":\"0x9f49b8172c0e2b9e917837a97e73e3935a57fb2b65fbf26d117c37e391d10d5e\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://68ed4b9c51d8a33014f66ae5ec24e9c0386735a9bbc9ae51a8893a98839d89f2\",\"dweb:/ipfs/QmNcidWmNob8DoU4UchesPk6fX1BaasDNdijDon4He83Ay\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.16+commit.07a7930e"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "thisToken",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "contract IERC20",
+              "name": "thatToken",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "contract IPool",
+              "name": "pool",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "PoolCreated",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "PRIVILEGED_ROLE",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "thisToken",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IERC20",
+              "name": "thatToken",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "createPool",
+          "outputs": [
+            {
+              "internalType": "contract IPool",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "developmentFundAddress",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getAllPools",
+          "outputs": [
+            {
+              "internalType": "contract IPool[]",
+              "name": "",
+              "type": "address[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IERC20",
+              "name": "thisToken",
+              "type": "address"
+            },
+            {
+              "internalType": "contract IERC20",
+              "name": "thatToken",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getPool",
+          "outputs": [
+            {
+              "internalType": "contract IPool",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "grantPrivilege"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "revokePrivilege"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "routingAgentShare",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_developmentFundAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setDevelopmentFundAddress"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_routingAgentShare",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setRoutingAgentShare"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_upkeepAllocation",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "setUpkeepAllocation"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "upkeepAllocation",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "createPool(address,address)": {
+            "details": "Creates a new Pool contract for the provided token pair and stores the pool address.",
+            "params": {
+              "thatToken": "The address of the second token in the pool.",
+              "thisToken": "The address of the first token in the pool."
+            },
+            "returns": {
+              "_0": "The address of the newly created Pool contract."
+            }
+          },
+          "getAllPools()": {
+            "details": "Returns the list of all pool addresses.",
+            "returns": {
+              "_0": "An array containing the addresses of all pools."
+            }
+          },
+          "grantPrivilege(address)": {
+            "details": "Can only be called by the owner.",
+            "params": {
+              "account": "The address to grant the privileged role."
+            }
+          },
+          "revokePrivilege(address)": {
+            "details": "This function can only be called by the owner.",
+            "params": {
+              "account": "The address of the account to have its PRIVILEGED_ROLE revoked."
+            }
+          },
+          "setDevelopmentFundAddress(address)": {
+            "details": "Sets the development fund address to the provided address. Can only be called by the owner of the contract.",
+            "params": {
+              "_developmentFundAddress": "The new address to be set as the development fund address."
+            }
+          },
+          "setRoutingAgentShare(uint256)": {
+            "details": "Sets the share of the routing agent in the form of a percentage (using full precision, e.g., 10 ** 18 = 100%). Can only be called by the owner of the contract. Routing agent share cannot exceed 100% (expressed as 10 ** 18 for full precision).",
+            "params": {
+              "_routingAgentShare": "The new routing agent share amount (using full precision)."
+            }
+          },
+          "setUpkeepAllocation(uint256)": {
+            "details": "Sets the allocation for the upkeep of the protocol in the form of a percentage (using full precision, e.g., 10 ** 18 = 100%). Can only be called by the owner of the contract. Allocation cannot exceed 100% (expressed as 10 ** 18 for full precision).",
+            "params": {
+              "_upkeepAllocation": "The new upkeep allocation (using full precision)."
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "grantPrivilege(address)": {
+            "notice": "Grants privilege to the specified account."
+          },
+          "revokePrivilege(address)": {
+            "notice": "Revokes the PRIVILEGED_ROLE from the specified account."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":flexible-voting/=lib/flexible-voting/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/interfaces/IFactory.sol": "IFactory"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol": {
+        "keccak256": "0xa52d593ff06a2353f78fa149da31f2ca94f03d1eff99bde41977fa2fe985a92f",
+        "urls": [
+          "bzz-raw://4d275abef31363d629e2a1a06f439bb7d2f26f66545ddb61f74b174de6f034a8",
+          "dweb:/ipfs/QmPfjkyNcfiiZnPtYCvGfSHikbYzZxut3D4pBhBZ2VwfoT"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol": {
+        "keccak256": "0xf5324a55ee9c0b4a840ea57c055ac9d046f88986ceef567e1cf68113e46a79c0",
+        "urls": [
+          "bzz-raw://f41fe2bddc33c17ccccfc25379b1869354e9ee62d8b28d2acc95229eeba37a86",
+          "dweb:/ipfs/Qmb6SF2XL2uSvH6k5JSjtx4Xoqz41ACkhdAhtbW1Yh3RiY"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+        "keccak256": "0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b",
+        "urls": [
+          "bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34",
+          "dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+        "keccak256": "0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca",
+        "urls": [
+          "bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd",
+          "dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol": {
+        "keccak256": "0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b",
+        "urls": [
+          "bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d",
+          "dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
+        "keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+        "urls": [
+          "bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+          "dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+        ],
+        "license": "MIT"
+      },
+      "src/interfaces/IFactory.sol": {
+        "keccak256": "0x9364b6983e159ebec20ffa3d08c340f2a9fd3900a9f374b5419d76b1d4dbee18",
+        "urls": [
+          "bzz-raw://fdb86076fc2d799ddd14f1ec6dbd2a5f8e3135aabbdce2abdf8753963b2bce51",
+          "dweb:/ipfs/QmVMu42N1Dq31Qkb9BFmrQx4iMmZ3e3ZtuCoH8DmSZSXE7"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/interfaces/ILPToken.sol": {
+        "keccak256": "0x80da8a452a4ea032813cb66ada33361d2600b6b8fcbe223d118f2c07b2ff5a1c",
+        "urls": [
+          "bzz-raw://69b7c93551336048aed6216ab95f453953253fd7b654f4b4ef54273e18e3ed5e",
+          "dweb:/ipfs/QmWW83nYTAEBTtf3SQHoJYvry42joC2DprW3MPhAxCRCZF"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/interfaces/IPool.sol": {
+        "keccak256": "0x66989357228fb04ef48c16664c02b32ebd49175765589899722b7240af0fac15",
+        "urls": [
+          "bzz-raw://e228280bef41d4423afdf40a058e88fbc0f2a938be44344a50bb5b20fa4aa4f2",
+          "dweb:/ipfs/QmYMsZM15on278E6P7EydVhA9tjXDu5pWDSqhk9sW2SZWt"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/interfaces/ITokenManager.sol": {
+        "keccak256": "0x9f49b8172c0e2b9e917837a97e73e3935a57fb2b65fbf26d117c37e391d10d5e",
+        "urls": [
+          "bzz-raw://68ed4b9c51d8a33014f66ae5ec24e9c0386735a9bbc9ae51a8893a98839d89f2",
+          "dweb:/ipfs/QmNcidWmNob8DoU4UchesPk6fX1BaasDNdijDon4He83Ay"
+        ],
+        "license": "BSL-1.1"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/interfaces/IFactory.sol",
+    "id": 44139,
+    "exportedSymbols": {
+      "ERC165": [
+        36861
+      ],
+      "IERC165": [
+        36873
+      ],
+      "IERC20": [
+        32862
+      ],
+      "IERC20Metadata": [
+        33629
+      ],
+      "IFactory": [
+        44138
+      ],
+      "IGovernor": [
+        29038
+      ],
+      "ILPToken": [
+        44213
+      ],
+      "IPool": [
+        44348
+      ],
+      "ITokenManager": [
+        44419
+      ],
+      "IVotes": [
+        32022
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "45:4670:70",
+    "nodes": [
+      {
+        "id": 44039,
+        "nodeType": "PragmaDirective",
+        "src": "45:23:70",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".16"
+        ]
+      },
+      {
+        "id": 44040,
+        "nodeType": "ImportDirective",
+        "src": "70:33:70",
+        "nodes": [],
+        "absolutePath": "src/interfaces/IPool.sol",
+        "file": "../interfaces/IPool.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 44139,
+        "sourceUnit": 44349,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 44041,
+        "nodeType": "ImportDirective",
+        "src": "147:56:70",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
+        "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 44139,
+        "sourceUnit": 32863,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 44042,
+        "nodeType": "ImportDirective",
+        "src": "204:58:70",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol",
+        "file": "@openzeppelin/contracts/governance/IGovernor.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 44139,
+        "sourceUnit": 29039,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 44138,
+        "nodeType": "ContractDefinition",
+        "src": "377:4337:70",
+        "nodes": [
+          {
+            "id": 44054,
+            "nodeType": "EventDefinition",
+            "src": "477:82:70",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "9c5d829b9b23efc461f9aeef91979ec04bb903feb3bee4f26d22114abfc7335b",
+            "name": "PoolCreated",
+            "nameLocation": "483:11:70",
+            "parameters": {
+              "id": 44053,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44046,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "thisToken",
+                  "nameLocation": "510:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44054,
+                  "src": "495:24:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$32862",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 44045,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44044,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "495:6:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 32862,
+                      "src": "495:6:70"
+                    },
+                    "referencedDeclaration": 32862,
+                    "src": "495:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$32862",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44049,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "thatToken",
+                  "nameLocation": "536:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44054,
+                  "src": "521:24:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$32862",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 44048,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44047,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "521:6:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 32862,
+                      "src": "521:6:70"
+                    },
+                    "referencedDeclaration": 32862,
+                    "src": "521:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$32862",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44052,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "pool",
+                  "nameLocation": "553:4:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44054,
+                  "src": "547:10:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IPool_$44348",
+                    "typeString": "contract IPool"
+                  },
+                  "typeName": {
+                    "id": 44051,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44050,
+                      "name": "IPool",
+                      "nameLocations": [
+                        "547:5:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 44348,
+                      "src": "547:5:70"
+                    },
+                    "referencedDeclaration": 44348,
+                    "src": "547:5:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IPool_$44348",
+                      "typeString": "contract IPool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "494:64:70"
+            }
+          },
+          {
+            "id": 44059,
+            "nodeType": "FunctionDefinition",
+            "src": "820:59:70",
+            "nodes": [],
+            "functionSelector": "93fb8f76",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "PRIVILEGED_ROLE",
+            "nameLocation": "829:15:70",
+            "parameters": {
+              "id": 44055,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "844:2:70"
+            },
+            "returnParameters": {
+              "id": 44058,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44057,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44059,
+                  "src": "870:7:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 44056,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "870:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "869:9:70"
+            },
+            "scope": 44138,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44064,
+            "nodeType": "FunctionDefinition",
+            "src": "937:66:70",
+            "nodes": [],
+            "functionSelector": "b88fd16e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "developmentFundAddress",
+            "nameLocation": "946:22:70",
+            "parameters": {
+              "id": 44060,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "968:2:70"
+            },
+            "returnParameters": {
+              "id": 44063,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44062,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44064,
+                  "src": "994:7:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 44061,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "994:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "993:9:70"
+            },
+            "scope": 44138,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44069,
+            "nodeType": "FunctionDefinition",
+            "src": "1171:60:70",
+            "nodes": [],
+            "functionSelector": "c614368e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "upkeepAllocation",
+            "nameLocation": "1180:16:70",
+            "parameters": {
+              "id": 44065,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1196:2:70"
+            },
+            "returnParameters": {
+              "id": 44068,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44067,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44069,
+                  "src": "1222:7:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44066,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1222:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1221:9:70"
+            },
+            "scope": 44138,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44074,
+            "nodeType": "FunctionDefinition",
+            "src": "1358:61:70",
+            "nodes": [],
+            "functionSelector": "02f1ce01",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "routingAgentShare",
+            "nameLocation": "1367:17:70",
+            "parameters": {
+              "id": 44070,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1384:2:70"
+            },
+            "returnParameters": {
+              "id": 44073,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44072,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44074,
+                  "src": "1410:7:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44071,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1410:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1409:9:70"
+            },
+            "scope": 44138,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44086,
+            "nodeType": "FunctionDefinition",
+            "src": "1504:83:70",
+            "nodes": [],
+            "functionSelector": "531aa03e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPool",
+            "nameLocation": "1513:7:70",
+            "parameters": {
+              "id": 44081,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44077,
+                  "mutability": "mutable",
+                  "name": "thisToken",
+                  "nameLocation": "1528:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44086,
+                  "src": "1521:16:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$32862",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 44076,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44075,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1521:6:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 32862,
+                      "src": "1521:6:70"
+                    },
+                    "referencedDeclaration": 32862,
+                    "src": "1521:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$32862",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44080,
+                  "mutability": "mutable",
+                  "name": "thatToken",
+                  "nameLocation": "1546:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44086,
+                  "src": "1539:16:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$32862",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 44079,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44078,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "1539:6:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 32862,
+                      "src": "1539:6:70"
+                    },
+                    "referencedDeclaration": 32862,
+                    "src": "1539:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$32862",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1520:36:70"
+            },
+            "returnParameters": {
+              "id": 44085,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44084,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44086,
+                  "src": "1580:5:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IPool_$44348",
+                    "typeString": "contract IPool"
+                  },
+                  "typeName": {
+                    "id": 44083,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44082,
+                      "name": "IPool",
+                      "nameLocations": [
+                        "1580:5:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 44348,
+                      "src": "1580:5:70"
+                    },
+                    "referencedDeclaration": 44348,
+                    "src": "1580:5:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IPool_$44348",
+                      "typeString": "contract IPool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1579:7:70"
+            },
+            "scope": 44138,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44092,
+            "nodeType": "FunctionDefinition",
+            "src": "1950:50:70",
+            "nodes": [],
+            "documentation": {
+              "id": 44087,
+              "nodeType": "StructuredDocumentation",
+              "src": "1767:178:70",
+              "text": " @notice Grants privilege to the specified account.\n @param account The address to grant the privileged role.\n @dev Can only be called by the owner."
+            },
+            "functionSelector": "42b735e6",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "grantPrivilege",
+            "nameLocation": "1959:14:70",
+            "parameters": {
+              "id": 44090,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44089,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "1982:7:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44092,
+                  "src": "1974:15:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 44088,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1974:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1973:17:70"
+            },
+            "returnParameters": {
+              "id": 44091,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1999:0:70"
+            },
+            "scope": 44138,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44098,
+            "nodeType": "FunctionDefinition",
+            "src": "2238:51:70",
+            "nodes": [],
+            "documentation": {
+              "id": 44093,
+              "nodeType": "StructuredDocumentation",
+              "src": "2006:227:70",
+              "text": " @notice Revokes the PRIVILEGED_ROLE from the specified account.\n @param account The address of the account to have its PRIVILEGED_ROLE revoked.\n @dev This function can only be called by the owner."
+            },
+            "functionSelector": "6fe99db2",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "revokePrivilege",
+            "nameLocation": "2247:15:70",
+            "parameters": {
+              "id": 44096,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44095,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "2271:7:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44098,
+                  "src": "2263:15:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 44094,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2263:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2262:17:70"
+            },
+            "returnParameters": {
+              "id": 44097,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2288:0:70"
+            },
+            "scope": 44138,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44111,
+            "nodeType": "FunctionDefinition",
+            "src": "2608:81:70",
+            "nodes": [],
+            "documentation": {
+              "id": 44099,
+              "nodeType": "StructuredDocumentation",
+              "src": "2295:308:70",
+              "text": " @dev Creates a new Pool contract for the provided token pair and stores the pool address.\n @param thisToken The address of the first token in the pool.\n @param thatToken The address of the second token in the pool.\n @return The address of the newly created Pool contract."
+            },
+            "functionSelector": "e3433615",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "createPool",
+            "nameLocation": "2617:10:70",
+            "parameters": {
+              "id": 44106,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44102,
+                  "mutability": "mutable",
+                  "name": "thisToken",
+                  "nameLocation": "2635:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44111,
+                  "src": "2628:16:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$32862",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 44101,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44100,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "2628:6:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 32862,
+                      "src": "2628:6:70"
+                    },
+                    "referencedDeclaration": 32862,
+                    "src": "2628:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$32862",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 44105,
+                  "mutability": "mutable",
+                  "name": "thatToken",
+                  "nameLocation": "2653:9:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44111,
+                  "src": "2646:16:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC20_$32862",
+                    "typeString": "contract IERC20"
+                  },
+                  "typeName": {
+                    "id": 44104,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44103,
+                      "name": "IERC20",
+                      "nameLocations": [
+                        "2646:6:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 32862,
+                      "src": "2646:6:70"
+                    },
+                    "referencedDeclaration": 32862,
+                    "src": "2646:6:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC20_$32862",
+                      "typeString": "contract IERC20"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2627:36:70"
+            },
+            "returnParameters": {
+              "id": 44110,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44109,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44111,
+                  "src": "2682:5:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IPool_$44348",
+                    "typeString": "contract IPool"
+                  },
+                  "typeName": {
+                    "id": 44108,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 44107,
+                      "name": "IPool",
+                      "nameLocations": [
+                        "2682:5:70"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 44348,
+                      "src": "2682:5:70"
+                    },
+                    "referencedDeclaration": 44348,
+                    "src": "2682:5:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IPool_$44348",
+                      "typeString": "contract IPool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2681:7:70"
+            },
+            "scope": 44138,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44117,
+            "nodeType": "FunctionDefinition",
+            "src": "2935:77:70",
+            "nodes": [],
+            "documentation": {
+              "id": 44112,
+              "nodeType": "StructuredDocumentation",
+              "src": "2695:235:70",
+              "text": " @dev Sets the development fund address to the provided address.\n Can only be called by the owner of the contract.\n @param _developmentFundAddress The new address to be set as the development fund address."
+            },
+            "functionSelector": "b2461417",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setDevelopmentFundAddress",
+            "nameLocation": "2944:25:70",
+            "parameters": {
+              "id": 44115,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44114,
+                  "mutability": "mutable",
+                  "name": "_developmentFundAddress",
+                  "nameLocation": "2978:23:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44117,
+                  "src": "2970:31:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 44113,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2970:7:70",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2969:33:70"
+            },
+            "returnParameters": {
+              "id": 44116,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3011:0:70"
+            },
+            "scope": 44138,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44123,
+            "nodeType": "FunctionDefinition",
+            "src": "3391:65:70",
+            "nodes": [],
+            "documentation": {
+              "id": 44118,
+              "nodeType": "StructuredDocumentation",
+              "src": "3018:368:70",
+              "text": " @dev Sets the allocation for the upkeep of the protocol in the form of a percentage (using full precision, e.g., 10 ** 18 = 100%).\n Can only be called by the owner of the contract.\n Allocation cannot exceed 100% (expressed as 10 ** 18 for full precision).\n @param _upkeepAllocation The new upkeep allocation (using full precision)."
+            },
+            "functionSelector": "ba7b5fd0",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setUpkeepAllocation",
+            "nameLocation": "3400:19:70",
+            "parameters": {
+              "id": 44121,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44120,
+                  "mutability": "mutable",
+                  "name": "_upkeepAllocation",
+                  "nameLocation": "3428:17:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44123,
+                  "src": "3420:25:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44119,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3420:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3419:27:70"
+            },
+            "returnParameters": {
+              "id": 44122,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3455:0:70"
+            },
+            "scope": 44138,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44129,
+            "nodeType": "FunctionDefinition",
+            "src": "3839:67:70",
+            "nodes": [],
+            "documentation": {
+              "id": 44124,
+              "nodeType": "StructuredDocumentation",
+              "src": "3462:372:70",
+              "text": " @dev Sets the share of the routing agent in the form of a percentage (using full precision, e.g., 10 ** 18 = 100%).\n Can only be called by the owner of the contract.\n Routing agent share cannot exceed 100% (expressed as 10 ** 18 for full precision).\n @param _routingAgentShare The new routing agent share amount (using full precision)."
+            },
+            "functionSelector": "d0e34b9f",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setRoutingAgentShare",
+            "nameLocation": "3848:20:70",
+            "parameters": {
+              "id": 44127,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44126,
+                  "mutability": "mutable",
+                  "name": "_routingAgentShare",
+                  "nameLocation": "3877:18:70",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44129,
+                  "src": "3869:26:70",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 44125,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3869:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3868:28:70"
+            },
+            "returnParameters": {
+              "id": 44128,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3905:0:70"
+            },
+            "scope": 44138,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 44137,
+            "nodeType": "FunctionDefinition",
+            "src": "4650:62:70",
+            "nodes": [],
+            "documentation": {
+              "id": 44130,
+              "nodeType": "StructuredDocumentation",
+              "src": "4519:126:70",
+              "text": " @dev Returns the list of all pool addresses.\n @return An array containing the addresses of all pools."
+            },
+            "functionSelector": "d88ff1f4",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getAllPools",
+            "nameLocation": "4659:11:70",
+            "parameters": {
+              "id": 44131,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4670:2:70"
+            },
+            "returnParameters": {
+              "id": 44136,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 44135,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 44137,
+                  "src": "4696:14:70",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_contract$_IPool_$44348_$dyn_memory_ptr",
+                    "typeString": "contract IPool[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 44133,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 44132,
+                        "name": "IPool",
+                        "nameLocations": [
+                          "4696:5:70"
+                        ],
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 44348,
+                        "src": "4696:5:70"
+                      },
+                      "referencedDeclaration": 44348,
+                      "src": "4696:5:70",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_IPool_$44348",
+                        "typeString": "contract IPool"
+                      }
+                    },
+                    "id": 44134,
+                    "nodeType": "ArrayTypeName",
+                    "src": "4696:7:70",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_IPool_$44348_$dyn_storage_ptr",
+                      "typeString": "contract IPool[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4695:16:70"
+            },
+            "scope": 44138,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IFactory",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 44043,
+          "nodeType": "StructuredDocumentation",
+          "src": "264:112:70",
+          "text": " @title Factory\n @dev Factory contract that deploys and keeps track of all pools and their addresses"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          44138
+        ],
+        "name": "IFactory",
+        "nameLocation": "387:8:70",
+        "scope": 44139,
+        "usedErrors": []
+      }
+    ],
+    "license": "GPL-3.0-or-later"
+  },
+  "id": 70
+}
