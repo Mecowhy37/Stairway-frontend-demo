@@ -367,8 +367,8 @@ function fillInBalance(amount, inputIndex) {
     }
 }
 function fillInDepth(depth) {
-    const formatedDepth = formatUnits(depth, Tokens.value[tkEnum.BASE].decimals)
     console.log("fillInDepth()")
+    const formatedDepth = formatUnits(depth, Tokens.value[tkEnum.BASE].decimals)
     lastChangedAmount.value = tkEnum.BASE
     setUserAmount(formatedDepth, tkEnum.BASE)
     setFromUserToFullAmount(formatedDepth, Tokens.value[tkEnum.BASE].decimals, tkEnum.BASE)

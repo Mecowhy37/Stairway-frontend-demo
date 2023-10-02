@@ -441,7 +441,7 @@
     "voted(address,uint256,address,address)": "0de9cd33",
     "votesCast(address,uint256)": "46aafa3b"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__AlreadyVoted\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"thisToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"thatToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"votingToken\",\"type\":\"address\"}],\"name\":\"GovernanceProxy__InvalidLPToken\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"option\",\"type\":\"uint8\"}],\"name\":\"GovernanceProxy__InvalidVoteOption\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"GovernanceProxy__ProposalThresholdNotMet\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"GovernanceProxy__Unauthorized\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__VotesAlreadyCast\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__VotingNotElapsed\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__VotingNotStarted\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"support\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"weight\",\"type\":\"uint256\"}],\"name\":\"ProxyVote\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"castAggregateVotes\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"snapshot\",\"type\":\"uint256\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"votingToken\",\"type\":\"address\"}],\"name\":\"getVotingPower\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"votingPower\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"}],\"name\":\"hasVotedOnProposal\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"},{\"internalType\":\"address[]\",\"name\":\"targets\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"values\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes[]\",\"name\":\"calldatas\",\"type\":\"bytes[]\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"}],\"name\":\"propose\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"support\",\"type\":\"uint8\"},{\"internalType\":\"contract ILPToken[]\",\"name\":\"lpTokens\",\"type\":\"address[]\"}],\"name\":\"proxyVote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernanceExecutor\",\"name\":\"_governanceExecutor\",\"type\":\"address\"}],\"name\":\"setGovernanceExecutor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract ILiquidityManager\",\"name\":\"_liquidityManager\",\"type\":\"address\"}],\"name\":\"setLiquidityManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IPoolManager\",\"name\":\"_poolManager\",\"type\":\"address\"}],\"name\":\"setPoolManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"tallies\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"againstVotes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"forVotes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"abstainVotes\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"}],\"name\":\"voted\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"votesCast\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IGovernanceProxy.sol\":\"IGovernanceProxy\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d\",\"dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96\",\"dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb\",\"dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol\":{\"keccak256\":\"0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6\",\"dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"src/interfaces/ICluster.sol\":{\"keccak256\":\"0x219ba33744f5d53803dc00bd506578550fb96c0207e11f735fd3e706312c34cc\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://5423507eddfb5f0147b951f7589916b0fc1dd62a4ba5fc36415dc34a9b053b5c\",\"dweb:/ipfs/Qmc6QvrLffWicKYucBXS5E4frfqQWWZXAiaVTfUNuiRgTU\"]},\"src/interfaces/IClusterRegistry.sol\":{\"keccak256\":\"0x757b3d4e8f07444ab9cdd82b560eb4d06e92e50c668ef0fb2eb550442f54c295\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://8181ee22ce05ac0d6295f431c2974ffc97c33cff6768aeb1c8e79ce1c1270471\",\"dweb:/ipfs/QmWW4MY4j3aSTkqNuezvKYSR2mJ84mm2WzGtMJP1dGSoGk\"]},\"src/interfaces/IGovernanceExecutor.sol\":{\"keccak256\":\"0x66b7aad8382e3d272c6ea96df2a4d63de8f91fb6011d1acca6a061b3181623bb\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://e6e6c0b981fa22af06e472e8077d7b8d5f72717bb25a5eb8f622dc0f72e87b4e\",\"dweb:/ipfs/Qmbudkwg6K8J2sYmNo9CfPBgY7dSfYYURMrEt5aRPm9x7H\"]},\"src/interfaces/IGovernanceProxy.sol\":{\"keccak256\":\"0x65b388f9b5a8ba373d615b0388cc597124af9a7ae83b0ee61f70384593d0d893\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://6f3e837ad567e11efb407bbc7f23d6427d0d310d8eaf8bd4b2115798ebe965c7\",\"dweb:/ipfs/QmNaiWJBDekiBtyFuXKENRNZjG8PkPL8UcjEf4mjfmham1\"]},\"src/interfaces/ILPToken.sol\":{\"keccak256\":\"0xdd269676f741bb101ae0224e83b7c1d85e0785694eb60383d914cfbe163abafa\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f4c07852bf5526250ead721482352e98bea9d2a61272926b11b5d94432b1c5cb\",\"dweb:/ipfs/QmP3RjTdf71xFJdgbCUc7YUDHxXgv17CLAXpvuLZmCQxiR\"]},\"src/interfaces/ILiquidityManager.sol\":{\"keccak256\":\"0xb4223304961c3c8af8032bcc75f25812840e93df586bc4dfac79d2137473a794\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://0c988c89e36868504064b21a6e0977a1d0141cb7115cbd8d4c06e3061829079b\",\"dweb:/ipfs/QmR5i3XrjnbHu94Mft1wAatPDWd6DDh72EXJMMGzy6tpjD\"]},\"src/interfaces/ILiquidityRamp.sol\":{\"keccak256\":\"0x68af625f740b481c65f9d98e0100c91bb76b777064995c29e7f30f1069b3520b\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://acc6241fe72ec17057ba5c176c7a44260926ab29564e0719d208875714353089\",\"dweb:/ipfs/QmXFvyseX7Nh7PofX8iLS134zKw5RSS53PgDuejrEFEBq8\"]},\"src/interfaces/IPoolManager.sol\":{\"keccak256\":\"0x0a1cb5ff0327d32e28e0f82808d74d494bb103c1ddcbe611f8f17ff5991d01d0\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://0654168f8a1a9388fef765dd41d263803ef7eb537175e3bb51b24f0c8b452eed\",\"dweb:/ipfs/QmQMGpMuHyAnYsfcJkQk5Q1tKinCJbchaJzBWX5mCmkz6C\"]},\"src/interfaces/ISwapManager.sol\":{\"keccak256\":\"0x47f671f5d2c9b1f51b3857b12c5528f76c4161367d11e5f67861cec6a0c67d24\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://34f309ab690eb906c3a59f8ef90567d3600f5b793f95d8e006a845b78b00a4bb\",\"dweb:/ipfs/Qmc3TVsT6XmaHaVzzUtg7Ln9EaUxJPv9yNPtoudJQrPuAU\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__AlreadyVoted\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"thisToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"thatToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"votingToken\",\"type\":\"address\"}],\"name\":\"GovernanceProxy__InvalidLPToken\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"option\",\"type\":\"uint8\"}],\"name\":\"GovernanceProxy__InvalidVoteOption\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"GovernanceProxy__ProposalThresholdNotMet\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"GovernanceProxy__Unauthorized\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__VotesAlreadyCast\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__VotingNotElapsed\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"GovernanceProxy__VotingNotStarted\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"support\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"weight\",\"type\":\"uint256\"}],\"name\":\"ProxyVote\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"castAggregateVotes\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"snapshot\",\"type\":\"uint256\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"votingToken\",\"type\":\"address\"}],\"name\":\"getVotingPower\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"votingPower\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"}],\"name\":\"hasVotedOnProposal\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"},{\"internalType\":\"address[]\",\"name\":\"targets\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"values\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes[]\",\"name\":\"calldatas\",\"type\":\"bytes[]\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"}],\"name\":\"propose\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"support\",\"type\":\"uint8\"},{\"internalType\":\"contract ILPToken[]\",\"name\":\"lpTokens\",\"type\":\"address[]\"}],\"name\":\"proxyVote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernanceExecutor\",\"name\":\"_governanceExecutor\",\"type\":\"address\"}],\"name\":\"setGovernanceExecutor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract ILiquidityManager\",\"name\":\"_liquidityManager\",\"type\":\"address\"}],\"name\":\"setLiquidityManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IPoolManager\",\"name\":\"_poolManager\",\"type\":\"address\"}],\"name\":\"setPoolManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"tallies\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"againstVotes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"forVotes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"abstainVotes\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"contract ILPToken\",\"name\":\"lpToken\",\"type\":\"address\"}],\"name\":\"voted\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IGovernor\",\"name\":\"governor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"}],\"name\":\"votesCast\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IGovernanceProxy.sol\":\"IGovernanceProxy\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0x8dea8d67674626aadd5a13851bf24992c28d9e7a7ee96621408f732592306193\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://829875be124594e1e278c876ed05eb32d74c35c7ab349548d0244cdf491d57db\",\"dweb:/ipfs/Qma7fnq6nb7jzumzQGZ3xhiCk6mx3WReau7J1WyCdP7FE1\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0x79a8585a7247cd19632c541e9a64924a6f105e5a30c55d3015f9b2a2ae969821\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://626d914437a398047d9ea9fe2e4d6fc746994b7c8faea26a07cd142d8b119811\",\"dweb:/ipfs/QmZxSJdEC48uj3PcfWWNe1hAxXSdinnzn53vmJrVseU5FJ\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x8045f7d526dd93c933f0f46b1637bace1ecb8282f150e004ada0bda898f8715f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://643d0f5beb2b0ce2e6c962b3fa87ca94333cf6237be8187460f5202d2813b1a3\",\"dweb:/ipfs/QmTPAqFeEVDnoJWm64DF2C53zfVBJZZC31wdGEeM8adGRE\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol\":{\"keccak256\":\"0x305f314218bceeb63308322e025f0123190815037b4bb22d7bde7e684bcf5f59\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ab9d225a42aa3a4f13db01862b4b49cae6383a367e6136ffeb30ea4caa3c6fda\",\"dweb:/ipfs/QmTXqCk8oBzsBSkXDiwTKt4zf66saBQgMJygeVdVM2havg\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xa426add89e9b4785ddeeb07b4d9352b57de8b4cb314c8cb8f0d5898938bd8de9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://09852a830ad29d33cfdf74e7035853c68e43e1a8c242b25db9d656a074a54e6d\",\"dweb:/ipfs/QmeRSfQwWr3vyP2uJxnjybtPYLMiD17E51d4eMhXQh93R1\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x540685d7ece3faa56f38253270ff11b18e63949fb8659c408123b1874674492e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5474839e19e2571c52eae3aab1dc6e6edf2b20bbba9895f59db6594a2678a3d5\",\"dweb:/ipfs/QmVHocBeANMkq4TzVM7q9At5NSg1TEpT9D9vgJ5dGcvcPN\"]},\"src/interfaces/ICluster.sol\":{\"keccak256\":\"0xb5997d6744a9cc9a05d8edae9b5bc3a80cf0f6f825d18e0ee905db4c801d2dae\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://d5169de16cddd63347efe4c18b578d5af3bf8aeb76cdc7b1c2d4f7ef29506edd\",\"dweb:/ipfs/QmNv9josobM8iiAcYL8EZVu3yytorFkjBZWuZKj2y24No6\"]},\"src/interfaces/IClusterRegistry.sol\":{\"keccak256\":\"0x00b136c3f1cf62f04d7ac7bdc4b99fee5c541075cb8cb89337e9f01292ee5552\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://185cacffe9c3b59bd06179507e3374cffc06104fee80303962cf1bec5f2eb4a7\",\"dweb:/ipfs/QmSuZbWi1d7qekZiudMrQC8boaVyzyFayLo39zadVe7dn1\"]},\"src/interfaces/IGovernanceExecutor.sol\":{\"keccak256\":\"0x99868341c4a56d7ab524ef75f57212fe5ebbbc7fc3193b43c7609bfbc9134167\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://9e7b5a65112bc14dd53f7451b018f17f8d306ad4db12f90018cee1114a5f80a2\",\"dweb:/ipfs/QmPYwus6mJCGTGeYGTTTBVu9sPg2MMqt1bfcCyBuAYqoX9\"]},\"src/interfaces/IGovernanceProxy.sol\":{\"keccak256\":\"0xd762fa973f7938c084795bac57f3c9f05efad97841ae47b3bcd0401d06eb1016\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://091c6a9a91c59136acaa0b3567093284dc45d192535fd8f1d7037bb4750cfa58\",\"dweb:/ipfs/QmdoF246vJFmHcTxF5hRJNrgot9zjZu1z3SvE13uKPp4zZ\"]},\"src/interfaces/ILPToken.sol\":{\"keccak256\":\"0xebe2629d10390741db46ce216dc84f4a77ab0f08db0160878d297a4c45ef0def\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://797ef0e42dff4f4d5f215671993b2d7f275bb7a346a60f1a24fe03f4d2496d45\",\"dweb:/ipfs/QmayJribsnqhCnvuwGEwtr7uvB3PXrS1rGngYuRPfaLvwP\"]},\"src/interfaces/ILiquidityManager.sol\":{\"keccak256\":\"0x1772c58a0cde006b9e379a1a0d69ce6991f8d48a41349eaa058f621fc67ce5af\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://7f19cbcb25d6ca998d6aa9af66d8103e73e9d6dea0eabb5ef885d3ef032e7935\",\"dweb:/ipfs/QmeNxGFTn26Z543TGG8wHHLaHymTR89UZ4GSuVeGQDBgpx\"]},\"src/interfaces/ILiquidityRamp.sol\":{\"keccak256\":\"0x24bca18dd467df394272106bf01017137e0f674275b15f298aace7f04767f065\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://04e7c48a42571775b621184c465b2cbf850ba461de65c5a143b591cf06c4e1bc\",\"dweb:/ipfs/QmTERz1gTvVsP9w6cw3bUBEbW9C34QHzqohNzwfpX3z3G6\"]},\"src/interfaces/IPoolManager.sol\":{\"keccak256\":\"0x92ed5d04b6f742cc3cf983500ac8c6226eed3f413fb4082e19397e4e31a5eed4\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://9c0975eb9bb95ccc25aeaa6a48436c0da53c19a979b22d59f08e5380b59ef06f\",\"dweb:/ipfs/QmafgyH7VnRd1BART3DRZnxx5TB5XqGmbB2QLeMagwwHMK\"]},\"src/interfaces/ISwapManager.sol\":{\"keccak256\":\"0x4ae49eb2b910252e009ccc57790e7283b6f772fe8bdb9268fa6db13451761f74\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://ba1984eb53b61e0c9540b9d2ca2282af5b77c35159951b86cf522ad5718abd07\",\"dweb:/ipfs/QmfBB6hYDa3ZCDpnULcJHhYALQQfVtj41hDNNZfeKLMerE\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -896,122 +896,122 @@
     },
     "sources": {
       "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol": {
-        "keccak256": "0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7",
+        "keccak256": "0x8dea8d67674626aadd5a13851bf24992c28d9e7a7ee96621408f732592306193",
         "urls": [
-          "bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d",
-          "dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g"
+          "bzz-raw://829875be124594e1e278c876ed05eb32d74c35c7ab349548d0244cdf491d57db",
+          "dweb:/ipfs/Qma7fnq6nb7jzumzQGZ3xhiCk6mx3WReau7J1WyCdP7FE1"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol": {
-        "keccak256": "0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb",
+        "keccak256": "0x79a8585a7247cd19632c541e9a64924a6f105e5a30c55d3015f9b2a2ae969821",
         "urls": [
-          "bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96",
-          "dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7"
+          "bzz-raw://626d914437a398047d9ea9fe2e4d6fc746994b7c8faea26a07cd142d8b119811",
+          "dweb:/ipfs/QmZxSJdEC48uj3PcfWWNe1hAxXSdinnzn53vmJrVseU5FJ"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol": {
-        "keccak256": "0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a",
+        "keccak256": "0x8045f7d526dd93c933f0f46b1637bace1ecb8282f150e004ada0bda898f8715f",
         "urls": [
-          "bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb",
-          "dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q"
+          "bzz-raw://643d0f5beb2b0ce2e6c962b3fa87ca94333cf6237be8187460f5202d2813b1a3",
+          "dweb:/ipfs/QmTPAqFeEVDnoJWm64DF2C53zfVBJZZC31wdGEeM8adGRE"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol": {
-        "keccak256": "0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9",
+        "keccak256": "0x305f314218bceeb63308322e025f0123190815037b4bb22d7bde7e684bcf5f59",
         "urls": [
-          "bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6",
-          "dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E"
+          "bzz-raw://ab9d225a42aa3a4f13db01862b4b49cae6383a367e6136ffeb30ea4caa3c6fda",
+          "dweb:/ipfs/QmTXqCk8oBzsBSkXDiwTKt4zf66saBQgMJygeVdVM2havg"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
-        "keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
+        "keccak256": "0xa426add89e9b4785ddeeb07b4d9352b57de8b4cb314c8cb8f0d5898938bd8de9",
         "urls": [
-          "bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
-          "dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
+          "bzz-raw://09852a830ad29d33cfdf74e7035853c68e43e1a8c242b25db9d656a074a54e6d",
+          "dweb:/ipfs/QmeRSfQwWr3vyP2uJxnjybtPYLMiD17E51d4eMhXQh93R1"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
-        "keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+        "keccak256": "0x540685d7ece3faa56f38253270ff11b18e63949fb8659c408123b1874674492e",
         "urls": [
-          "bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
-          "dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+          "bzz-raw://5474839e19e2571c52eae3aab1dc6e6edf2b20bbba9895f59db6594a2678a3d5",
+          "dweb:/ipfs/QmVHocBeANMkq4TzVM7q9At5NSg1TEpT9D9vgJ5dGcvcPN"
         ],
         "license": "MIT"
       },
       "src/interfaces/ICluster.sol": {
-        "keccak256": "0x219ba33744f5d53803dc00bd506578550fb96c0207e11f735fd3e706312c34cc",
+        "keccak256": "0xb5997d6744a9cc9a05d8edae9b5bc3a80cf0f6f825d18e0ee905db4c801d2dae",
         "urls": [
-          "bzz-raw://5423507eddfb5f0147b951f7589916b0fc1dd62a4ba5fc36415dc34a9b053b5c",
-          "dweb:/ipfs/Qmc6QvrLffWicKYucBXS5E4frfqQWWZXAiaVTfUNuiRgTU"
+          "bzz-raw://d5169de16cddd63347efe4c18b578d5af3bf8aeb76cdc7b1c2d4f7ef29506edd",
+          "dweb:/ipfs/QmNv9josobM8iiAcYL8EZVu3yytorFkjBZWuZKj2y24No6"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/IClusterRegistry.sol": {
-        "keccak256": "0x757b3d4e8f07444ab9cdd82b560eb4d06e92e50c668ef0fb2eb550442f54c295",
+        "keccak256": "0x00b136c3f1cf62f04d7ac7bdc4b99fee5c541075cb8cb89337e9f01292ee5552",
         "urls": [
-          "bzz-raw://8181ee22ce05ac0d6295f431c2974ffc97c33cff6768aeb1c8e79ce1c1270471",
-          "dweb:/ipfs/QmWW4MY4j3aSTkqNuezvKYSR2mJ84mm2WzGtMJP1dGSoGk"
+          "bzz-raw://185cacffe9c3b59bd06179507e3374cffc06104fee80303962cf1bec5f2eb4a7",
+          "dweb:/ipfs/QmSuZbWi1d7qekZiudMrQC8boaVyzyFayLo39zadVe7dn1"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/IGovernanceExecutor.sol": {
-        "keccak256": "0x66b7aad8382e3d272c6ea96df2a4d63de8f91fb6011d1acca6a061b3181623bb",
+        "keccak256": "0x99868341c4a56d7ab524ef75f57212fe5ebbbc7fc3193b43c7609bfbc9134167",
         "urls": [
-          "bzz-raw://e6e6c0b981fa22af06e472e8077d7b8d5f72717bb25a5eb8f622dc0f72e87b4e",
-          "dweb:/ipfs/Qmbudkwg6K8J2sYmNo9CfPBgY7dSfYYURMrEt5aRPm9x7H"
+          "bzz-raw://9e7b5a65112bc14dd53f7451b018f17f8d306ad4db12f90018cee1114a5f80a2",
+          "dweb:/ipfs/QmPYwus6mJCGTGeYGTTTBVu9sPg2MMqt1bfcCyBuAYqoX9"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/IGovernanceProxy.sol": {
-        "keccak256": "0x65b388f9b5a8ba373d615b0388cc597124af9a7ae83b0ee61f70384593d0d893",
+        "keccak256": "0xd762fa973f7938c084795bac57f3c9f05efad97841ae47b3bcd0401d06eb1016",
         "urls": [
-          "bzz-raw://6f3e837ad567e11efb407bbc7f23d6427d0d310d8eaf8bd4b2115798ebe965c7",
-          "dweb:/ipfs/QmNaiWJBDekiBtyFuXKENRNZjG8PkPL8UcjEf4mjfmham1"
+          "bzz-raw://091c6a9a91c59136acaa0b3567093284dc45d192535fd8f1d7037bb4750cfa58",
+          "dweb:/ipfs/QmdoF246vJFmHcTxF5hRJNrgot9zjZu1z3SvE13uKPp4zZ"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/ILPToken.sol": {
-        "keccak256": "0xdd269676f741bb101ae0224e83b7c1d85e0785694eb60383d914cfbe163abafa",
+        "keccak256": "0xebe2629d10390741db46ce216dc84f4a77ab0f08db0160878d297a4c45ef0def",
         "urls": [
-          "bzz-raw://f4c07852bf5526250ead721482352e98bea9d2a61272926b11b5d94432b1c5cb",
-          "dweb:/ipfs/QmP3RjTdf71xFJdgbCUc7YUDHxXgv17CLAXpvuLZmCQxiR"
+          "bzz-raw://797ef0e42dff4f4d5f215671993b2d7f275bb7a346a60f1a24fe03f4d2496d45",
+          "dweb:/ipfs/QmayJribsnqhCnvuwGEwtr7uvB3PXrS1rGngYuRPfaLvwP"
         ],
         "license": "MIT"
       },
       "src/interfaces/ILiquidityManager.sol": {
-        "keccak256": "0xb4223304961c3c8af8032bcc75f25812840e93df586bc4dfac79d2137473a794",
+        "keccak256": "0x1772c58a0cde006b9e379a1a0d69ce6991f8d48a41349eaa058f621fc67ce5af",
         "urls": [
-          "bzz-raw://0c988c89e36868504064b21a6e0977a1d0141cb7115cbd8d4c06e3061829079b",
-          "dweb:/ipfs/QmR5i3XrjnbHu94Mft1wAatPDWd6DDh72EXJMMGzy6tpjD"
+          "bzz-raw://7f19cbcb25d6ca998d6aa9af66d8103e73e9d6dea0eabb5ef885d3ef032e7935",
+          "dweb:/ipfs/QmeNxGFTn26Z543TGG8wHHLaHymTR89UZ4GSuVeGQDBgpx"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/ILiquidityRamp.sol": {
-        "keccak256": "0x68af625f740b481c65f9d98e0100c91bb76b777064995c29e7f30f1069b3520b",
+        "keccak256": "0x24bca18dd467df394272106bf01017137e0f674275b15f298aace7f04767f065",
         "urls": [
-          "bzz-raw://acc6241fe72ec17057ba5c176c7a44260926ab29564e0719d208875714353089",
-          "dweb:/ipfs/QmXFvyseX7Nh7PofX8iLS134zKw5RSS53PgDuejrEFEBq8"
+          "bzz-raw://04e7c48a42571775b621184c465b2cbf850ba461de65c5a143b591cf06c4e1bc",
+          "dweb:/ipfs/QmTERz1gTvVsP9w6cw3bUBEbW9C34QHzqohNzwfpX3z3G6"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/IPoolManager.sol": {
-        "keccak256": "0x0a1cb5ff0327d32e28e0f82808d74d494bb103c1ddcbe611f8f17ff5991d01d0",
+        "keccak256": "0x92ed5d04b6f742cc3cf983500ac8c6226eed3f413fb4082e19397e4e31a5eed4",
         "urls": [
-          "bzz-raw://0654168f8a1a9388fef765dd41d263803ef7eb537175e3bb51b24f0c8b452eed",
-          "dweb:/ipfs/QmQMGpMuHyAnYsfcJkQk5Q1tKinCJbchaJzBWX5mCmkz6C"
+          "bzz-raw://9c0975eb9bb95ccc25aeaa6a48436c0da53c19a979b22d59f08e5380b59ef06f",
+          "dweb:/ipfs/QmafgyH7VnRd1BART3DRZnxx5TB5XqGmbB2QLeMagwwHMK"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/ISwapManager.sol": {
-        "keccak256": "0x47f671f5d2c9b1f51b3857b12c5528f76c4161367d11e5f67861cec6a0c67d24",
+        "keccak256": "0x4ae49eb2b910252e009ccc57790e7283b6f772fe8bdb9268fa6db13451761f74",
         "urls": [
-          "bzz-raw://34f309ab690eb906c3a59f8ef90567d3600f5b793f95d8e006a845b78b00a4bb",
-          "dweb:/ipfs/Qmc3TVsT6XmaHaVzzUtg7Ln9EaUxJPv9yNPtoudJQrPuAU"
+          "bzz-raw://ba1984eb53b61e0c9540b9d2ca2282af5b77c35159951b86cf522ad5718abd07",
+          "dweb:/ipfs/QmfBB6hYDa3ZCDpnULcJHhYALQQfVtj41hDNNZfeKLMerE"
         ],
         "license": "BSL-1.1"
       }
@@ -1066,12 +1066,12 @@
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "36:2611:81",
+    "src": "37:2705:81",
     "nodes": [
       {
         "id": 62236,
         "nodeType": "PragmaDirective",
-        "src": "36:24:81",
+        "src": "37:24:81",
         "nodes": [],
         "literals": [
           "solidity",
@@ -1083,7 +1083,7 @@
       {
         "id": 62237,
         "nodeType": "ImportDirective",
-        "src": "62:47:81",
+        "src": "65:47:81",
         "nodes": [],
         "absolutePath": "src/interfaces/IGovernanceExecutor.sol",
         "file": "../interfaces/IGovernanceExecutor.sol",
@@ -1096,7 +1096,7 @@
       {
         "id": 62238,
         "nodeType": "ImportDirective",
-        "src": "110:45:81",
+        "src": "114:45:81",
         "nodes": [],
         "absolutePath": "src/interfaces/ILiquidityManager.sol",
         "file": "../interfaces/ILiquidityManager.sol",
@@ -1109,7 +1109,7 @@
       {
         "id": 62239,
         "nodeType": "ImportDirective",
-        "src": "156:40:81",
+        "src": "161:40:81",
         "nodes": [],
         "absolutePath": "src/interfaces/IPoolManager.sol",
         "file": "../interfaces/IPoolManager.sol",
@@ -1122,7 +1122,7 @@
       {
         "id": 62240,
         "nodeType": "ImportDirective",
-        "src": "197:36:81",
+        "src": "203:36:81",
         "nodes": [],
         "absolutePath": "src/interfaces/ILPToken.sol",
         "file": "../interfaces/ILPToken.sol",
@@ -1135,7 +1135,7 @@
       {
         "id": 62241,
         "nodeType": "ImportDirective",
-        "src": "235:58:81",
+        "src": "243:58:81",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol",
         "file": "@openzeppelin/contracts/governance/IGovernor.sol",
@@ -1148,16 +1148,16 @@
       {
         "id": 62423,
         "nodeType": "ContractDefinition",
-        "src": "295:2351:81",
+        "src": "305:2435:81",
         "nodes": [
           {
             "id": 62245,
             "nodeType": "ErrorDefinition",
-            "src": "328:55:81",
+            "src": "339:55:81",
             "nodes": [],
             "errorSelector": "e54a603e",
             "name": "GovernanceProxy__InvalidVoteOption",
-            "nameLocation": "334:34:81",
+            "nameLocation": "345:34:81",
             "parameters": {
               "id": 62244,
               "nodeType": "ParameterList",
@@ -1167,10 +1167,10 @@
                   "id": 62243,
                   "mutability": "mutable",
                   "name": "option",
-                  "nameLocation": "375:6:81",
+                  "nameLocation": "386:6:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62245,
-                  "src": "369:12:81",
+                  "src": "380:12:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1181,7 +1181,7 @@
                     "id": 62242,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
-                    "src": "369:5:81",
+                    "src": "380:5:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
@@ -1190,17 +1190,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "368:14:81"
+              "src": "379:14:81"
             }
           },
           {
             "id": 62256,
             "nodeType": "ErrorDefinition",
-            "src": "388:124:81",
+            "src": "400:128:81",
             "nodes": [],
             "errorSelector": "c2cdc284",
             "name": "GovernanceProxy__InvalidLPToken",
-            "nameLocation": "394:31:81",
+            "nameLocation": "406:31:81",
             "parameters": {
               "id": 62255,
               "nodeType": "ParameterList",
@@ -1210,10 +1210,10 @@
                   "id": 62248,
                   "mutability": "mutable",
                   "name": "thisToken",
-                  "nameLocation": "442:9:81",
+                  "nameLocation": "455:9:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62256,
-                  "src": "435:16:81",
+                  "src": "448:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1227,14 +1227,14 @@
                       "id": 62246,
                       "name": "IERC20",
                       "nameLocations": [
-                        "435:6:81"
+                        "448:6:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "435:6:81"
+                      "src": "448:6:81"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "435:6:81",
+                    "src": "448:6:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1247,10 +1247,10 @@
                   "id": 62251,
                   "mutability": "mutable",
                   "name": "thatToken",
-                  "nameLocation": "468:9:81",
+                  "nameLocation": "482:9:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62256,
-                  "src": "461:16:81",
+                  "src": "475:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1264,14 +1264,14 @@
                       "id": 62249,
                       "name": "IERC20",
                       "nameLocations": [
-                        "461:6:81"
+                        "475:6:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "461:6:81"
+                      "src": "475:6:81"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "461:6:81",
+                    "src": "475:6:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1284,10 +1284,10 @@
                   "id": 62254,
                   "mutability": "mutable",
                   "name": "votingToken",
-                  "nameLocation": "494:11:81",
+                  "nameLocation": "509:11:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62256,
-                  "src": "487:18:81",
+                  "src": "502:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1301,14 +1301,14 @@
                       "id": 62252,
                       "name": "IERC20",
                       "nameLocations": [
-                        "487:6:81"
+                        "502:6:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "487:6:81"
+                      "src": "502:6:81"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "487:6:81",
+                    "src": "502:6:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1317,17 +1317,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "425:86:81"
+              "src": "437:90:81"
             }
           },
           {
             "id": 62262,
             "nodeType": "ErrorDefinition",
-            "src": "517:70:81",
+            "src": "534:70:81",
             "nodes": [],
             "errorSelector": "90ef2f77",
             "name": "GovernanceProxy__AlreadyVoted",
-            "nameLocation": "523:29:81",
+            "nameLocation": "540:29:81",
             "parameters": {
               "id": 62261,
               "nodeType": "ParameterList",
@@ -1337,10 +1337,10 @@
                   "id": 62258,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "561:4:81",
+                  "nameLocation": "578:4:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62262,
-                  "src": "553:12:81",
+                  "src": "570:12:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1351,7 +1351,7 @@
                     "id": 62257,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "553:7:81",
+                    "src": "570:7:81",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1365,10 +1365,10 @@
                   "id": 62260,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "575:10:81",
+                  "nameLocation": "592:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62262,
-                  "src": "567:18:81",
+                  "src": "584:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1379,7 +1379,7 @@
                     "id": 62259,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "567:7:81",
+                    "src": "584:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1388,17 +1388,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "552:34:81"
+              "src": "569:34:81"
             }
           },
           {
             "id": 62266,
             "nodeType": "ErrorDefinition",
-            "src": "592:60:81",
+            "src": "610:60:81",
             "nodes": [],
             "errorSelector": "5478742a",
             "name": "GovernanceProxy__VotingNotStarted",
-            "nameLocation": "598:33:81",
+            "nameLocation": "616:33:81",
             "parameters": {
               "id": 62265,
               "nodeType": "ParameterList",
@@ -1408,10 +1408,10 @@
                   "id": 62264,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "640:10:81",
+                  "nameLocation": "658:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62266,
-                  "src": "632:18:81",
+                  "src": "650:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1422,7 +1422,7 @@
                     "id": 62263,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "632:7:81",
+                    "src": "650:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1431,17 +1431,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "631:20:81"
+              "src": "649:20:81"
             }
           },
           {
             "id": 62270,
             "nodeType": "ErrorDefinition",
-            "src": "657:60:81",
+            "src": "676:60:81",
             "nodes": [],
             "errorSelector": "c2da8090",
             "name": "GovernanceProxy__VotingNotElapsed",
-            "nameLocation": "663:33:81",
+            "nameLocation": "682:33:81",
             "parameters": {
               "id": 62269,
               "nodeType": "ParameterList",
@@ -1451,10 +1451,10 @@
                   "id": 62268,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "705:10:81",
+                  "nameLocation": "724:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62270,
-                  "src": "697:18:81",
+                  "src": "716:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1465,7 +1465,7 @@
                     "id": 62267,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "697:7:81",
+                    "src": "716:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1474,17 +1474,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "696:20:81"
+              "src": "715:20:81"
             }
           },
           {
             "id": 62274,
             "nodeType": "ErrorDefinition",
-            "src": "722:60:81",
+            "src": "742:60:81",
             "nodes": [],
             "errorSelector": "d33af09f",
             "name": "GovernanceProxy__VotesAlreadyCast",
-            "nameLocation": "728:33:81",
+            "nameLocation": "748:33:81",
             "parameters": {
               "id": 62273,
               "nodeType": "ParameterList",
@@ -1494,10 +1494,10 @@
                   "id": 62272,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "770:10:81",
+                  "nameLocation": "790:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62274,
-                  "src": "762:18:81",
+                  "src": "782:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1508,7 +1508,7 @@
                     "id": 62271,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "762:7:81",
+                    "src": "782:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1517,48 +1517,48 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "761:20:81"
+              "src": "781:20:81"
             }
           },
           {
             "id": 62276,
             "nodeType": "ErrorDefinition",
-            "src": "787:49:81",
+            "src": "808:49:81",
             "nodes": [],
             "errorSelector": "e8d3d1ca",
             "name": "GovernanceProxy__ProposalThresholdNotMet",
-            "nameLocation": "793:40:81",
+            "nameLocation": "814:40:81",
             "parameters": {
               "id": 62275,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "833:2:81"
+              "src": "854:2:81"
             }
           },
           {
             "id": 62278,
             "nodeType": "ErrorDefinition",
-            "src": "841:38:81",
+            "src": "863:38:81",
             "nodes": [],
             "errorSelector": "84578492",
             "name": "GovernanceProxy__Unauthorized",
-            "nameLocation": "847:29:81",
+            "nameLocation": "869:29:81",
             "parameters": {
               "id": 62277,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "876:2:81"
+              "src": "898:2:81"
             }
           },
           {
             "id": 62291,
             "nodeType": "EventDefinition",
-            "src": "885:164:81",
+            "src": "909:170:81",
             "nodes": [],
             "anonymous": false,
             "eventSelector": "90ebd8d464f9e3d291de93077110e97e236ca318134b23e4a6c38a42950fb7ba",
             "name": "ProxyVote",
-            "nameLocation": "891:9:81",
+            "nameLocation": "915:9:81",
             "parameters": {
               "id": 62290,
               "nodeType": "ParameterList",
@@ -1569,10 +1569,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "voter",
-                  "nameLocation": "926:5:81",
+                  "nameLocation": "951:5:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62291,
-                  "src": "910:21:81",
+                  "src": "935:21:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1583,7 +1583,7 @@
                     "id": 62279,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "910:7:81",
+                    "src": "935:7:81",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1598,10 +1598,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "959:8:81",
+                  "nameLocation": "985:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62291,
-                  "src": "941:26:81",
+                  "src": "967:26:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1615,14 +1615,14 @@
                       "id": 62281,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "941:9:81"
+                        "967:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "941:9:81"
+                      "src": "967:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "941:9:81",
+                    "src": "967:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -1636,10 +1636,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "985:10:81",
+                  "nameLocation": "1012:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62291,
-                  "src": "977:18:81",
+                  "src": "1004:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1650,7 +1650,7 @@
                     "id": 62284,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "977:7:81",
+                    "src": "1004:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1664,10 +1664,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "support",
-                  "nameLocation": "1011:7:81",
+                  "nameLocation": "1039:7:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62291,
-                  "src": "1005:13:81",
+                  "src": "1033:13:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1678,7 +1678,7 @@
                     "id": 62286,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1005:5:81",
+                    "src": "1033:5:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
@@ -1692,10 +1692,10 @@
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "weight",
-                  "nameLocation": "1036:6:81",
+                  "nameLocation": "1065:6:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62291,
-                  "src": "1028:14:81",
+                  "src": "1057:14:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1706,7 +1706,7 @@
                     "id": 62288,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1028:7:81",
+                    "src": "1057:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1715,20 +1715,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "900:148:81"
+              "src": "924:154:81"
             }
           },
           {
             "id": 62297,
             "nodeType": "FunctionDefinition",
-            "src": "1055:95:81",
+            "src": "1087:97:81",
             "nodes": [],
             "functionSelector": "0f300300",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setGovernanceExecutor",
-            "nameLocation": "1064:21:81",
+            "nameLocation": "1096:21:81",
             "parameters": {
               "id": 62295,
               "nodeType": "ParameterList",
@@ -1738,10 +1738,10 @@
                   "id": 62294,
                   "mutability": "mutable",
                   "name": "_governanceExecutor",
-                  "nameLocation": "1115:19:81",
+                  "nameLocation": "1148:19:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62297,
-                  "src": "1095:39:81",
+                  "src": "1128:39:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1755,14 +1755,14 @@
                       "id": 62292,
                       "name": "IGovernanceExecutor",
                       "nameLocations": [
-                        "1095:19:81"
+                        "1128:19:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62234,
-                      "src": "1095:19:81"
+                      "src": "1128:19:81"
                     },
                     "referencedDeclaration": 62234,
-                    "src": "1095:19:81",
+                    "src": "1128:19:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernanceExecutor_$62234",
                       "typeString": "contract IGovernanceExecutor"
@@ -1771,13 +1771,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1085:55:81"
+              "src": "1117:57:81"
             },
             "returnParameters": {
               "id": 62296,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1149:0:81"
+              "src": "1183:0:81"
             },
             "scope": 62423,
             "stateMutability": "nonpayable",
@@ -1787,14 +1787,14 @@
           {
             "id": 62303,
             "nodeType": "FunctionDefinition",
-            "src": "1156:75:81",
+            "src": "1192:75:81",
             "nodes": [],
             "functionSelector": "3c1624d4",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setLiquidityManager",
-            "nameLocation": "1165:19:81",
+            "nameLocation": "1201:19:81",
             "parameters": {
               "id": 62301,
               "nodeType": "ParameterList",
@@ -1804,10 +1804,10 @@
                   "id": 62300,
                   "mutability": "mutable",
                   "name": "_liquidityManager",
-                  "nameLocation": "1203:17:81",
+                  "nameLocation": "1239:17:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62303,
-                  "src": "1185:35:81",
+                  "src": "1221:35:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1821,14 +1821,14 @@
                       "id": 62298,
                       "name": "ILiquidityManager",
                       "nameLocations": [
-                        "1185:17:81"
+                        "1221:17:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62605,
-                      "src": "1185:17:81"
+                      "src": "1221:17:81"
                     },
                     "referencedDeclaration": 62605,
-                    "src": "1185:17:81",
+                    "src": "1221:17:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_ILiquidityManager_$62605",
                       "typeString": "contract ILiquidityManager"
@@ -1837,13 +1837,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1184:37:81"
+              "src": "1220:37:81"
             },
             "returnParameters": {
               "id": 62302,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1230:0:81"
+              "src": "1266:0:81"
             },
             "scope": 62423,
             "stateMutability": "nonpayable",
@@ -1853,14 +1853,14 @@
           {
             "id": 62309,
             "nodeType": "FunctionDefinition",
-            "src": "1237:60:81",
+            "src": "1275:60:81",
             "nodes": [],
             "functionSelector": "7aef6715",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setPoolManager",
-            "nameLocation": "1246:14:81",
+            "nameLocation": "1284:14:81",
             "parameters": {
               "id": 62307,
               "nodeType": "ParameterList",
@@ -1870,10 +1870,10 @@
                   "id": 62306,
                   "mutability": "mutable",
                   "name": "_poolManager",
-                  "nameLocation": "1274:12:81",
+                  "nameLocation": "1312:12:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62309,
-                  "src": "1261:25:81",
+                  "src": "1299:25:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1887,14 +1887,14 @@
                       "id": 62304,
                       "name": "IPoolManager",
                       "nameLocations": [
-                        "1261:12:81"
+                        "1299:12:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62791,
-                      "src": "1261:12:81"
+                      "src": "1299:12:81"
                     },
                     "referencedDeclaration": 62791,
-                    "src": "1261:12:81",
+                    "src": "1299:12:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IPoolManager_$62791",
                       "typeString": "contract IPoolManager"
@@ -1903,13 +1903,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1260:27:81"
+              "src": "1298:27:81"
             },
             "returnParameters": {
               "id": 62308,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1296:0:81"
+              "src": "1334:0:81"
             },
             "scope": 62423,
             "stateMutability": "nonpayable",
@@ -1919,14 +1919,14 @@
           {
             "id": 62323,
             "nodeType": "FunctionDefinition",
-            "src": "1303:188:81",
+            "src": "1343:194:81",
             "nodes": [],
             "functionSelector": "161ebe35",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "tallies",
-            "nameLocation": "1312:7:81",
+            "nameLocation": "1352:7:81",
             "parameters": {
               "id": 62315,
               "nodeType": "ParameterList",
@@ -1936,10 +1936,10 @@
                   "id": 62312,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "1339:8:81",
+                  "nameLocation": "1380:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62323,
-                  "src": "1329:18:81",
+                  "src": "1370:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1953,14 +1953,14 @@
                       "id": 62310,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "1329:9:81"
+                        "1370:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "1329:9:81"
+                      "src": "1370:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "1329:9:81",
+                    "src": "1370:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -1973,10 +1973,10 @@
                   "id": 62314,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "1365:10:81",
+                  "nameLocation": "1407:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62323,
-                  "src": "1357:18:81",
+                  "src": "1399:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1987,7 +1987,7 @@
                     "id": 62313,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1357:7:81",
+                    "src": "1399:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1996,7 +1996,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1319:62:81"
+              "src": "1359:65:81"
             },
             "returnParameters": {
               "id": 62322,
@@ -2007,10 +2007,10 @@
                   "id": 62317,
                   "mutability": "mutable",
                   "name": "againstVotes",
-                  "nameLocation": "1437:12:81",
+                  "nameLocation": "1483:12:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62323,
-                  "src": "1429:20:81",
+                  "src": "1475:20:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2021,7 +2021,7 @@
                     "id": 62316,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1429:7:81",
+                    "src": "1475:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2034,10 +2034,10 @@
                   "id": 62319,
                   "mutability": "mutable",
                   "name": "forVotes",
-                  "nameLocation": "1459:8:81",
+                  "nameLocation": "1505:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62323,
-                  "src": "1451:16:81",
+                  "src": "1497:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2048,7 +2048,7 @@
                     "id": 62318,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1451:7:81",
+                    "src": "1497:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2061,10 +2061,10 @@
                   "id": 62321,
                   "mutability": "mutable",
                   "name": "abstainVotes",
-                  "nameLocation": "1477:12:81",
+                  "nameLocation": "1523:12:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62323,
-                  "src": "1469:20:81",
+                  "src": "1515:20:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2075,7 +2075,7 @@
                     "id": 62320,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1469:7:81",
+                    "src": "1515:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2084,7 +2084,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1428:62:81"
+              "src": "1474:62:81"
             },
             "scope": 62423,
             "stateMutability": "view",
@@ -2094,14 +2094,14 @@
           {
             "id": 62338,
             "nodeType": "FunctionDefinition",
-            "src": "1497:157:81",
+            "src": "1545:162:81",
             "nodes": [],
             "functionSelector": "0de9cd33",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "voted",
-            "nameLocation": "1506:5:81",
+            "nameLocation": "1554:5:81",
             "parameters": {
               "id": 62334,
               "nodeType": "ParameterList",
@@ -2111,10 +2111,10 @@
                   "id": 62326,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "1531:8:81",
+                  "nameLocation": "1580:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62338,
-                  "src": "1521:18:81",
+                  "src": "1570:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2128,14 +2128,14 @@
                       "id": 62324,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "1521:9:81"
+                        "1570:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "1521:9:81"
+                      "src": "1570:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "1521:9:81",
+                    "src": "1570:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -2148,10 +2148,10 @@
                   "id": 62328,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "1557:10:81",
+                  "nameLocation": "1607:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62338,
-                  "src": "1549:18:81",
+                  "src": "1599:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2162,7 +2162,7 @@
                     "id": 62327,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1549:7:81",
+                    "src": "1599:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2175,10 +2175,10 @@
                   "id": 62330,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "1585:4:81",
+                  "nameLocation": "1636:4:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62338,
-                  "src": "1577:12:81",
+                  "src": "1628:12:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2189,7 +2189,7 @@
                     "id": 62329,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1577:7:81",
+                    "src": "1628:7:81",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2203,10 +2203,10 @@
                   "id": 62333,
                   "mutability": "mutable",
                   "name": "lpToken",
-                  "nameLocation": "1608:7:81",
+                  "nameLocation": "1660:7:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62338,
-                  "src": "1599:16:81",
+                  "src": "1651:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2220,14 +2220,14 @@
                       "id": 62331,
                       "name": "ILPToken",
                       "nameLocations": [
-                        "1599:8:81"
+                        "1651:8:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62484,
-                      "src": "1599:8:81"
+                      "src": "1651:8:81"
                     },
                     "referencedDeclaration": 62484,
-                    "src": "1599:8:81",
+                    "src": "1651:8:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_ILPToken_$62484",
                       "typeString": "contract ILPToken"
@@ -2236,7 +2236,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1511:110:81"
+              "src": "1559:115:81"
             },
             "returnParameters": {
               "id": 62337,
@@ -2250,7 +2250,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 62338,
-                  "src": "1645:7:81",
+                  "src": "1698:7:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2261,7 +2261,7 @@
                     "id": 62335,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1645:7:81",
+                    "src": "1698:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2270,7 +2270,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1644:9:81"
+              "src": "1697:9:81"
             },
             "scope": 62423,
             "stateMutability": "view",
@@ -2280,14 +2280,14 @@
           {
             "id": 62348,
             "nodeType": "FunctionDefinition",
-            "src": "1660:110:81",
+            "src": "1715:113:81",
             "nodes": [],
             "functionSelector": "46aafa3b",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "votesCast",
-            "nameLocation": "1669:9:81",
+            "nameLocation": "1724:9:81",
             "parameters": {
               "id": 62344,
               "nodeType": "ParameterList",
@@ -2297,10 +2297,10 @@
                   "id": 62341,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "1698:8:81",
+                  "nameLocation": "1754:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62348,
-                  "src": "1688:18:81",
+                  "src": "1744:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2314,14 +2314,14 @@
                       "id": 62339,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "1688:9:81"
+                        "1744:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "1688:9:81"
+                      "src": "1744:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "1688:9:81",
+                    "src": "1744:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -2334,10 +2334,10 @@
                   "id": 62343,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "1724:10:81",
+                  "nameLocation": "1781:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62348,
-                  "src": "1716:18:81",
+                  "src": "1773:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2348,7 +2348,7 @@
                     "id": 62342,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1716:7:81",
+                    "src": "1773:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2357,7 +2357,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1678:62:81"
+              "src": "1733:65:81"
             },
             "returnParameters": {
               "id": 62347,
@@ -2371,7 +2371,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 62348,
-                  "src": "1764:4:81",
+                  "src": "1822:4:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2382,7 +2382,7 @@
                     "id": 62345,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1764:4:81",
+                    "src": "1822:4:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -2391,7 +2391,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1763:6:81"
+              "src": "1821:6:81"
             },
             "scope": 62423,
             "stateMutability": "view",
@@ -2401,14 +2401,14 @@
           {
             "id": 62362,
             "nodeType": "FunctionDefinition",
-            "src": "1776:149:81",
+            "src": "1836:154:81",
             "nodes": [],
             "functionSelector": "34532c1d",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "proxyVote",
-            "nameLocation": "1785:9:81",
+            "nameLocation": "1845:9:81",
             "parameters": {
               "id": 62360,
               "nodeType": "ParameterList",
@@ -2418,10 +2418,10 @@
                   "id": 62351,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "1814:8:81",
+                  "nameLocation": "1875:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62362,
-                  "src": "1804:18:81",
+                  "src": "1865:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2435,14 +2435,14 @@
                       "id": 62349,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "1804:9:81"
+                        "1865:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "1804:9:81"
+                      "src": "1865:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "1804:9:81",
+                    "src": "1865:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -2455,10 +2455,10 @@
                   "id": 62353,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "1840:10:81",
+                  "nameLocation": "1902:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62362,
-                  "src": "1832:18:81",
+                  "src": "1894:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2469,7 +2469,7 @@
                     "id": 62352,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1832:7:81",
+                    "src": "1894:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2482,10 +2482,10 @@
                   "id": 62355,
                   "mutability": "mutable",
                   "name": "support",
-                  "nameLocation": "1866:7:81",
+                  "nameLocation": "1929:7:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62362,
-                  "src": "1860:13:81",
+                  "src": "1923:13:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2496,7 +2496,7 @@
                     "id": 62354,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1860:5:81",
+                    "src": "1923:5:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
@@ -2509,10 +2509,10 @@
                   "id": 62359,
                   "mutability": "mutable",
                   "name": "lpTokens",
-                  "nameLocation": "1901:8:81",
+                  "nameLocation": "1965:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62362,
-                  "src": "1883:26:81",
+                  "src": "1947:26:81",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2527,14 +2527,14 @@
                         "id": 62356,
                         "name": "ILPToken",
                         "nameLocations": [
-                          "1883:8:81"
+                          "1947:8:81"
                         ],
                         "nodeType": "IdentifierPath",
                         "referencedDeclaration": 62484,
-                        "src": "1883:8:81"
+                        "src": "1947:8:81"
                       },
                       "referencedDeclaration": 62484,
-                      "src": "1883:8:81",
+                      "src": "1947:8:81",
                       "typeDescriptions": {
                         "typeIdentifier": "t_contract$_ILPToken_$62484",
                         "typeString": "contract ILPToken"
@@ -2542,7 +2542,7 @@
                     },
                     "id": 62358,
                     "nodeType": "ArrayTypeName",
-                    "src": "1883:10:81",
+                    "src": "1947:10:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_contract$_ILPToken_$62484_$dyn_storage_ptr",
                       "typeString": "contract ILPToken[]"
@@ -2551,13 +2551,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1794:121:81"
+              "src": "1854:126:81"
             },
             "returnParameters": {
               "id": 62361,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1924:0:81"
+              "src": "1989:0:81"
             },
             "scope": 62423,
             "stateMutability": "nonpayable",
@@ -2567,14 +2567,14 @@
           {
             "id": 62377,
             "nodeType": "FunctionDefinition",
-            "src": "1931:177:81",
+            "src": "1998:182:81",
             "nodes": [],
             "functionSelector": "2c52f7b9",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getVotingPower",
-            "nameLocation": "1940:14:81",
+            "nameLocation": "2007:14:81",
             "parameters": {
               "id": 62373,
               "nodeType": "ParameterList",
@@ -2584,10 +2584,10 @@
                   "id": 62364,
                   "mutability": "mutable",
                   "name": "voter",
-                  "nameLocation": "1972:5:81",
+                  "nameLocation": "2040:5:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62377,
-                  "src": "1964:13:81",
+                  "src": "2032:13:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2598,7 +2598,7 @@
                     "id": 62363,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1964:7:81",
+                    "src": "2032:7:81",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2612,10 +2612,10 @@
                   "id": 62366,
                   "mutability": "mutable",
                   "name": "snapshot",
-                  "nameLocation": "1995:8:81",
+                  "nameLocation": "2064:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62377,
-                  "src": "1987:16:81",
+                  "src": "2056:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2626,7 +2626,7 @@
                     "id": 62365,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1987:7:81",
+                    "src": "2056:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2639,10 +2639,10 @@
                   "id": 62369,
                   "mutability": "mutable",
                   "name": "lpToken",
-                  "nameLocation": "2022:7:81",
+                  "nameLocation": "2092:7:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62377,
-                  "src": "2013:16:81",
+                  "src": "2083:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2656,14 +2656,14 @@
                       "id": 62367,
                       "name": "ILPToken",
                       "nameLocations": [
-                        "2013:8:81"
+                        "2083:8:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62484,
-                      "src": "2013:8:81"
+                      "src": "2083:8:81"
                     },
                     "referencedDeclaration": 62484,
-                    "src": "2013:8:81",
+                    "src": "2083:8:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_ILPToken_$62484",
                       "typeString": "contract ILPToken"
@@ -2676,10 +2676,10 @@
                   "id": 62372,
                   "mutability": "mutable",
                   "name": "votingToken",
-                  "nameLocation": "2046:11:81",
+                  "nameLocation": "2117:11:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62377,
-                  "src": "2039:18:81",
+                  "src": "2110:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2693,14 +2693,14 @@
                       "id": 62370,
                       "name": "IERC20",
                       "nameLocations": [
-                        "2039:6:81"
+                        "2110:6:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "2039:6:81"
+                      "src": "2110:6:81"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "2039:6:81",
+                    "src": "2110:6:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -2709,7 +2709,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1954:109:81"
+              "src": "2021:114:81"
             },
             "returnParameters": {
               "id": 62376,
@@ -2720,10 +2720,10 @@
                   "id": 62375,
                   "mutability": "mutable",
                   "name": "votingPower",
-                  "nameLocation": "2095:11:81",
+                  "nameLocation": "2167:11:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62377,
-                  "src": "2087:19:81",
+                  "src": "2159:19:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2734,7 +2734,7 @@
                     "id": 62374,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2087:7:81",
+                    "src": "2159:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2743,7 +2743,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2086:21:81"
+              "src": "2158:21:81"
             },
             "scope": 62423,
             "stateMutability": "view",
@@ -2753,14 +2753,14 @@
           {
             "id": 62392,
             "nodeType": "FunctionDefinition",
-            "src": "2114:168:81",
+            "src": "2188:173:81",
             "nodes": [],
             "functionSelector": "49e570b6",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "hasVotedOnProposal",
-            "nameLocation": "2123:18:81",
+            "nameLocation": "2197:18:81",
             "parameters": {
               "id": 62388,
               "nodeType": "ParameterList",
@@ -2770,10 +2770,10 @@
                   "id": 62380,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "2161:8:81",
+                  "nameLocation": "2236:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62392,
-                  "src": "2151:18:81",
+                  "src": "2226:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2787,14 +2787,14 @@
                       "id": 62378,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "2151:9:81"
+                        "2226:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "2151:9:81"
+                      "src": "2226:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "2151:9:81",
+                    "src": "2226:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -2807,10 +2807,10 @@
                   "id": 62382,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "2187:10:81",
+                  "nameLocation": "2263:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62392,
-                  "src": "2179:18:81",
+                  "src": "2255:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2821,7 +2821,7 @@
                     "id": 62381,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2179:7:81",
+                    "src": "2255:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2834,10 +2834,10 @@
                   "id": 62384,
                   "mutability": "mutable",
                   "name": "voter",
-                  "nameLocation": "2215:5:81",
+                  "nameLocation": "2292:5:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62392,
-                  "src": "2207:13:81",
+                  "src": "2284:13:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2848,7 +2848,7 @@
                     "id": 62383,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2207:7:81",
+                    "src": "2284:7:81",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2862,10 +2862,10 @@
                   "id": 62387,
                   "mutability": "mutable",
                   "name": "lpToken",
-                  "nameLocation": "2239:7:81",
+                  "nameLocation": "2317:7:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62392,
-                  "src": "2230:16:81",
+                  "src": "2308:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2879,14 +2879,14 @@
                       "id": 62385,
                       "name": "ILPToken",
                       "nameLocations": [
-                        "2230:8:81"
+                        "2308:8:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62484,
-                      "src": "2230:8:81"
+                      "src": "2308:8:81"
                     },
                     "referencedDeclaration": 62484,
-                    "src": "2230:8:81",
+                    "src": "2308:8:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_ILPToken_$62484",
                       "typeString": "contract ILPToken"
@@ -2895,7 +2895,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2141:111:81"
+              "src": "2215:116:81"
             },
             "returnParameters": {
               "id": 62391,
@@ -2909,7 +2909,7 @@
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
                   "scope": 62392,
-                  "src": "2276:4:81",
+                  "src": "2355:4:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2920,7 +2920,7 @@
                     "id": 62389,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2276:4:81",
+                    "src": "2355:4:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -2929,7 +2929,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2275:6:81"
+              "src": "2354:6:81"
             },
             "scope": 62423,
             "stateMutability": "view",
@@ -2939,14 +2939,14 @@
           {
             "id": 62400,
             "nodeType": "FunctionDefinition",
-            "src": "2288:99:81",
+            "src": "2369:102:81",
             "nodes": [],
             "functionSelector": "4ce1e880",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "castAggregateVotes",
-            "nameLocation": "2297:18:81",
+            "nameLocation": "2378:18:81",
             "parameters": {
               "id": 62398,
               "nodeType": "ParameterList",
@@ -2956,10 +2956,10 @@
                   "id": 62395,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "2335:8:81",
+                  "nameLocation": "2417:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62400,
-                  "src": "2325:18:81",
+                  "src": "2407:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2973,14 +2973,14 @@
                       "id": 62393,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "2325:9:81"
+                        "2407:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "2325:9:81"
+                      "src": "2407:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "2325:9:81",
+                    "src": "2407:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -2993,10 +2993,10 @@
                   "id": 62397,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "2361:10:81",
+                  "nameLocation": "2444:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62400,
-                  "src": "2353:18:81",
+                  "src": "2436:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3007,7 +3007,7 @@
                     "id": 62396,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2353:7:81",
+                    "src": "2436:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -3016,13 +3016,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2315:62:81"
+              "src": "2396:65:81"
             },
             "returnParameters": {
               "id": 62399,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2386:0:81"
+              "src": "2470:0:81"
             },
             "scope": 62423,
             "stateMutability": "nonpayable",
@@ -3032,14 +3032,14 @@
           {
             "id": 62422,
             "nodeType": "FunctionDefinition",
-            "src": "2393:251:81",
+            "src": "2479:258:81",
             "nodes": [],
             "functionSelector": "46bd815b",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "propose",
-            "nameLocation": "2402:7:81",
+            "nameLocation": "2488:7:81",
             "parameters": {
               "id": 62418,
               "nodeType": "ParameterList",
@@ -3049,10 +3049,10 @@
                   "id": 62403,
                   "mutability": "mutable",
                   "name": "governor",
-                  "nameLocation": "2429:8:81",
+                  "nameLocation": "2516:8:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62422,
-                  "src": "2419:18:81",
+                  "src": "2506:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3066,14 +3066,14 @@
                       "id": 62401,
                       "name": "IGovernor",
                       "nameLocations": [
-                        "2419:9:81"
+                        "2506:9:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 45314,
-                      "src": "2419:9:81"
+                      "src": "2506:9:81"
                     },
                     "referencedDeclaration": 45314,
-                    "src": "2419:9:81",
+                    "src": "2506:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IGovernor_$45314",
                       "typeString": "contract IGovernor"
@@ -3086,10 +3086,10 @@
                   "id": 62406,
                   "mutability": "mutable",
                   "name": "lpToken",
-                  "nameLocation": "2456:7:81",
+                  "nameLocation": "2544:7:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62422,
-                  "src": "2447:16:81",
+                  "src": "2535:16:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3103,14 +3103,14 @@
                       "id": 62404,
                       "name": "ILPToken",
                       "nameLocations": [
-                        "2447:8:81"
+                        "2535:8:81"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62484,
-                      "src": "2447:8:81"
+                      "src": "2535:8:81"
                     },
                     "referencedDeclaration": 62484,
-                    "src": "2447:8:81",
+                    "src": "2535:8:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_ILPToken_$62484",
                       "typeString": "contract ILPToken"
@@ -3123,10 +3123,10 @@
                   "id": 62409,
                   "mutability": "mutable",
                   "name": "targets",
-                  "nameLocation": "2490:7:81",
+                  "nameLocation": "2579:7:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62422,
-                  "src": "2473:24:81",
+                  "src": "2562:24:81",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3138,7 +3138,7 @@
                       "id": 62407,
                       "name": "address",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2473:7:81",
+                      "src": "2562:7:81",
                       "stateMutability": "nonpayable",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -3147,7 +3147,7 @@
                     },
                     "id": 62408,
                     "nodeType": "ArrayTypeName",
-                    "src": "2473:9:81",
+                    "src": "2562:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
                       "typeString": "address[]"
@@ -3160,10 +3160,10 @@
                   "id": 62412,
                   "mutability": "mutable",
                   "name": "values",
-                  "nameLocation": "2524:6:81",
+                  "nameLocation": "2614:6:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62422,
-                  "src": "2507:23:81",
+                  "src": "2597:23:81",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3175,7 +3175,7 @@
                       "id": 62410,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2507:7:81",
+                      "src": "2597:7:81",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -3183,7 +3183,7 @@
                     },
                     "id": 62411,
                     "nodeType": "ArrayTypeName",
-                    "src": "2507:9:81",
+                    "src": "2597:9:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -3196,10 +3196,10 @@
                   "id": 62415,
                   "mutability": "mutable",
                   "name": "calldatas",
-                  "nameLocation": "2555:9:81",
+                  "nameLocation": "2646:9:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62422,
-                  "src": "2540:24:81",
+                  "src": "2631:24:81",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3211,7 +3211,7 @@
                       "id": 62413,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2540:5:81",
+                      "src": "2631:5:81",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
@@ -3219,7 +3219,7 @@
                     },
                     "id": 62414,
                     "nodeType": "ArrayTypeName",
-                    "src": "2540:7:81",
+                    "src": "2631:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -3232,10 +3232,10 @@
                   "id": 62417,
                   "mutability": "mutable",
                   "name": "description",
-                  "nameLocation": "2588:11:81",
+                  "nameLocation": "2680:11:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62422,
-                  "src": "2574:25:81",
+                  "src": "2666:25:81",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3246,7 +3246,7 @@
                     "id": 62416,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2574:6:81",
+                    "src": "2666:6:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -3255,7 +3255,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2409:196:81"
+              "src": "2495:203:81"
             },
             "returnParameters": {
               "id": 62421,
@@ -3266,10 +3266,10 @@
                   "id": 62420,
                   "mutability": "mutable",
                   "name": "proposalId",
-                  "nameLocation": "2632:10:81",
+                  "nameLocation": "2725:10:81",
                   "nodeType": "VariableDeclaration",
                   "scope": 62422,
-                  "src": "2624:18:81",
+                  "src": "2717:18:81",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3280,7 +3280,7 @@
                     "id": 62419,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2624:7:81",
+                    "src": "2717:7:81",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -3289,7 +3289,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2623:20:81"
+              "src": "2716:20:81"
             },
             "scope": 62423,
             "stateMutability": "nonpayable",
@@ -3307,7 +3307,7 @@
           62423
         ],
         "name": "IGovernanceProxy",
-        "nameLocation": "305:16:81",
+        "nameLocation": "315:16:81",
         "scope": 62424,
         "usedErrors": [
           62245,

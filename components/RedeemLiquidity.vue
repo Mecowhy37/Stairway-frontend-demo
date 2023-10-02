@@ -167,20 +167,21 @@
                 </div>
             </div>
             <div
-                v-else-if="poolStatus === 'pending' || SinglePositionStatus === 'pending'"
+                v-else-if="ownedPosition === false && SinglePositionPending"
                 class="placeholder"
             >
                 <p>placeholder</p>
                 <p>text</p>
             </div>
-            <div class="infos contents">
+            <div
+                v-if="
+                    (connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError) ||
+                    (SinglePositionError && !SinglePositionPending)
+                "
+                class="infos contents"
+            >
                 <div
-                    v-if="
-                        connectedAccount &&
-                        !(poolStatus === 'pending' || SinglePositionStatus === 'pending') &&
-                        pool &&
-                        ownedPosition === false
-                    "
+                    v-if="connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError"
                     class="info row"
                 >
                     <div>
@@ -193,7 +194,7 @@
                     <p>You dont have any liquidity at this position.</p>
                 </div>
                 <div
-                    v-if="poolError && poolStatus === 'error'"
+                    v-if="SinglePositionError && !SinglePositionPending"
                     class="info row"
                 >
                     <div>
@@ -246,7 +247,7 @@ import { storeToRefs } from "pinia"
 import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
 
 const stepStore = useStepStore()
-const { routerAddress, connectedAccount, positions, positionsStatus, connectedChainId } = storeToRefs(stepStore)
+const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
 const { refreshPositions, getSinglePostion, updatePositionsWithNewSingle } = stepStore
 
 const state = reactive({
@@ -267,13 +268,7 @@ function removeSelected() {
 }
 // ROUTES ----------------
 const route = useRoute()
-const { pool, poolError, poolStatus, redeemLiquidity, refreshPool } = usePools(
-    routerAddress,
-    [],
-    connectedAccount,
-    connectedChainId,
-    route
-)
+const { redeemLiquidity } = usePools(routerAddress, [], connectedAccount, connectedChainId, route)
 // ROUTES ----------------
 
 function redeemLiquidityCall() {
@@ -316,16 +311,18 @@ watch(SinglePositionData, (newSinglePosition) => {
     }
 })
 const ownedPosition = computed(() => {
-    if (!pool.value || !positions.value) {
+    if (!positions.value) {
         return null
     }
-    const matchedPosition = positions.value.find((el) => el.pool.pool_index === pool.value.pool_index)
+    const matchedPosition = positions.value.find((el) => el.pool.pool_index == route.params.address)
     if (!matchedPosition) {
         return false
     }
     return matchedPosition
 })
-
+const pool = computed(() => {
+    return ownedPosition.value?.pool
+})
 function refresh() {
     console.log("refresh()")
     refreshPool()

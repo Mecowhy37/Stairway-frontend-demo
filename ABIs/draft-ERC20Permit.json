@@ -62,12 +62,12 @@
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "128:118:44",
+    "src": "131:123:44",
     "nodes": [
       {
         "id": 49264,
         "nodeType": "PragmaDirective",
-        "src": "128:23:44",
+        "src": "131:23:44",
         "nodes": [],
         "literals": [
           "solidity",
@@ -79,7 +79,7 @@
       {
         "id": 49265,
         "nodeType": "ImportDirective",
-        "src": "218:27:44",
+        "src": "225:27:44",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Permit.sol",
         "file": "./ERC20Permit.sol",

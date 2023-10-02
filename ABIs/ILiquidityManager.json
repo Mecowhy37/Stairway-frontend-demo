@@ -263,7 +263,7 @@
     "tokenBalances(address)": "523fba7f",
     "withdraw(uint256,address,address,uint256)": "a318c1a4"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"LiquidityManager__BlockNumberExceeds32Bits\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"LiquidityManager__InsufficientLiquidity\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"LiquidityManager__SingleTransactionLimitExceeded\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"LiquidityManager__Unauthorized\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"currentClusters\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"clusterIndex\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"distributeToClusters\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"getPastPoolTokenBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"poolTokenBalances\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IClusterRegistry\",\"name\":\"_clusterRegistry\",\"type\":\"address\"}],\"name\":\"setClusterRegistry\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract ILiquidityRamp\",\"name\":\"_liquidityRamp\",\"type\":\"address\"}],\"name\":\"setLiquidityRamp\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract ISwapManager\",\"name\":\"_swapManager\",\"type\":\"address\"}],\"name\":\"setSwapManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"singleTransactionDepositLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"singleTransactionWithdrawalLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"tokenBalances\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"currentClusters(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"clusterIndex\":\"Current cluster index for the token.\"}},\"distributeToClusters(uint256,address,uint256)\":{\"params\":{\"amount\":\"Amount to distribute.\",\"poolIdx\":\"Pool index.\",\"token\":\"ERC20 token.\"}},\"getPastPoolTokenBalance(uint256,address,uint256)\":{\"params\":{\"blockNumber\":\"Block number to check.\",\"poolIdx\":\"Pool index.\",\"token\":\"ERC20 token.\"},\"returns\":{\"balance\":\"Balance at the given block number.\"}},\"poolTokenBalances(uint256,address)\":{\"params\":{\"poolIdx\":\"Index of the pool.\",\"token\":\"ERC20 token.\"},\"returns\":{\"balance\":\"Token balance in the pool.\"}},\"singleTransactionDepositLimit(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"limit\":\"Deposit limit.\"}},\"singleTransactionWithdrawalLimit(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"limit\":\"Withdrawal limit.\"}},\"tokenBalances(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"balance\":\"Balance of the token.\"}},\"withdraw(uint256,address,address,uint256)\":{\"params\":{\"amount\":\"Amount to withdraw.\",\"poolIdx\":\"Pool index.\",\"to\":\"Recipient address.\",\"token\":\"ERC20 token.\"}}},\"title\":\"ILiquidityManager Interface\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"currentClusters(address)\":{\"notice\":\"Get the current cluster index for a token.\"},\"distributeToClusters(uint256,address,uint256)\":{\"notice\":\"Distribute tokens to clusters.\"},\"getPastPoolTokenBalance(uint256,address,uint256)\":{\"notice\":\"Get the past token balance for a specific pool.\"},\"poolTokenBalances(uint256,address)\":{\"notice\":\"Get token balance in a specific pool.\"},\"setClusterRegistry(address)\":{\"notice\":\"Update the ClusterRegistry contract.\"},\"setLiquidityRamp(address)\":{\"notice\":\"Update the LiquidityRamp contract.\"},\"setSwapManager(address)\":{\"notice\":\"Update the SwapManager contract.\"},\"singleTransactionDepositLimit(address)\":{\"notice\":\"Get the deposit limit for a token in a single transaction.\"},\"singleTransactionWithdrawalLimit(address)\":{\"notice\":\"Get the withdrawal limit for a token in a single transaction.\"},\"tokenBalances(address)\":{\"notice\":\"Get the token balance.\"},\"withdraw(uint256,address,address,uint256)\":{\"notice\":\"Withdraw tokens from a pool.\"}},\"notice\":\"This interface manages liquidity across different clusters.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/ILiquidityManager.sol\":\"ILiquidityManager\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d\",\"dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96\",\"dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb\",\"dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol\":{\"keccak256\":\"0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6\",\"dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5\",\"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"src/interfaces/ICluster.sol\":{\"keccak256\":\"0x219ba33744f5d53803dc00bd506578550fb96c0207e11f735fd3e706312c34cc\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://5423507eddfb5f0147b951f7589916b0fc1dd62a4ba5fc36415dc34a9b053b5c\",\"dweb:/ipfs/Qmc6QvrLffWicKYucBXS5E4frfqQWWZXAiaVTfUNuiRgTU\"]},\"src/interfaces/IClusterRegistry.sol\":{\"keccak256\":\"0x757b3d4e8f07444ab9cdd82b560eb4d06e92e50c668ef0fb2eb550442f54c295\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://8181ee22ce05ac0d6295f431c2974ffc97c33cff6768aeb1c8e79ce1c1270471\",\"dweb:/ipfs/QmWW4MY4j3aSTkqNuezvKYSR2mJ84mm2WzGtMJP1dGSoGk\"]},\"src/interfaces/ILPToken.sol\":{\"keccak256\":\"0xdd269676f741bb101ae0224e83b7c1d85e0785694eb60383d914cfbe163abafa\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f4c07852bf5526250ead721482352e98bea9d2a61272926b11b5d94432b1c5cb\",\"dweb:/ipfs/QmP3RjTdf71xFJdgbCUc7YUDHxXgv17CLAXpvuLZmCQxiR\"]},\"src/interfaces/ILiquidityManager.sol\":{\"keccak256\":\"0xb4223304961c3c8af8032bcc75f25812840e93df586bc4dfac79d2137473a794\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://0c988c89e36868504064b21a6e0977a1d0141cb7115cbd8d4c06e3061829079b\",\"dweb:/ipfs/QmR5i3XrjnbHu94Mft1wAatPDWd6DDh72EXJMMGzy6tpjD\"]},\"src/interfaces/ILiquidityRamp.sol\":{\"keccak256\":\"0x68af625f740b481c65f9d98e0100c91bb76b777064995c29e7f30f1069b3520b\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://acc6241fe72ec17057ba5c176c7a44260926ab29564e0719d208875714353089\",\"dweb:/ipfs/QmXFvyseX7Nh7PofX8iLS134zKw5RSS53PgDuejrEFEBq8\"]},\"src/interfaces/IPoolManager.sol\":{\"keccak256\":\"0x0a1cb5ff0327d32e28e0f82808d74d494bb103c1ddcbe611f8f17ff5991d01d0\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://0654168f8a1a9388fef765dd41d263803ef7eb537175e3bb51b24f0c8b452eed\",\"dweb:/ipfs/QmQMGpMuHyAnYsfcJkQk5Q1tKinCJbchaJzBWX5mCmkz6C\"]},\"src/interfaces/ISwapManager.sol\":{\"keccak256\":\"0x47f671f5d2c9b1f51b3857b12c5528f76c4161367d11e5f67861cec6a0c67d24\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://34f309ab690eb906c3a59f8ef90567d3600f5b793f95d8e006a845b78b00a4bb\",\"dweb:/ipfs/Qmc3TVsT6XmaHaVzzUtg7Ln9EaUxJPv9yNPtoudJQrPuAU\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"LiquidityManager__BlockNumberExceeds32Bits\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"LiquidityManager__InsufficientLiquidity\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"LiquidityManager__SingleTransactionLimitExceeded\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"LiquidityManager__Unauthorized\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"currentClusters\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"clusterIndex\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"distributeToClusters\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"getPastPoolTokenBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"poolTokenBalances\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IClusterRegistry\",\"name\":\"_clusterRegistry\",\"type\":\"address\"}],\"name\":\"setClusterRegistry\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract ILiquidityRamp\",\"name\":\"_liquidityRamp\",\"type\":\"address\"}],\"name\":\"setLiquidityRamp\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract ISwapManager\",\"name\":\"_swapManager\",\"type\":\"address\"}],\"name\":\"setSwapManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"singleTransactionDepositLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"singleTransactionWithdrawalLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"tokenBalances\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"poolIdx\",\"type\":\"uint256\"},{\"internalType\":\"contract IERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"currentClusters(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"clusterIndex\":\"Current cluster index for the token.\"}},\"distributeToClusters(uint256,address,uint256)\":{\"params\":{\"amount\":\"Amount to distribute.\",\"poolIdx\":\"Pool index.\",\"token\":\"ERC20 token.\"}},\"getPastPoolTokenBalance(uint256,address,uint256)\":{\"params\":{\"blockNumber\":\"Block number to check.\",\"poolIdx\":\"Pool index.\",\"token\":\"ERC20 token.\"},\"returns\":{\"balance\":\"Balance at the given block number.\"}},\"poolTokenBalances(uint256,address)\":{\"params\":{\"poolIdx\":\"Index of the pool.\",\"token\":\"ERC20 token.\"},\"returns\":{\"balance\":\"Token balance in the pool.\"}},\"singleTransactionDepositLimit(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"limit\":\"Deposit limit.\"}},\"singleTransactionWithdrawalLimit(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"limit\":\"Withdrawal limit.\"}},\"tokenBalances(address)\":{\"params\":{\"token\":\"ERC20 token.\"},\"returns\":{\"balance\":\"Balance of the token.\"}},\"withdraw(uint256,address,address,uint256)\":{\"params\":{\"amount\":\"Amount to withdraw.\",\"poolIdx\":\"Pool index.\",\"to\":\"Recipient address.\",\"token\":\"ERC20 token.\"}}},\"title\":\"ILiquidityManager Interface\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"currentClusters(address)\":{\"notice\":\"Get the current cluster index for a token.\"},\"distributeToClusters(uint256,address,uint256)\":{\"notice\":\"Distribute tokens to clusters.\"},\"getPastPoolTokenBalance(uint256,address,uint256)\":{\"notice\":\"Get the past token balance for a specific pool.\"},\"poolTokenBalances(uint256,address)\":{\"notice\":\"Get token balance in a specific pool.\"},\"setClusterRegistry(address)\":{\"notice\":\"Update the ClusterRegistry contract.\"},\"setLiquidityRamp(address)\":{\"notice\":\"Update the LiquidityRamp contract.\"},\"setSwapManager(address)\":{\"notice\":\"Update the SwapManager contract.\"},\"singleTransactionDepositLimit(address)\":{\"notice\":\"Get the deposit limit for a token in a single transaction.\"},\"singleTransactionWithdrawalLimit(address)\":{\"notice\":\"Get the withdrawal limit for a token in a single transaction.\"},\"tokenBalances(address)\":{\"notice\":\"Get the token balance.\"},\"withdraw(uint256,address,address,uint256)\":{\"notice\":\"Withdraw tokens from a pool.\"}},\"notice\":\"This interface manages liquidity across different clusters.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/ILiquidityManager.sol\":\"ILiquidityManager\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/governance/IGovernor.sol\":{\"keccak256\":\"0x8dea8d67674626aadd5a13851bf24992c28d9e7a7ee96621408f732592306193\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://829875be124594e1e278c876ed05eb32d74c35c7ab349548d0244cdf491d57db\",\"dweb:/ipfs/Qma7fnq6nb7jzumzQGZ3xhiCk6mx3WReau7J1WyCdP7FE1\"]},\"lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol\":{\"keccak256\":\"0x79a8585a7247cd19632c541e9a64924a6f105e5a30c55d3015f9b2a2ae969821\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://626d914437a398047d9ea9fe2e4d6fc746994b7c8faea26a07cd142d8b119811\",\"dweb:/ipfs/QmZxSJdEC48uj3PcfWWNe1hAxXSdinnzn53vmJrVseU5FJ\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x8045f7d526dd93c933f0f46b1637bace1ecb8282f150e004ada0bda898f8715f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://643d0f5beb2b0ce2e6c962b3fa87ca94333cf6237be8187460f5202d2813b1a3\",\"dweb:/ipfs/QmTPAqFeEVDnoJWm64DF2C53zfVBJZZC31wdGEeM8adGRE\"]},\"lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol\":{\"keccak256\":\"0x305f314218bceeb63308322e025f0123190815037b4bb22d7bde7e684bcf5f59\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ab9d225a42aa3a4f13db01862b4b49cae6383a367e6136ffeb30ea4caa3c6fda\",\"dweb:/ipfs/QmTXqCk8oBzsBSkXDiwTKt4zf66saBQgMJygeVdVM2havg\"]},\"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xa426add89e9b4785ddeeb07b4d9352b57de8b4cb314c8cb8f0d5898938bd8de9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://09852a830ad29d33cfdf74e7035853c68e43e1a8c242b25db9d656a074a54e6d\",\"dweb:/ipfs/QmeRSfQwWr3vyP2uJxnjybtPYLMiD17E51d4eMhXQh93R1\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x540685d7ece3faa56f38253270ff11b18e63949fb8659c408123b1874674492e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5474839e19e2571c52eae3aab1dc6e6edf2b20bbba9895f59db6594a2678a3d5\",\"dweb:/ipfs/QmVHocBeANMkq4TzVM7q9At5NSg1TEpT9D9vgJ5dGcvcPN\"]},\"src/interfaces/ICluster.sol\":{\"keccak256\":\"0xb5997d6744a9cc9a05d8edae9b5bc3a80cf0f6f825d18e0ee905db4c801d2dae\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://d5169de16cddd63347efe4c18b578d5af3bf8aeb76cdc7b1c2d4f7ef29506edd\",\"dweb:/ipfs/QmNv9josobM8iiAcYL8EZVu3yytorFkjBZWuZKj2y24No6\"]},\"src/interfaces/IClusterRegistry.sol\":{\"keccak256\":\"0x00b136c3f1cf62f04d7ac7bdc4b99fee5c541075cb8cb89337e9f01292ee5552\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://185cacffe9c3b59bd06179507e3374cffc06104fee80303962cf1bec5f2eb4a7\",\"dweb:/ipfs/QmSuZbWi1d7qekZiudMrQC8boaVyzyFayLo39zadVe7dn1\"]},\"src/interfaces/ILPToken.sol\":{\"keccak256\":\"0xebe2629d10390741db46ce216dc84f4a77ab0f08db0160878d297a4c45ef0def\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://797ef0e42dff4f4d5f215671993b2d7f275bb7a346a60f1a24fe03f4d2496d45\",\"dweb:/ipfs/QmayJribsnqhCnvuwGEwtr7uvB3PXrS1rGngYuRPfaLvwP\"]},\"src/interfaces/ILiquidityManager.sol\":{\"keccak256\":\"0x1772c58a0cde006b9e379a1a0d69ce6991f8d48a41349eaa058f621fc67ce5af\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://7f19cbcb25d6ca998d6aa9af66d8103e73e9d6dea0eabb5ef885d3ef032e7935\",\"dweb:/ipfs/QmeNxGFTn26Z543TGG8wHHLaHymTR89UZ4GSuVeGQDBgpx\"]},\"src/interfaces/ILiquidityRamp.sol\":{\"keccak256\":\"0x24bca18dd467df394272106bf01017137e0f674275b15f298aace7f04767f065\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://04e7c48a42571775b621184c465b2cbf850ba461de65c5a143b591cf06c4e1bc\",\"dweb:/ipfs/QmTERz1gTvVsP9w6cw3bUBEbW9C34QHzqohNzwfpX3z3G6\"]},\"src/interfaces/IPoolManager.sol\":{\"keccak256\":\"0x92ed5d04b6f742cc3cf983500ac8c6226eed3f413fb4082e19397e4e31a5eed4\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://9c0975eb9bb95ccc25aeaa6a48436c0da53c19a979b22d59f08e5380b59ef06f\",\"dweb:/ipfs/QmafgyH7VnRd1BART3DRZnxx5TB5XqGmbB2QLeMagwwHMK\"]},\"src/interfaces/ISwapManager.sol\":{\"keccak256\":\"0x4ae49eb2b910252e009ccc57790e7283b6f772fe8bdb9268fa6db13451761f74\",\"license\":\"BSL-1.1\",\"urls\":[\"bzz-raw://ba1984eb53b61e0c9540b9d2ca2282af5b77c35159951b86cf522ad5718abd07\",\"dweb:/ipfs/QmfBB6hYDa3ZCDpnULcJHhYALQQfVtj41hDNNZfeKLMerE\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -641,106 +641,106 @@
     },
     "sources": {
       "lib/openzeppelin-contracts/contracts/governance/IGovernor.sol": {
-        "keccak256": "0x2bca164e61152f22bd4be7f444d40a46f7b13aa3b7b7fd6b45aa2d869e72f6d7",
+        "keccak256": "0x8dea8d67674626aadd5a13851bf24992c28d9e7a7ee96621408f732592306193",
         "urls": [
-          "bzz-raw://5ed8cf61b5ec618f839ca35fd2d614aa83f252930dcc1c9fdf6259d6e381644d",
-          "dweb:/ipfs/QmSjHjCsr9aSudtFJWZ1Pj76FVzUEEpwmFBGnxoRftVN7g"
+          "bzz-raw://829875be124594e1e278c876ed05eb32d74c35c7ab349548d0244cdf491d57db",
+          "dweb:/ipfs/Qma7fnq6nb7jzumzQGZ3xhiCk6mx3WReau7J1WyCdP7FE1"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol": {
-        "keccak256": "0x1618ddebe73377660f6da71afcba35d5ac4c4600918b3a381d9c6f37eba613eb",
+        "keccak256": "0x79a8585a7247cd19632c541e9a64924a6f105e5a30c55d3015f9b2a2ae969821",
         "urls": [
-          "bzz-raw://666c8d7c62478b55e082f1835275b7acfc1595491998df6d67183ff2c70eab96",
-          "dweb:/ipfs/QmVXmnXfxNaLhoX283dqyKJ8DJbF5thUd9sMuRoFpNMwr7"
+          "bzz-raw://626d914437a398047d9ea9fe2e4d6fc746994b7c8faea26a07cd142d8b119811",
+          "dweb:/ipfs/QmZxSJdEC48uj3PcfWWNe1hAxXSdinnzn53vmJrVseU5FJ"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol": {
-        "keccak256": "0xd04b0f06e0666f29cf7cccc82894de541e19bb30a765b107b1e40bb7fe5f7d7a",
+        "keccak256": "0x8045f7d526dd93c933f0f46b1637bace1ecb8282f150e004ada0bda898f8715f",
         "urls": [
-          "bzz-raw://7b652499d098e88d8d878374616bb58434301061cae2253298b3f374044e0ddb",
-          "dweb:/ipfs/QmbhAzctqo5jrSKU6idHdVyqfmzCcDbNUPvmx4GiXxfA6q"
+          "bzz-raw://643d0f5beb2b0ce2e6c962b3fa87ca94333cf6237be8187460f5202d2813b1a3",
+          "dweb:/ipfs/QmTPAqFeEVDnoJWm64DF2C53zfVBJZZC31wdGEeM8adGRE"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol": {
-        "keccak256": "0xcaea9aeda3816ba872358c828f4f01455c22ae48ced49c4c7d72bd74176c09b9",
+        "keccak256": "0x305f314218bceeb63308322e025f0123190815037b4bb22d7bde7e684bcf5f59",
         "urls": [
-          "bzz-raw://16ff22d8df5aee94510ee43d361b6147caef164941a684cedcb75be44f351fe6",
-          "dweb:/ipfs/QmaCCwMdHVdPApuEJHLZapSJyA7mp5dAugpma3VUzWGd8E"
+          "bzz-raw://ab9d225a42aa3a4f13db01862b4b49cae6383a367e6136ffeb30ea4caa3c6fda",
+          "dweb:/ipfs/QmTXqCk8oBzsBSkXDiwTKt4zf66saBQgMJygeVdVM2havg"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
-        "keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
+        "keccak256": "0xa426add89e9b4785ddeeb07b4d9352b57de8b4cb314c8cb8f0d5898938bd8de9",
         "urls": [
-          "bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
-          "dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
+          "bzz-raw://09852a830ad29d33cfdf74e7035853c68e43e1a8c242b25db9d656a074a54e6d",
+          "dweb:/ipfs/QmeRSfQwWr3vyP2uJxnjybtPYLMiD17E51d4eMhXQh93R1"
         ],
         "license": "MIT"
       },
       "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
-        "keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+        "keccak256": "0x540685d7ece3faa56f38253270ff11b18e63949fb8659c408123b1874674492e",
         "urls": [
-          "bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
-          "dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+          "bzz-raw://5474839e19e2571c52eae3aab1dc6e6edf2b20bbba9895f59db6594a2678a3d5",
+          "dweb:/ipfs/QmVHocBeANMkq4TzVM7q9At5NSg1TEpT9D9vgJ5dGcvcPN"
         ],
         "license": "MIT"
       },
       "src/interfaces/ICluster.sol": {
-        "keccak256": "0x219ba33744f5d53803dc00bd506578550fb96c0207e11f735fd3e706312c34cc",
+        "keccak256": "0xb5997d6744a9cc9a05d8edae9b5bc3a80cf0f6f825d18e0ee905db4c801d2dae",
         "urls": [
-          "bzz-raw://5423507eddfb5f0147b951f7589916b0fc1dd62a4ba5fc36415dc34a9b053b5c",
-          "dweb:/ipfs/Qmc6QvrLffWicKYucBXS5E4frfqQWWZXAiaVTfUNuiRgTU"
+          "bzz-raw://d5169de16cddd63347efe4c18b578d5af3bf8aeb76cdc7b1c2d4f7ef29506edd",
+          "dweb:/ipfs/QmNv9josobM8iiAcYL8EZVu3yytorFkjBZWuZKj2y24No6"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/IClusterRegistry.sol": {
-        "keccak256": "0x757b3d4e8f07444ab9cdd82b560eb4d06e92e50c668ef0fb2eb550442f54c295",
+        "keccak256": "0x00b136c3f1cf62f04d7ac7bdc4b99fee5c541075cb8cb89337e9f01292ee5552",
         "urls": [
-          "bzz-raw://8181ee22ce05ac0d6295f431c2974ffc97c33cff6768aeb1c8e79ce1c1270471",
-          "dweb:/ipfs/QmWW4MY4j3aSTkqNuezvKYSR2mJ84mm2WzGtMJP1dGSoGk"
+          "bzz-raw://185cacffe9c3b59bd06179507e3374cffc06104fee80303962cf1bec5f2eb4a7",
+          "dweb:/ipfs/QmSuZbWi1d7qekZiudMrQC8boaVyzyFayLo39zadVe7dn1"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/ILPToken.sol": {
-        "keccak256": "0xdd269676f741bb101ae0224e83b7c1d85e0785694eb60383d914cfbe163abafa",
+        "keccak256": "0xebe2629d10390741db46ce216dc84f4a77ab0f08db0160878d297a4c45ef0def",
         "urls": [
-          "bzz-raw://f4c07852bf5526250ead721482352e98bea9d2a61272926b11b5d94432b1c5cb",
-          "dweb:/ipfs/QmP3RjTdf71xFJdgbCUc7YUDHxXgv17CLAXpvuLZmCQxiR"
+          "bzz-raw://797ef0e42dff4f4d5f215671993b2d7f275bb7a346a60f1a24fe03f4d2496d45",
+          "dweb:/ipfs/QmayJribsnqhCnvuwGEwtr7uvB3PXrS1rGngYuRPfaLvwP"
         ],
         "license": "MIT"
       },
       "src/interfaces/ILiquidityManager.sol": {
-        "keccak256": "0xb4223304961c3c8af8032bcc75f25812840e93df586bc4dfac79d2137473a794",
+        "keccak256": "0x1772c58a0cde006b9e379a1a0d69ce6991f8d48a41349eaa058f621fc67ce5af",
         "urls": [
-          "bzz-raw://0c988c89e36868504064b21a6e0977a1d0141cb7115cbd8d4c06e3061829079b",
-          "dweb:/ipfs/QmR5i3XrjnbHu94Mft1wAatPDWd6DDh72EXJMMGzy6tpjD"
+          "bzz-raw://7f19cbcb25d6ca998d6aa9af66d8103e73e9d6dea0eabb5ef885d3ef032e7935",
+          "dweb:/ipfs/QmeNxGFTn26Z543TGG8wHHLaHymTR89UZ4GSuVeGQDBgpx"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/ILiquidityRamp.sol": {
-        "keccak256": "0x68af625f740b481c65f9d98e0100c91bb76b777064995c29e7f30f1069b3520b",
+        "keccak256": "0x24bca18dd467df394272106bf01017137e0f674275b15f298aace7f04767f065",
         "urls": [
-          "bzz-raw://acc6241fe72ec17057ba5c176c7a44260926ab29564e0719d208875714353089",
-          "dweb:/ipfs/QmXFvyseX7Nh7PofX8iLS134zKw5RSS53PgDuejrEFEBq8"
+          "bzz-raw://04e7c48a42571775b621184c465b2cbf850ba461de65c5a143b591cf06c4e1bc",
+          "dweb:/ipfs/QmTERz1gTvVsP9w6cw3bUBEbW9C34QHzqohNzwfpX3z3G6"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/IPoolManager.sol": {
-        "keccak256": "0x0a1cb5ff0327d32e28e0f82808d74d494bb103c1ddcbe611f8f17ff5991d01d0",
+        "keccak256": "0x92ed5d04b6f742cc3cf983500ac8c6226eed3f413fb4082e19397e4e31a5eed4",
         "urls": [
-          "bzz-raw://0654168f8a1a9388fef765dd41d263803ef7eb537175e3bb51b24f0c8b452eed",
-          "dweb:/ipfs/QmQMGpMuHyAnYsfcJkQk5Q1tKinCJbchaJzBWX5mCmkz6C"
+          "bzz-raw://9c0975eb9bb95ccc25aeaa6a48436c0da53c19a979b22d59f08e5380b59ef06f",
+          "dweb:/ipfs/QmafgyH7VnRd1BART3DRZnxx5TB5XqGmbB2QLeMagwwHMK"
         ],
         "license": "BSL-1.1"
       },
       "src/interfaces/ISwapManager.sol": {
-        "keccak256": "0x47f671f5d2c9b1f51b3857b12c5528f76c4161367d11e5f67861cec6a0c67d24",
+        "keccak256": "0x4ae49eb2b910252e009ccc57790e7283b6f772fe8bdb9268fa6db13451761f74",
         "urls": [
-          "bzz-raw://34f309ab690eb906c3a59f8ef90567d3600f5b793f95d8e006a845b78b00a4bb",
-          "dweb:/ipfs/Qmc3TVsT6XmaHaVzzUtg7Ln9EaUxJPv9yNPtoudJQrPuAU"
+          "bzz-raw://ba1984eb53b61e0c9540b9d2ca2282af5b77c35159951b86cf522ad5718abd07",
+          "dweb:/ipfs/QmfBB6hYDa3ZCDpnULcJHhYALQQfVtj41hDNNZfeKLMerE"
         ],
         "license": "BSL-1.1"
       }
@@ -789,12 +789,12 @@
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "36:3475:84",
+    "src": "37:3593:84",
     "nodes": [
       {
         "id": 62486,
         "nodeType": "PragmaDirective",
-        "src": "36:24:84",
+        "src": "37:24:84",
         "nodes": [],
         "literals": [
           "solidity",
@@ -806,7 +806,7 @@
       {
         "id": 62487,
         "nodeType": "ImportDirective",
-        "src": "85:44:84",
+        "src": "89:44:84",
         "nodes": [],
         "absolutePath": "src/interfaces/IClusterRegistry.sol",
         "file": "../interfaces/IClusterRegistry.sol",
@@ -819,7 +819,7 @@
       {
         "id": 62488,
         "nodeType": "ImportDirective",
-        "src": "130:42:84",
+        "src": "135:42:84",
         "nodes": [],
         "absolutePath": "src/interfaces/ILiquidityRamp.sol",
         "file": "../interfaces/ILiquidityRamp.sol",
@@ -832,7 +832,7 @@
       {
         "id": 62489,
         "nodeType": "ImportDirective",
-        "src": "173:40:84",
+        "src": "179:40:84",
         "nodes": [],
         "absolutePath": "src/interfaces/ISwapManager.sol",
         "file": "../interfaces/ISwapManager.sol",
@@ -845,7 +845,7 @@
       {
         "id": 62490,
         "nodeType": "ImportDirective",
-        "src": "214:56:84",
+        "src": "221:56:84",
         "nodes": [],
         "absolutePath": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
@@ -858,77 +858,77 @@
       {
         "id": 62605,
         "nodeType": "ContractDefinition",
-        "src": "389:3121:84",
+        "src": "402:3226:84",
         "nodes": [
           {
             "id": 62493,
             "nodeType": "ErrorDefinition",
-            "src": "451:39:84",
+            "src": "466:39:84",
             "nodes": [],
             "errorSelector": "34bb7647",
             "name": "LiquidityManager__Unauthorized",
-            "nameLocation": "457:30:84",
+            "nameLocation": "472:30:84",
             "parameters": {
               "id": 62492,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "487:2:84"
+              "src": "502:2:84"
             }
           },
           {
             "id": 62495,
             "nodeType": "ErrorDefinition",
-            "src": "495:48:84",
+            "src": "511:48:84",
             "nodes": [],
             "errorSelector": "91b36fe8",
             "name": "LiquidityManager__InsufficientLiquidity",
-            "nameLocation": "501:39:84",
+            "nameLocation": "517:39:84",
             "parameters": {
               "id": 62494,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "540:2:84"
+              "src": "556:2:84"
             }
           },
           {
             "id": 62497,
             "nodeType": "ErrorDefinition",
-            "src": "548:51:84",
+            "src": "565:51:84",
             "nodes": [],
             "errorSelector": "9b4dbcab",
             "name": "LiquidityManager__BlockNumberExceeds32Bits",
-            "nameLocation": "554:42:84",
+            "nameLocation": "571:42:84",
             "parameters": {
               "id": 62496,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "596:2:84"
+              "src": "613:2:84"
             }
           },
           {
             "id": 62499,
             "nodeType": "ErrorDefinition",
-            "src": "604:57:84",
+            "src": "622:57:84",
             "nodes": [],
             "errorSelector": "b9b5667e",
             "name": "LiquidityManager__SingleTransactionLimitExceeded",
-            "nameLocation": "610:48:84",
+            "nameLocation": "628:48:84",
             "parameters": {
               "id": 62498,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "658:2:84"
+              "src": "676:2:84"
             }
           },
           {
             "id": 62508,
             "nodeType": "FunctionDefinition",
-            "src": "838:91:84",
+            "src": "865:93:84",
             "nodes": [],
             "documentation": {
               "id": 62500,
               "nodeType": "StructuredDocumentation",
-              "src": "706:127:84",
+              "src": "728:131:84",
               "text": " @notice Get the token balance.\n @param token ERC20 token.\n @return balance Balance of the token."
             },
             "functionSelector": "523fba7f",
@@ -936,7 +936,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "tokenBalances",
-            "nameLocation": "847:13:84",
+            "nameLocation": "874:13:84",
             "parameters": {
               "id": 62504,
               "nodeType": "ParameterList",
@@ -946,10 +946,10 @@
                   "id": 62503,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "877:5:84",
+                  "nameLocation": "905:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62508,
-                  "src": "870:12:84",
+                  "src": "898:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -963,14 +963,14 @@
                       "id": 62501,
                       "name": "IERC20",
                       "nameLocations": [
-                        "870:6:84"
+                        "898:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "870:6:84"
+                      "src": "898:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "870:6:84",
+                    "src": "898:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -979,7 +979,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "860:28:84"
+              "src": "887:30:84"
             },
             "returnParameters": {
               "id": 62507,
@@ -990,10 +990,10 @@
                   "id": 62506,
                   "mutability": "mutable",
                   "name": "balance",
-                  "nameLocation": "920:7:84",
+                  "nameLocation": "949:7:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62508,
-                  "src": "912:15:84",
+                  "src": "941:15:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1004,7 +1004,7 @@
                     "id": 62505,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "912:7:84",
+                    "src": "941:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1013,7 +1013,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "911:17:84"
+              "src": "940:17:84"
             },
             "scope": 62605,
             "stateMutability": "view",
@@ -1023,12 +1023,12 @@
           {
             "id": 62519,
             "nodeType": "FunctionDefinition",
-            "src": "1128:120:84",
+            "src": "1165:123:84",
             "nodes": [],
             "documentation": {
               "id": 62509,
               "nodeType": "StructuredDocumentation",
-              "src": "935:188:84",
+              "src": "966:193:84",
               "text": " @notice Get token balance in a specific pool.\n @param poolIdx Index of the pool.\n @param token ERC20 token.\n @return balance Token balance in the pool."
             },
             "functionSelector": "5496696b",
@@ -1036,7 +1036,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "poolTokenBalances",
-            "nameLocation": "1137:17:84",
+            "nameLocation": "1174:17:84",
             "parameters": {
               "id": 62515,
               "nodeType": "ParameterList",
@@ -1046,10 +1046,10 @@
                   "id": 62511,
                   "mutability": "mutable",
                   "name": "poolIdx",
-                  "nameLocation": "1172:7:84",
+                  "nameLocation": "1210:7:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62519,
-                  "src": "1164:15:84",
+                  "src": "1202:15:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1060,7 +1060,7 @@
                     "id": 62510,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1164:7:84",
+                    "src": "1202:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1073,10 +1073,10 @@
                   "id": 62514,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "1196:5:84",
+                  "nameLocation": "1235:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62519,
-                  "src": "1189:12:84",
+                  "src": "1228:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1090,14 +1090,14 @@
                       "id": 62512,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1189:6:84"
+                        "1228:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1189:6:84"
+                      "src": "1228:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1189:6:84",
+                    "src": "1228:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1106,7 +1106,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1154:53:84"
+              "src": "1191:56:84"
             },
             "returnParameters": {
               "id": 62518,
@@ -1117,10 +1117,10 @@
                   "id": 62517,
                   "mutability": "mutable",
                   "name": "balance",
-                  "nameLocation": "1239:7:84",
+                  "nameLocation": "1279:7:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62519,
-                  "src": "1231:15:84",
+                  "src": "1271:15:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1131,7 +1131,7 @@
                     "id": 62516,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1231:7:84",
+                    "src": "1271:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1140,7 +1140,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1230:17:84"
+              "src": "1270:17:84"
             },
             "scope": 62605,
             "stateMutability": "view",
@@ -1150,12 +1150,12 @@
           {
             "id": 62528,
             "nodeType": "FunctionDefinition",
-            "src": "1426:98:84",
+            "src": "1473:100:84",
             "nodes": [],
             "documentation": {
               "id": 62520,
               "nodeType": "StructuredDocumentation",
-              "src": "1254:167:84",
+              "src": "1296:171:84",
               "text": " @notice Get the current cluster index for a token.\n @param token ERC20 token.\n @return clusterIndex Current cluster index for the token."
             },
             "functionSelector": "ccc0c8a1",
@@ -1163,7 +1163,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "currentClusters",
-            "nameLocation": "1435:15:84",
+            "nameLocation": "1482:15:84",
             "parameters": {
               "id": 62524,
               "nodeType": "ParameterList",
@@ -1173,10 +1173,10 @@
                   "id": 62523,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "1467:5:84",
+                  "nameLocation": "1515:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62528,
-                  "src": "1460:12:84",
+                  "src": "1508:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1190,14 +1190,14 @@
                       "id": 62521,
                       "name": "IERC20",
                       "nameLocations": [
-                        "1460:6:84"
+                        "1508:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "1460:6:84"
+                      "src": "1508:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "1460:6:84",
+                    "src": "1508:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1206,7 +1206,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1450:28:84"
+              "src": "1497:30:84"
             },
             "returnParameters": {
               "id": 62527,
@@ -1217,10 +1217,10 @@
                   "id": 62526,
                   "mutability": "mutable",
                   "name": "clusterIndex",
-                  "nameLocation": "1510:12:84",
+                  "nameLocation": "1559:12:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62528,
-                  "src": "1502:20:84",
+                  "src": "1551:20:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1231,7 +1231,7 @@
                     "id": 62525,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1502:7:84",
+                    "src": "1551:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1240,7 +1240,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1501:22:84"
+              "src": "1550:22:84"
             },
             "scope": 62605,
             "stateMutability": "view",
@@ -1250,12 +1250,12 @@
           {
             "id": 62535,
             "nodeType": "FunctionDefinition",
-            "src": "1607:72:84",
+            "src": "1661:72:84",
             "nodes": [],
             "documentation": {
               "id": 62529,
               "nodeType": "StructuredDocumentation",
-              "src": "1554:48:84",
+              "src": "1607:48:84",
               "text": "@notice Update the ClusterRegistry contract."
             },
             "functionSelector": "0ddfb51c",
@@ -1263,7 +1263,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "setClusterRegistry",
-            "nameLocation": "1616:18:84",
+            "nameLocation": "1670:18:84",
             "parameters": {
               "id": 62533,
               "nodeType": "ParameterList",
@@ -1273,10 +1273,10 @@
                   "id": 62532,
                   "mutability": "mutable",
                   "name": "_clusterRegistry",
-                  "nameLocation": "1652:16:84",
+                  "nameLocation": "1706:16:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62535,
-                  "src": "1635:33:84",
+                  "src": "1689:33:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1290,14 +1290,14 @@
                       "id": 62530,
                       "name": "IClusterRegistry",
                       "nameLocations": [
-                        "1635:16:84"
+                        "1689:16:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62023,
-                      "src": "1635:16:84"
+                      "src": "1689:16:84"
                     },
                     "referencedDeclaration": 62023,
-                    "src": "1635:16:84",
+                    "src": "1689:16:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IClusterRegistry_$62023",
                       "typeString": "contract IClusterRegistry"
@@ -1306,13 +1306,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1634:35:84"
+              "src": "1688:35:84"
             },
             "returnParameters": {
               "id": 62534,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1678:0:84"
+              "src": "1732:0:84"
             },
             "scope": 62605,
             "stateMutability": "nonpayable",
@@ -1322,12 +1322,12 @@
           {
             "id": 62542,
             "nodeType": "FunctionDefinition",
-            "src": "1736:66:84",
+            "src": "1793:66:84",
             "nodes": [],
             "documentation": {
               "id": 62536,
               "nodeType": "StructuredDocumentation",
-              "src": "1685:46:84",
+              "src": "1741:46:84",
               "text": "@notice Update the LiquidityRamp contract."
             },
             "functionSelector": "23bae8a7",
@@ -1335,7 +1335,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "setLiquidityRamp",
-            "nameLocation": "1745:16:84",
+            "nameLocation": "1802:16:84",
             "parameters": {
               "id": 62540,
               "nodeType": "ParameterList",
@@ -1345,10 +1345,10 @@
                   "id": 62539,
                   "mutability": "mutable",
                   "name": "_liquidityRamp",
-                  "nameLocation": "1777:14:84",
+                  "nameLocation": "1834:14:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62542,
-                  "src": "1762:29:84",
+                  "src": "1819:29:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1362,14 +1362,14 @@
                       "id": 62537,
                       "name": "ILiquidityRamp",
                       "nameLocations": [
-                        "1762:14:84"
+                        "1819:14:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62721,
-                      "src": "1762:14:84"
+                      "src": "1819:14:84"
                     },
                     "referencedDeclaration": 62721,
-                    "src": "1762:14:84",
+                    "src": "1819:14:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_ILiquidityRamp_$62721",
                       "typeString": "contract ILiquidityRamp"
@@ -1378,13 +1378,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1761:31:84"
+              "src": "1818:31:84"
             },
             "returnParameters": {
               "id": 62541,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1801:0:84"
+              "src": "1858:0:84"
             },
             "scope": 62605,
             "stateMutability": "nonpayable",
@@ -1394,12 +1394,12 @@
           {
             "id": 62549,
             "nodeType": "FunctionDefinition",
-            "src": "1857:60:84",
+            "src": "1917:60:84",
             "nodes": [],
             "documentation": {
               "id": 62543,
               "nodeType": "StructuredDocumentation",
-              "src": "1808:44:84",
+              "src": "1867:44:84",
               "text": "@notice Update the SwapManager contract."
             },
             "functionSelector": "30284efc",
@@ -1407,7 +1407,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "setSwapManager",
-            "nameLocation": "1866:14:84",
+            "nameLocation": "1926:14:84",
             "parameters": {
               "id": 62547,
               "nodeType": "ParameterList",
@@ -1417,10 +1417,10 @@
                   "id": 62546,
                   "mutability": "mutable",
                   "name": "_swapManager",
-                  "nameLocation": "1894:12:84",
+                  "nameLocation": "1954:12:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62549,
-                  "src": "1881:25:84",
+                  "src": "1941:25:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1434,14 +1434,14 @@
                       "id": 62544,
                       "name": "ISwapManager",
                       "nameLocations": [
-                        "1881:12:84"
+                        "1941:12:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 62911,
-                      "src": "1881:12:84"
+                      "src": "1941:12:84"
                     },
                     "referencedDeclaration": 62911,
-                    "src": "1881:12:84",
+                    "src": "1941:12:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_ISwapManager_$62911",
                       "typeString": "contract ISwapManager"
@@ -1450,13 +1450,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1880:27:84"
+              "src": "1940:27:84"
             },
             "returnParameters": {
               "id": 62548,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1916:0:84"
+              "src": "1976:0:84"
             },
             "scope": 62605,
             "stateMutability": "nonpayable",
@@ -1466,12 +1466,12 @@
           {
             "id": 62558,
             "nodeType": "FunctionDefinition",
-            "src": "2082:105:84",
+            "src": "2149:107:84",
             "nodes": [],
             "documentation": {
               "id": 62550,
               "nodeType": "StructuredDocumentation",
-              "src": "1923:154:84",
+              "src": "1985:158:84",
               "text": " @notice Get the deposit limit for a token in a single transaction.\n @param token ERC20 token.\n @return limit Deposit limit."
             },
             "functionSelector": "67e45cf2",
@@ -1479,7 +1479,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "singleTransactionDepositLimit",
-            "nameLocation": "2091:29:84",
+            "nameLocation": "2158:29:84",
             "parameters": {
               "id": 62554,
               "nodeType": "ParameterList",
@@ -1489,10 +1489,10 @@
                   "id": 62553,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "2137:5:84",
+                  "nameLocation": "2205:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62558,
-                  "src": "2130:12:84",
+                  "src": "2198:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1506,14 +1506,14 @@
                       "id": 62551,
                       "name": "IERC20",
                       "nameLocations": [
-                        "2130:6:84"
+                        "2198:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "2130:6:84"
+                      "src": "2198:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "2130:6:84",
+                    "src": "2198:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1522,7 +1522,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2120:28:84"
+              "src": "2187:30:84"
             },
             "returnParameters": {
               "id": 62557,
@@ -1533,10 +1533,10 @@
                   "id": 62556,
                   "mutability": "mutable",
                   "name": "limit",
-                  "nameLocation": "2180:5:84",
+                  "nameLocation": "2249:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62558,
-                  "src": "2172:13:84",
+                  "src": "2241:13:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1547,7 +1547,7 @@
                     "id": 62555,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2172:7:84",
+                    "src": "2241:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1556,7 +1556,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2171:15:84"
+              "src": "2240:15:84"
             },
             "scope": 62605,
             "stateMutability": "view",
@@ -1566,12 +1566,12 @@
           {
             "id": 62567,
             "nodeType": "FunctionDefinition",
-            "src": "2358:108:84",
+            "src": "2434:110:84",
             "nodes": [],
             "documentation": {
               "id": 62559,
               "nodeType": "StructuredDocumentation",
-              "src": "2193:160:84",
+              "src": "2264:164:84",
               "text": " @notice Get the withdrawal limit for a token in a single transaction.\n @param token ERC20 token.\n @return limit Withdrawal limit."
             },
             "functionSelector": "591409fa",
@@ -1579,7 +1579,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "singleTransactionWithdrawalLimit",
-            "nameLocation": "2367:32:84",
+            "nameLocation": "2443:32:84",
             "parameters": {
               "id": 62563,
               "nodeType": "ParameterList",
@@ -1589,10 +1589,10 @@
                   "id": 62562,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "2416:5:84",
+                  "nameLocation": "2493:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62567,
-                  "src": "2409:12:84",
+                  "src": "2486:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1606,14 +1606,14 @@
                       "id": 62560,
                       "name": "IERC20",
                       "nameLocations": [
-                        "2409:6:84"
+                        "2486:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "2409:6:84"
+                      "src": "2486:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "2409:6:84",
+                    "src": "2486:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1622,7 +1622,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2399:28:84"
+              "src": "2475:30:84"
             },
             "returnParameters": {
               "id": 62566,
@@ -1633,10 +1633,10 @@
                   "id": 62565,
                   "mutability": "mutable",
                   "name": "limit",
-                  "nameLocation": "2459:5:84",
+                  "nameLocation": "2537:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62567,
-                  "src": "2451:13:84",
+                  "src": "2529:13:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1647,7 +1647,7 @@
                     "id": 62564,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2451:7:84",
+                    "src": "2529:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1656,7 +1656,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2450:15:84"
+              "src": "2528:15:84"
             },
             "scope": 62605,
             "stateMutability": "view",
@@ -1666,12 +1666,12 @@
           {
             "id": 62578,
             "nodeType": "FunctionDefinition",
-            "src": "2644:116:84",
+            "src": "2730:120:84",
             "nodes": [],
             "documentation": {
               "id": 62568,
               "nodeType": "StructuredDocumentation",
-              "src": "2472:167:84",
+              "src": "2552:172:84",
               "text": " @notice Distribute tokens to clusters.\n @param poolIdx Pool index.\n @param token ERC20 token.\n @param amount Amount to distribute."
             },
             "functionSelector": "fb699316",
@@ -1679,7 +1679,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "distributeToClusters",
-            "nameLocation": "2653:20:84",
+            "nameLocation": "2739:20:84",
             "parameters": {
               "id": 62576,
               "nodeType": "ParameterList",
@@ -1689,10 +1689,10 @@
                   "id": 62570,
                   "mutability": "mutable",
                   "name": "poolIdx",
-                  "nameLocation": "2691:7:84",
+                  "nameLocation": "2778:7:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62578,
-                  "src": "2683:15:84",
+                  "src": "2770:15:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1703,7 +1703,7 @@
                     "id": 62569,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2683:7:84",
+                    "src": "2770:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1716,10 +1716,10 @@
                   "id": 62573,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "2715:5:84",
+                  "nameLocation": "2803:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62578,
-                  "src": "2708:12:84",
+                  "src": "2796:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1733,14 +1733,14 @@
                       "id": 62571,
                       "name": "IERC20",
                       "nameLocations": [
-                        "2708:6:84"
+                        "2796:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "2708:6:84"
+                      "src": "2796:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "2708:6:84",
+                    "src": "2796:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1753,10 +1753,10 @@
                   "id": 62575,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "2738:6:84",
+                  "nameLocation": "2827:6:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62578,
-                  "src": "2730:14:84",
+                  "src": "2819:14:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1767,7 +1767,7 @@
                     "id": 62574,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2730:7:84",
+                    "src": "2819:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1776,13 +1776,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2673:77:84"
+              "src": "2759:81:84"
             },
             "returnParameters": {
               "id": 62577,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2759:0:84"
+              "src": "2849:0:84"
             },
             "scope": 62605,
             "stateMutability": "nonpayable",
@@ -1792,12 +1792,12 @@
           {
             "id": 62591,
             "nodeType": "FunctionDefinition",
-            "src": "2970:124:84",
+            "src": "3069:129:84",
             "nodes": [],
             "documentation": {
               "id": 62579,
               "nodeType": "StructuredDocumentation",
-              "src": "2766:199:84",
+              "src": "2858:205:84",
               "text": " @notice Withdraw tokens from a pool.\n @param poolIdx Pool index.\n @param token ERC20 token.\n @param to Recipient address.\n @param amount Amount to withdraw."
             },
             "functionSelector": "a318c1a4",
@@ -1805,7 +1805,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "withdraw",
-            "nameLocation": "2979:8:84",
+            "nameLocation": "3078:8:84",
             "parameters": {
               "id": 62589,
               "nodeType": "ParameterList",
@@ -1815,10 +1815,10 @@
                   "id": 62581,
                   "mutability": "mutable",
                   "name": "poolIdx",
-                  "nameLocation": "3005:7:84",
+                  "nameLocation": "3105:7:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62591,
-                  "src": "2997:15:84",
+                  "src": "3097:15:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1829,7 +1829,7 @@
                     "id": 62580,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2997:7:84",
+                    "src": "3097:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1842,10 +1842,10 @@
                   "id": 62584,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "3029:5:84",
+                  "nameLocation": "3130:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62591,
-                  "src": "3022:12:84",
+                  "src": "3123:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1859,14 +1859,14 @@
                       "id": 62582,
                       "name": "IERC20",
                       "nameLocations": [
-                        "3022:6:84"
+                        "3123:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "3022:6:84"
+                      "src": "3123:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "3022:6:84",
+                    "src": "3123:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -1879,10 +1879,10 @@
                   "id": 62586,
                   "mutability": "mutable",
                   "name": "to",
-                  "nameLocation": "3052:2:84",
+                  "nameLocation": "3154:2:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62591,
-                  "src": "3044:10:84",
+                  "src": "3146:10:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1893,7 +1893,7 @@
                     "id": 62585,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3044:7:84",
+                    "src": "3146:7:84",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1907,10 +1907,10 @@
                   "id": 62588,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "3072:6:84",
+                  "nameLocation": "3175:6:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62591,
-                  "src": "3064:14:84",
+                  "src": "3167:14:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1921,7 +1921,7 @@
                     "id": 62587,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3064:7:84",
+                    "src": "3167:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1930,13 +1930,13 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2987:97:84"
+              "src": "3086:102:84"
             },
             "returnParameters": {
               "id": 62590,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3093:0:84"
+              "src": "3197:0:84"
             },
             "scope": 62605,
             "stateMutability": "nonpayable",
@@ -1946,12 +1946,12 @@
           {
             "id": 62604,
             "nodeType": "FunctionDefinition",
-            "src": "3353:155:84",
+            "src": "3466:159:84",
             "nodes": [],
             "documentation": {
               "id": 62592,
               "nodeType": "StructuredDocumentation",
-              "src": "3100:248:84",
+              "src": "3206:254:84",
               "text": " @notice Get the past token balance for a specific pool.\n @param poolIdx Pool index.\n @param token ERC20 token.\n @param blockNumber Block number to check.\n @return balance Balance at the given block number."
             },
             "functionSelector": "3394c740",
@@ -1959,7 +1959,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "getPastPoolTokenBalance",
-            "nameLocation": "3362:23:84",
+            "nameLocation": "3475:23:84",
             "parameters": {
               "id": 62600,
               "nodeType": "ParameterList",
@@ -1969,10 +1969,10 @@
                   "id": 62594,
                   "mutability": "mutable",
                   "name": "poolIdx",
-                  "nameLocation": "3403:7:84",
+                  "nameLocation": "3517:7:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62604,
-                  "src": "3395:15:84",
+                  "src": "3509:15:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1983,7 +1983,7 @@
                     "id": 62593,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3395:7:84",
+                    "src": "3509:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1996,10 +1996,10 @@
                   "id": 62597,
                   "mutability": "mutable",
                   "name": "token",
-                  "nameLocation": "3427:5:84",
+                  "nameLocation": "3542:5:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62604,
-                  "src": "3420:12:84",
+                  "src": "3535:12:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2013,14 +2013,14 @@
                       "id": 62595,
                       "name": "IERC20",
                       "nameLocations": [
-                        "3420:6:84"
+                        "3535:6:84"
                       ],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 48295,
-                      "src": "3420:6:84"
+                      "src": "3535:6:84"
                     },
                     "referencedDeclaration": 48295,
-                    "src": "3420:6:84",
+                    "src": "3535:6:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_IERC20_$48295",
                       "typeString": "contract IERC20"
@@ -2033,10 +2033,10 @@
                   "id": 62599,
                   "mutability": "mutable",
                   "name": "blockNumber",
-                  "nameLocation": "3450:11:84",
+                  "nameLocation": "3566:11:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62604,
-                  "src": "3442:19:84",
+                  "src": "3558:19:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2047,7 +2047,7 @@
                     "id": 62598,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3442:7:84",
+                    "src": "3558:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2056,7 +2056,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3385:82:84"
+              "src": "3498:86:84"
             },
             "returnParameters": {
               "id": 62603,
@@ -2067,10 +2067,10 @@
                   "id": 62602,
                   "mutability": "mutable",
                   "name": "balance",
-                  "nameLocation": "3499:7:84",
+                  "nameLocation": "3616:7:84",
                   "nodeType": "VariableDeclaration",
                   "scope": 62604,
-                  "src": "3491:15:84",
+                  "src": "3608:15:84",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2081,7 +2081,7 @@
                     "id": 62601,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3491:7:84",
+                    "src": "3608:7:84",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2090,7 +2090,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3490:17:84"
+              "src": "3607:17:84"
             },
             "scope": 62605,
             "stateMutability": "view",
@@ -2106,7 +2106,7 @@
         "documentation": {
           "id": 62491,
           "nodeType": "StructuredDocumentation",
-          "src": "272:116:84",
+          "src": "281:119:84",
           "text": " @title ILiquidityManager Interface\n @notice This interface manages liquidity across different clusters."
         },
         "fullyImplemented": false,
@@ -2114,7 +2114,7 @@
           62605
         ],
         "name": "ILiquidityManager",
-        "nameLocation": "399:17:84",
+        "nameLocation": "412:17:84",
         "scope": 62606,
         "usedErrors": [
           62493,

@@ -27,7 +27,7 @@
   "methodIdentifiers": {
     "token()": "fc0c546a"
   },
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IGovernorVotes.sol\":\"IGovernorVotes\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"src/interfaces/IGovernorVotes.sol\":{\"keccak256\":\"0x22dcadb387580ee9bfc0c2846d9798eeb2402553f9ca068d0a1e955a86ce9731\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8e07c191ddb7053427256b8f9ba8f11597ed946e2252d3aa248407960e2845b5\",\"dweb:/ipfs/QmXrfEDKmowfZLd3dZip8cmkvNMN41qtLuSLKN7tGh9wVk\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IGovernorVotes.sol\":\"IGovernorVotes\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"src/interfaces/IGovernorVotes.sol\":{\"keccak256\":\"0x2c7981f25ddcee40642b34a0ad805e98a5f6a39a97f65b602ecc7bb0d7c46736\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://057a7d6434a55b9217411edc1b19e048bf3081d20795f5878c70cf0d032c32b2\",\"dweb:/ipfs/QmNy3vtK73wsF3mBRzehAcPkY6DvcToacmqbWNEdksux9L\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.19+commit.7dd6d404"
@@ -83,10 +83,10 @@
     },
     "sources": {
       "src/interfaces/IGovernorVotes.sol": {
-        "keccak256": "0x22dcadb387580ee9bfc0c2846d9798eeb2402553f9ca068d0a1e955a86ce9731",
+        "keccak256": "0x2c7981f25ddcee40642b34a0ad805e98a5f6a39a97f65b602ecc7bb0d7c46736",
         "urls": [
-          "bzz-raw://8e07c191ddb7053427256b8f9ba8f11597ed946e2252d3aa248407960e2845b5",
-          "dweb:/ipfs/QmXrfEDKmowfZLd3dZip8cmkvNMN41qtLuSLKN7tGh9wVk"
+          "bzz-raw://057a7d6434a55b9217411edc1b19e048bf3081d20795f5878c70cf0d032c32b2",
+          "dweb:/ipfs/QmNy3vtK73wsF3mBRzehAcPkY6DvcToacmqbWNEdksux9L"
         ],
         "license": "MIT"
       }
@@ -95,19 +95,19 @@
   },
   "ast": {
     "absolutePath": "src/interfaces/IGovernorVotes.sol",
-    "id": 65743,
+    "id": 65324,
     "exportedSymbols": {
       "IGovernorVotes": [
-        65742
+        65323
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "32:270:85",
+    "src": "33:278:85",
     "nodes": [
       {
-        "id": 65736,
+        "id": 65317,
         "nodeType": "PragmaDirective",
-        "src": "32:24:85",
+        "src": "33:24:85",
         "nodes": [],
         "literals": [
           "solidity",
@@ -117,40 +117,40 @@
         ]
       },
       {
-        "id": 65742,
+        "id": 65323,
         "nodeType": "ContractDefinition",
-        "src": "219:82:85",
+        "src": "225:84:85",
         "nodes": [
           {
-            "id": 65741,
+            "id": 65322,
             "nodeType": "FunctionDefinition",
-            "src": "250:49:85",
+            "src": "257:49:85",
             "nodes": [],
             "functionSelector": "fc0c546a",
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "token",
-            "nameLocation": "259:5:85",
+            "nameLocation": "266:5:85",
             "parameters": {
-              "id": 65737,
+              "id": 65318,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "264:2:85"
+              "src": "271:2:85"
             },
             "returnParameters": {
-              "id": 65740,
+              "id": 65321,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 65739,
+                  "id": 65320,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 65741,
-                  "src": "290:7:85",
+                  "scope": 65322,
+                  "src": "297:7:85",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -158,10 +158,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 65738,
+                    "id": 65319,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "290:7:85",
+                    "src": "297:7:85",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -171,9 +171,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "289:9:85"
+              "src": "296:9:85"
             },
-            "scope": 65742,
+            "scope": 65323,
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
@@ -186,11 +186,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          65742
+          65323
         ],
         "name": "IGovernorVotes",
-        "nameLocation": "229:14:85",
-        "scope": 65743,
+        "nameLocation": "235:14:85",
+        "scope": 65324,
         "usedErrors": []
       }
     ],
