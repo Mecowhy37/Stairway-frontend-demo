@@ -143,7 +143,7 @@
                         />
                     </div>
                     <p>
-                        There's currently
+                        <!-- There's currently
                         {{ roundFloor(formatUnits(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
                         {{ Tokens[tkEnum.BASE].symbol }}
                         available for
@@ -158,7 +158,20 @@
                             class="text-highlight--underlined"
                             @click="fillInDepth(pool.depth)"
                             >Adjust my swap</span
+                        > -->
+
+                        Currently, only
+                        {{ roundFloor(formatUnits(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
+                        {{ Tokens[tkEnum.BASE].symbol }}
+                        is available at this fixed price. You'll pay solely for what you receive. Availability may
+                        change in real-time.
+                        <br />
+                        <span
+                            class="text-highlight--underlined"
+                            @click="fillInDepth(pool.depth)"
+                            >Adjust my swap</span
                         >
+
                         <!-- {{ roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals)) }} -->
                         <!-- {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }} -->
                     </p>

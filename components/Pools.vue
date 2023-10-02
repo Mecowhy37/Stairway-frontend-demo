@@ -256,7 +256,6 @@ const {
 watch(
     () => [PositionsData.value, PositionsStatus.value, PositionsPending.value],
     ([newPositions, newStatus, newPending]) => {
-        console.log("newPositions:", newPositions)
         if (newPositions) {
             stepStore.positions = newPositions
         }

@@ -99,7 +99,7 @@ const notifications = {
     },
     sign: {
         state: "sign",
-        header: "Please sign a transaction",
+        header: "Sign to complete the transaction",
         paragraph: "Sign to complete a transaction",
         isDone: false,
     },

@@ -177,8 +177,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             await tx.wait(1)
             return await listenForTransactionMine(tx, provider, () => {
                 console.log("callback from addLq() ... ")
-                notify(notifHolder, "success")
 
+                notify(notifHolder, "success")
                 callback()
             })
         } catch (error) {
@@ -198,8 +198,10 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         slippage,
         deadline,
         providerArg,
-        callback
+        callback,
+        notify
     ) {
+        let notifHolder = { id: null }
         const provider = new BrowserProvider(providerArg)
         const signer = await provider.getSigner()
         const router = new Contract(routerAddress.value, RouterABI, signer)
@@ -217,12 +219,13 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         const deadlineStamp = blockTimestamp + deadline * 60
 
         try {
-            const allowance = await checkAllowance(lpToken.address, signer.address)
-            if (allowance < lpAmount) {
-                await approveSpending(lpToken.address, providerArg, lpAmount)
+            if (await checkAllowance(lpToken.address, lpAmount, signer.address)) {
+                await approveSpending(lpToken, lpAmount, providerArg, false, notify, notifHolder)
             }
         } catch (error) {
+            notify(notifHolder, "error")
             console.log("Failed to get approvals:", error)
+            return
         }
 
         try {
@@ -235,6 +238,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             console.log("connectedAccount:", connectedAccount.value)
             console.log("deadlineStamp:", deadlineStamp)
             console.log("parsedSlippage:", parsedSlippage)
+
+            notify(notifHolder, "sign")
+
             const tx = await router.redeemLiquidity(
                 getAddress(tokenQuote.address),
                 getAddress(tokenBase.address),
@@ -245,13 +251,19 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 deadlineStamp,
                 parsedSlippage
             )
+
+            notify(notifHolder, "pending")
+
             console.log("sent RemoveLQ tx:", tx, "...waiting 1 block")
             await tx.wait(1)
             return await listenForTransactionMine(tx, provider, () => {
                 console.log("callback from redeem() ... ")
+
+                notify(notifHolder, "success")
                 callback()
             })
         } catch (err) {
+            notify(notifHolder, "error")
             console.log("failed to redeem liquidity: ", err)
         }
     }
@@ -304,7 +316,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 amountBase.toString(),
                 maxPrice.toString(),
                 getAddress(account),
-				"0xe3a2fb3cC3A8F9ca2987cb193931544Aa72951d6",
+                "0xe3a2fb3cC3A8F9ca2987cb193931544Aa72951d6",
                 deadlineStamp
             )
 

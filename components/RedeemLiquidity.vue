@@ -60,7 +60,7 @@
             <div class="amount">
                 <p class="grey-text">Amount</p>
                 <div class="percents row">
-                    <h1>{{ !pool || !ownedPosition ? 0 : state.redeemPercent }}%</h1>
+                    <h1>{{ !ownedPosition ? 0 : redeemPercent }}%</h1>
                     <div
                         class="options row"
                         ref="options"
@@ -70,7 +70,7 @@
                             selectable
                             outline
                             radio
-                            :disabled="!pool || !ownedPosition"
+                            :disabled="removingDisabled || !ownedPosition"
                             @click="setRedeemProc($event, 25)"
                             >25%</Btn
                         >
@@ -79,7 +79,7 @@
                             selectable
                             outline
                             radio
-                            :disabled="!pool || !ownedPosition"
+                            :disabled="removingDisabled || !ownedPosition"
                             @click="setRedeemProc($event, 50)"
                             >50%</Btn
                         >
@@ -88,7 +88,7 @@
                             selectable
                             outline
                             radio
-                            :disabled="!pool || !ownedPosition"
+                            :disabled="removingDisabled || !ownedPosition"
                             @click="setRedeemProc($event, 75)"
                             >75%</Btn
                         >
@@ -97,7 +97,7 @@
                             selectable
                             outline
                             radio
-                            :disabled="!pool || !ownedPosition"
+                            :disabled="removingDisabled || !ownedPosition"
                             @click="setRedeemProc($event, 100)"
                             >Max</Btn
                         >
@@ -106,15 +106,15 @@
             </div>
             <div
                 class="slider"
-                :class="{ 'slider--disabled': !pool || !ownedPosition }"
+                :class="{ 'slider--disabled': !ownedPosition || removingDisabled }"
             >
                 <input
                     type="range"
                     min="0"
                     max="100"
                     step="1"
-                    :disabled="!pool || !ownedPosition"
-                    v-model="state.redeemPercent"
+                    :disabled="removingDisabled || !ownedPosition"
+                    v-model="redeemPercent"
                     @input="removeSelected()"
                 />
             </div>
@@ -135,7 +135,7 @@
                                       (Number(
                                           formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
                                       ) *
-                                          state.redeemPercent) /
+                                          redeemPercent) /
                                           100
                                   )
                                 : 0
@@ -158,7 +158,7 @@
                                               ownedPosition.pool.quote_token.decimals
                                           )
                                       ) *
-                                          state.redeemPercent) /
+                                          redeemPercent) /
                                           100
                                   )
                                 : 0
@@ -222,7 +222,7 @@
                     is="h4"
                     wide
                     bulky
-                    :disabled="!ownedPosition"
+                    :disabled="!ownedPosition || removingDisabled || redeemPercent == 0"
                     @click="redeemLiquidityCall()"
                 >
                     Remove Liquidity
@@ -244,24 +244,22 @@
 import { formatUnits } from "ethers"
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
-import { usePools, basicRound, isSupportedChain, getUrl } from "~/helpers/index"
+import { usePools, basicRound, isSupportedChain } from "~/helpers/index"
 
 const stepStore = useStepStore()
 const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
 const { refreshPositions, getSinglePostion, updatePositionsWithNewSingle } = stepStore
 
-const state = reactive({
-    redeemPercent: 100,
-})
+const redeemPercent = ref(100)
 
 const options = ref(null)
 function setRedeemProc(event, proc) {
     removeSelected()
     event.target.classList.add("selected")
-    state.redeemPercent = proc
+    redeemPercent.value = proc
 }
 const progressPercent = computed(() => {
-    return state.redeemPercent + "%"
+    return redeemPercent.value + "%"
 })
 function removeSelected() {
     options.value.childNodes.forEach((el) => el.classList.remove("selected"))
@@ -271,21 +269,27 @@ const route = useRoute()
 const { redeemLiquidity } = usePools(routerAddress, [], connectedAccount, connectedChainId, route)
 // ROUTES ----------------
 
+const removingDisabled = ref(false)
 function redeemLiquidityCall() {
-    if (ownedPosition.value && pool.value) {
+    if (ownedPosition.value) {
+        removingDisabled.value = true
         redeemLiquidity(
             pool.value.base_token,
             pool.value.quote_token,
             ownedPosition.value.base_amount,
             ownedPosition.value.quote_amount,
-            state.redeemPercent,
+            redeemPercent.value,
             pool.value.lp_token,
             ownedPosition.value.lp_amount,
             settingsRedeem.value.slippage,
             settingsRedeem.value.deadline,
             stepStore.connectedWallet.provider,
-            refresh
-        )
+            refresh,
+            stepStore.notify
+        ).then(() => {
+            removingDisabled.value = false
+            redeemPercent.value = 100
+        })
     }
 }
 const {
@@ -325,8 +329,10 @@ const pool = computed(() => {
 })
 function refresh() {
     console.log("refresh()")
-    refreshPool()
-    refreshPositions()
+    RefreshSinglePosition()
+    setTimeout(() => {
+        navigateTo({ path: "/liquidity" })
+    }, 1000)
 }
 
 //SETTINGS--------------
