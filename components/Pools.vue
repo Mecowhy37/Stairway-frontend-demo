@@ -35,6 +35,7 @@
                 <div class="pools">
                     <div
                         v-for="el in new Array(3)"
+                        :key="el"
                         class="pool placeholder placeholder--solid"
                     >
                         <div class="pool__heading row"><Btn :compact="isMobile">Manage</Btn></div>
