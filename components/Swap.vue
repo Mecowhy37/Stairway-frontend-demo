@@ -214,7 +214,7 @@
                     is="h4"
                     wide
                     bulky
-                    :disabled="!canSwap || swappingDisabled"
+                    :disabled="!canSwap || swappingDisabled || insufficientBalanceIndexes.includes(tkEnum.QUOTE)"
                 >
                     Swap
                 </Btn>

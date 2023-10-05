@@ -102,10 +102,26 @@
                 </div>
             </div>
             <div
-                v-if="insufficientBalanceIndexes.length > 0"
+                v-if="insufficientBalanceIndexes.length > 0 || poolError"
                 class="infos"
             >
-                <div class="info info--warn row">
+                <div
+                    v-if="poolError"
+                    class="info row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>Pool not found. Be aware you are setting a initial ratio of the pool</p>
+                </div>
+                <div
+                    v-if="insufficientBalanceIndexes.length > 0"
+                    class="info info--warn row"
+                >
                     <div>
                         <Icon
                             class="icon"
@@ -218,7 +234,9 @@
                     is="h4"
                     wide
                     bulky
-                    :disabled="!bothAmountsIn || !bothTokensThere || addingDisabled"
+                    :disabled="
+                        !bothAmountsIn || !bothTokensThere || addingDisabled || insufficientBalanceIndexes.length > 0
+                    "
                 >
                     Add liquidity
                 </Btn>
@@ -327,7 +345,13 @@ watch(
 // ROUTES ----------------
 
 // POOL -----------------
-const { pool, refreshPool, addLiquidity } = usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route)
+const { pool, refreshPool, addLiquidity, poolError } = usePools(
+    routerAddress,
+    Tokens,
+    connectedAccount,
+    connectedChainId,
+    route
+)
 // POOL -----------------
 
 // WIDGET ---------------
