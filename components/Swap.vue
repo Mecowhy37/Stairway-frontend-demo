@@ -114,10 +114,31 @@
             <div
                 v-if="
                     (bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base) ||
-                    insufficientBalanceIndexes.includes(tkEnum.QUOTE)
+                    insufficientBalanceIndexes.includes(tkEnum.QUOTE) ||
+                    poolError
                 "
                 class="infos"
             >
+                <div
+                    v-if="poolError"
+                    class="info row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>
+                        Pool not found. You can create it
+                        <span
+                            @click="addRedirect"
+                            class="text-highlight--underlined"
+                            >here</span
+                        >.
+                    </p>
+                </div>
                 <div
                     v-if="insufficientBalanceIndexes.includes(tkEnum.QUOTE)"
                     class="info info--warn row"
@@ -389,16 +410,27 @@ function fillInDepth(depth) {
 
 const insufficientBalanceIndexes = computed(() => {
     let balanceIndexes = []
-    Tokens.value.forEach((token, idx) => {
-        if (!token) {
-            return
-        }
-        if (Balances.value[idx] < fullAmountsMap.value[idx]) {
-            balanceIndexes.push(idx)
-        }
-    })
+    if (connectedAccount.value) {
+        Tokens.value.forEach((token, idx) => {
+            if (!token) {
+                return
+            }
+            if (Balances.value[idx] < fullAmountsMap.value[idx]) {
+                balanceIndexes.push(idx)
+            }
+        })
+    }
     return balanceIndexes
 })
+function addRedirect() {
+    router.push({
+        path: "/add-liquidity",
+        query: {
+            tk1: Tokens.value[tkEnum.QUOTE].address,
+            tk2: Tokens.value[tkEnum.BASE].address,
+        },
+    })
+}
 // WIDGET ------------------
 
 // AMOUNTS -----------------

@@ -5,7 +5,7 @@ import { init, useOnboard } from "@web3-onboard/vue"
 import injectedModule, { ProviderLabel } from "@web3-onboard/injected-wallets"
 
 import ledgerModule from '@web3-onboard/ledger'
-import walletConnectModule from '@web3-onboard/walletconnect'
+// import walletConnectModule from '@web3-onboard/walletconnect'
 import gnosisModule from '@web3-onboard/gnosis'
 
 const ledger = ledgerModule({
@@ -13,11 +13,11 @@ const ledger = ledgerModule({
   requiredChains: [137, 80001],
   walletConnectVersion: 2,
 })
-const walletConnect = walletConnectModule({
-    projectId: 'Stairway',
-    requiredChains: [137, 80001],
-    dappUrl: 'https://app.stairway.fi/'
-})
+// const walletConnect = walletConnectModule({
+//     projectId: 'Stairway',
+//     requiredChains: [137, 80001],
+//     dappUrl: 'https://app.stairway.fi/'
+// })
 const regex = new RegExp("^https://app\\.stairway\\.fi/.*$");
 const localhostRegex = new RegExp("^http://localhost:3000/.*$");
 const gnosis = gnosisModule()
@@ -59,7 +59,8 @@ export const useStepStore = defineStore("step", (): any => {
     })
 
     const onboard = init({
-        wallets: [injected, ledger, walletConnect, gnosis],
+        wallets: [injected, ledger, gnosis],
+        // wallets: [injected, ledger, walletConnect, gnosis],
         chains: [
             {
                 id: 137,

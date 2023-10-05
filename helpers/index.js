@@ -462,7 +462,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
     const formatedBalances = computed(() => {
         return Balances.value.map((bal, idx) => {
             const token = Tokens.value[idx]
-            if (!token) {
+            if (!token || !connectedAccount.value) {
                 return ""
             } else {
                 return roundFloor(formatUnits(bal, token.decimals))

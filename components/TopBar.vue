@@ -3,26 +3,27 @@
         class="top-bar row"
         :class="[{ compact: props.compact, 'thin-line': props.thinLine }]"
     >
-        <NuxtLink
-            v-if="!noReturn"
+        <!-- <NuxtLink
             to="/liquidity"
             class="link"
+        > -->
+        <Btn
+            v-if="!noReturn"
+            @click="routerBack"
+            transparent
+            circle
+            class="back-btn"
+            tiny
+            :rotate="90"
         >
-            <Btn
-                transparent
-                circle
-                class="back-btn"
-                tiny
-                :rotate="90"
-            >
-                <template #icon>
-                    <Icon
-                        name="arrow"
-                        :size="15"
-                    ></Icon>
-                </template>
-            </Btn>
-        </NuxtLink>
+            <template #icon>
+                <Icon
+                    name="arrow"
+                    :size="15"
+                ></Icon>
+            </template>
+        </Btn>
+        <!-- </NuxtLink> -->
         <component
             :is="props.is"
             class="widget-title"
@@ -46,6 +47,10 @@ const props = defineProps({
         default: "h3",
     },
 })
+const router = useRouter()
+function routerBack() {
+    router.back()
+}
 </script>
 
 <style lang="scss" scoped>

@@ -51,11 +51,11 @@
                 v-else
                 class="icons-tokens row align-center"
             >
-                <div class="placeholder row">
+                <div class="placeholder placeholder--in-widget row">
                     <div class="token-icon"></div>
                     <div class="token-icon"></div>
                 </div>
-                <p class="placeholder">FETH / FBTC</p>
+                <p class="placeholder placeholder--in-widget">FETH / FBTC</p>
             </div>
             <div class="amount">
                 <p class="grey-text">Amount</p>
@@ -168,7 +168,7 @@
             </div>
             <div
                 v-else-if="ownedPosition === false && SinglePositionPending"
-                class="placeholder"
+                class="placeholder placeholder--in-widget"
             >
                 <p>placeholder</p>
                 <p>text</p>

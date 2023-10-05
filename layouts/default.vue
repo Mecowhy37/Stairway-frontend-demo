@@ -290,39 +290,46 @@ a {
     padding: 3px;
     color: rgba(0, 0, 0, 0) !important;
     background-color: var(--placeholder) !important;
-    &--solid {
-        background-color: var(--placeholder-solid) !important;
-    }
     * {
         visibility: hidden;
     }
-    animation-duration: 2.2s;
+    animation-duration: 2.5s;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
     animation-name: shimmer;
     animation-timing-function: linear;
-    background: #ddd;
-    background: linear-gradient(to right, #c1c1c1 8%, #cbcbcb 18%, #c1c1c1 33%);
-    background-size: 1200px 100%;
+    background: rgba(221, 221, 221, 0.3);
+    $ends: rgba(147, 147, 147, 0.5);
+    $mid: rgba(173, 173, 173, 0.7);
+    background: linear-gradient(to right, $ends 8%, $mid 18%, $ends 33%);
+    $width: 1200px;
+    background-size: $width 100%;
+    &--solid {
+        $ends: rgba(193, 193, 193, 0.5);
+        $mid: rgba(203, 203, 203, 0.7);
+
+        background: linear-gradient(to right, $ends 8%, $mid 18%, $ends 33%);
+        background-size: $width 100%;
+    }
+    @-webkit-keyframes shimmer {
+        0% {
+            background-position: -100% 0;
+        }
+        100% {
+            background-position: 100% 0;
+        }
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: calc($width * -1) 0;
+        }
+        100% {
+            background-position: $width 0;
+        }
+    }
 }
 
-@-webkit-keyframes shimmer {
-    0% {
-        background-position: -100% 0;
-    }
-    100% {
-        background-position: 100% 0;
-    }
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -1200px 0;
-    }
-    100% {
-        background-position: 1200px 0;
-    }
-}
 img,
 svg {
     display: block;
