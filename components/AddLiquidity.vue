@@ -116,7 +116,7 @@
                             :size="25"
                         />
                     </div>
-                    <p>Pool not found. Be aware you are setting a initial ratio of the pool</p>
+                    <p>Pool not found. Be aware you are setting a initial ratio of the pool.</p>
                 </div>
                 <div
                     v-if="insufficientBalanceIndexes.length > 0"
