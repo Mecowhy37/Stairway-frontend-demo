@@ -34,11 +34,15 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <div class="tips">
-                <FaucetTrigger
+            <div
+                v-if="connectedChainId === 80001"
+                class="tips"
+            >
+                <!-- <FaucetTrigger
                     :closing-callback="() => getBothBalances(false, false)"
                     :connected-chain-id="connectedChainId"
-                ></FaucetTrigger>
+                ></FaucetTrigger> -->
+                <FaucetTriggerII :callback="() => getBothBalances(false, false)"></FaucetTriggerII>
             </div>
             <div class="windows">
                 <div

@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { BrowserProvider, Contract, parseEther, id } from "ethers"
+import { BrowserProvider, id } from "ethers"
 import { listenForTransactionMine } from "~/helpers/index"
 
 import { useStepStore } from "@/stores/step"
@@ -121,7 +121,7 @@ async function getTokens() {
     signer.sendTransaction(tx).then(async (txRes) => {
         console.log("txRes:", txRes)
 
-        await listenForTransactionMine(txRes, stepStore.connectedWallet.provider).then(() => {
+        await listenForTransactionMine(txRes, provider).then(() => {
             claimed.value = true
         })
     })

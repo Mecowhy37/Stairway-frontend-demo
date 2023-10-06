@@ -27,14 +27,15 @@ import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
 const {
+    onboard,
     featuredTokens,
     addresses,
     connectedWallet,
     connectedAccount,
     chains,
+    positions,
     noWalletChain,
     connectedChainId,
-    onboard,
 } = storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
@@ -112,9 +113,17 @@ const {
     refresh: refreshChains,
     error: ChainsError,
     status: ChainsStatus,
-} = await useAsyncData("chains", () => {
-    return $fetch(getUrl(`/chain`))
-})
+} = await useAsyncData(
+    "chains",
+    () => {
+        return $fetch(getUrl(`/chain`))
+    },
+    {
+        transform: (chainsdata) => {
+            return chainsdata.filter((chain) => chain.chain_id !== 1)
+        },
+    }
+)
 watch(
     ChainsData,
     (newVal) => {
@@ -180,8 +189,19 @@ const isNewTokenModalOpen = computed(() => {
     return newTokenModal.value?.showModal
 })
 provide("newTokenModal", { toggleNewTokenModal, isNewTokenModalOpen })
-
 // MODAL STUFF ------------------
+
+watch(
+    connectedWallet,
+    (newAcc) => {
+        if (!newAcc) {
+            positions.value = []
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 </script>
 
 <style lang="scss" module="themes" src="assets/main.scss"></style>
@@ -298,19 +318,14 @@ a {
     animation-iteration-count: infinite;
     animation-name: shimmer;
     animation-timing-function: linear;
-    background: rgba(221, 221, 221, 0.3);
-    $ends: rgba(147, 147, 147, 0.5);
-    $mid: rgba(173, 173, 173, 0.7);
-    background: linear-gradient(to right, $ends 8%, $mid 18%, $ends 33%);
+    $mainbg: rgba(108, 108, 108, 0.3);
+    background: $mainbg;
+    $mid: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(to right, $mainbg 10%, $mid 22%, $mainbg 36%);
+    /* background: linear-gradient(to right, $mainbg 0%, $mainbg 24.05%, $mid 43.78%, $mainbg 63.51%, $mainbg 100%); */
     $width: 1200px;
     background-size: $width 100%;
-    &--solid {
-        $ends: rgba(193, 193, 193, 0.5);
-        $mid: rgba(203, 203, 203, 0.7);
 
-        background: linear-gradient(to right, $ends 8%, $mid 18%, $ends 33%);
-        background-size: $width 100%;
-    }
     @-webkit-keyframes shimmer {
         0% {
             background-position: -100% 0;

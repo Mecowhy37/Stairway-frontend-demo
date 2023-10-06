@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="showModal"
+        v-show="showModal"
         @click.self.prevent="toggleModal"
         class="modal modal--focus"
     >
@@ -11,7 +11,10 @@
                 thin-line
                 is="h4"
             >
-                <template #widget-title>Select token</template>
+                <template #widget-title>
+                    <template v-if="!isFaucet">Select token</template>
+                    <template v-else>Claim 100 tokens</template>
+                </template>
                 <template #right-icon>
                     <Btn
                         @click="toggleModal"
@@ -33,8 +36,8 @@
                 ref="tokenListRef"
             >
                 <div
-                    v-for="token in featuredTokens"
-                    @click="setToken(token)"
+                    v-for="(token, index) in featuredTokens"
+                    @click="!isFaucet ? setToken(token) : getTokens(token.address)"
                     class="list-item list-item--padded list-item--bottom-border row align-center"
                     :class="{
                         'list-item--opaque': ABTokensAddresses.includes(token.address),
@@ -60,7 +63,8 @@
 </template>
 
 <script setup>
-import { BrowserProvider, Contract, parseEther } from "ethers"
+import { BrowserProvider, Contract, parseEther, id } from "ethers"
+import { listenForTransactionMine } from "~/helpers/index"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -69,18 +73,24 @@ const stepStore = useStepStore()
 const { featuredTokens } = storeToRefs(stepStore)
 
 const showModal = ref(false)
-const setTokenCallback = ref()
-const reverseBalancesCallback = ref()
+const tokenSetCallback = ref()
 const ABTokens = ref([])
 const selectedTokenIndex = ref()
-function toggleModal(tokens, setToken, index) {
+const isFaucet = ref(false)
+const faucetIndexMining = ref(1)
+
+function toggleModal(tokens, callback, index, faucet = false) {
     showModal.value = !showModal.value
-    if (typeof setToken === "function") {
-        setTokenCallback.value = setToken
+    if (typeof callback === "function") {
+        tokenSetCallback.value = callback
     }
 
     if (Array.isArray(tokens)) {
         ABTokens.value = tokens
+    }
+
+    if (faucet) {
+        isFaucet.value = true
     }
 
     selectedTokenIndex.value = index
@@ -89,21 +99,10 @@ function toggleModal(tokens, setToken, index) {
 const ABTokensAddresses = computed(() => {
     return ABTokens.value.map((el) => el?.address)
 })
-// const filteredTokenList = computed(
-//     () =>
-//         tokenList.value.filter(
-//             (el) =>
-//                 // el.chainId === 31337 &&
-//                 el.chainId === parseInt(stepStore.connectedChain.id, 16)
-//             // !ABTokens.value?.find((tkn) => tkn?.address === el.address)
-//             // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
-//         )
-//     // () => tokenList.value.filter((el) => el.chainId === 31337)
-// )
 
 function setToken(token) {
     toggleModal()
-    setTokenCallback.value.call(this, token)
+    tokenSetCallback.value.call(this, token)
 }
 
 function oppositeTokenIndex(tokenIndex) {
@@ -115,12 +114,59 @@ watch(showModal, (isOpen) => {
     if (!isOpen) {
         tokenListRef.value.scrollTop = 0
         ABTokens.value = []
+        isFaucet.value = false
     }
 })
 
 defineExpose({
     toggleModal,
 })
+
+// FAUCET FUNCTIONALITY --------------
+async function getTokens(tokenAddress) {
+    toggleModal()
+
+    let notifHolder = { id: null }
+
+    const provider = new BrowserProvider(stepStore.connectedWallet.provider)
+    const signer = await provider.getSigner()
+
+    let functionSignature = id("faucet()").substring(0, 10)
+    const tx = {
+        to: tokenAddress,
+        data: functionSignature,
+    }
+    stepStore.notify(notifHolder, "sign")
+
+    signer
+        .sendTransaction(tx)
+        .then((txRes) => {
+            console.log("txRes:", txRes)
+            stepStore.notify(notifHolder, "pending")
+
+            listenForTransactionMine(txRes, provider, tokenSetCallback.value).then(() => {
+                stepStore.notify(notifHolder, "success")
+            })
+        })
+        .catch((error) => {
+            stepStore.notify(notifHolder, "error")
+            console.log("error while claiming tokens")
+            throw new Error(error)
+        })
+}
+// FAUCET FUNCTIONALITY --------------
+
+// const filteredTokenList = computed(
+//     () =>
+//         tokenList.value.filter(
+//             (el) =>
+//                 // el.chainId === 31337 &&
+//                 el.chainId === parseInt(stepStore.connectedChain.id, 16)
+//             // !ABTokens.value?.find((tkn) => tkn?.address === el.address)
+//             // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
+//         )
+//     // () => tokenList.value.filter((el) => el.chainId === 31337)
+// )
 </script>
 
 <style lang="scss">

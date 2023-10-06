@@ -58,33 +58,47 @@ export const useStepStore = defineStore("step", (): any => {
         displayUnavailable: [ProviderLabel.MetaMask, ProviderLabel.Coinbase],
     })
 
+
+    // CHAINS ----------------
+    const chains = ref(null)
+    const noWalletChain = ref(80001)
+    
+    const connectedChainId = computed(() => {
+        if (!connectedChain.value && noWalletChain.value) {
+            return noWalletChain.value
+        }
+        if( connectedChain.value) {
+            return parseInt(connectedChain.value.id, 16)
+        }
+    })
+    // CHAINS ----------------
+
+    const onboardInit = ref([{
+        id: 137,
+        token: "MATIC",
+        label: "Polygon Mainnet",
+        rpcUrl: POLYGON_MAIN,
+        icon: "~/assets/img/polygon_mainnet.webp"
+    },
+    {
+        id: 80001,
+        token: "MATIC",
+        label: "Polygon Mumbai",
+        rpcUrl: MUMBAI_RPC_URL,
+        icon: "~/assets/img/polygon_mainnet.webp"
+    }])
+
+    // all onboard logic needs to be moved out to default layout
     const onboard = init({
         wallets: [injected, ledger, gnosis],
         // wallets: [injected, ledger, walletConnect, gnosis],
-        chains: [
-            {
-                id: 137,
-                token: "MATIC",
-                label: "Polygon Mainnet",
-                rpcUrl: POLYGON_MAIN,
-                icon: "~/assets/img/polygon_mainnet.webp"
-            },
-            {
-                id: 80001,
-                token: "MATIC",
-                label: "Polygon Mumbai",
-                rpcUrl: MUMBAI_RPC_URL,
-                icon: "~/assets/img/polygon_mainnet.webp"
-            }
-        ],
+        chains: onboardInit.value,
         accountCenter: {
             desktop: {
                 enabled: false,
-                // containerElement: "#__nuxt > div.web3onboard"    
             },
             mobile: {
                 enabled: false,
-                // containerElement: "#__nuxt > div.web3onboard"    
             },
         },
         connect: {
@@ -154,20 +168,6 @@ export const useStepStore = defineStore("step", (): any => {
         return addresses.value.DEX
     })
     // ADDRESSES ----------------
-
-    // CHAINS ----------------
-    const chains = ref(null)
-    const noWalletChain = ref(80001)
-    
-    const connectedChainId = computed(() => {
-        if (!connectedChain.value && noWalletChain.value) {
-            return noWalletChain.value
-        }
-        if( connectedChain.value) {
-            return parseInt(connectedChain.value.id, 16)
-        }
-    })
-    // CHAINS ----------------
 
     // NOTIFICATIONS ---------
     const notify = null

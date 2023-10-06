@@ -5,7 +5,7 @@
                 <h1 class="scale">Liquidity</h1>
                 <!-- <Btn @click="stepStore.refreshPositions()">refresh positions - {{ positionsStatus }}</Btn> -->
                 <NuxtLink
-                    v-if="positions.length > 0"
+                    v-if="connectedAccount && positions.length > 0"
                     to="/add-liquidity"
                     class="link"
                 >
@@ -52,7 +52,7 @@
             </div>
 
             <div
-                v-else-if="positions.length > 0"
+                v-else-if="connectedAccount && positions.length > 0"
                 class="positions__list"
             >
                 <div class="pools">
@@ -244,6 +244,8 @@ const {
         if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
             console.log("fetching positions on chain:", connectedChainId.value)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+        } else {
+            return []
         }
     },
     {

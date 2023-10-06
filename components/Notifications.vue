@@ -69,7 +69,8 @@ function deleteNotif(id) {
 .notify-wrapper {
     place-self: flex-end;
     display: flex;
-    width: 400px;
+    $width: 450px;
+    width: $width;
     flex-direction: column;
     justify-content: flex-end;
     height: 50vh;
@@ -79,7 +80,7 @@ function deleteNotif(id) {
     & * {
         pointer-events: all;
     }
-    @media (max-width: 400px) {
+    @media (max-width: $width) {
         width: 100%;
     }
 }
