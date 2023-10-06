@@ -13,7 +13,7 @@
             >
                 <template #widget-title>
                     <template v-if="!isFaucet">Select token</template>
-                    <template v-else>Claim 100 tokens</template>
+                    <template v-else> Claim 100 tokens</template>
                 </template>
                 <template #right-icon>
                     <Btn
@@ -31,12 +31,28 @@
                     </Btn>
                 </template>
             </TopBar>
+            <div class="search">
+                <div class="search__input-wrap layer-wdg-box row">
+                    <input
+                        placeholder="Search name or address"
+                        v-model="search"
+                        class=""
+                        type="text"
+                        name=""
+                        id=""
+                    />
+                    <Icon
+                        name="search"
+                        :size="16"
+                    />
+                </div>
+            </div>
             <div
                 class="token-list"
                 ref="tokenListRef"
             >
                 <div
-                    v-for="(token, index) in featuredTokens"
+                    v-for="token in displayList"
                     @click="!isFaucet ? setToken(token) : getTokens(token.address)"
                     class="list-item list-item--padded list-item--bottom-border row align-center"
                     :class="{
@@ -63,21 +79,70 @@
 </template>
 
 <script setup>
-import { BrowserProvider, Contract, parseEther, id } from "ethers"
-import { listenForTransactionMine } from "~/helpers/index"
+import { BrowserProvider, id, isAddress } from "ethers"
+import { listenForTransactionMine, getUrl } from "~/helpers/index"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens } = storeToRefs(stepStore)
+const { featuredTokens, connectedChainId } = storeToRefs(stepStore)
 
 const showModal = ref(false)
 const tokenSetCallback = ref()
 const ABTokens = ref([])
 const selectedTokenIndex = ref()
 const isFaucet = ref(false)
-const faucetIndexMining = ref(1)
+
+const search = ref("")
+
+const filteredTokenList = computed(() => {
+    const searchInput = search.value
+    if (searchInput) {
+        const searchTerm = searchInput.toLowerCase() // Convert search term to lowercase for case-insensitive comparison
+        const filteredList = featuredTokens.value.filter((token) => {
+            const { name, symbol, address } = token
+            return (
+                name.toLowerCase().includes(searchTerm) ||
+                symbol.toLowerCase().includes(searchTerm) ||
+                (isAddress(searchInput) && address.toLowerCase().includes(searchTerm))
+            )
+        })
+
+        return filteredList
+    } else {
+        return featuredTokens.value
+    }
+})
+
+const {
+    data: displayList,
+    error: displayListError,
+    status: displayListStatus,
+    pending: displayListPending,
+    refresh: refreshDisplayList,
+} = useAsyncData(
+    "displayList",
+    () => {
+        if (filteredTokenList.value.length === 0 && isAddress(search.value)) {
+            console.log("fetch toknen")
+            return $fetch(getUrl(`/chain/${stepStore.connectedChainId}/tokens/${search.value}`))
+        } else {
+            return filteredTokenList.value
+        }
+    },
+    {
+        transform: (data) => {
+            if (!data.length && data.length !== 0) {
+                return [data]
+            }
+            return data
+        },
+        watch: [search, connectedChainId],
+    }
+)
+
+// const searchIsAddress = computed(() => )
 
 function toggleModal(tokens, callback, index, faucet = false) {
     showModal.value = !showModal.value
@@ -114,6 +179,7 @@ watch(showModal, (isOpen) => {
     if (!isOpen) {
         tokenListRef.value.scrollTop = 0
         ABTokens.value = []
+        search.value = ""
         isFaucet.value = false
     }
 })
@@ -222,6 +288,34 @@ async function getTokens(tokenAddress) {
             .tick-icon {
                 margin-left: auto;
                 margin-right: 8px;
+            }
+        }
+        .search {
+            border-bottom: 1px solid var(--grey-opaque);
+            padding: 12px;
+            &__input-wrap {
+                justify-content: space-between;
+                align-items: center;
+                padding-right: 8px;
+                input {
+                    color: var(--text-color-reverse);
+                    width: 100%;
+                    height: 100%;
+                    background: transparent;
+                    border: none;
+                    outline: none;
+                    text-align: left;
+                    font-size: 1rem;
+                    padding: 8px;
+
+                    &.error {
+                        color: var(--error-color);
+                    }
+
+                    &::placeholder {
+                        color: var(--text-grey);
+                    }
+                }
             }
         }
     }

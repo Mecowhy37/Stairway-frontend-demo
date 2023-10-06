@@ -1,12 +1,8 @@
 <template>
     <div
-        class="top-bar row"
+        class="top-bar"
         :class="[{ compact: props.compact, 'thin-line': props.thinLine }]"
     >
-        <!-- <NuxtLink
-            to="/liquidity"
-            class="link"
-        > -->
         <Btn
             v-if="!noReturn"
             @click="routerBack"
@@ -31,7 +27,7 @@
         >
             <slot name="widget-title"></slot>
         </component>
-        <div>
+        <div class="right-icon">
             <slot name="right-icon"></slot>
         </div>
     </div>
@@ -55,12 +51,14 @@ function routerBack() {
 
 <style lang="scss" scoped>
 .top-bar {
-    color: var(--text-color-reverse);
+    display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--text-color-reverse);
     border-bottom: 2px solid var(--text-color-reverse);
     padding: 20px 0;
     margin: 0 20px;
+
     &.compact {
         margin: 0;
         padding: 12px;
@@ -82,6 +80,10 @@ function routerBack() {
         .icon {
             margin: 0 6.75px !important;
         }
+    }
+
+    .right-icon {
+        /* align-self: flex-start; */
     }
 }
 </style>

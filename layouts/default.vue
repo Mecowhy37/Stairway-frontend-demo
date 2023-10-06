@@ -319,12 +319,15 @@ a {
     animation-name: shimmer;
     animation-timing-function: linear;
     $mainbg: rgba(108, 108, 108, 0.3);
-    background: $mainbg;
+    /* background: $mainbg; */
     $mid: rgba(255, 255, 255, 0.3);
     background: linear-gradient(to right, $mainbg 10%, $mid 22%, $mainbg 36%);
     /* background: linear-gradient(to right, $mainbg 0%, $mainbg 24.05%, $mid 43.78%, $mainbg 63.51%, $mainbg 100%); */
     $width: 1200px;
     background-size: $width 100%;
+
+    &--on-widget {
+    }
 
     @-webkit-keyframes shimmer {
         0% {
@@ -349,6 +352,7 @@ img,
 svg {
     display: block;
 }
+
 .token-icon {
     border-radius: 50%;
     height: 36px;
