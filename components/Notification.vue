@@ -50,10 +50,33 @@
             </TransitionGroup>
         </div>
         <div class="notif__content">
-            <h4>{{ notif.header + (approveHeading ? " " + approveHeading : "") }}</h4>
-            <p class="caption">
-                {{ notif.paragraph }}
-            </p>
+            <template v-if="notif.state === 'approve'">
+                <h4>{{ notif.header + " " + textExtras }}</h4>
+                <p class="caption">
+                    {{ notif.paragraph }}
+                </p>
+            </template>
+            <template v-else-if="notif.state === 'error'">
+                <h4>{{ notif.header }}</h4>
+                <p
+                    v-if="textExtras"
+                    class="caption"
+                >
+                    Error code: {{ textExtras }}
+                </p>
+                <p
+                    v-else
+                    class="caption"
+                >
+                    {{ notif.paragraph }}
+                </p>
+            </template>
+            <template v-else>
+                <h4>{{ notif.header }}</h4>
+                <p class="caption">
+                    {{ notif.paragraph }}
+                </p>
+            </template>
             <!-- <TransitionGroup mode="out-in">
                 <div
                     class="notif__content__transition"
@@ -135,7 +158,7 @@ const props = defineProps({
 const notif = computed(() => notifications[props.notif.state])
 const id = computed(() => props.notif.id)
 
-const approveHeading = computed(() => props.notif?.symbol)
+const textExtras = computed(() => props.notif?.symbol)
 
 const spinning = ref(true)
 watch(

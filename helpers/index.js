@@ -1,8 +1,9 @@
 import { ref } from "vue"
-import { BrowserProvider, Contract, parseUnits, formatUnits, getAddress } from "ethers"
+import { BrowserProvider, Contract, parseUnits, formatUnits, getAddress, Interface, getBytes } from "ethers"
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
+const errorABI = new Interface(RouterABI).fragments
 
 import token from "@/ABIs/IERC20.json"
 const TokenABI = token.abi
@@ -47,6 +48,20 @@ export function toFixedFloor(stringAmount, fixed) {
 
 export function isSupportedChain(id) {
     return id === 31337 || id === 80001 || id === 137
+}
+
+function decodeCustomError(errorData) {
+    for (const abiEntry of errorABI) {
+        if (abiEntry.type === "error") {
+            try {
+                const iface = new Interface([abiEntry])
+                const decodedData = iface.decodeErrorResult(abiEntry, errorData)
+                return abiEntry.name
+            } catch (e) {}
+        }
+    }
+    console.log("Unknown error data.")
+    return false
 }
 
 export function usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route) {
@@ -146,8 +161,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 throw new Error("An error occurred inside the loop.")
             }
         } catch (error) {
-            notify(notifHolder, "error")
             console.log("Failed to get approvals - Add execution stops:", error)
+            notify(notifHolder, "error")
             return
         }
         try {
@@ -182,8 +197,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 callback()
             })
         } catch (error) {
-            notify(notifHolder, "error")
-            console.log("Failed to add lq:", error)
+            const failCause = decodeCustomError(error.data)
+            console.log("Failed to add lq:", failCause)
+            notify(notifHolder, "error", failCause)
         }
     }
 
@@ -220,11 +236,15 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
 
         try {
             if (await checkAllowance(lpToken.address, lpAmount, signer.address)) {
-                await approveSpending(lpToken, lpAmount, providerArg, false, notify, notifHolder)
+                try {
+                    await approveSpending(lpToken, lpAmount, providerArg, false, notify, notifHolder)
+                } catch (e) {
+                    throw new Error()
+                }
             }
         } catch (error) {
-            notify(notifHolder, "error")
             console.log("Failed to get approvals:", error)
+            notify(notifHolder, "error")
             return
         }
 
@@ -263,8 +283,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 callback()
             })
         } catch (err) {
-            notify(notifHolder, "error")
-            console.log("failed to redeem liquidity: ", err)
+            const failCause = decodeCustomError(error.data)
+            console.log("failed to redeem liquidity: ", failCause)
+            notify(notifHolder, "error", failCause)
         }
     }
 
@@ -294,8 +315,8 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 }
             }
         } catch (error) {
-            notify(notifHolder, "error")
             console.log("Failed to get approvals:", error)
+            notify(notifHolder, "error")
             return
         }
 
@@ -330,8 +351,9 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                 callback()
             })
         } catch (error) {
-            notify(notifHolder, "error")
-            console.log("Failed to swap", error)
+            const failCause = decodeCustomError(error.data)
+            console.log("Failed to swap due to:", failCause || error)
+            notify(notifHolder, "error", failCause)
         }
     }
 
@@ -349,8 +371,7 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             await tx.wait(1)
             return await listenForTransactionMine(tx, provider, callback)
         } catch (err) {
-            console.log("error while getting approval")
-            throw new Error("approveSpending():", approveSpending)
+            throw new Error("approveSpending():")
         }
     }
 

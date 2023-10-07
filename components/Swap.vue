@@ -380,7 +380,7 @@ function callSwap() {
         stepStore.connectedWallet.provider,
         refresh,
         stepStore.notify
-    ).then(() => {
+    ).finally(() => {
         swappingDisabled.value = false
     })
 }

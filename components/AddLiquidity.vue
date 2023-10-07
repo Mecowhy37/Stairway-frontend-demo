@@ -391,7 +391,7 @@ function callAddLiquidity() {
         stepStore.connectedWallet.provider,
         refresh,
         stepStore.notify
-    ).then(() => {
+    ).finally(() => {
         //this bit and listenForTransationMine need some imporvement not to pass callbacks - listenForTranasaction mine should be more error safe
         addingDisabled.value = false
         // state.amountQuote = ""

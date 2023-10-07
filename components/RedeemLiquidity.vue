@@ -286,7 +286,7 @@ function redeemLiquidityCall() {
             stepStore.connectedWallet.provider,
             refresh,
             stepStore.notify
-        ).then(() => {
+        ).finally(() => {
             removingDisabled.value = false
             redeemPercent.value = 100
         })
