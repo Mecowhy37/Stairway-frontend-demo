@@ -80,7 +80,7 @@
 
 <script setup>
 import { BrowserProvider, id, isAddress } from "ethers"
-import { listenForTransactionMine, getUrl } from "~/helpers/index"
+import { listenForTransactionMine, getUrl, getOutsiderToken } from "~/helpers/index"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -126,7 +126,7 @@ const {
     () => {
         if (filteredTokenList.value.length === 0 && isAddress(search.value)) {
             console.log("fetch toknen")
-            return $fetch(getUrl(`/chain/${stepStore.connectedChainId}/tokens/${search.value}`))
+            return getOutsiderToken(connectedChainId.value, search.value)
         } else {
             return filteredTokenList.value
         }
@@ -134,11 +134,11 @@ const {
     {
         transform: (data) => {
             if (!data.length && data.length !== 0) {
-                return [data]
+                return data.symbol && data.name ? [data] : null
             }
             return data
         },
-        watch: [search, connectedChainId],
+        watch: [search, connectedChainId, featuredTokens],
     }
 )
 

@@ -8,12 +8,6 @@ const errorABI = new Interface(RouterABI).fragments
 import token from "@/ABIs/IERC20.json"
 const TokenABI = token.abi
 
-import poolmanager from "@/ABIs/IPoolManager.json"
-import { breakpointsAntDesign } from "@vueuse/core"
-const PoolManagerABI = poolmanager.abi
-
-const unhandled = "0x0000000000000000000000000000000000000000"
-
 export const tkEnum = {
     QUOTE: 0,
     BASE: 1,
@@ -48,6 +42,10 @@ export function toFixedFloor(stringAmount, fixed) {
 
 export function isSupportedChain(id) {
     return id === 31337 || id === 80001 || id === 137
+}
+
+export function getOutsiderToken(chainId, tkAddress) {
+    return $fetch(getUrl(`/chain/${chainId}/tokens/${tkAddress}`))
 }
 
 function decodeCustomError(errorData) {
@@ -423,19 +421,8 @@ export function listenForTransactionMine(txRes, provider, callback = null) {
 }
 
 export function useTokens() {
-    const tokenA = ref(null)
-    const tokenB = ref(null)
+    const Tokens = ref([null, null])
     const selectTokenIndex = ref(0)
-
-    const Tokens = computed({
-        get() {
-            return [tokenA.value, tokenB.value]
-        },
-        set(newValue) {
-            tokenA.value = newValue[0]
-            tokenB.value = newValue[1]
-        },
-    })
 
     const bothTokensThere = computed(() => Tokens.value.every((el) => el !== null))
 
@@ -457,8 +444,6 @@ export function useTokens() {
     }
 
     return {
-        tokenA,
-        tokenB,
         Tokens,
         bothTokensThere,
         setToken,
@@ -505,6 +490,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             console.error("failed to fetch balance", error.value)
             return 0n
         }
+        return 0n
     }
     async function getBothBalances(tokenIndex = false, clearOld = true) {
         console.log("- - - - - - - - - - -")

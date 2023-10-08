@@ -288,6 +288,8 @@ import {
     roundFloor,
 } from "~/helpers/index"
 
+import { useWidget } from "~/helpers/useWidget"
+
 const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
@@ -295,7 +297,7 @@ const stepStore = useStepStore()
 const { featuredTokens, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 
 // TOKENS ------------------
-const { tokenA, tokenB, Tokens, bothTokensThere, selectTokenIndex, setToken } = useTokens()
+const { Tokens, bothTokensThere, selectTokenIndex, setToken } = useTokens()
 // TOKENS ------------------
 
 // BALANCES ----------------
@@ -309,30 +311,6 @@ const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBala
 // ROUTES ----------------
 const router = useRouter()
 const route = useRoute()
-function findTokenByAddress(address) {
-    const token = featuredTokens.value.find((el) => el.address === address)
-    if (!token) {
-        return null
-    }
-    return token
-}
-watch(
-    featuredTokens,
-    (newTokens) => {
-        if (newTokens && newTokens.length > 0) {
-            // Fetch tokenA and tokenB from route.query and update the values
-            if (route.query.tk1) {
-                tokenA.value = findTokenByAddress(route.query.tk1)
-            }
-            if (route.query.tk2) {
-                tokenB.value = findTokenByAddress(route.query.tk2)
-            }
-        }
-    },
-    {
-        immediate: true,
-    }
-)
 // ROUTES ----------------
 
 // POOL -----------------
@@ -346,6 +324,8 @@ const { pool, refreshPool, poolPending, poolError, price, depth, swap } = usePoo
 // POOL -----------------
 
 // WIDGET ------------------
+const wg = useWidget(featuredTokens, Tokens, connectedChainId)
+
 const state = reactive({
     amountA: "",
     amountB: "",
@@ -479,17 +459,8 @@ watch(
     Tokens,
     async (tokens, oldTokens) => {
         console.log("- - - - - - - - - - - - - - -\nwatch(Tokens)")
-
-        // adding query params to url
-        if (featuredTokens.value && featuredTokens.value.length > 0) {
-            const obj = {}
-            tokens.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
-            router.replace({
-                query: {
-                    ...obj,
-                },
-            })
-        }
+        console.log("tokens:", tokens)
+        console.log("oldTokens:", oldTokens)
 
         //getting balance
         const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)

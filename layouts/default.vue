@@ -59,6 +59,8 @@ const {
         if (isSupportedChain(connectedChainId.value)) {
             console.log("fetching tokens on chain:", connectedChainId.value)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/tokens/featured`))
+        } else {
+            return []
         }
     },
     {
@@ -67,9 +69,9 @@ const {
 )
 watch(
     TokensData,
-    (newVal) => {
-        if (newVal) {
-            featuredTokens.value = newVal
+    (newTokens) => {
+        if (newTokens) {
+            featuredTokens.value = newTokens
         }
     },
     {
