@@ -201,7 +201,6 @@ import { storeToRefs } from "pinia"
 const stepStore = useStepStore()
 // const { connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
 const { positions, positionsPending, connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
-const { refreshPositions } = stepStore
 
 const openedIndex = ref(null)
 
@@ -230,8 +229,6 @@ function removeRedirect(pool) {
     })
 }
 
-// const positions = ref([])
-// const PositionsPending = ref(true)
 const {
     data: PositionsData,
     pending: PositionsPending,
@@ -269,7 +266,7 @@ watch(
         immediate: true,
     }
 )
-// stepStore.refreshPositions = RefreshPositions
+stepStore.refreshPositions = RefreshPositions
 </script>
 
 <style lang="scss" scoped>

@@ -1,10 +1,7 @@
 import { isAddress } from "ethers"
 import { tkEnum, getOutsiderToken, isSupportedChain } from "~/helpers/index"
 
-export function useWidget(featuredTokens, Tokens, chainId) {
-    const router = useRouter()
-    const route = useRoute()
-
+export function useWidget(featuredTokens, Tokens, chainId, router, route) {
     let waiting = ref(false)
     async function findTokenByAddress(featuredList, address) {
         const token = featuredList.find((el) => el.address === address)
@@ -37,16 +34,19 @@ export function useWidget(featuredTokens, Tokens, chainId) {
         }
     )
     // ISSUE - select two token in the Add liquidity and then switch a network
-    watchEffect(() => {
-        if (waiting.value === false) {
-            console.log("updating url")
-            const obj = {}
-            Tokens.value.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
-            router.replace({
-                query: {
-                    ...obj,
-                },
-            })
+    watch(
+        () => [waiting.value, Tokens.value],
+        ([newWaiting, newTokens]) => {
+            if (newWaiting === false) {
+                console.log("updating url")
+                const obj = {}
+                newTokens.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
+                router.replace({
+                    query: {
+                        ...obj,
+                    },
+                })
+            }
         }
-    })
+    )
 }

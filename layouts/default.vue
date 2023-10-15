@@ -17,8 +17,6 @@
 </template>
 
 <script setup>
-import { BrowserProvider, Contract, parseUnits, formatUnits, formatEther, parseEther } from "ethers"
-
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
 
@@ -26,17 +24,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const {
-    onboard,
-    featuredTokens,
-    addresses,
-    connectedWallet,
-    connectedAccount,
-    chains,
-    positions,
-    noWalletChain,
-    connectedChainId,
-} = storeToRefs(stepStore)
+const { featuredTokens, addresses, connectedWallet, chains, positions, connectedChainId } = storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
 useSeoMeta({
@@ -45,8 +33,6 @@ useSeoMeta({
         "Decentralized AMM for crypto trading. Introducing fixed price intervals, liquidity provision and decision-making in a new way",
 })
 
-const router = useRouter()
-const route = useRoute()
 const {
     data: TokensData,
     pending: TokensPending,

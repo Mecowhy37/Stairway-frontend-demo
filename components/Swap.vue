@@ -324,7 +324,7 @@ const { pool, refreshPool, poolPending, poolError, price, depth, swap } = usePoo
 // POOL -----------------
 
 // WIDGET ------------------
-useWidget(featuredTokens, Tokens, connectedChainId)
+const abc = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
 
 const state = reactive({
     amountA: "",

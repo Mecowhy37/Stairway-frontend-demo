@@ -337,7 +337,7 @@ const { pool, refreshPool, addLiquidity, poolError } = usePools(
 // POOL -----------------
 
 // WIDGET ---------------
-useWidget(featuredTokens, Tokens, connectedChainId)
+const abc = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
 
 const state = reactive({
     amountQuote: "",
