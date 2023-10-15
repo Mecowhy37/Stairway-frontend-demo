@@ -36,10 +36,10 @@ export function useWidget(featuredTokens, Tokens, chainId) {
             immediate: true,
         }
     )
-
+    // ISSUE - select two token in the Add liquidity and then switch a network
     watchEffect(() => {
         if (waiting.value === false) {
-            console.log("URL updated")
+            console.log("updating url")
             const obj = {}
             Tokens.value.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
             router.replace({
