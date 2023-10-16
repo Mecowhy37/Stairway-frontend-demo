@@ -124,6 +124,8 @@ watch(
     }
 )
 
+const router = useRouter()
+
 // const {
 //     data: EventsData,
 //     pending: EventsPending,

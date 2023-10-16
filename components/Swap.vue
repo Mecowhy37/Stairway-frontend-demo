@@ -275,22 +275,14 @@ import { formatUnits } from "ethers"
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
 
-import {
-    useTokens,
-    useBalances,
-    usePools,
-    useAmounts,
-    isSupportedChain,
-    widgetTypeObj,
-    tkEnum,
-    precision,
-    roundCeiling,
-    roundFloor,
-} from "~/helpers/index"
+import { usePools } from "~/helpers/usePools"
+import { useTokens } from "~/helpers/useTokens"
+import { useBalances } from "~/helpers/useBalances"
+import { useAmounts } from "~/helpers/useAmounts"
+
+import { widgetTypeObj, tkEnum, roundCeiling, roundFloor } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
-
-const unhandled = "0x0000000000000000000000000000000000000000"
 
 const stepStore = useStepStore()
 
@@ -463,13 +455,14 @@ watch(
         console.log("oldTokens:", oldTokens)
 
         //getting balance
-        const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
-        const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
-        console.log("areNewTokensOldReversered:", areNewOldReversered)
-        const selectIndex = selectTokenIndex.value
-        if (!areNewOldReversered && tokens[selectIndex]) {
-            getBothBalances(selectIndex)
-        }
+        // const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
+        // const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
+        // console.log("areNewTokensOldReversered:", areNewOldReversered)
+        // const selectIndex = selectTokenIndex.value
+        // if (!areNewOldReversered && tokens[selectIndex]) {
+        //     console.log("calling balances -> ")
+        //     getBothBalances(selectIndex)
+        // }
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value

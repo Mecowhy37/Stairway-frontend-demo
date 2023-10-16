@@ -244,7 +244,8 @@
 import { formatUnits } from "ethers"
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
-import { usePools, basicRound, isSupportedChain } from "~/helpers/index"
+import { usePools } from "~/helpers/usePools"
+import { basicRound, isSupportedChain } from "~/helpers/index"
 
 const stepStore = useStepStore()
 const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)

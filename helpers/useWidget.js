@@ -1,8 +1,9 @@
 import { isAddress } from "ethers"
-import { tkEnum, getOutsiderToken, isSupportedChain } from "~/helpers/index"
+import { tkEnum, getOutsiderToken } from "~/helpers/index"
 
 export function useWidget(featuredTokens, Tokens, chainId, router, route) {
     let waiting = ref(false)
+
     async function findTokenByAddress(featuredList, address) {
         const token = featuredList.find((el) => el.address === address)
         if (!token && isAddress(address)) {

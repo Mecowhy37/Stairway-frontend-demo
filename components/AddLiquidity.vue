@@ -292,18 +292,11 @@ import { BrowserProvider, Contract, parseUnits, formatEther, formatUnits, parseE
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
-import {
-    useTokens,
-    useBalances,
-    usePools,
-    useAmounts,
-    basicRound,
-    isSupportedChain,
-    widgetTypeObj,
-    tkEnum,
-    precision,
-    roundFloor,
-} from "~/helpers/index"
+import { usePools } from "~/helpers/usePools"
+import { useTokens } from "~/helpers/useTokens"
+import { useBalances } from "~/helpers/useBalances"
+import { useAmounts } from "~/helpers/useAmounts"
+import { basicRound, isSupportedChain, widgetTypeObj, tkEnum, precision, roundFloor } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
