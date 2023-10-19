@@ -27,6 +27,8 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
     })
 
     async function getTokenBalance(tokenIndex, clearOld) {
+        const stateKey = Object.keys(balanceState)[tokenIndex]
+
         if (!connectedAccount.value || !isSupportedChain(connectedChainId.value)) {
             console.log("invald chain or no wallet")
             balanceState[stateKey] = 0n
@@ -34,7 +36,6 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         }
 
         const token = Tokens.value[tokenIndex]
-        const stateKey = Object.keys(balanceState)[tokenIndex]
         if (token === null) {
             console.log("token === null")
             balanceState[stateKey] = 0n

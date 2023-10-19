@@ -30,38 +30,27 @@ declare global {
     }
 }
 
-// type AppState = {
-//     wallets: WalletState[]
-//     chains: Chain[]
-//     accountCenter: AccountCenter
-//     walletModules: WalletModule[]
-//     locale: Locale
-//     notify: Notify
-//     notifications: Notification[]
-//   }
-
 export const useStepStore = defineStore("step", (): any => {
     const isMobile: Ref<boolean> = ref(false)
     const isDark: Ref<boolean> = ref(false)
-    const activeWallet: Ref<string | null> = ref(null)
     const connectingWallet: Ref<boolean> = ref(false)
     const isConnectingText = computed((): string => (connectingWallet.value ? "connecting . . ." : "connect wallet"))
     
-    const POLYGON_MAIN = "https://polygon.llamarpc.com"
+const POLYGON_MAIN = "https://polygon.llamarpc.com"
     const MUMBAI_RPC_URL = "https://polygon-mumbai.blockpi.network/v1/rpc/public"
     const LOCAL_ANVIL: string = "https://127.0.0.1:8545/"
 
     // const MUMBAI_RPC_URL = "https://rpc.ankr.com/polygon_mumbai"
     const landingPageUrl: Ref<string> = ref("https://stairway.fi/")
 
-    const injected = injectedModule({
+const injected = injectedModule({
         displayUnavailable: [ProviderLabel.MetaMask, ProviderLabel.Coinbase],
     })
 
 
     // CHAINS ----------------
     const chains = ref(null)
-    const noWalletChain = ref(80001)
+        const noWalletChain = ref(80001)
     
     const connectedChainId = computed(() => {
         if (!connectedChain.value && noWalletChain.value) {
@@ -118,13 +107,6 @@ export const useStepStore = defineStore("step", (): any => {
         return start + "..." + end
     })
 
-    function connectWalletAction() {
-        connectingWallet.value = true
-        connectWallet().then(() => {
-            connectingWallet.value = false
-        })
-    }
-
     // TOKENS ---------------
     const featuredTokens = ref(null)
     // TOKENS ---------------
@@ -173,8 +155,10 @@ export const useStepStore = defineStore("step", (): any => {
     const notify = null
     // NOTIFICATIONS ---------
 
+
     return {
-        onboard,
+        onboard, 
+
         landingPageUrl,
 
         routerAddress,
@@ -193,16 +177,15 @@ export const useStepStore = defineStore("step", (): any => {
         addresses,
         
         chains,
-        setChain,
+setChain,
         connectedChainId,
         noWalletChain,
         connectedChain,
         isConnectingText,
-        connectWallet,
-        connectWalletAction,
+connectWallet,
         connectedWallet,
         connectingWallet,
-        disconnectConnectedWallet,
+disconnectConnectedWallet,
         alreadyConnectedWallets,
 
         notify,
