@@ -68,7 +68,7 @@
                             </Btn>
                             <input
                                 :class="{
-                                    error: insufficientBalanceIndexes.includes(x),
+                                    error: insufficientBalanceIndexes.includes(x) && connectedAccount,
                                 }"
                                 type="text"
                                 placeholder="0"
@@ -86,7 +86,7 @@
                             :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                         >
                             <p class="caption">
-                                {{ Balances[x] && roundFloor(formatUnits(Balances[x], Tokens[x].decimals)) }}
+                                {{ formatedBalances[x] }}
                             </p>
                             <Icon
                                 name="wallet"
@@ -106,7 +106,7 @@
                 </div>
             </div>
             <div
-                v-if="insufficientBalanceIndexes.length > 0 || poolError"
+                v-if="(insufficientBalanceIndexes.length > 0 && connectedAccount) || poolError"
                 class="infos"
             >
                 <div
@@ -123,7 +123,7 @@
                     <p>Pool not found. Be aware you are setting a initial ratio of the pool.</p>
                 </div>
                 <div
-                    v-if="insufficientBalanceIndexes.length > 0"
+                    v-if="insufficientBalanceIndexes.length > 0 && connectedAccount"
                     class="info info--warn row"
                 >
                     <div>
@@ -292,10 +292,10 @@ import { BrowserProvider, Contract, parseUnits, formatEther, formatUnits, parseE
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
-import { usePools } from "~/helpers/usePools"
-import { useTokens } from "~/helpers/useTokens"
 import { useBalances } from "~/helpers/useBalances"
 import { useAmounts } from "~/helpers/useAmounts"
+import { useTokens } from "~/helpers/useTokens"
+import { usePools } from "~/helpers/usePools"
 import { basicRound, isSupportedChain, widgetTypeObj, tkEnum, precision, roundFloor } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
@@ -306,21 +306,27 @@ const stepStore = useStepStore()
 const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 const { refreshPositions } = stepStore
 
+// ROUTES ----------------
+const router = useRouter()
+const route = useRoute()
+// ROUTES ----------------s
+
 // TOKENS ---------------
 const { Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
 // TOKENS ---------------
 
-// BALANCES -------------
-const { Balances, getBothBalances, reverseBalances } = useBalances(Tokens, connectedAccount, connectedChainId)
-// BALANCES -------------
+useWidget(featuredTokens, Tokens, connectedChainId, router, route)
 
-// ROUTES ----------------
-const router = useRouter()
-const route = useRoute()
-// ROUTES ----------------
+// BALANCES -------------
+const { Balances, getBothBalances, reverseBalances, formatedBalances } = useBalances(
+    Tokens,
+    connectedAccount,
+    connectedChainId
+)
+// BALANCES -------------
 
 // POOL -----------------
-const { pool, refreshPool, addLiquidity, poolError } = usePools(
+const { pool, refreshPool, addLiquidity, poolError } = await usePools(
     routerAddress,
     Tokens,
     connectedAccount,
@@ -330,7 +336,6 @@ const { pool, refreshPool, addLiquidity, poolError } = usePools(
 // POOL -----------------
 
 // WIDGET ---------------
-const abc = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
 
 const state = reactive({
     amountQuote: "",
@@ -456,9 +461,8 @@ watch(
         const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
         const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
         console.log("areNewTokensOldReversered:", areNewOldReversered)
-
         if (!areNewOldReversered && tokens[selectTokenIndex.value]) {
-            getBothBalances(selectTokenIndex.value)
+            getBothBalances(selectTokenIndex.value, false)
         }
 
         // setting full amount

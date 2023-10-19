@@ -1,5 +1,17 @@
 export function useTokens() {
-    const Tokens = ref([null, null])
+    const tokenA = ref(null)
+    const tokenB = ref(null)
+
+    const Tokens = computed({
+        get() {
+            return [tokenA.value, tokenB.value]
+        },
+        set(newValue) {
+            tokenA.value = newValue[0]
+            tokenB.value = newValue[1]
+        },
+    })
+
     const selectTokenIndex = ref(0)
 
     const bothTokensThere = computed(() => Tokens.value.every((el) => el !== null))

@@ -21,7 +21,6 @@ export function useWidget(featuredTokens, Tokens, chainId, router, route) {
         featuredTokens,
         async (newFeatured) => {
             if (newFeatured && newFeatured.length > 0) {
-                console.log("watcher called")
                 if (route.query.tk1) {
                     Tokens.value[tkEnum.QUOTE] = await findTokenByAddress(newFeatured, route.query.tk1)
                 }
@@ -36,18 +35,20 @@ export function useWidget(featuredTokens, Tokens, chainId, router, route) {
     )
     // ISSUE - select two token in the Add liquidity and then switch a network
     watch(
-        () => [waiting.value, Tokens.value],
-        ([newWaiting, newTokens]) => {
-            if (newWaiting === false) {
-                console.log("updating url")
-                const obj = {}
-                newTokens.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
-                router.replace({
-                    query: {
-                        ...obj,
-                    },
-                })
-            }
+        Tokens,
+        (newTokens) => {
+            // () => [waiting.value, Tokens.value],
+            // ([newWaiting, newTokens]) => {
+            // if (newWaiting === false) {
+            console.log("updating url")
+            const obj = {}
+            newTokens.forEach((el, index) => (el ? (obj["tk" + (index + 1)] = el.address) : false))
+            router.replace({
+                query: {
+                    ...obj,
+                },
+            })
         }
+        // }
     )
 }

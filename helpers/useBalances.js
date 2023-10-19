@@ -80,37 +80,37 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         Balances.value = Balances.value.reverse()
     }
 
+    watch(
+        [connectedAccount, connectedChainId],
+        ([wallet, chain]) => {
+            if (wallet && isSupportedChain(chain)) {
+                getBothBalances(false, false)
+            } else {
+                console.log("reset balances")
+                Balances.value = [0n, 0n]
+            }
+        },
+        {
+            immediate: true,
+        }
+    )
+
     // watch(
-    //     () => [connectedAccount.value, connectedChainId.value],
-    //     ([wallet, chain]) => {
-    //         if (wallet && isSupportedChain(chain)) {
-    //             getBothBalances(false, false)
-    //         } else {
-    //             console.log("reset balances")
-    //             Balances.value = [0n, 0n]
+    //     () => Tokens.value[tkEnum.QUOTE],
+    //     (newToken) => {
+    //         if (newToken) {
+    //             getBothBalances(tkEnum.QUOTE)
     //         }
-    //     },
-    //     {
-    //         immediate: true,
     //     }
     // )
-
-    watch(
-        () => Tokens.value[tkEnum.QUOTE],
-        (newToken) => {
-            if (newToken) {
-                getBothBalances(tkEnum.QUOTE)
-            }
-        }
-    )
-    watch(
-        () => Tokens.value[tkEnum.BASE],
-        (newToken) => {
-            if (newToken) {
-                getBothBalances(tkEnum.BASE)
-            }
-        }
-    )
+    // watch(
+    //     () => Tokens.value[tkEnum.BASE],
+    //     (newToken) => {
+    //         if (newToken) {
+    //             getBothBalances(tkEnum.BASE)
+    //         }
+    //     }
+    // )
     // watch(
     //     Tokens,
     //     (newTokens) => {

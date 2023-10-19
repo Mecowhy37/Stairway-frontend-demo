@@ -267,7 +267,7 @@ function removeSelected() {
 }
 // ROUTES ----------------
 const route = useRoute()
-const { redeemLiquidity } = usePools(routerAddress, [], connectedAccount, connectedChainId, route)
+const { redeemLiquidity } = await usePools(routerAddress, [], connectedAccount, connectedChainId, route)
 // ROUTES ----------------
 
 const removingDisabled = ref(false)

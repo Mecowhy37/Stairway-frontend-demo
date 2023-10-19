@@ -288,9 +288,19 @@ const stepStore = useStepStore()
 
 const { featuredTokens, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 
+// ROUTES ----------------
+const router = useRouter()
+const route = useRoute()
+// ROUTES ----------------
+
 // TOKENS ------------------
 const { Tokens, bothTokensThere, selectTokenIndex, setToken } = useTokens()
+watch(Tokens, () => {
+    console.log("tokens actually changed")
+})
 // TOKENS ------------------
+
+useWidget(featuredTokens, Tokens, connectedChainId, router, route)
 
 // BALANCES ----------------
 const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBalances(
@@ -300,13 +310,8 @@ const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBala
 )
 // BALANCES ----------------
 
-// ROUTES ----------------
-const router = useRouter()
-const route = useRoute()
-// ROUTES ----------------
-
 // POOL -----------------
-const { pool, refreshPool, poolPending, poolError, price, depth, swap } = usePools(
+const { pool, refreshPool, poolPending, poolError, price, depth, swap } = await usePools(
     routerAddress,
     Tokens,
     connectedAccount,
@@ -316,8 +321,6 @@ const { pool, refreshPool, poolPending, poolError, price, depth, swap } = usePoo
 // POOL -----------------
 
 // WIDGET ------------------
-const abc = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
-
 const state = reactive({
     amountA: "",
     amountB: "",
@@ -451,18 +454,15 @@ watch(
     Tokens,
     async (tokens, oldTokens) => {
         console.log("- - - - - - - - - - - - - - -\nwatch(Tokens)")
-        console.log("tokens:", tokens)
-        console.log("oldTokens:", oldTokens)
 
         //getting balance
-        // const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
-        // const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
-        // console.log("areNewTokensOldReversered:", areNewOldReversered)
-        // const selectIndex = selectTokenIndex.value
-        // if (!areNewOldReversered && tokens[selectIndex]) {
-        //     console.log("calling balances -> ")
-        //     getBothBalances(selectIndex)
-        // }
+        const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
+        const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
+        console.log("areNewTokensOldReversered:", areNewOldReversered)
+        const selectIndex = selectTokenIndex.value
+        if (!areNewOldReversered && tokens[selectIndex]) {
+            getBothBalances(selectIndex, false)
+        }
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value

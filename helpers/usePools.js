@@ -1,14 +1,20 @@
 import { BrowserProvider, Contract, parseUnits, getAddress } from "ethers"
-import { decodeCustomError, isSupportedChain, getUrl } from "~/helpers/index"
+import { decodeCustomError, isSupportedChain, getUrl, listenForTransactionMine, tkEnum } from "~/helpers/index"
 
-export function usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route) {
+import router from "@/ABIs/IDEX.json"
+const RouterABI = router.abi
+
+import token from "@/ABIs/IERC20.json"
+const TokenABI = token.abi
+
+export async function usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route) {
     const {
         data: pool,
         error: poolError,
         status: poolStatus,
         pending: poolPending,
         refresh: refreshPool,
-    } = useAsyncData(
+    } = await useAsyncData(
         "pool",
         () => {
             if (isSupportedChain(connectedChainId.value)) {
@@ -28,13 +34,24 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
                         )
                     )
                 }
+            } else {
+                return {}
             }
         },
         {
-            watch: [connectedChainId],
+            watch: [Tokens, connectedChainId],
+            immediate: true,
+            default: () => {},
         }
     )
-    // watch: [Tokens, connectedChainId],
+
+    // watch(Tokens, (newTokens) => {
+    //     console.log("newTokens:", newTokens)
+    // })
+
+    watchEffect(() => {
+        console.log("newTokens:", Tokens.value)
+    })
 
     const poolRatio = computed(() => {
         if (!pool.value) {
@@ -139,6 +156,12 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
             notify(notifHolder, "error", failCause)
         }
     }
+
+    // function waitForEvent(txHash) {
+    //     return new Promise(async (resolve, reject) => {
+    //         // const usersEvents = await $fetch(getUrl("/"))
+    //     })
+    // }
 
     async function redeemLiquidity(
         tokenQuote,
@@ -338,9 +361,6 @@ export function usePools(routerAddress, Tokens, connectedAccount, connectedChain
         addLiquidity,
         redeemLiquidity,
         swap,
-
-        // approveSpending,
-        // listenForTransactionMine,
-        // checkAllowance,
+        checkAllowance,
     }
 }

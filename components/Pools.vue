@@ -199,7 +199,6 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-// const { connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
 const { positions, positionsPending, connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
 
 const openedIndex = ref(null)
