@@ -4,18 +4,18 @@
         class="notif base-box row"
         :class="[
             {
-                'notif--approve': notif.state === 'approve',
-                'notif--sign': notif.state === 'sign',
-                'notif--pending': notif.state === 'pending',
-                'notif--success': notif.state === 'success',
-                'notif--error': notif.state === 'error',
+                'notif--approve': notifContent.state === 'approve',
+                'notif--sign': notifContent.state === 'sign',
+                'notif--pending': notifContent.state === 'pending',
+                'notif--success': notifContent.state === 'success',
+                'notif--error': notifContent.state === 'error',
             },
         ]"
     >
         <!-- @click.self="complete" -->
         <div
             class="notif__icon"
-            :class="{ 'notif__icon--done': notif.isDone }"
+            :class="{ 'notif__icon--done': notifContent.isDone }"
         >
             <svg viewBox="0 0 100 100">
                 <circle
@@ -35,14 +35,14 @@
             <TransitionGroup>
                 <Icon
                     key="tick"
-                    v-show="notif.isDone && notif.state === 'success'"
+                    v-show="notifContent.isDone && notifContent.state === 'success'"
                     class="notif__icon__symbol"
                     name="tick"
                     :size="9"
                 ></Icon>
                 <Icon
                     key="soloWarrning"
-                    v-show="notif.isDone && notif.state === 'error'"
+                    v-show="notifContent.isDone && notifContent.state === 'error'"
                     class="notif__icon__symbol"
                     name="soloWarrning"
                     :size="3"
@@ -50,14 +50,14 @@
             </TransitionGroup>
         </div>
         <div class="notif__content">
-            <template v-if="notif.state === 'approve'">
-                <h4>{{ notif.header + " " + textExtras }}</h4>
+            <template v-if="notifContent.state === 'approve'">
+                <h4>{{ notifContent.header + " " + textExtras }}</h4>
                 <p class="caption">
-                    {{ notif.paragraph }}
+                    {{ notifContent.paragraph }}
                 </p>
             </template>
-            <template v-else-if="notif.state === 'error'">
-                <h4>{{ notif.header }}</h4>
+            <template v-else-if="notifContent.state === 'error'">
+                <h4>{{ notifContent.header }}</h4>
                 <p
                     v-if="textExtras"
                     class="caption"
@@ -68,13 +68,30 @@
                     v-else
                     class="caption"
                 >
-                    {{ notif.paragraph }}
+                    {{ notifContent.paragraph }}
+                </p>
+            </template>
+            <template v-else-if="notifContent.state === 'success'">
+                <h4>{{ notifContent.header }}</h4>
+                <p
+                    v-if="successData"
+                    class="caption"
+                >
+                    Successfully {{ successData.action }} {{ successData.quote.amount }}
+                    {{ successData.quote.token.symbol }} and {{ successData.base.amount }}
+                    {{ successData.base.token.symbol }}
+                </p>
+                <p
+                    v-else
+                    class="caption"
+                >
+                    {{ notifContent.paragraph }}
                 </p>
             </template>
             <template v-else>
-                <h4>{{ notif.header }}</h4>
+                <h4>{{ notifContent.header }}</h4>
                 <p class="caption">
-                    {{ notif.paragraph }}
+                    {{ notifContent.paragraph }}
                 </p>
             </template>
             <!-- <TransitionGroup mode="out-in">
@@ -98,7 +115,10 @@
                 circle
                 transparent
                 :class="{
-                    'grey-text': notif.state === 'approve' || notif.state === 'sign' || notif.state === 'pending',
+                    'grey-text':
+                        notifContent.state === 'approve' ||
+                        notifContent.state === 'sign' ||
+                        notifContent.state === 'pending',
                 }"
             >
                 <template #icon>
@@ -113,7 +133,9 @@
 </template>
 
 <script setup>
-const notifications = {
+import { formatUnits } from "ethers"
+
+const notificationContents = {
     approve: {
         state: "approve",
         header: "Approve spending",
@@ -155,22 +177,35 @@ const props = defineProps({
     notif: Object,
     deleteNotif: Function,
 })
-const notif = computed(() => notifications[props.notif.state])
-const id = computed(() => props.notif.id)
+const notifContent = computed(() => notificationContents[props.notif.state])
 
+const id = computed(() => props.notif.id)
 const textExtras = computed(() => props.notif?.symbol)
+const successData = computed(() => {
+    if (props.notif.successData) {
+        const successData = props.notif.successData
+        successData.quote.amount = formatUnits(successData.quote.amount.toString(), successData.quote.token.decimals)
+        successData.base.amount = formatUnits(successData.base.amount.toString(), successData.base.token.decimals)
+        return successData
+    } else {
+        return null
+    }
+})
 
 const spinning = ref(true)
 watch(
-    () => notif.value.isDone,
-    (newVal) => {
-        if (newVal) {
+    () => notifContent.value.isDone,
+    (isDone) => {
+        if (isDone) {
             setTimeout(() => {
                 spinning.value = false
             }, 700)
-            setTimeout(() => {
-                props.deleteNotif(id.value)
-            }, 5000)
+
+            if (!props.notif.keepNotification) {
+                setTimeout(() => {
+                    props.deleteNotif(id.value)
+                }, 5000)
+            }
         } else {
             spinning.value = true
         }

@@ -26,9 +26,12 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, connectedWallet, chains, positions, connectedChainId } = storeToRefs(stepStore)
+const { featuredTokens, addresses, connectedWallet, chains, positions, connectedChainId, connectedAccount } =
+    storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
+
+const route = useRoute()
 
 const initOptions = ref([])
 const {
@@ -63,9 +66,6 @@ function transformChainToInitOptions(chainObject) {
 
     return result
 }
-
-const { onboard } = useWeb3Onboard(initOptions)
-stepStore.onboard = onboard
 
 const {
     data: TokensData,
@@ -129,6 +129,48 @@ watch(
     }
 )
 
+const {
+    data: PositionsData,
+    pending: PositionsPending,
+    refresh: RefreshPositions,
+    error: PositionsError,
+    status: PositionsStatus,
+} = await useAsyncData(
+    "positions",
+    () => {
+        if (route.name !== "swap") {
+            if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+                console.log("fetching positions on chain:", connectedChainId.value)
+                return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+            } else {
+                // return []
+            }
+        } else {
+            // return
+        }
+    },
+    {
+        default: () => [...positions.value],
+        lazy: true,
+        server: false,
+        watch: [connectedChainId, connectedAccount, () => route.name],
+    }
+)
+
+watch(
+    () => [PositionsData.value, PositionsStatus.value, PositionsPending.value],
+    ([newPositions, newStatus, newPending]) => {
+        if (newPositions) {
+            stepStore.positions = newPositions
+        }
+        stepStore.positionsStatus = newStatus
+        stepStore.positionsPending = newPending
+    },
+    {
+        immediate: true,
+    }
+)
+stepStore.refreshPositions = RefreshPositions
 // SCREEN SIZE ------------------
 const { width } = useWindowSize()
 watch(
@@ -416,6 +458,12 @@ svg {
         padding: 0 7px;
         border-radius: 9999px;
         border: 1px solid var(--primary-btn-bg);
+        &:hover {
+            background-color: var(--list-hover-bg);
+        }
+        &:active {
+            background-color: var(--list-click-bg);
+        }
     }
     &--underlined {
         cursor: pointer;

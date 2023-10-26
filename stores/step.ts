@@ -177,15 +177,15 @@ const injected = injectedModule({
         addresses,
         
         chains,
-setChain,
+        setChain,
         connectedChainId,
         noWalletChain,
         connectedChain,
         isConnectingText,
-connectWallet,
+        connectWallet,
         connectedWallet,
         connectingWallet,
-disconnectConnectedWallet,
+        disconnectConnectedWallet,
         alreadyConnectedWallets,
 
         notify,

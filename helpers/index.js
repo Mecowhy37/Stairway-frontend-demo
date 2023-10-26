@@ -1,8 +1,8 @@
-import { BrowserProvider, Contract, parseUnits, formatUnits, getAddress, Interface, getBytes } from "ethers"
+import { Interface } from "ethers"
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
-const errorABI = new Interface(RouterABI).fragments
+export const errorABI = new Interface(RouterABI).fragments
 
 import token from "@/ABIs/IERC20.json"
 const TokenABI = token.abi
@@ -52,12 +52,13 @@ export function decodeCustomError(errorData) {
         if (abiEntry.type === "error") {
             try {
                 const iface = new Interface([abiEntry])
+                console.log("iface:", iface)
                 const decodedData = iface.decodeErrorResult(abiEntry, errorData)
                 return abiEntry.name
             } catch (e) {}
         }
     }
-    console.log("Unknown error data.")
+    console.log("Unknown error data.", errorData)
     return false
 }
 

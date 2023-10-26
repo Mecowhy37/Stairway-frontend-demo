@@ -37,7 +37,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
 
         const token = Tokens.value[tokenIndex]
         if (token === null) {
-            console.log("token === null")
+            console.log(stateKey, "token === null")
             balanceState[stateKey] = 0n
             return
         }
@@ -45,17 +45,16 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             balanceState[stateKey] = 0n
         }
 
-        console.log("getting", stateKey, "balance")
         const { data: balance, error } = await useFetch(
             getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/balance/${token.address}`)
         )
         if (balance.value) {
-            console.log("got balance", balance.value)
+            console.log("got", stateKey, "balance", balance.value)
             balanceState[stateKey] = BigInt(balance.value)
             return
         }
         if (error.value) {
-            console.error("failed to fetch balance", error.value)
+            console.error("failed to fetch", stateKey, "balance", error.value)
             balanceState[stateKey] = 0n
             return
         }
@@ -95,31 +94,35 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         }
     )
 
-    // watch(
-    //     () => Tokens.value[tkEnum.QUOTE],
-    //     (newToken) => {
-    //         if (newToken) {
-    //             getBothBalances(tkEnum.QUOTE)
-    //         }
-    //     }
-    // )
-    // watch(
-    //     () => Tokens.value[tkEnum.BASE],
-    //     (newToken) => {
-    //         if (newToken) {
-    //             getBothBalances(tkEnum.BASE)
-    //         }
-    //     }
-    // )
-    // watch(
-    //     Tokens,
-    //     (newTokens) => {
-    //         console.log("NEWTOKENS:", newTokens)
-    //     },
-    //     {
-    //         immediate: true,
-    //     }
-    // )
+    watch(
+        Tokens,
+        (newTokens, oldValues) => {
+            console.log("newTokens:", newTokens)
+            const oldTokens = oldValues ? oldValues : [null, null]
+
+            const newIndexes = findNewIndexes(oldTokens, newTokens)
+            console.log("newIndexes:", newIndexes)
+            newIndexes.forEach((index) => {
+                getBothBalances(index, true)
+            })
+        },
+        {
+            immediate: true,
+        }
+    )
+
+    function findNewIndexes(oldTokens, newTokens) {
+        const oldSet = new Set(oldTokens)
+        const newIndexes = []
+
+        newTokens.forEach((token, index) => {
+            if (token !== null && !oldSet.has(token)) {
+                newIndexes.push(index)
+            }
+        })
+
+        return newIndexes
+    }
 
     return { Balances, formatedBalances, getTokenBalance, getBothBalances, reverseBalances }
 }

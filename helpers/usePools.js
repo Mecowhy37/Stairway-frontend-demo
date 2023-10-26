@@ -18,6 +18,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         "pool",
         () => {
             if (isSupportedChain(connectedChainId.value)) {
+                //make separete useAsyncData for this
                 if (route.name === "remove-address") {
                     console.log("usePools - fetchingPool() - on", route.name)
                     return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
@@ -45,14 +46,6 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         }
     )
 
-    // watch(Tokens, (newTokens) => {
-    //     console.log("newTokens:", newTokens)
-    // })
-
-    watchEffect(() => {
-        console.log("newTokens:", Tokens.value)
-    })
-
     const poolRatio = computed(() => {
         if (!pool.value) {
             return null
@@ -73,7 +66,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         return pool.value.depth
     })
 
-    async function addLiquidity(
+    function addLiquidity(
         tokenQuote,
         tokenBase,
         amountQuote,
@@ -82,171 +75,253 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         deadline,
         recipient,
         providerArg,
-        callback,
-        notify
+        transactionErrorHandler,
+        eventReceivedHandler,
+        notify,
+        widgetLocker,
+        isUserCall
     ) {
-        let notifHolder = { id: null }
-        const provider = new BrowserProvider(providerArg)
-        const signer = await provider.getSigner()
-        const router = new Contract(routerAddress.value, RouterABI, signer)
+        return new Promise(async (resolve, reject) => {
+            let notifHolder = { id: null }
+            const provider = new BrowserProvider(providerArg)
+            const signer = await provider.getSigner()
+            const router = new Contract(routerAddress.value, RouterABI, signer)
 
-        const parsedSlippage = (parseUnits(slippage.toString(), 18) / BigInt(100)).toString()
-        const blockTimestamp = (await provider.getBlock("latest")).timestamp
-        const deadlineStamp = blockTimestamp + deadline * 60
+            const parsedSlippage = (parseUnits(slippage.toString(), 18) / BigInt(100)).toString()
+            const blockTimestamp = (await provider.getBlock("latest")).timestamp
+            const deadlineStamp = blockTimestamp + deadline * 60
 
-        try {
-            const tokens = [
-                { token: tokenQuote, amount: amountQuote },
-                { token: tokenBase, amount: amountBase },
-            ]
-            let errorOccured = false
-            for (const { token, amount } of tokens) {
-                if (await checkAllowance(token.address, amount, signer.address)) {
-                    try {
-                        await approveSpending(token, amount, providerArg, false, notify, notifHolder)
-                    } catch (error) {
-                        console.log("Error caught in approve loop:", error)
-                        errorOccured = true
-                        break
+            // approvals try catch
+            try {
+                const tokens = [
+                    { token: tokenQuote, amount: amountQuote },
+                    { token: tokenBase, amount: amountBase },
+                ]
+                let errorOccured = false
+                for (const { token, amount } of tokens) {
+                    if (await checkAllowance(token.address, amount, signer.address)) {
+                        try {
+                            await approveSpending(token, amount, providerArg, false, notify, notifHolder)
+                        } catch (error) {
+                            errorOccured = true
+                            break
+                        }
                     }
                 }
+                if (errorOccured) {
+                    throw new Error("An error occurred inside the loop.")
+                }
+            } catch (error) {
+                notify(notifHolder, "error")
+                reject(error)
+                return
             }
-            if (errorOccured) {
-                throw new Error("An error occurred inside the loop.")
+
+            // adding tx try catch
+            try {
+                console.log(" - - - - -a d d L Q- - - - - - ")
+                console.log("tokenQuote.address:", getAddress(tokenQuote.address))
+                console.log("tokenBase.address:", getAddress(tokenBase.address))
+                console.log("amountQuote:", amountQuote.toString())
+                console.log("amountBase:", amountBase.toString())
+                console.log("parsedSlippage:", parsedSlippage)
+                console.log("recipient:", recipient)
+                console.log("deadlineStamp:", deadlineStamp)
+
+                notify(notifHolder, "sign")
+
+                const tx = await router.addLiquidity(
+                    getAddress(tokenQuote.address),
+                    getAddress(tokenBase.address),
+                    amountQuote.toString(),
+                    amountBase.toString(),
+                    parsedSlippage,
+                    getAddress(recipient),
+                    deadlineStamp
+                )
+
+                // unlock the widget
+                widgetLocker(false)
+                notify(notifHolder, "pending")
+
+                // console.log("sent AddLQ tx:", tx, "...waiting 1 block")
+                console.log("sent AddLQ tx:", tx)
+
+                const originalCall = {
+                    tokenQuote,
+                    tokenBase,
+                    amountQuote,
+                    amountBase,
+                    slippage,
+                    deadline,
+                    recipient,
+                    providerArg,
+                    transactionErrorHandler,
+                    eventReceivedHandler,
+                    notify,
+                    widgetLocker,
+                    isUserCall,
+                }
+                // await tx.wait(1)
+
+                waitForLiquidityEvent(tx.hash, deadlineStamp)
+                    .then((lqEvent) => {
+                        eventReceivedHandler(lqEvent, originalCall, notifHolder)
+                    })
+                    .catch((error) => reject(error))
+            } catch (error) {
+                if (error.data) {
+                    const failCause = decodeCustomError(error.data)
+                    console.log("Failed to add lq:", failCause)
+                    notify(notifHolder, "error", failCause)
+                }
+                notify(notifHolder, "error")
+                reject("Failed to add liquidity " + error)
             }
-        } catch (error) {
-            console.log("Failed to get approvals - Add execution stops:", error)
-            notify(notifHolder, "error")
-            return
-        }
-        try {
-            console.log(" - - - - -a d d L Q- - - - - - ")
-            console.log("tokenQuote.address:", getAddress(tokenQuote.address))
-            console.log("tokenBase.address:", getAddress(tokenBase.address))
-            console.log("amountQuote:", amountQuote.toString())
-            console.log("amountBase:", amountBase.toString())
-            console.log("parsedSlippage:", parsedSlippage)
-            console.log("recipient:", recipient)
-            console.log("deadlineStamp:", deadlineStamp)
-
-            notify(notifHolder, "sign")
-
-            const tx = await router.addLiquidity(
-                getAddress(tokenQuote.address),
-                getAddress(tokenBase.address),
-                amountQuote.toString(),
-                amountBase.toString(),
-                parsedSlippage,
-                getAddress(recipient),
-                deadlineStamp
-            )
-            notify(notifHolder, "pending")
-
-            console.log("sent AddLQ tx:", tx, "...waiting 1 block")
-            await tx.wait(1)
-            return await listenForTransactionMine(tx, provider, () => {
-                console.log("callback from addLq() ... ")
-
-                notify(notifHolder, "success")
-                callback()
-            })
-        } catch (error) {
-            const failCause = decodeCustomError(error.data)
-            console.log("Failed to add lq:", failCause)
-            notify(notifHolder, "error", failCause)
-        }
+        }).catch((error) => {
+            transactionErrorHandler(error)
+        })
     }
 
-    // function waitForEvent(txHash) {
-    //     return new Promise(async (resolve, reject) => {
-    //         // const usersEvents = await $fetch(getUrl("/"))
-    //     })
-    // }
-
-    async function redeemLiquidity(
+    function redeemLiquidity(
         tokenQuote,
         tokenBase,
-        pooledQuote,
-        pooledBase,
-        redeemPercent,
         lpToken,
-        lpPooled,
+        amountQuote,
+        amountBase,
+        lpAmount,
         slippage,
         deadline,
         providerArg,
-        callback,
-        notify
+        transactionErrorHandler,
+        eventReceivedHandler,
+        notify,
+        widgetLocker,
+        isUserCall
     ) {
-        let notifHolder = { id: null }
-        const provider = new BrowserProvider(providerArg)
-        const signer = await provider.getSigner()
-        const router = new Contract(routerAddress.value, RouterABI, signer)
+        return new Promise(async (resolve, reject) => {
+            let notifHolder = { id: null }
+            const provider = new BrowserProvider(providerArg)
+            const signer = await provider.getSigner()
+            const router = new Contract(routerAddress.value, RouterABI, signer)
 
-        const amountQuote = calcPercentage(pooledQuote)
-        const amountBase = calcPercentage(pooledBase)
-        const lpAmount = calcPercentage(lpPooled)
+            const parsedSlippage = (parseUnits(slippage.toString(), 18) / BigInt(100)).toString()
+            const blockTimestamp = (await provider.getBlock("latest")).timestamp
+            const deadlineStamp = blockTimestamp + deadline * 60
 
-        function calcPercentage(amount) {
-            return (BigInt(amount) * BigInt(redeemPercent)) / BigInt(100)
-        }
+            try {
+                if (await checkAllowance(lpToken.address, lpAmount, signer.address)) {
+                    try {
+                        await approveSpending(lpToken, lpAmount, providerArg, false, notify, notifHolder)
+                    } catch (error) {
+                        throw new Error("failed to approve spending")
+                    }
+                }
+            } catch (error) {
+                notify(notifHolder, "error")
+                reject(error)
+                return
+            }
 
-        const parsedSlippage = (parseUnits(slippage.toString(), 18) / BigInt(100)).toString()
-        const blockTimestamp = (await provider.getBlock("latest")).timestamp
-        const deadlineStamp = blockTimestamp + deadline * 60
+            try {
+                console.log(" - - - - -r e m o v e L Q- - - - - - ")
+                console.log("qoute token:", tokenQuote.symbol, tokenQuote.address)
+                console.log("base token:", tokenBase.symbol, tokenBase.address)
+                console.log("amount Quote:", amountQuote.toString())
+                console.log("amount Base:", amountBase.toString())
+                console.log("lpAmount:", lpAmount.toString())
+                console.log("connectedAccount:", connectedAccount.value)
+                console.log("deadlineStamp:", deadlineStamp)
+                console.log("parsedSlippage:", parsedSlippage)
 
-        try {
-            if (await checkAllowance(lpToken.address, lpAmount, signer.address)) {
-                try {
-                    await approveSpending(lpToken, lpAmount, providerArg, false, notify, notifHolder)
-                } catch (e) {
-                    throw new Error()
+                notify(notifHolder, "sign")
+
+                const tx = await router.redeemLiquidity(
+                    getAddress(tokenQuote.address),
+                    getAddress(tokenBase.address),
+                    amountQuote.toString(),
+                    amountBase.toString(),
+                    lpAmount.toString(),
+                    getAddress(connectedAccount.value),
+                    deadlineStamp,
+                    parsedSlippage
+                )
+                // unlock the widget
+                widgetLocker(false)
+                notify(notifHolder, "pending")
+
+                console.log("sent RemoveLQ tx:", tx)
+
+                const originalCall = {
+                    tokenQuote,
+                    tokenBase,
+                    lpToken,
+                    amountQuote,
+                    amountBase,
+                    lpAmount,
+                    slippage,
+                    deadline,
+                    providerArg,
+                    transactionErrorHandler,
+                    eventReceivedHandler,
+                    notify,
+                    widgetLocker,
+                    isUserCall,
+                }
+
+                // return await listenForTransactionMine(tx, provider, () => {
+                //     console.log("callback from redeem() ... ")
+
+                //     notify(notifHolder, "success")
+                //     callback()
+                // })
+                waitForLiquidityEvent(tx.hash, deadlineStamp)
+                    .then((lqEvent) => {
+                        eventReceivedHandler(lqEvent, originalCall, notifHolder)
+                    })
+                    .catch((error) => reject(error))
+            } catch (error) {
+                if (error.data) {
+                    const failCause = decodeCustomError(error.data)
+                    console.log("failed to redeem liquidity: ", failCause)
+                    notify(notifHolder, "error", failCause)
+                }
+                notify(notifHolder, "error")
+                reject("Failed to redeem liquidity " + error)
+            }
+        }).catch((error) => {
+            transactionErrorHandler(error)
+        })
+    }
+
+    function waitForLiquidityEvent(txHash, deadline) {
+        return new Promise(async (resolve, reject) => {
+            // ASYNC LOOP WAITING FOR EVENT
+            const eventPingLoop = async () => {
+                console.log("eventPingLoop()")
+                // API QUERY
+                const lqEvent = await $fetch(getUrl(`/chain/${connectedChainId.value}/events/${txHash}/liquidity`))
+
+                if (lqEvent) {
+                    //event found
+                    console.log("lqEvent:", lqEvent)
+                    resolve(lqEvent)
+                } else {
+                    // NO event yet
+                    const currentTimestampInSeconds = Math.floor(Date.now() / 1000)
+                    if (currentTimestampInSeconds < deadline) {
+                        await new Promise((resolve) => setTimeout(resolve, 1000))
+
+                        // Call the loop again
+                        eventPingLoop()
+                    } else {
+                        reject(new Error("Deadline exceeded"))
+                    }
                 }
             }
-        } catch (error) {
-            console.log("Failed to get approvals:", error)
-            notify(notifHolder, "error")
-            return
-        }
 
-        try {
-            console.log(" - - - - -r e m o v e L Q- - - - - - ")
-            console.log("qoute token:", tokenQuote.symbol, tokenQuote.address)
-            console.log("base token:", tokenBase.symbol, tokenBase.address)
-            console.log("amount Quote:", amountQuote)
-            console.log("amount Base:", amountBase)
-            console.log("lpAmount:", lpAmount)
-            console.log("connectedAccount:", connectedAccount.value)
-            console.log("deadlineStamp:", deadlineStamp)
-            console.log("parsedSlippage:", parsedSlippage)
-
-            notify(notifHolder, "sign")
-
-            const tx = await router.redeemLiquidity(
-                getAddress(tokenQuote.address),
-                getAddress(tokenBase.address),
-                amountQuote,
-                amountBase,
-                lpAmount,
-                getAddress(connectedAccount.value),
-                deadlineStamp,
-                parsedSlippage
-            )
-
-            notify(notifHolder, "pending")
-
-            console.log("sent RemoveLQ tx:", tx, "...waiting 1 block")
-            await tx.wait(1)
-            return await listenForTransactionMine(tx, provider, () => {
-                console.log("callback from redeem() ... ")
-
-                notify(notifHolder, "success")
-                callback()
-            })
-        } catch (err) {
-            const failCause = decodeCustomError(error.data)
-            console.log("failed to redeem liquidity: ", failCause)
-            notify(notifHolder, "error", failCause)
-        }
+            eventPingLoop()
+        })
     }
 
     async function swap(path, amountQuote, amountBase, maxPrice, account, deadline, providerArg, callback, notify) {
@@ -330,8 +405,8 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
             console.log("tx:", tx, "...waiting 1 block")
             await tx.wait(1)
             return await listenForTransactionMine(tx, provider, callback)
-        } catch (err) {
-            throw new Error("approveSpending():")
+        } catch (error) {
+            throw new Error("approveSpending():" + error)
         }
     }
 
@@ -340,12 +415,12 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
             const allowance = await $fetch(
                 getUrl(`/chain/${connectedChainId.value}/user/${owner}/approved/${tokenAddress}`)
             )
-            console.log("BigInt(allowance):", BigInt(allowance))
+            console.log("allowance:", BigInt(allowance))
             console.log("tokenAmount:", tokenAmount)
             console.log("BigInt(allowance) < tokenAmount:", BigInt(allowance) < tokenAmount)
             return BigInt(allowance) < tokenAmount
-        } catch (err) {
-            return "allowance fails", err
+        } catch (error) {
+            throw new Error("checkAllowance(): " + error)
         }
     }
 

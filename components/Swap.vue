@@ -362,8 +362,8 @@ function callSwap() {
 // const refreshEvents = inject("refreshEvents")
 function refresh() {
     console.log("refresh() - swap")
-    resetAmounts(tkEnum.QUOTE)
-    resetAmounts(tkEnum.BASE)
+    resetInputAmounts(tkEnum.QUOTE)
+    resetInputAmounts(tkEnum.BASE)
     getBothBalances(false, false)
     refreshPool()
 }
@@ -425,7 +425,7 @@ const {
     setFromFullToUserAmount,
     calcAndSetOpposingInput,
     calcQuote,
-    resetAmounts,
+    resetInputAmounts,
     bothAmountsIn,
 } = useAmounts(Tokens, pool, widgetTypeObj.swap)
 
@@ -479,7 +479,7 @@ watch(
 
         // fetching pool
         if (bothTokensThere.value) {
-            resetAmounts(oppositeInput(lastChangedAmountIndex))
+            resetInputAmounts(oppositeInput(lastChangedAmountIndex))
             await refreshPool()
             console.log("watch(Tokens) - pool.value: ", pool.value?.name)
             if (pool.value) {

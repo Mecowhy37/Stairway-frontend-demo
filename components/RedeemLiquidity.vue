@@ -245,11 +245,11 @@ import { formatUnits } from "ethers"
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 import { usePools } from "~/helpers/usePools"
-import { basicRound, isSupportedChain } from "~/helpers/index"
+import { basicRound, isSupportedChain, errorABI } from "~/helpers/index"
 
 const stepStore = useStepStore()
 const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
-const { refreshPositions, getSinglePostion, updatePositionsWithNewSingle } = stepStore
+const { getSinglePostion, updatePositionsWithNewSingle } = stepStore
 
 const redeemPercent = ref(100)
 
@@ -273,26 +273,104 @@ const { redeemLiquidity } = await usePools(routerAddress, [], connectedAccount, 
 const removingDisabled = ref(false)
 function redeemLiquidityCall() {
     if (ownedPosition.value) {
-        removingDisabled.value = true
+        widgetLocker(true)
+        // calculate percentages
+        const amountQuote = calcPercentage(ownedPosition.value.quote_amount)
+        const amountBase = calcPercentage(ownedPosition.value.base_amount)
+        const lpAmount = calcPercentage(ownedPosition.value.lp_total_amount)
+
+        function calcPercentage(amount) {
+            return (BigInt(amount) * BigInt(redeemPercent.value)) / BigInt(100)
+        }
+
         redeemLiquidity(
-            pool.value.base_token,
             pool.value.quote_token,
-            ownedPosition.value.base_amount,
-            ownedPosition.value.quote_amount,
-            redeemPercent.value,
+            pool.value.base_token,
             pool.value.lp_token,
-            ownedPosition.value.lp_amount,
+            amountQuote,
+            amountBase,
+            lpAmount,
             settingsRedeem.value.slippage,
             settingsRedeem.value.deadline,
             stepStore.connectedWallet.provider,
-            refresh,
-            stepStore.notify
-        ).finally(() => {
-            removingDisabled.value = false
-            redeemPercent.value = 100
-        })
+            redeemLiquidityFailedHandler,
+            eventReceivedHandler,
+            stepStore.notify,
+            widgetLocker,
+            //isUserCall
+            true
+        )
     }
 }
+
+function widgetLocker(lock) {
+    removingDisabled.value = lock
+}
+
+function redeemLiquidityFailedHandler(error) {
+    console.log("redeemLiquidityFailedHandler()", error)
+    widgetLocker(false)
+}
+
+function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
+    console.log("eventReceivedHandler()", lqEvent)
+
+    const eventEnum = {
+        QUOTE: "this_out",
+        BASE: "that_out",
+        LP: "lp_tokens_redeemed",
+    }
+
+    const {
+        tokenQuote,
+        tokenBase,
+        amountQuote: originQuoteAmount,
+        amountBase: originBaseAmount,
+        lpAmount: originLpAmount,
+        isUserCall,
+    } = originalCall
+
+    const quoteAmountRedeemed = BigInt(lqEvent[eventEnum.QUOTE])
+    const quoteAmountDelta = originQuoteAmount - quoteAmountRedeemed
+
+    const baseAmountRedeemed = BigInt(lqEvent[eventEnum.BASE])
+    const baseAmountDelta = originBaseAmount - baseAmountRedeemed
+
+    const lpAmountRedeemed = BigInt(lqEvent[eventEnum.LP])
+    const lpAmountDelta = originLpAmount - lpAmountRedeemed
+
+    const fullRequiredLpRemoved = originLpAmount - lpAmountRedeemed === 0n
+
+    const successData = {
+        action: "redeemed",
+        quote: {
+            token: tokenQuote,
+            amount: quoteAmountRedeemed,
+        },
+        base: {
+            token: tokenBase,
+            amount: baseAmountRedeemed,
+        },
+    }
+    const keepNotification = !fullRequiredLpRemoved || !isUserCall
+    stepStore.notify(notifHolder, "success", false, successData, keepNotification)
+
+    if (fullRequiredLpRemoved) {
+        // all lpTokens redeemed
+        setTimeout(() => {
+            navigateTo({ path: "/liquidity" })
+        }, 1000)
+    } else {
+        // NOT all lpTokens redeemed
+        RefreshSinglePosition()
+        originalCall.amountQuote = quoteAmountDelta
+        originalCall.amountBase = baseAmountDelta
+        originalCall.lpAmount = lpAmountDelta
+        originalCall.isUserCall = false
+        redeemLiquidity(...Object.values(originalCall))
+    }
+}
+
 const {
     data: SinglePositionData,
     pending: SinglePositionPending,
@@ -328,14 +406,6 @@ const ownedPosition = computed(() => {
 const pool = computed(() => {
     return ownedPosition.value?.pool
 })
-function refresh() {
-    console.log("refresh()")
-    RefreshSinglePosition()
-    setTimeout(() => {
-        navigateTo({ path: "/liquidity" })
-    }, 1000)
-}
-
 //SETTINGS--------------
 const settingsRedeem = ref(null)
 //SETTINGS--------------

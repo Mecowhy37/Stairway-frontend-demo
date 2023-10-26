@@ -199,7 +199,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions, positionsPending, connectedAccount, connectedChainId, isMobile } = storeToRefs(stepStore)
+const { positions, positionsPending, connectedAccount, isMobile } = storeToRefs(stepStore)
 
 const openedIndex = ref(null)
 
@@ -227,45 +227,6 @@ function removeRedirect(pool) {
         path: `/remove/${pool.pool_index}`,
     })
 }
-
-const {
-    data: PositionsData,
-    pending: PositionsPending,
-    refresh: RefreshPositions,
-    error: PositionsError,
-    status: PositionsStatus,
-} = await useAsyncData(
-    "positions",
-    () => {
-        if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
-            console.log("fetching positions on chain:", connectedChainId.value)
-            return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
-        } else {
-            return []
-        }
-    },
-    {
-        default: () => [...positions.value],
-        lazy: true,
-        server: false,
-        watch: [connectedChainId, connectedAccount],
-    }
-)
-
-watch(
-    () => [PositionsData.value, PositionsStatus.value, PositionsPending.value],
-    ([newPositions, newStatus, newPending]) => {
-        if (newPositions) {
-            stepStore.positions = newPositions
-        }
-        stepStore.positionsStatus = newStatus
-        stepStore.positionsPending = newPending
-    },
-    {
-        immediate: true,
-    }
-)
-stepStore.refreshPositions = RefreshPositions
 </script>
 
 <style lang="scss" scoped>

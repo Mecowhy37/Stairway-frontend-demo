@@ -110,8 +110,8 @@ export function useAmounts(Tokens, pool, widgetType) {
     function setFullAmount(amount, inputIndex) {
         fullAmounts[getInputLabel(inputIndex)] = amount
     }
-    function resetAmounts(inputIndex) {
-        console.log("resetAmounts(): ", getInputLabel(inputIndex))
+    function resetInputAmounts(inputIndex) {
+        console.log("resetInputAmounts(): ", getInputLabel(inputIndex))
         setUserAmount("", inputIndex)
         setFullAmount(0n, inputIndex)
     }
@@ -204,7 +204,7 @@ export function useAmounts(Tokens, pool, widgetType) {
         calcAndSetOpposingInput,
         bothAmountsIn,
         calcQuote,
-        resetAmounts,
+        resetInputAmounts,
         cleanInput,
         switchAmounts,
         prettyPrint,

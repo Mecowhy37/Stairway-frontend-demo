@@ -33,8 +33,9 @@
             </TopBar>
             <div class="search">
                 <div class="search__input-wrap layer-wdg-box row">
+                    <!-- placeholder="Search name or address" -->
                     <input
-                        placeholder="Search name or address"
+                        placeholder="Search for symbol or name"
                         v-model="search"
                         class=""
                         type="text"
@@ -277,10 +278,10 @@ async function getTokens(tokenAddress) {
         }
         .token-list {
             overflow-y: scroll;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+            /* -ms-overflow-style: none; */
+            /* scrollbar-width: none; */
             &::-webkit-scrollbar {
-                display: none;
+                /* display: none; */
             }
             .list-item {
                 padding: 16px 8px;

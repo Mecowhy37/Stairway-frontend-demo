@@ -106,7 +106,7 @@
                 </div>
             </div>
             <div
-                v-if="(insufficientBalanceIndexes.length > 0 && connectedAccount) || poolError"
+                v-if="(insufficientBalanceIndexes.length > 0 && connectedAccount) || poolError || hasDaoToken"
                 class="infos"
             >
                 <div
@@ -121,6 +121,22 @@
                         />
                     </div>
                     <p>Pool not found. Be aware you are setting a initial ratio of the pool.</p>
+                </div>
+                <div
+                    v-if="hasDaoToken"
+                    class="info row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>
+                        You are trying to add liquidity including a governance token, be aware that it may take multiple
+                        transactions in order to add desired amount and maintain governance ability.
+                    </p>
                 </div>
                 <div
                     v-if="insufficientBalanceIndexes.length > 0 && connectedAccount"
@@ -287,7 +303,7 @@
 
 <script setup>
 import { inject } from "vue"
-import { BrowserProvider, Contract, parseUnits, formatEther, formatUnits, parseEther } from "ethers"
+import { formatUnits } from "ethers"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -356,9 +372,15 @@ const ownedPosition = computed(() => {
     return matchedPosition
 })
 
-const addingDisabled = ref(false)
+const hasDaoToken = computed(() => {
+    return Tokens.value.some((el) => el?.is_governance)
+})
+
+// not neccessarily block the interface, just indicate - block until signed
 function callAddLiquidity() {
-    addingDisabled.value = true
+    // addingDisabled.value = true
+    widgetLocker(true)
+
     addLiquidity(
         ...Tokens.value,
         fullAmounts.quote,
@@ -367,27 +389,90 @@ function callAddLiquidity() {
         settingsAdd.value.deadline,
         stepStore.connectedAccount,
         stepStore.connectedWallet.provider,
-        refresh,
-        stepStore.notify
-    ).finally(() => {
-        //this bit and listenForTransationMine need some imporvement not to pass callbacks - listenForTranasaction mine should be more error safe
-        addingDisabled.value = false
-        // state.amountQuote = ""
-        // state.amountBase = ""
-    })
+        addLiquidityFailedHandler,
+        eventReceivedHandler,
+        stepStore.notify,
+        widgetLocker,
+        //isUserCall
+        true
+    )
+}
+const addingDisabled = ref(false)
+function widgetLocker(lock) {
+    addingDisabled.value = lock
 }
 
-function refresh() {
-    console.log("refresh() - add")
-    resetAmounts(tkEnum.QUOTE)
-    resetAmounts(tkEnum.BASE)
-    // refreshPositions()
+function addLiquidityFailedHandler(error) {
+    console.log("addLiquidityFailedHandler()", error)
+    widgetLocker(false)
     getBothBalances(false, false)
     refreshPool()
-    setTimeout(() => {
-        navigateTo({ path: "/liquidity" })
-    }, 1000)
 }
+
+function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
+    console.log("eventReceivedHandler()")
+
+    const eventEnum = {
+        QUOTE: "this_amount",
+        BASE: "that_amount",
+    }
+
+    const {
+        tokenQuote,
+        tokenBase,
+        amountQuote: originQuoteAmount,
+        amountBase: originBaseAmount,
+        slippage,
+        isUserCall,
+    } = originalCall
+
+    const baseAmountAdded = BigInt(lqEvent[eventEnum.BASE])
+    const baseAmountDelta = originBaseAmount - baseAmountAdded
+    // const baseAmountDelta = originBaseAmount - (baseAmountAdded * 80n) / 100n
+    const baseSlippagePercent = (Number(baseAmountDelta) / Number(originBaseAmount)) * 100
+    const baseWithinSlippage = baseSlippagePercent <= slippage
+
+    const quoteAmountAdded = BigInt(lqEvent[eventEnum.QUOTE])
+    const quoteAmountDelta = originQuoteAmount - quoteAmountAdded
+    // const quoteAmountDelta = originQuoteAmount - (quoteAmountAdded * 80n) / 100n
+    const quoteSlippagePercent = (Number(quoteAmountDelta) / Number(originQuoteAmount)) * 100
+    const quoteWithinSlippage = quoteSlippagePercent <= slippage
+
+    const tranasactionWithinSlippage = baseWithinSlippage && quoteWithinSlippage
+
+    const successData = {
+        action: "added",
+        quote: {
+            token: tokenQuote,
+            amount: quoteAmountAdded,
+        },
+        base: {
+            token: tokenBase,
+            amount: baseAmountAdded,
+        },
+    }
+    const keepNotification = !tranasactionWithinSlippage || !isUserCall
+    stepStore.notify(notifHolder, "success", false, successData, keepNotification)
+
+    if (tranasactionWithinSlippage) {
+        // change this name to be more specific
+        // resetInputAmounts(tkEnum.QUOTE)
+        // resetInputAmounts(tkEnum.BASE)
+        setTimeout(() => {
+            navigateTo({ path: "/liquidity" })
+        }, 1000)
+    } else {
+        // loop every x seconds
+        refreshPool()
+        refreshPositions()
+        getBothBalances(false, false)
+        originalCall.amountQuote = quoteAmountDelta
+        originalCall.amountBase = baseAmountDelta
+        originalCall.isUserCall = false
+        addLiquidity(...Object.values(originalCall))
+    }
+}
+
 function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
         const formatedAmount = formatUnits(amount, Tokens.value[inputIndex].decimals)
@@ -424,7 +509,7 @@ const {
     setUserAmount,
     setFromUserToFullAmount,
     calcAndSetOpposingInput,
-    resetAmounts,
+    resetInputAmounts,
     bothAmountsIn,
 } = useAmounts(Tokens, pool, widgetTypeObj.add)
 
@@ -460,16 +545,16 @@ watch(
         //getting balance
         const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
         const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
-        console.log("areNewTokensOldReversered:", areNewOldReversered)
         if (!areNewOldReversered && tokens[selectTokenIndex.value]) {
-            getBothBalances(selectTokenIndex.value, false)
+            // console.log(getting balance from ADD token watcher")
+            // getBothBalances(selectTokenIndex.value, false)
         }
+        // getBothBalances(false, false)
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
         const newAmountIndex = lastChangedAmount.value
         console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
-        console.log("watch(Tokens) - new amount:", getInputLabel(newAmountIndex))
         if (newTokenIndex === newAmountIndex && Tokens.value[newTokenIndex]) {
             setFromUserToFullAmount(
                 userAmounts[amountsLabelOrder.value[newAmountIndex]],
@@ -480,7 +565,7 @@ watch(
 
         // fetching pool
         if (bothTokensThere.value) {
-            resetAmounts(oppositeInput(newAmountIndex))
+            resetInputAmounts(oppositeInput(newAmountIndex))
             await refreshPool()
             console.log("watch(Tokens) - pool: ", pool.value?.name)
             if (pool.value) {
@@ -492,6 +577,7 @@ watch(
                     BigInt(pool.value.price)
                 )
             }
+            await refreshPositions()
         }
     },
     {

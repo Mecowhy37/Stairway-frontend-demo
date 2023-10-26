@@ -1,0 +1,310 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "flashSwapCallback",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "flashSwapCallback(address,uint256,uint256,bytes)": "a5a6edad"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"flashSwapCallback\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/interfaces/IFlashSwapCallback.sol\":\"IFlashSwapCallback\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"src/interfaces/IFlashSwapCallback.sol\":{\"keccak256\":\"0xa74109c00c1fa3fb251e038eb305fea8c8c8e4f3e182ea894a1ea2340a33d647\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://7374fe583fb854d9f1489c4f57510c37759b8c246f57e03b53bf2626f68bbfda\",\"dweb:/ipfs/QmXPfzacvjsQDLxbJRkFwqTpmgp191EsicnnSJTPyTkstV\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amountIn",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amountOut",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "flashSwapCallback"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/interfaces/IFlashSwapCallback.sol": "IFlashSwapCallback"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "src/interfaces/IFlashSwapCallback.sol": {
+        "keccak256": "0xa74109c00c1fa3fb251e038eb305fea8c8c8e4f3e182ea894a1ea2340a33d647",
+        "urls": [
+          "bzz-raw://7374fe583fb854d9f1489c4f57510c37759b8c246f57e03b53bf2626f68bbfda",
+          "dweb:/ipfs/QmXPfzacvjsQDLxbJRkFwqTpmgp191EsicnnSJTPyTkstV"
+        ],
+        "license": "GPL-3.0-or-later"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/interfaces/IFlashSwapCallback.sol",
+    "id": 62559,
+    "exportedSymbols": {
+      "IFlashSwapCallback": [
+        62558
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "46:222:80",
+    "nodes": [
+      {
+        "id": 62546,
+        "nodeType": "PragmaDirective",
+        "src": "46:24:80",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 62558,
+        "nodeType": "ContractDefinition",
+        "src": "74:192:80",
+        "nodes": [
+          {
+            "id": 62557,
+            "nodeType": "FunctionDefinition",
+            "src": "110:153:80",
+            "nodes": [],
+            "functionSelector": "a5a6edad",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "flashSwapCallback",
+            "nameLocation": "119:17:80",
+            "parameters": {
+              "id": 62555,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 62548,
+                  "mutability": "mutable",
+                  "name": "sender",
+                  "nameLocation": "155:6:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62557,
+                  "src": "147:14:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 62547,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "147:7:80",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 62550,
+                  "mutability": "mutable",
+                  "name": "amountIn",
+                  "nameLocation": "180:8:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62557,
+                  "src": "172:16:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 62549,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "172:7:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 62552,
+                  "mutability": "mutable",
+                  "name": "amountOut",
+                  "nameLocation": "207:9:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62557,
+                  "src": "199:17:80",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 62551,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "199:7:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 62554,
+                  "mutability": "mutable",
+                  "name": "data",
+                  "nameLocation": "242:4:80",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 62557,
+                  "src": "227:19:80",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 62553,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "227:5:80",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "136:117:80"
+            },
+            "returnParameters": {
+              "id": 62556,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "262:0:80"
+            },
+            "scope": 62558,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IFlashSwapCallback",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          62558
+        ],
+        "name": "IFlashSwapCallback",
+        "nameLocation": "84:18:80",
+        "scope": 62559,
+        "usedErrors": []
+      }
+    ],
+    "license": "GPL-3.0-or-later"
+  },
+  "id": 80
+}
