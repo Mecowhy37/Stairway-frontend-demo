@@ -277,7 +277,7 @@ function redeemLiquidityCall() {
         // calculate percentages
         const amountQuote = calcPercentage(ownedPosition.value.quote_amount)
         const amountBase = calcPercentage(ownedPosition.value.base_amount)
-        const lpAmount = calcPercentage(ownedPosition.value.lp_total_amount)
+        const lpAmount = calcPercentage(ownedPosition.value.lp_amount)
 
         function calcPercentage(amount) {
             return (BigInt(amount) * BigInt(redeemPercent.value)) / BigInt(100)
@@ -315,12 +315,6 @@ function redeemLiquidityFailedHandler(error) {
 function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     console.log("eventReceivedHandler()", lqEvent)
 
-    const eventEnum = {
-        QUOTE: "this_out",
-        BASE: "that_out",
-        LP: "lp_tokens_redeemed",
-    }
-
     const {
         tokenQuote,
         tokenBase,
@@ -330,16 +324,40 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         isUserCall,
     } = originalCall
 
-    const quoteAmountRedeemed = BigInt(lqEvent[eventEnum.QUOTE])
+    let eventQuoteToken
+    let eventBaseToken
+    if (tokenQuote === lqEvent.this_token) {
+        eventQuoteToken = "this_out"
+        eventBaseToken = "that_out"
+    } else {
+        eventQuoteToken = "that_out"
+        eventBaseToken = "this_out"
+    }
+
+    const quoteAmountRedeemed = BigInt(lqEvent[eventQuoteToken])
     const quoteAmountDelta = originQuoteAmount - quoteAmountRedeemed
 
-    const baseAmountRedeemed = BigInt(lqEvent[eventEnum.BASE])
+    const baseAmountRedeemed = BigInt(lqEvent[eventBaseToken])
     const baseAmountDelta = originBaseAmount - baseAmountRedeemed
 
-    const lpAmountRedeemed = BigInt(lqEvent[eventEnum.LP])
+    const lpAmountRedeemed = BigInt(lqEvent.lp_tokens_redeemed)
     const lpAmountDelta = originLpAmount - lpAmountRedeemed
 
-    const fullRequiredLpRemoved = originLpAmount - lpAmountRedeemed === 0n
+    const fullRequiredLpIsRemoved = originLpAmount - lpAmountRedeemed === 0n
+
+    console.log("originQuoteAmount:", originQuoteAmount)
+    console.log("quoteAmountRedeemed:", quoteAmountRedeemed)
+    console.log("quoteAmountDelta:", quoteAmountDelta)
+    console.log("-----------------------")
+    console.log("originBaseAmount:", originBaseAmount)
+    console.log("baseAmountRedeemed:", baseAmountRedeemed)
+    console.log("baseAmountDelta:", baseAmountDelta)
+    console.log("-----------------------")
+    console.log("originLpAmount:", originLpAmount)
+    console.log("lpAmountRedeemed:", lpAmountRedeemed)
+    console.log("lpAmountDelta:", lpAmountDelta)
+    console.log("-----------------------")
+    console.log("fullRequiredLpIsRemoved:", fullRequiredLpIsRemoved)
 
     const successData = {
         action: "redeemed",
@@ -352,10 +370,10 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
             amount: baseAmountRedeemed,
         },
     }
-    const keepNotification = !fullRequiredLpRemoved || !isUserCall
+    const keepNotification = !fullRequiredLpIsRemoved || !isUserCall
     stepStore.notify(notifHolder, "success", false, successData, keepNotification)
 
-    if (fullRequiredLpRemoved) {
+    if (fullRequiredLpIsRemoved) {
         // all lpTokens redeemed
         setTimeout(() => {
             navigateTo({ path: "/liquidity" })
