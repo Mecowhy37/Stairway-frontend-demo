@@ -277,26 +277,23 @@ async function getTokens(tokenAddress) {
             }
         }
         .token-list {
-            overflow-y: scroll;
-            &::-webkit-scrollbar {
-                width: 3px;
-            }
-
-            &::-webkit-scrollbar-track-piece {
-                background-color: transparent;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                /* background-color: var(--grey-opaque); */
-                background-color: white;
-            }
-
+            overflow: auto;
             .list-item {
                 padding: 16px 8px;
             }
             .tick-icon {
                 margin-left: auto;
                 margin-right: 8px;
+            }
+            &::-webkit-scrollbar {
+                width: 3px;
+            }
+            &::-webkit-scrollbar-track-piece {
+                background-color: transparent;
+            }
+            &::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                background-color: var(--text-color-reverse-opaque);
             }
         }
         .search {
