@@ -303,7 +303,7 @@
 
 <script setup>
 import { inject } from "vue"
-import { formatUnits } from "ethers"
+import { formatUnits, getAddress } from "ethers"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
@@ -312,7 +312,7 @@ import { useBalances } from "~/helpers/useBalances"
 import { useAmounts } from "~/helpers/useAmounts"
 import { useTokens } from "~/helpers/useTokens"
 import { usePools } from "~/helpers/usePools"
-import { basicRound, isSupportedChain, widgetTypeObj, tkEnum, precision, roundFloor } from "~/helpers/index"
+import { basicRound, widgetTypeObj } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
@@ -412,11 +412,6 @@ function addLiquidityFailedHandler(error) {
 function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     console.log("eventReceivedHandler()")
 
-    const eventEnum = {
-        QUOTE: "this_amount",
-        BASE: "that_amount",
-    }
-
     const {
         tokenQuote,
         tokenBase,
@@ -426,17 +421,29 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         isUserCall,
     } = originalCall
 
-    const baseAmountAdded = BigInt(lqEvent[eventEnum.BASE])
-    const baseAmountDelta = originBaseAmount - baseAmountAdded
-    // const baseAmountDelta = originBaseAmount - (baseAmountAdded * 80n) / 100n
-    const baseSlippagePercent = (Number(baseAmountDelta) / Number(originBaseAmount)) * 100
-    const baseWithinSlippage = baseSlippagePercent <= slippage
+    let eventQuoteToken
+    let eventBaseToken
+    if (getAddress(tokenQuote.address) === getAddress(lqEvent.this_token)) {
+        eventQuoteToken = "this_amount"
+        eventBaseToken = "that_amount"
+    } else {
+        eventQuoteToken = "that_amount"
+        eventBaseToken = "this_amount"
+    }
 
-    const quoteAmountAdded = BigInt(lqEvent[eventEnum.QUOTE])
+    const quoteAmountAdded = BigInt(lqEvent[eventQuoteToken])
+    console.log("originQuoteAmount:", originQuoteAmount)
+    console.log("quoteAmountAdded:", quoteAmountAdded)
     const quoteAmountDelta = originQuoteAmount - quoteAmountAdded
-    // const quoteAmountDelta = originQuoteAmount - (quoteAmountAdded * 80n) / 100n
     const quoteSlippagePercent = (Number(quoteAmountDelta) / Number(originQuoteAmount)) * 100
     const quoteWithinSlippage = quoteSlippagePercent <= slippage
+
+    const baseAmountAdded = BigInt(lqEvent[eventBaseToken])
+    console.log("originBaseAmount:", originBaseAmount)
+    console.log("baseAmountAdded:", baseAmountAdded)
+    const baseAmountDelta = originBaseAmount - baseAmountAdded
+    const baseSlippagePercent = (Number(baseAmountDelta) / Number(originBaseAmount)) * 100
+    const baseWithinSlippage = baseSlippagePercent <= slippage
 
     const tranasactionWithinSlippage = baseWithinSlippage && quoteWithinSlippage
 

@@ -278,11 +278,19 @@ async function getTokens(tokenAddress) {
         }
         .token-list {
             overflow-y: scroll;
-            /* -ms-overflow-style: none; */
-            /* scrollbar-width: none; */
             &::-webkit-scrollbar {
-                /* display: none; */
+                width: 3px;
             }
+
+            &::-webkit-scrollbar-track-piece {
+                background-color: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                /* background-color: var(--grey-opaque); */
+                background-color: white;
+            }
+
             .list-item {
                 padding: 16px 8px;
             }

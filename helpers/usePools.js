@@ -133,8 +133,8 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 const tx = await router.addLiquidity(
                     getAddress(tokenQuote.address),
                     getAddress(tokenBase.address),
-                    amountQuote.toString(),
-                    amountBase.toString(),
+                    amountQuote,
+                    amountBase,
                     parsedSlippage,
                     getAddress(recipient),
                     deadlineStamp
@@ -166,6 +166,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
 
                 waitForLiquidityEvent(tx.hash, deadlineStamp)
                     .then((lqEvent) => {
+                        resolve()
                         eventReceivedHandler(lqEvent, originalCall, notifHolder)
                     })
                     .catch((error) => reject(error))
@@ -277,6 +278,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 // })
                 waitForLiquidityEvent(tx.hash, deadlineStamp)
                     .then((lqEvent) => {
+                        resolve()
                         eventReceivedHandler(lqEvent, originalCall, notifHolder)
                     })
                     .catch((error) => reject(error))
@@ -291,6 +293,96 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
             }
         }).catch((error) => {
             transactionErrorHandler(error)
+        })
+    }
+
+    function swap(
+        path,
+        amountQuote,
+        amountBase,
+        maxPrice,
+        account,
+        deadline,
+        providerArg,
+        swapFailedHandler,
+        eventReceivedHandler,
+        notify,
+        widgetLocker
+    ) {
+        return new Promise(async (resolve, reject) => {
+            let notifHolder = { id: null }
+            const provider = new BrowserProvider(providerArg)
+            const signer = await provider.getSigner()
+            const router = new Contract(routerAddress.value, RouterABI, signer)
+
+            const blockTimestamp = (await provider.getBlock("latest")).timestamp
+            const deadlineStamp = blockTimestamp + deadline * 60
+
+            const tokenPath = path.map((el) => {
+                el.address = getAddress(el.address)
+                return el
+            })
+            const tokenPathAddresses = tokenPath.map((el) => el.address)
+
+            try {
+                console.log(" - - - - allowance - - - - - ")
+                const tokenQuote = path[tkEnum.QUOTE]
+                if (await checkAllowance(tokenQuote.address, amountQuote, signer.address)) {
+                    try {
+                        await approveSpending(tokenQuote, amountQuote, providerArg, false, notify, notifHolder)
+                    } catch (error) {
+                        throw new Error("Failed to approve spending" + error)
+                    }
+                }
+            } catch (error) {
+                notify(notifHolder, "error")
+                reject(error)
+                return
+            }
+
+            try {
+                console.log(" - - - - -s w a p- - - - - - ")
+                tokenPath.forEach((token, index) => {
+                    console.log("path token -", index + 1, "-", token.symbol, token.address)
+                })
+                console.log("desiredAmountOut:", amountBase.toString())
+                console.log("maxPrice:", maxPrice.toString())
+                console.log("account:", account)
+                console.log("deadlineStamp:", deadlineStamp)
+
+                notify(notifHolder, "sign")
+
+                const tx = await router.buy(
+                    tokenPathAddresses,
+                    amountBase.toString(),
+                    maxPrice.toString(),
+                    getAddress(account),
+                    "0xe3a2fb3cC3A8F9ca2987cb193931544Aa72951d6",
+                    deadlineStamp
+                )
+
+                widgetLocker(false)
+                notify(notifHolder, "pending")
+
+                console.log("buy tx:", tx)
+
+                waitForLiquidityEvent(tx.hash, deadlineStamp)
+                    .then((lqEvent) => {
+                        // resolve()
+                        eventReceivedHandler(lqEvent, notifHolder)
+                    })
+                    .catch((error) => reject(error))
+            } catch (error) {
+                if (error.data) {
+                    const failCause = decodeCustomError(error.data)
+                    console.log("Failed to swap:", failCause)
+                    notify(notifHolder, "error", failCause)
+                }
+                notify(notifHolder, "error")
+                reject("Failed to swap " + error)
+            }
+        }).catch((error) => {
+            swapFailedHandler()
         })
     }
 
@@ -324,74 +416,6 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         })
     }
 
-    async function swap(path, amountQuote, amountBase, maxPrice, account, deadline, providerArg, callback, notify) {
-        let notifHolder = { id: null }
-        const provider = new BrowserProvider(providerArg)
-        const signer = await provider.getSigner()
-        const router = new Contract(routerAddress.value, RouterABI, signer)
-
-        const blockTimestamp = (await provider.getBlock("latest")).timestamp
-        const deadlineStamp = blockTimestamp + deadline * 60
-
-        const tokenPath = path.map((el) => {
-            el.address = getAddress(el.address)
-            return el
-        })
-        const tokenPathAddresses = tokenPath.map((el) => el.address)
-
-        try {
-            console.log(" - - - - allowance - - - - - ")
-            const tokenQuote = path[tkEnum.QUOTE]
-            if (await checkAllowance(tokenQuote.address, amountQuote, signer.address)) {
-                try {
-                    await approveSpending(tokenQuote, amountQuote, providerArg, false, notify, notifHolder)
-                } catch (error) {
-                    throw new Error()
-                }
-            }
-        } catch (error) {
-            console.log("Failed to get approvals:", error)
-            notify(notifHolder, "error")
-            return
-        }
-
-        try {
-            console.log(" - - - - -s w a p- - - - - - ")
-            tokenPath.forEach((token, index) => {
-                console.log("path token -", index + 1, "-", token.symbol, token.address)
-            })
-            console.log("desiredAmountOut:", amountBase.toString())
-            console.log("maxPrice:", maxPrice.toString())
-            console.log("account:", account)
-            console.log("deadlineStamp:", deadlineStamp)
-
-            notify(notifHolder, "sign")
-
-            const tx = await router.buy(
-                tokenPathAddresses,
-                amountBase.toString(),
-                maxPrice.toString(),
-                getAddress(account),
-                "0xe3a2fb3cC3A8F9ca2987cb193931544Aa72951d6",
-                deadlineStamp
-            )
-
-            notify(notifHolder, "pending")
-
-            console.log("buy tx:", tx, "...waiting 1 block")
-            await tx.wait(1)
-            return await listenForTransactionMine(tx, provider, () => {
-                console.log("callback from swap()")
-                notify(notifHolder, "success")
-                callback()
-            })
-        } catch (error) {
-            const failCause = decodeCustomError(error.data)
-            console.log("Failed to swap due to:", failCause || error)
-            notify(notifHolder, "error", failCause)
-        }
-    }
-
     async function approveSpending(token, amount, providerArg, callback = false, notify, notifHolder) {
         console.log("approve token:", token)
         const provider = new BrowserProvider(providerArg)
@@ -415,6 +439,8 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
             const allowance = await $fetch(
                 getUrl(`/chain/${connectedChainId.value}/user/${owner}/approved/${tokenAddress}`)
             )
+
+            console.log("tokenAddress:", tokenAddress)
             console.log("allowance:", BigInt(allowance))
             console.log("tokenAmount:", tokenAmount)
             console.log("BigInt(allowance) < tokenAmount:", BigInt(allowance) < tokenAmount)

@@ -77,9 +77,13 @@
                     v-if="successData"
                     class="caption"
                 >
-                    Successfully {{ successData.action }} {{ successData.quote.amount }}
-                    {{ successData.quote.token.symbol }} and {{ successData.base.amount }}
-                    {{ successData.base.token.symbol }}
+                    Successfully {{ successData.action }}
+                    <!-- quote -->
+                    {{ successData.quote.amount }} {{ successData.quote.token.symbol }}
+                    <!---->
+                    {{ successData.action === "swapped" ? "for" : "and" }}
+                    <!-- base -->
+                    {{ successData.base.amount }} {{ successData.base.token.symbol }}
                 </p>
                 <p
                     v-else

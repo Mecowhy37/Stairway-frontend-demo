@@ -241,7 +241,7 @@
 </template>
 
 <script setup>
-import { formatUnits } from "ethers"
+import { formatUnits, getAddress } from "ethers"
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 import { usePools } from "~/helpers/usePools"
@@ -326,7 +326,7 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
 
     let eventQuoteToken
     let eventBaseToken
-    if (tokenQuote === lqEvent.this_token) {
+    if (getAddress(tokenQuote.address) === getAddress(lqEvent.this_token)) {
         eventQuoteToken = "this_out"
         eventBaseToken = "that_out"
     } else {

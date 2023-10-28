@@ -342,9 +342,9 @@ function switchOrder() {
     reverseBalances()
 }
 
-const swappingDisabled = ref(false)
 function callSwap() {
-    swappingDisabled.value = true
+    widgetLocker(true)
+
     swap(
         pool.value.path,
         fullAmounts.quote,
@@ -353,12 +353,52 @@ function callSwap() {
         connectedAccount.value,
         settings.value.deadline,
         stepStore.connectedWallet.provider,
-        refresh,
-        stepStore.notify
-    ).finally(() => {
-        swappingDisabled.value = false
-    })
+        swapFailedHandler,
+        eventReceivedHandler,
+        stepStore.notify,
+        widgetLocker
+    )
 }
+
+const swappingDisabled = ref(false)
+function widgetLocker(lock) {
+    swappingDisabled.value = lock
+}
+
+function swapFailedHandler(error) {
+    console.log("swapFailedHandler()", error)
+    widgetLocker(false)
+    getBothBalances(false, false)
+    refreshPool()
+}
+
+function eventReceivedHandler(lqEvent, notifHolder) {
+    console.log("eventReceivedHandler()")
+
+    const eventDict = {
+        QUOTE: "amount_in",
+        BASE: "amount_out",
+    }
+
+    const quoteAmountIn = BigInt(lqEvent[eventDict.QUOTE])
+    const baseAmounOut = BigInt(lqEvent[eventDict.BASE])
+
+    const successData = {
+        action: "swapped",
+        quote: {
+            token: lqEvent.token_in,
+            amount: quoteAmountIn,
+        },
+        base: {
+            token: lqEvent.token_out,
+            amount: baseAmounOut,
+        },
+    }
+    console.log("successData:", successData)
+    stepStore.notify(notifHolder, "success", false, successData)
+    refresh()
+}
+
 // const refreshEvents = inject("refreshEvents")
 function refresh() {
     console.log("refresh() - swap")

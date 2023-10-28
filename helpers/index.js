@@ -52,7 +52,7 @@ export function decodeCustomError(errorData) {
         if (abiEntry.type === "error") {
             try {
                 const iface = new Interface([abiEntry])
-                console.log("iface:", iface)
+                // console.log("iface:", iface)
                 const decodedData = iface.decodeErrorResult(abiEntry, errorData)
                 return abiEntry.name
             } catch (e) {}
