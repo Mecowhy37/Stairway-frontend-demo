@@ -381,11 +381,13 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     } else {
         // NOT all lpTokens redeemed
         RefreshSinglePosition()
-        originalCall.amountQuote = quoteAmountDelta
-        originalCall.amountBase = baseAmountDelta
-        originalCall.lpAmount = lpAmountDelta
-        originalCall.isUserCall = false
-        redeemLiquidity(...Object.values(originalCall))
+        if (!(baseAmountDelta < 0) || !(quoteAmountDelta < 0)) {
+            originalCall.amountQuote = quoteAmountDelta
+            originalCall.amountBase = baseAmountDelta
+            originalCall.lpAmount = lpAmountDelta
+            originalCall.isUserCall = false
+            redeemLiquidity(...Object.values(originalCall))
+        }
     }
 }
 

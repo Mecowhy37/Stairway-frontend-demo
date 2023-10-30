@@ -177,6 +177,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     const failCause = decodeCustomError(error.data)
                     console.log("Failed to add lq:", failCause)
                     notify(notifHolder, "error", failCause)
+                    return
                 }
                 notify(notifHolder, "error")
                 reject("Failed to add liquidity " + error)
@@ -289,6 +290,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     const failCause = decodeCustomError(error.data)
                     console.log("failed to redeem liquidity: ", failCause)
                     notify(notifHolder, "error", failCause)
+                    return
                 }
                 notify(notifHolder, "error")
                 reject("Failed to redeem liquidity " + error)
@@ -385,6 +387,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     const failCause = decodeCustomError(error.data)
                     console.log("Failed to swap:", failCause)
                     notify(notifHolder, "error", failCause)
+                    return
                 }
                 notify(notifHolder, "error")
                 reject("Failed to swap " + error)
