@@ -221,7 +221,7 @@
                 </Btn>
             </div>
             <div
-                v-if="price && bothTokensThere"
+                v-if="price && bothTokensThere && !poolPending"
                 class="sum-up grey-text caption"
             >
                 <p>
@@ -238,6 +238,25 @@
                     </p>
                     <p>
                         {{ roundFloor(formatUnits(depth, Tokens[tkEnum.BASE].decimals)) }}
+                        {{ Tokens[tkEnum.BASE].symbol }}
+                    </p>
+                </div>
+            </div>
+            <div
+                v-else-if="price && bothTokensThere && poolPending"
+                class="sum-up grey-text caption"
+            >
+                <p>
+                    1 {{ Tokens[tkEnum.BASE].symbol }} = ...
+                    {{ Tokens[tkEnum.QUOTE].symbol }}
+                </p>
+                <div class="row space-between">
+                    <p>
+                        Volume available at this price ( ...
+                        {{ Tokens[tkEnum.QUOTE].symbol }})
+                    </p>
+                    <p>
+                        ...
                         {{ Tokens[tkEnum.BASE].symbol }}
                     </p>
                 </div>
@@ -295,9 +314,6 @@ const route = useRoute()
 
 // TOKENS ------------------
 const { Tokens, bothTokensThere, selectTokenIndex, setToken } = useTokens()
-watch(Tokens, () => {
-    console.log("tokens actually changed")
-})
 // TOKENS ------------------
 
 useWidget(featuredTokens, Tokens, connectedChainId, router, route)
