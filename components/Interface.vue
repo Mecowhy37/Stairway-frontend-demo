@@ -12,6 +12,7 @@
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
             <Faucet ref="newTokenModal"></Faucet>
             <Notifications></Notifications>
+            <Feedback></Feedback>
         </div>
     </div>
 </template>

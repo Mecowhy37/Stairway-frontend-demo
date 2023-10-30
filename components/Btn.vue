@@ -7,6 +7,7 @@
             {
                 'btn--primary': !props.plain && !props.opaque && !props.transparent,
                 'btn--plain': props.plain,
+                'btn--grey': props.grey,
                 'btn--tiny': props.tiny,
                 'btn--radio': props.radio,
                 'btn--small': props.small,
@@ -66,6 +67,7 @@ export interface Props {
     bulky?: boolean
     custom?: boolean
     wide?: boolean
+    grey?: boolean
     transparent?: boolean
     plain?: boolean
     opaque?: boolean
@@ -133,6 +135,9 @@ $horiz-padd: 1.3rem; */
             background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), var(--primary-btn-bg);
             border: 1px solid #ffffff;
         }
+    }
+    &--grey {
+        background-color: var(--grey-light);
     }
 
     // SIZES ------------
