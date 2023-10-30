@@ -388,7 +388,7 @@ function swapFailedHandler(error) {
     refreshPool()
 }
 
-function eventReceivedHandler(lqEvent, notifHolder) {
+function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     console.log("eventReceivedHandler()")
 
     const eventDict = {
@@ -402,11 +402,11 @@ function eventReceivedHandler(lqEvent, notifHolder) {
     const successData = {
         action: "swapped",
         quote: {
-            token: lqEvent.token_in,
+            token: originalCall.tokenQuote,
             amount: quoteAmountIn,
         },
         base: {
-            token: lqEvent.token_out,
+            token: originalCall.tokenBase,
             amount: baseAmounOut,
         },
     }

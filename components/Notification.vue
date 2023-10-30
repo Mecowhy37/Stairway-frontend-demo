@@ -205,11 +205,11 @@ watch(
                 spinning.value = false
             }, 700)
 
-            if (!props.notif.keepNotification) {
-                setTimeout(() => {
-                    props.deleteNotif(id.value)
-                }, 5000)
-            }
+            // if (!props.notif.keepNotification) {
+            //     setTimeout(() => {
+            //         props.deleteNotif(id.value)
+            //     }, 5000)
+            // }
         } else {
             spinning.value = true
         }

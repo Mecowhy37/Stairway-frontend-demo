@@ -57,12 +57,14 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         if (!pool.value) {
             return null
         }
+
         return pool.value.price
     })
     const depth = computed(() => {
         if (!pool.value) {
             return null
         }
+
         return pool.value.depth
     })
 
@@ -365,13 +367,19 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 notify(notifHolder, "pending")
 
                 console.log("buy tx:", tx)
+                const originalCall = {
+                    tokenQuote: path[tkEnum.QUOTE],
+                    tokenBase: path[path.length - 1],
+                }
 
                 waitForLiquidityEvent(tx.hash, deadlineStamp)
                     .then((lqEvent) => {
-                        // resolve()
-                        eventReceivedHandler(lqEvent, notifHolder)
+                        eventReceivedHandler(lqEvent, originalCall, notifHolder)
                     })
-                    .catch((error) => reject(error))
+                    .catch((error) => {
+                        reject(error)
+                        console.log("reject(error):", error)
+                    })
             } catch (error) {
                 if (error.data) {
                     const failCause = decodeCustomError(error.data)
@@ -382,7 +390,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 reject("Failed to swap " + error)
             }
         }).catch((error) => {
-            swapFailedHandler()
+            swapFailedHandler(error)
         })
     }
 

@@ -52,6 +52,7 @@ function createNotif(state, symbol, successData, keepNotification) {
 function updateNotification(existingNotif, state, symbol, successData, keepNotification) {
     const notifIndex = notifications.value.indexOf(existingNotif)
     const updatedNotif = { ...existingNotif, state, symbol, successData, keepNotification }
+    console.log("updatedNotif:", updatedNotif)
     notifications.value[notifIndex] = updatedNotif
     console.log("updated notification to", state)
     return existingNotif.id
