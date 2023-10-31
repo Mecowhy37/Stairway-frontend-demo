@@ -93,7 +93,54 @@
                             active
                             :compact="isMobile"
                         >
-                            {{ getTruncatedWalletAddress }}
+                            <div class="row">
+                                <div
+                                    style="
+                                        border-radius: 50px;
+                                        overflow: hidden;
+                                        padding: 0px;
+                                        margin: 0px;
+                                        margin-right: 7px;
+                                        width: 15px;
+                                        height: 15px;
+                                        display: block;
+                                        background: rgb(3, 68, 94);
+                                    "
+                                >
+                                    <svg
+                                        x="0"
+                                        y="0"
+                                        width="15"
+                                        height="15"
+                                    >
+                                        <rect
+                                            x="0"
+                                            y="0"
+                                            width="15"
+                                            height="15"
+                                            transform="translate(-2.6478428540529912 3.2448103219300197) rotate(194.3 7.5 7.5)"
+                                            fill="#F2BE02"
+                                        ></rect>
+                                        <rect
+                                            x="0"
+                                            y="0"
+                                            width="15"
+                                            height="15"
+                                            transform="translate(4.9813655565215225 1.5709945727700145) rotate(168.8 7.5 7.5)"
+                                            fill="#187DF2"
+                                        ></rect>
+                                        <rect
+                                            x="0"
+                                            y="0"
+                                            width="15"
+                                            height="15"
+                                            transform="translate(14.328988275514405 -0.438360066703679) rotate(462.0 7.5 7.5)"
+                                            fill="#F5E400"
+                                        ></rect>
+                                    </svg>
+                                </div>
+                                {{ getTruncatedWalletAddress }}
+                            </div>
                             <template #icon>
                                 <Icon
                                     name="chevron"
