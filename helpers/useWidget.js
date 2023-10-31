@@ -18,16 +18,16 @@ export function useWidget(featuredTokens, Tokens, chainId, router, route) {
     watch(
         featuredTokens,
         (newFeatured) => {
-            if (newFeatured && newFeatured.length > 0) {
-                if (route.query.tk1) {
-                    console.log("Tokens.value[tkEnum.QUOTE]")
-                    Tokens.value[tkEnum.QUOTE] = findTokenByAddress(newFeatured, route.query.tk1)
-                }
-                if (route.query.tk2) {
-                    console.log("Tokens.value[tkEnum.BASE]")
-                    Tokens.value[tkEnum.BASE] = findTokenByAddress(newFeatured, route.query.tk2)
-                }
+            // if (newFeatured && newFeatured.length > 0) {
+            if (route.query.tk1) {
+                console.log("Tokens.value[tkEnum.QUOTE]")
+                Tokens.value[tkEnum.QUOTE] = findTokenByAddress(newFeatured, route.query.tk1)
             }
+            if (route.query.tk2) {
+                console.log("Tokens.value[tkEnum.BASE]")
+                Tokens.value[tkEnum.BASE] = findTokenByAddress(newFeatured, route.query.tk2)
+            }
+            // }
         },
         {
             immediate: true,

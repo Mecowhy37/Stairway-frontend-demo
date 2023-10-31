@@ -133,9 +133,16 @@
                         >
                             <template #icon>
                                 <img
+                                    v-if="isSupportedChain(connectedChainId)"
                                     class="token-icon"
                                     :src="connectedChainFullObj.logo_url"
                                 />
+                                <Icon
+                                    v-else
+                                    name="warning"
+                                    :size="36"
+                                />
+                                <!-- style="color: var(--info-bg); margin: 0" -->
                             </template>
                         </Btn>
                     </template>
@@ -167,6 +174,7 @@
 <script setup>
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
+import { isSupportedChain } from "~/helpers/index"
 
 const stepStore = useStepStore()
 const {
