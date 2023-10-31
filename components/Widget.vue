@@ -96,7 +96,7 @@ const props = defineProps({
                 background-color: var(--swap-windows);
                 color: var(--text-grey);
                 &:not(.disabled) {
-                    /* color: var(--primary-btn-bg); */
+                    /* color: var(--primary); */
                     &:hover {
                         color: white;
                         cursor: pointer;
@@ -129,7 +129,7 @@ const props = defineProps({
             justify-content: space-between;
             margin-top: 7px;
             padding-top: 7px;
-            border-top: 2px solid var(--grey-opaque);
+            border-top: 2px solid var(--grey-stroke-sm);
             & > div {
                 text-align: center;
                 flex-basis: 50%;

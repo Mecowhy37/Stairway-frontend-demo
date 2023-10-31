@@ -71,7 +71,6 @@
                 <Btn
                     v-if="!stepStore.connectedWallet"
                     plain
-                    active
                     :compact="isMobile"
                     @click="stepStore.connectWallet()"
                 >

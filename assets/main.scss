@@ -40,13 +40,39 @@
     --swap-windows: rgba(0, 0, 0, 0.45);
     --widget-box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.3);
     --modal-box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.5);
-    --backdrop-blur: blur(15px);
-
-    --primary-btn-bg: rgb(69, 255, 197);
     --grey-solid: rgb(50, 51, 51);
     --grey-opaque: rgba(108, 108, 108, 0.3);
-    --opaque-btn-bg: rgba(69, 255, 197, 0.1);
-    --opaque-active-btn-bg-selected: rgba(69, 255, 197, 0.302);
+    --backdrop-blur: blur(15px);
+    --grey-stroke-sm: var(--grey-opaque);
+
+    // colors
+    --neon-green: rgba(69, 255, 197, 1);
+    --neon-green-10: rgba(69, 255, 197, 0.1);
+    --neon-green-20: rgba(69, 255, 197, 0.2);
+    --neon-green-30: rgba(69, 255, 197, 0.3);
+    --neon-green-40: rgba(69, 255, 197, 0.4);
+    --neon-green-50: rgba(69, 255, 197, 0.5);
+    --neon-green-60: rgba(69, 255, 197, 0.6);
+
+    --primary: var(--neon-green);
+    --primary-opaque-1: var(--neon-green-10);
+    --primary-opaque-30: var(--neon-green-30);
+    --primary-opaque-60: var(--neon-green-60);
+
+    --btn-active-hover-bg: linear-gradient(0deg, var(--neon-green-30) 0%, var(--neon-green-30) 100%), var(--widget-bg);
+    --btn-active-active-bg: linear-gradient(0deg, var(--neon-green-60) 0%, var(--neon-green-60) 100%), var(--widget-bg);
+
+    --btn-opaque-bg: var(--grey-opaque);
+    --btn-opaque-hover-bg: rgb(53, 108, 92);
+    --btn-opaque-active-bg: rgb(59, 171, 136);
+
+    --btn-selectable-unchecked-active-bg: linear-gradient(0deg, var(--neon-green-40) 0%, var(--neon-green-40) 100%),
+        var(--grey-opaque);
+    --btn-selectable-checked-bg: linear-gradient(0deg, var(--neon-green-10) 0%, var(--neon-green-10) 100%),
+        var(--grey-opaque);
+    --btn-selectable-checked-active-bg: linear-gradient(0deg, var(--neon-green-30) 0%, var(--neon-green-30) 100%),
+        var(--grey-opaque);
+
     --button-box-shadow: 0px 5px 14px 0px rgba(0, 0, 0, 0.05);
 
     --selectors-disabled-bg: rgba(108, 108, 108, 0.1);
@@ -54,20 +80,16 @@
 
     --flat-bg: var(--widget-bg);
     --flat-bg-solid: rgb(48, 51, 50);
-    --flat-outline: var(--primary-btn-bg);
+    --flat-outline: var(--primary);
 
     --trans-hover: var(--swap-windows);
 
     --info-bg: rgb(255, 36, 245);
     --info-bg-opaque: rgba(255, 36, 245, 0.1);
 
-    --list-hover-bg: rgba(69, 255, 197, 0.2);
-    --list-hover-stroke: rgba(69, 255, 197, 0.3);
-
-    --list-click-bg-lighter: rgba(69, 255, 197, 0.4);
-    --list-click-bg: rgba(69, 255, 197, 0.5);
-    --list-click-bg-darker: rgba(69, 255, 197, 0.6);
-    --list-click-stroke: rgb(69, 255, 197);
+    --list-item-hover-bg: var(--neon-green-20);
+    --list-item-hover-stroke: var(--neon-green-30);
+    --list-item-click-bg: var(--neon-green-50);
 
     --placeholder: rgba(240, 248, 255, 0.3);
     --placeholder-solid: rgb(105, 108, 110);

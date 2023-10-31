@@ -197,7 +197,7 @@ defineExpose({
     .setting {
         padding: 12px;
         padding-top: 7px;
-        border-bottom: 1px solid var(--grey-opaque);
+        border-bottom: 1px solid var(--grey-stroke-sm);
         &:last-of-type {
             border-bottom: none;
         }

@@ -48,7 +48,7 @@ const {
     },
     {
         transform: (chainsdata) => {
-            chainsdata = chainsdata.filter((chain) => chain.chain_id !== 1)
+            chainsdata = chainsdata.filter((chain) => chain.chain_id === 80001)
             chainsdata.forEach((chain) => initOptions.value.push(transformChainToInitOptions(chain)))
             //stepStore
             chains.value = chainsdata
@@ -383,8 +383,9 @@ svg {
 .list-item {
     border: 1px solid transparent;
     cursor: pointer;
+
     &:not(.list-item--separate) {
-        border-bottom: 1px solid var(--grey-opaque);
+        border-bottom: 1px solid var(--grey-stroke-sm);
     }
     &:first-of-type {
         border-top-left-radius: inherit;
@@ -394,26 +395,27 @@ svg {
         border-bottom-left-radius: inherit;
         border-bottom-right-radius: inherit;
     }
+
     &:hover {
-        background-color: var(--list-hover-bg);
-        border: 1px solid var(--list-hover-stroke);
+        background-color: var(--list-item-hover-bg);
+        border: 1px solid var(--list-item-hover-stroke);
         &--bottom-border {
             border: none;
-            border-bottom: 1px solid var(--list-hover-stroke);
+            border-bottom: 1px solid var(--list-item-hover-stroke);
         }
     }
     &:active {
-        background-color: var(--list-click-bg);
-        border: 1px solid var(--list-click-stroke);
+        background-color: var(--list-item-click-bg);
+        border: 1px solid var(--primary);
     }
     &--bottom-border {
         &:hover {
             border: 1px solid transparent;
-            border-bottom: 1px solid var(--list-hover-stroke);
+            border-bottom: 1px solid var(--list-item-hover-stroke);
         }
         &:active {
             border: 1px solid transparent;
-            border-bottom: 1px solid var(--list-click-stroke);
+            border-bottom: 1px solid var(--primary);
         }
     }
     &--padded {
@@ -439,7 +441,7 @@ svg {
     }
     .tick-icon {
         margin-left: auto;
-        color: var(--list-click-stroke);
+        color: var(--primary);
         margin-right: 5px;
     }
     p {
@@ -454,16 +456,16 @@ svg {
     }
 }
 .text-highlight {
-    color: var(--primary-btn-bg);
+    color: var(--primary);
     &--border {
         padding: 0 7px;
         border-radius: 9999px;
-        border: 1px solid var(--primary-btn-bg);
+        border: 1px solid var(--primary);
         &:hover {
-            background-color: var(--list-hover-bg);
+            background-color: var(--list-item-hover-bg);
         }
         &:active {
-            background-color: var(--list-click-bg);
+            background-color: var(--list-item-click-bg);
         }
     }
     &--underlined {
@@ -474,7 +476,7 @@ svg {
 .activator-link {
     cursor: pointer;
     &:hover {
-        border-bottom: 1px solid var(--primary-btn-bg);
+        border-bottom: 1px solid var(--primary);
     }
 }
 .grey-text {

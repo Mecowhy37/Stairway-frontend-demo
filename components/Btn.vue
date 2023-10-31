@@ -7,6 +7,11 @@
             {
                 'btn--primary': !props.plain && !props.opaque && !props.transparent,
                 'btn--plain': props.plain,
+                'btn--opaque': props.opaque,
+                'btn--active': props.active,
+                'btn--solid-disabled': props.solidDisabled,
+                'btn--selectable': props.selectable,
+                'btn--transparent': props.transparent,
                 'btn--grey': props.grey,
                 'btn--tiny': props.tiny,
                 'btn--radio': props.radio,
@@ -16,11 +21,6 @@
                 'btn--bulky': props.bulky,
                 'btn--custom': props.custom,
                 'btn--wide': props.wide,
-                'btn--opaque': props.opaque,
-                'btn--active': props.active,
-                'btn--solid-disabled': props.solidDisabled,
-                'btn--selectable': props.selectable,
-                'btn--transparent': props.transparent,
                 'btn--circle': props.circle,
                 'btn--unclickable': props.loading,
                 'btn--w-icon': slots.icon && slots.default,
@@ -108,7 +108,7 @@ $horiz-padd: 1.3rem; */
     border: 1px solid transparent;
     padding: $vert-padd $horiz-padd;
     white-space: nowrap;
-    background-color: var(--primary-btn-bg);
+    background-color: var(--primary);
     box-shadow: var(--button-box-shadow);
     transform: rotate(v-bind(rotateDeg));
     cursor: pointer;
@@ -128,16 +128,24 @@ $horiz-padd: 1.3rem; */
 
     &--primary {
         &:not(:disabled):hover {
-            background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--primary-btn-bg);
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--primary);
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
         &:not(:disabled):active {
-            background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), var(--primary-btn-bg);
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), var(--primary);
             border: 1px solid #ffffff;
         }
     }
     &--grey {
         background-color: var(--grey-light);
+        &:not(:disabled):hover {
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--grey-light);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        &:not(:disabled):active {
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), var(--grey-light);
+            border: 1px solid #ffffff;
+        }
     }
 
     // SIZES ------------
@@ -190,7 +198,7 @@ $horiz-padd: 1.3rem; */
     }
     &--opaque {
         border: none;
-        background-color: var(--grey-opaque);
+        background-color: var(--btn-opaque-bg);
         * {
             color: var(--text-color-reverse);
         }
@@ -202,57 +210,44 @@ $horiz-padd: 1.3rem; */
         }
     }
     &--active {
-        &:not(:disabled)::before {
-            position: absolute;
-            content: "";
-            height: 100%;
-            width: 100%;
-            border-radius: inherit;
-        }
-        &:not(:disabled):hover::before {
-            background-color: var(--list-hover-stroke);
-        }
-        &:not(:disabled):active::before {
-            background-color: var(--list-click-bg-darker);
-        }
-    }
-    &--selectable {
-        border: 1px solid transparent;
-        &:not(:disabled)::before {
-            position: absolute;
-            content: "";
-            height: 100%;
-            width: 100%;
-        }
-        &:not(:disabled):hover {
-            border: 1px solid var(--list-click-stroke);
-        }
-        &:not(:disabled):active::before {
-            background-color: var(--list-click-bg-lighter);
-        }
-        &:not(:disabled).selected:hover {
-            border: 1px solid var(--primary-btn-bg);
-
-            &::before {
-                background-color: var(--opaque-btn-bg);
-            }
-        }
-        &:not(:disabled).selected {
-            border: 1px solid var(--primary-btn-bg);
-            &::before {
-                background-color: var(--opaque-btn-bg);
-            }
+        &:not(:disabled) {
             &:hover {
-                border: 1px solid white;
+                background: var(--btn-opaque-hover-bg) !important;
             }
             &:active {
-                border: 1px solid white;
-                &::before {
-                    background-color: var(--opaque-active-btn-bg-selected);
+                background: var(--btn-opaque-active-bg) !important;
+            }
+        }
+    }
+
+    &--selectable {
+        border: 1px solid transparent;
+
+        &:not(:disabled) {
+            //not selected
+            &:hover {
+                border: 1px solid var(--primary);
+            }
+            &:active {
+                background: var(--btn-selectable-unchecked-active-bg);
+            }
+
+            &.selected {
+                border: 1px solid var(--primary);
+                background: var(--btn-selectable-checked-bg);
+
+                &:hover {
+                    border: 1px solid white;
+                }
+
+                &:active {
+                    border: 1px solid white;
+                    background: var(--btn-selectable-checked-active-bg);
                 }
             }
         }
     }
+
     &--transparent {
         background-color: transparent;
         box-shadow: none;

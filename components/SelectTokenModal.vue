@@ -297,7 +297,7 @@ async function getTokens(tokenAddress) {
             }
         }
         .search {
-            border-bottom: 1px solid var(--grey-opaque);
+            border-bottom: 1px solid var(--grey-stroke-sm);
             padding: 12px;
             &__input-wrap {
                 justify-content: space-between;

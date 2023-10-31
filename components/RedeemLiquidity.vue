@@ -468,7 +468,7 @@ const settingsRedeem = ref(null)
         height: 6px;
         border-radius: 500px;
         width: v-bind(progressPercent);
-        background-color: var(--primary-btn-bg);
+        background-color: var(--primary);
         z-index: 0;
     }
     input[type="range"] {
@@ -480,12 +480,12 @@ const settingsRedeem = ref(null)
         &::-webkit-slider-runnable-track {
             -webkit-appearance: none;
             appearance: none;
-            background: var(--grey-opaque);
+            background: var(--grey-stroke-sm);
             border-radius: 500px;
             height: 6px;
         }
         &::-moz-range-track {
-            background: var(--grey-opaque);
+            background: var(--grey-stroke-sm);
             border-radius: 500px;
             height: 6px;
         }
@@ -495,7 +495,7 @@ const settingsRedeem = ref(null)
             appearance: none;
             height: 36px;
             width: 36px;
-            background-color: var(--primary-btn-bg);
+            background-color: var(--primary);
             margin-top: calc(4px - 18px);
             border-radius: 5000px;
         }
@@ -503,12 +503,12 @@ const settingsRedeem = ref(null)
             -webkit-appearance: none;
             height: 36px;
             width: 36px;
-            background-color: var(--primary-btn-bg);
+            background-color: var(--primary);
             margin-top: calc(4px - 18px);
             border-radius: 5000px;
         }
         &::-webkit-progress-bar {
-            background-color: var(--primary-btn-bg);
+            background-color: var(--primary);
         }
 
         &:disabled {

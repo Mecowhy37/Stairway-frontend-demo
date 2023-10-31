@@ -286,10 +286,10 @@ $transition: 0.4s ease-out;
             stroke-width: 12;
         }
         .circle-background {
-            stroke: var(--grey-opaque);
+            stroke: var(--grey-stroke-sm);
         }
         .circle-progress {
-            stroke: var(--primary-btn-bg);
+            stroke: var(--primary);
 
             /* Adjusted for 67.5 degrees */
             stroke-dasharray: 46.864, 204.466;
@@ -334,7 +334,7 @@ $transition: 0.4s ease-out;
         }
     }
     &--success {
-        background-color: var(--primary-btn-bg);
+        background-color: var(--primary);
         color: var(--text-color);
         .circle-progress {
             stroke: var(--text-color);

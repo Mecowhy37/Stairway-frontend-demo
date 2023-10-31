@@ -197,7 +197,7 @@ function setToken(token) {
                     &:hover {
                         cursor: pointer;
                         transition: color 0.1s;
-                        color: var(--primary-btn-bg);
+                        color: var(--primary);
                     }
                 }
                 .mdi:hover {
