@@ -94,6 +94,8 @@
                             :compact="isMobile"
                         >
                             <div class="row">
+                                <AccountIcon :account="stepStore.connectedAccount" />
+
                                 {{ getTruncatedWalletAddress }}
                             </div>
                             <template #icon>

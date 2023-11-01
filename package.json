@@ -14,13 +14,14 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@metamask/jazzicon": "^2.0.0",
     "@nuxtjs/style-resources": "^1.2.1",
     "@pinia/nuxt": "^0.4.7",
     "@vueuse/core": "^9.13.0",
     "@web3-onboard/gnosis": "^2.1.10",
     "@web3-onboard/injected-wallets": "^2.10.4",
     "@web3-onboard/ledger": "^2.5.2",
-    "@web3-onboard/vue": "^2.5.4",
+    "@web3-onboard/vue": "^2.0.0",
     "@web3-onboard/walletconnect": "^2.4.4",
     "ethers": "^6.0.8",
     "pinia": "^2.0.32",
