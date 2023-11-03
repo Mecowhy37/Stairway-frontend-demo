@@ -144,9 +144,9 @@
                                 <Icon
                                     v-else
                                     name="warning"
+                                    style="color: var(--error-color); margin: 0"
                                     :size="36"
                                 />
-                                <!-- style="color: var(--info-bg); margin: 0" -->
                             </template>
                         </Btn>
                     </template>
@@ -285,6 +285,9 @@ const connectedChainFullObj = computed(() => {
             }
         }
         .chain-dropdown {
+            .icon {
+                color: var(--info-bg);
+            }
             .dropdown__box {
                 .list-item {
                     p {

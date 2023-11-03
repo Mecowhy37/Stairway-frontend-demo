@@ -114,7 +114,7 @@
             </div>
             <div
                 v-if="
-                    (bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base) ||
+                    (bothTokensThere && pool && BigInt(pool.depth) < fullAmounts.base) ||
                     insufficientBalanceIndexes.includes(tkEnum.QUOTE) ||
                     poolError
                 "
@@ -154,7 +154,7 @@
                     <p>Insufficient {{ Tokens[tkEnum.QUOTE].symbol }} funds</p>
                 </div>
                 <div
-                    v-if="bothTokensThere && pool && !poolPending && BigInt(pool.depth) < fullAmounts.base"
+                    v-if="bothTokensThere && pool && BigInt(pool.depth) < fullAmounts.base"
                     class="info row"
                 >
                     <div>
@@ -221,7 +221,7 @@
                 </Btn>
             </div>
             <div
-                v-if="price && bothTokensThere && !poolPending"
+                v-if="price && bothTokensThere"
                 class="sum-up grey-text caption"
             >
                 <p>
@@ -242,8 +242,8 @@
                     </p>
                 </div>
             </div>
-            <div
-                v-else-if="price && bothTokensThere && poolPending"
+            <!-- <div
+                v-else-if=" && poolPending"
                 class="sum-up grey-text caption"
             >
                 <p>
@@ -260,7 +260,7 @@
                         {{ Tokens[tkEnum.BASE].symbol }}
                     </p>
                 </div>
-            </div>
+            </div> -->
         </template>
     </Widget>
     <!-- <Widget no-return>
@@ -334,6 +334,19 @@ const { pool, refreshPool, poolPending, poolError, price, depth, swap } = await 
     connectedChainId,
     route
 )
+watch(price, (newPrice) => {
+    console.log("newPrice:", newPrice)
+    const newTokenIndex = selectTokenIndex.value
+    const lastChangedAmountIndex = lastChangedAmount.value
+    if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
+        console.log("SETTING INPUT AGAIN")
+        setFromUserToFullAmount(
+            userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
+            Tokens.value[newTokenIndex].decimals,
+            lastChangedAmountIndex
+        )
+    }
+})
 // POOL -----------------
 
 // WIDGET ------------------
@@ -523,15 +536,15 @@ watch(
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
         const lastChangedAmountIndex = lastChangedAmount.value
-        console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
-        console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
-        if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
-            setFromUserToFullAmount(
-                userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
-                Tokens.value[newTokenIndex].decimals,
-                lastChangedAmountIndex
-            )
-        }
+        // console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
+        // console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
+        // if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
+        //     setFromUserToFullAmount(
+        //         userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
+        //         Tokens.value[newTokenIndex].decimals,
+        //         lastChangedAmountIndex
+        //     )
+        // }
 
         // fetching pool
         if (bothTokensThere.value) {

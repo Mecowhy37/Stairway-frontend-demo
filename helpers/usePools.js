@@ -8,6 +8,7 @@ import token from "@/ABIs/IERC20.json"
 const TokenABI = token.abi
 
 export async function usePools(routerAddress, Tokens, connectedAccount, connectedChainId, route) {
+    let poolRefreshInterval
     const {
         data: pool,
         error: poolError,
@@ -17,16 +18,19 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
     } = await useAsyncData(
         "pool",
         () => {
+            stopPoolRefresh()
             if (isSupportedChain(connectedChainId.value)) {
                 //make separete useAsyncData for this
-                if (route.name === "remove-address") {
-                    console.log("usePools - fetchingPool() - on", route.name)
-                    return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
-                }
+                // if (route.name === "remove-address") {
+                //     console.log("usePools - fetchingPool() - on", route.name)
+                //     return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
+                // }
 
                 const bothThere = Tokens.value.every((el) => el !== null)
                 if (bothThere) {
                     console.log("usePools - fetchingPool() - on", route.name)
+                    //start new loop
+                    startPoolRefresh()
                     return $fetch(
                         getUrl(
                             `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
@@ -45,6 +49,21 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
             default: () => {},
         }
     )
+
+    const startPoolRefresh = () => {
+        // const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
+        const randomTimeout = 2000
+
+        poolRefreshInterval = setInterval(async () => {
+            console.log("refreshing from the loop")
+            refreshPool()
+        }, randomTimeout)
+    }
+
+    const stopPoolRefresh = () => {
+        console.log("clear loop")
+        clearInterval(poolRefreshInterval)
+    }
 
     const poolRatio = computed(() => {
         if (!pool.value) {

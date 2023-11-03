@@ -97,11 +97,11 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
     watch(
         Tokens,
         (newTokens, oldValues) => {
-            console.log("newTokens:", newTokens)
+            // console.log("newTokens:", newTokens)
             const oldTokens = oldValues ? oldValues : [null, null]
 
             const newIndexes = findNewIndexes(oldTokens, newTokens)
-            console.log("newIndexes:", newIndexes)
+            // console.log("newIndexes:", newIndexes)
             newIndexes.forEach((index) => {
                 getBothBalances(index, true)
             })
