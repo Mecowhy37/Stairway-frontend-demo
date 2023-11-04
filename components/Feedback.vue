@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback modal">
+    <div class="feedback modal modal--lower">
         <NuxtLink
             target="_blank"
             class="feedback__button"

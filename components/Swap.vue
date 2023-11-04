@@ -221,7 +221,7 @@
                 </Btn>
             </div>
             <div
-                v-if="price && bothTokensThere"
+                v-if="price && bothTokensThere && !poolPending"
                 class="sum-up grey-text caption"
             >
                 <p>
@@ -242,8 +242,8 @@
                     </p>
                 </div>
             </div>
-            <!-- <div
-                v-else-if=" && poolPending"
+            <div
+                v-else-if="price && poolPending"
                 class="sum-up grey-text caption"
             >
                 <p>
@@ -260,7 +260,7 @@
                         {{ Tokens[tkEnum.BASE].symbol }}
                     </p>
                 </div>
-            </div> -->
+            </div>
         </template>
     </Widget>
     <!-- <Widget no-return>
@@ -289,7 +289,7 @@
 </template>
 
 <script setup>
-import { formatUnits } from "ethers"
+import { formatUnits, fromTwos } from "ethers"
 
 import { storeToRefs } from "pinia"
 import { useStepStore } from "@/stores/step"
@@ -299,7 +299,7 @@ import { useTokens } from "~/helpers/useTokens"
 import { useBalances } from "~/helpers/useBalances"
 import { useAmounts } from "~/helpers/useAmounts"
 
-import { widgetTypeObj, tkEnum, roundCeiling, roundFloor } from "~/helpers/index"
+import { widgetTypeObj, tkEnum, roundCeiling, roundFloor, isSupportedChain, getUrl } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
@@ -335,15 +335,13 @@ const { pool, refreshPool, poolPending, poolError, price, depth, swap } = await 
     route
 )
 watch(price, (newPrice) => {
-    console.log("newPrice:", newPrice)
-    const newTokenIndex = selectTokenIndex.value
-    const lastChangedAmountIndex = lastChangedAmount.value
-    if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
-        console.log("SETTING INPUT AGAIN")
-        setFromUserToFullAmount(
-            userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
-            Tokens.value[newTokenIndex].decimals,
-            lastChangedAmountIndex
+    if (newPrice && pool.value) {
+        calcAndSetOpposingInput(
+            fullAmounts[getInputLabel(lastChangedAmount.value)],
+            lastChangedAmount.value,
+            BigInt(pool.value.base_reserves),
+            BigInt(pool.value.quote_reserves),
+            BigInt(pool.value.price)
         )
     }
 })
@@ -519,6 +517,28 @@ function openTokenSelectModal(index) {
 const settings = ref()
 //SETTINGS--------------
 
+const poolRefreshInterval = ref(null)
+const remover = router.beforeEach((to, from) => {
+    if (to.name !== "swap") {
+        console.log("EXITING SWAP")
+        stopPoolRefresh()
+        remover()
+    }
+})
+
+function startPoolRefresh() {
+    // const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
+
+    poolRefreshInterval.value = setInterval(() => {
+        refreshPool()
+    }, 2000)
+}
+
+function stopPoolRefresh() {
+    console.log("clear loop")
+    clearInterval(poolRefreshInterval.value)
+}
+
 watch(
     Tokens,
     async (tokens, oldTokens) => {
@@ -547,10 +567,12 @@ watch(
         // }
 
         // fetching pool
+        stopPoolRefresh()
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(lastChangedAmountIndex))
-            await refreshPool()
             console.log("watch(Tokens) - pool.value: ", pool.value?.name)
+            await refreshPool()
+            startPoolRefresh()
             if (pool.value) {
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(lastChangedAmountIndex)],
