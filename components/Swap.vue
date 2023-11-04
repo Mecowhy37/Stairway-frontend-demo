@@ -462,7 +462,7 @@ const insufficientBalanceIndexes = computed(() => {
     let balanceIndexes = []
     if (connectedAccount.value) {
         Tokens.value.forEach((token, idx) => {
-            if (!token) {
+            if (!token || Balances.value[idx] === "") {
                 return
             }
             if (Balances.value[idx] < fullAmountsMap.value[idx]) {
