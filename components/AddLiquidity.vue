@@ -296,7 +296,7 @@ import { useBalances } from "~/helpers/useBalances"
 import { useAmounts } from "~/helpers/useAmounts"
 import { useTokens } from "~/helpers/useTokens"
 import { usePools } from "~/helpers/usePools"
-import { basicRound, widgetTypeObj } from "~/helpers/index"
+import { basicRound, tkEnum, widgetTypeObj } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
@@ -356,7 +356,7 @@ const {
     "SinglePosition",
     () => {
         if (pool.value) {
-            // return getSinglePostion(pool.value.pool_index)
+            return getSinglePostion(pool.value.pool_index)
         }
     },
     {
@@ -368,19 +368,30 @@ const {
             }
             return newSinglePosition
         },
+        watch: [pool],
     }
 )
 
 const ownedPosition = computed(() => {
-    if (!pool.value || !positions.value) {
+    return findPositionByTokenAddresses(Tokens.value[tkEnum.QUOTE]?.address, Tokens.value[tkEnum.BASE]?.address)
+})
+
+function findPositionByTokenAddresses(thisTokenAddress, thatTokenAddress) {
+    if (!positions.value || [thisTokenAddress, thatTokenAddress].some((el) => el === null)) {
         return null
     }
-    const matchedPosition = positions.value.find((el) => el.pool.pool_index === pool.value.pool_index)
+    const matchedPosition = positions.value.find((position) => {
+        const positionTokens = [position.pool.quote_token.address, position.pool.base_token.address]
+        const widgetTokens = [thisTokenAddress, thatTokenAddress]
+        if (positionTokens.every((el) => widgetTokens.includes(el))) {
+            return position
+        }
+    })
     if (!matchedPosition) {
         return false
     }
     return matchedPosition
-})
+}
 
 const hasDaoToken = computed(() => {
     return Tokens.value.some((el) => el?.is_governance)
