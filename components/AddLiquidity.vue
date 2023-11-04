@@ -162,31 +162,28 @@
                 <div>
                     <p>Pool share</p>
                     <div class="columns row">
-                        <div>
-                            <p>
+                        <div v-for="(x, index) in new Array(2)">
+                            <p v-if="Tokens[index].address === ownedPosition.pool.quote_token.address">
                                 {{
                                     basicRound(
                                         formatUnits(ownedPosition.quote_amount, ownedPosition.pool.quote_token.decimals)
                                     )
                                 }}
                             </p>
-                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}</p>
-                        </div>
-                        <div>
-                            <p>
+                            <p v-else>
                                 {{
                                     basicRound(
                                         formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
                                     )
                                 }}
                             </p>
-                            <p class="caption grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}</p>
+                            <p class="caption grey-text">Pooled {{ Tokens[index].symbol }}</p>
                         </div>
 
-                        <!-- <div>
-                                <p>78%</p>
-                                <p class="caption grey-text">Pool share</p>
-                            </div> -->
+                        <div>
+                            <p>{{ basicRound(ownedPosition.pool_share_pct) }}%</p>
+                            <p class="caption grey-text">Pool share</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -194,46 +191,33 @@
                 v-if="ownedPosition"
                 class="pooled"
             >
-                <div class="pooled__item row align-center">
+                <div
+                    v-for="(x, index) in new Array(2)"
+                    class="pooled__item row align-center"
+                >
                     <img
                         class="token-icon token-icon--sm"
-                        :src="pool.quote_token.logo_uri"
+                        :src="Tokens[index].logo_uri"
                     />
-                    <p class="pooled__item__symbol grey-text">Pooled {{ ownedPosition.pool.quote_token.symbol }}:</p>
-                    <p class="pooled__item__amount">
+                    <p class="pooled__item__symbol grey-text">Pooled {{ Tokens[index].symbol }}:</p>
+                    <p
+                        v-if="Tokens[index].address === ownedPosition.pool.quote_token.address"
+                        class="pooled__item__amount"
+                    >
                         {{
-                            ownedPosition
-                                ? basicRound(
-                                      (Number(
-                                          formatUnits(
-                                              ownedPosition.quote_amount,
-                                              ownedPosition.pool.quote_token.decimals
-                                          )
-                                      ) *
-                                          state.redeemPercent) /
-                                          100
-                                  )
-                                : 0
+                            basicRound(
+                                Number(formatUnits(ownedPosition.quote_amount, ownedPosition.pool.quote_token.decimals))
+                            )
                         }}
                     </p>
-                </div>
-                <div class="pooled__item row align-center">
-                    <img
-                        class="token-icon token-icon--sm"
-                        :src="pool.base_token.logo_uri"
-                    />
-                    <p class="pooled__item__symbol grey-text">Pooled {{ ownedPosition.pool.base_token.symbol }}:</p>
-                    <p class="pooled__item__amount">
+                    <p
+                        v-else
+                        class="pooled__item__amount"
+                    >
                         {{
-                            ownedPosition
-                                ? basicRound(
-                                      (Number(
-                                          formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals)
-                                      ) *
-                                          state.redeemPercent) /
-                                          100
-                                  )
-                                : 0
+                            basicRound(
+                                Number(formatUnits(ownedPosition.base_amount, ownedPosition.pool.base_token.decimals))
+                            )
                         }}
                     </p>
                 </div>
@@ -316,11 +300,10 @@ import { basicRound, widgetTypeObj } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
-const unhandled = "0x0000000000000000000000000000000000000000"
 const stepStore = useStepStore()
 
 const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
-const { refreshPositions } = stepStore
+const { getSinglePostion, updatePositionsWithNewSingle } = stepStore
 
 // ROUTES ----------------
 const router = useRouter()
@@ -342,24 +325,51 @@ const { Balances, getBothBalances, reverseBalances, formatedBalances } = useBala
 // BALANCES -------------
 
 // POOL -----------------
-const { pool, refreshPool, addLiquidity, poolError } = await usePools(
+const { pool, refreshPool, addLiquidity, poolError, poolRatio } = await usePools(
     routerAddress,
     Tokens,
     connectedAccount,
     connectedChainId,
     route
 )
+
+watch(poolRatio, (newPoolRatio) => {
+    if (newPoolRatio) {
+        console.log("newPoolRatio:", newPoolRatio)
+        calcAndSetOpposingInput(
+            fullAmounts[getInputLabel(lastChangedAmount.value)],
+            lastChangedAmount.value,
+            BigInt(pool.value.base_reserves),
+            BigInt(pool.value.quote_reserves),
+            BigInt(pool.value.price)
+        )
+    }
+})
 // POOL -----------------
 
 // WIDGET ---------------
-
-const state = reactive({
-    amountQuote: "",
-    amountBase: "",
-    balanceA: "",
-    balanceB: "",
-    redeemPercent: 100,
-})
+const {
+    pending: SinglePositionPending,
+    refresh: RefreshSinglePosition,
+    error: SinglePositionError,
+} = await useAsyncData(
+    "SinglePosition",
+    () => {
+        if (pool.value) {
+            // return getSinglePostion(pool.value.pool_index)
+        }
+    },
+    {
+        lazy: true,
+        server: false,
+        transform: (newSinglePosition) => {
+            if (newSinglePosition) {
+                updatePositionsWithNewSingle(newSinglePosition)
+            }
+            return newSinglePosition
+        },
+    }
+)
 
 const ownedPosition = computed(() => {
     if (!pool.value || !positions.value) {
@@ -471,7 +481,7 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     } else {
         // loop every x seconds
         refreshPool()
-        refreshPositions()
+        RefreshSinglePosition()
         getBothBalances(false, false)
         originalCall.amountQuote = quoteAmountDelta
         originalCall.amountBase = baseAmountDelta
@@ -492,7 +502,7 @@ function fillInBalance(amount, inputIndex) {
 const insufficientBalanceIndexes = computed(() => {
     let balanceIndexes = []
     Tokens.value.forEach((token, idx) => {
-        if (!token) {
+        if (!token || Balances.value[idx] === "") {
             return
         }
         if (Balances.value[idx] < fullAmountsMap.value[idx]) {
@@ -552,29 +562,34 @@ watch(
         //getting balance
         const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
         const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
-        if (!areNewOldReversered && tokens[selectTokenIndex.value]) {
-            // console.log(getting balance from ADD token watcher")
-            // getBothBalances(selectTokenIndex.value, false)
+        console.log("areNewOldReversered:", areNewOldReversered)
+        if (!areNewOldReversered) {
+            if (tokens[selectTokenIndex.value]) {
+                getBothBalances(selectTokenIndex.value, false)
+            }
+            poolError.value = null
+            pool.value = null
+        } else {
+            reverseBalances()
         }
-        // getBothBalances(false, false)
 
         // setting full amount
         const newTokenIndex = selectTokenIndex.value
         const newAmountIndex = lastChangedAmount.value
-        console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
-        if (newTokenIndex === newAmountIndex && Tokens.value[newTokenIndex]) {
-            setFromUserToFullAmount(
-                userAmounts[amountsLabelOrder.value[newAmountIndex]],
-                Tokens.value[newTokenIndex].decimals,
-                newAmountIndex
-            )
-        }
+        // console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
+        // if (newTokenIndex === newAmountIndex && Tokens.value[newTokenIndex]) {
+        //     setFromUserToFullAmount(
+        //         userAmounts[amountsLabelOrder.value[newAmountIndex]],
+        //         Tokens.value[newTokenIndex].decimals,
+        //         newAmountIndex
+        //     )
+        // }
 
         // fetching pool
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(newAmountIndex))
             await refreshPool()
-            console.log("watch(Tokens) - pool: ", pool.value?.name)
+
             if (pool.value) {
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(newAmountIndex)],
@@ -584,7 +599,6 @@ watch(
                     BigInt(pool.value.price)
                 )
             }
-            await refreshPositions()
         }
     },
     {

@@ -120,6 +120,7 @@ const injected = injectedModule({
 
     async function getSinglePostion(poolIndex: Number) {
         if (isSupportedChain(connectedChainId.value) && connectedAccount.value) {
+            console.log("getting position with id", poolIndex)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
         } else {
             null

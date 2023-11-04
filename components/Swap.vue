@@ -319,7 +319,7 @@ const route = useRoute()
 // ROUTES ----------------
 
 // TOKENS ------------------
-const { Tokens, bothTokensThere, selectTokenIndex, setToken } = useTokens()
+const { Tokens, bothTokensThere, selectTokenIndex, setToken, reverseTokens } = useTokens()
 // TOKENS ------------------
 
 useWidget(featuredTokens, Tokens, connectedChainId, router, route)
@@ -342,7 +342,7 @@ const { pool, refreshPool, poolPending, poolError, poolStatus, price, depth, swa
 )
 watch(price, (newPrice) => {
     if (newPrice) {
-        console.log("newPrice received:", newPrice)
+        console.log("newPrice:", newPrice)
         calcAndSetOpposingInput(
             fullAmounts[getInputLabel(lastChangedAmount.value)],
             lastChangedAmount.value,
@@ -355,25 +355,14 @@ watch(price, (newPrice) => {
 // POOL -----------------
 
 // WIDGET ------------------
-const state = reactive({
-    amountA: "",
-    amountB: "",
-    balanceA: "",
-    balanceB: "",
-    showRate: false,
-    noSlippage: false,
-    alreadyMounted: false,
-})
-
 const canSwap = computed(() => {
     return pool.value && bothAmountsIn.value
 })
 function switchOrder() {
     lastChangedAmount.value = oppositeInput(lastChangedAmount.value)
     selectTokenIndex.value = oppositeInput(selectTokenIndex.value)
-    Tokens.value = Tokens.value.reverse()
+    reverseTokens()
     switchAmounts()
-    reverseBalances()
 }
 
 function callSwap() {
@@ -433,7 +422,6 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     refresh()
 }
 
-// const refreshEvents = inject("refreshEvents")
 function refresh() {
     console.log("refresh() - swap")
     resetInputAmounts(tkEnum.QUOTE)
@@ -515,7 +503,7 @@ function Round(amt) {
 // MODAL STUFF -------------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg, reverseBalances), index)
+    toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg), index)
     selectTokenIndex.value = index
 }
 // MODAL STUFF -------------
@@ -580,6 +568,8 @@ watch(
             }
             poolError.value = null
             pool.value = null
+        } else {
+            reverseBalances()
         }
 
         // setting full amount

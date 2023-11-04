@@ -227,14 +227,6 @@
                 >
                     Remove Liquidity
                 </Btn>
-                <!-- <Btn
-                    @click="refresh()"
-                    wide
-                    bulky
-                    :disabled="!connectedAccount"
-                >
-                    refresh data
-                </Btn> -->
             </div>
         </template>
     </Widget>
@@ -392,11 +384,9 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
 }
 
 const {
-    data: SinglePositionData,
     pending: SinglePositionPending,
     refresh: RefreshSinglePosition,
     error: SinglePositionError,
-    status: SinglePositionStatus,
 } = await useAsyncData(
     "SinglePosition",
     () => {
@@ -405,14 +395,15 @@ const {
     {
         lazy: true,
         server: false,
+        transform: (newSinglePosition) => {
+            if (newSinglePosition) {
+                updatePositionsWithNewSingle(newSinglePosition)
+            }
+            return newSinglePosition
+        },
     }
 )
 
-watch(SinglePositionData, (newSinglePosition) => {
-    if (newSinglePosition) {
-        updatePositionsWithNewSingle(newSinglePosition)
-    }
-})
 const ownedPosition = computed(() => {
     if (!positions.value) {
         return null

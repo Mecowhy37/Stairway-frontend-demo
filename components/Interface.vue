@@ -139,15 +139,13 @@ const {
 } = await useAsyncData(
     "positions",
     () => {
-        if (route.name !== "swap") {
+        if (route.name === "liquidity") {
             if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
                 console.log("fetching positions on chain:", connectedChainId.value)
                 return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
             } else {
-                // return []
+                return []
             }
-        } else {
-            // return
         }
     },
     {

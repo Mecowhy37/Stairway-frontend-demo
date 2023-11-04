@@ -3,7 +3,6 @@
         <div class="positions">
             <div class="positions__top row">
                 <h1 class="scale">Liquidity</h1>
-                <!-- <Btn @click="stepStore.refreshPositions()">refresh positions - {{ positionsStatus }}</Btn> -->
                 <NuxtLink
                     v-if="connectedAccount && positions.length > 0"
                     to="/add-liquidity"

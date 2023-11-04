@@ -16,14 +16,11 @@ export function useTokens() {
 
     const bothTokensThere = computed(() => Tokens.value.every((el) => el !== null))
 
-    function setToken(token, reverseBalances = false) {
+    function setToken(token) {
         if (token) {
             const sameTokenIndex = Tokens.value.findIndex((el) => el?.address === token.address)
             if (sameTokenIndex !== -1 && sameTokenIndex !== selectTokenIndex.value) {
                 reverseTokens()
-                if (typeof reverseBalances === "function") {
-                    // reverseBalances()
-                }
                 return
             }
         }
@@ -38,5 +35,6 @@ export function useTokens() {
         bothTokensThere,
         setToken,
         selectTokenIndex,
+        reverseTokens,
     }
 }

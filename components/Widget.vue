@@ -126,13 +126,13 @@ const props = defineProps({
     }
     .tables {
         .columns {
-            justify-content: space-between;
+            justify-content: space-around;
             margin-top: 7px;
             padding-top: 7px;
             border-top: 2px solid var(--grey-stroke-sm);
             & > div {
                 text-align: center;
-                flex-basis: 50%;
+                /* flex-basis: 50%; */
                 p {
                     white-space: nowrap;
                 }

@@ -1,5 +1,12 @@
 import { BrowserProvider, Contract, parseUnits, getAddress } from "ethers"
-import { decodeCustomError, isSupportedChain, getUrl, listenForTransactionMine, tkEnum } from "~/helpers/index"
+import {
+    decodeCustomError,
+    isSupportedChain,
+    getUrl,
+    listenForTransactionMine,
+    tkEnum,
+    precision,
+} from "~/helpers/index"
 
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
@@ -37,6 +44,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
             }
         },
         {
+            lazy: true,
             watch: [Tokens, connectedChainId],
             immediate: true,
             default: () => null,
