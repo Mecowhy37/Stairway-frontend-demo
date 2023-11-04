@@ -221,14 +221,20 @@
                 </Btn>
             </div>
             <div
-                v-if="price && bothTokensThere && !poolPending"
+                v-if="price && bothTokensThere && poolIsRemaining"
                 class="sum-up grey-text caption"
             >
-                <p>
-                    1 {{ Tokens[tkEnum.BASE].symbol }} =
-                    {{ roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals)) }}
-                    {{ Tokens[tkEnum.QUOTE].symbol }}
-                </p>
+                <div class="row">
+                    <p>
+                        1 {{ Tokens[tkEnum.BASE].symbol }} =
+                        {{ roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals)) }}
+                        {{ Tokens[tkEnum.QUOTE].symbol }}
+                    </p>
+                    <div
+                        v-if="poolPending"
+                        class="ping-cirle"
+                    ></div>
+                </div>
                 <div class="row space-between">
                     <p>
                         Volume available at this price ({{
@@ -243,7 +249,7 @@
                 </div>
             </div>
             <div
-                v-else-if="price && poolPending"
+                v-else-if="price && poolPending && !poolIsRemaining"
                 class="sum-up grey-text caption"
             >
                 <p>
@@ -327,7 +333,7 @@ const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBala
 // BALANCES ----------------
 
 // POOL -----------------
-const { pool, refreshPool, poolPending, poolError, price, depth, swap } = await usePools(
+const { pool, refreshPool, poolPending, poolError, poolStatus, price, depth, swap } = await usePools(
     routerAddress,
     Tokens,
     connectedAccount,
@@ -335,7 +341,8 @@ const { pool, refreshPool, poolPending, poolError, price, depth, swap } = await 
     route
 )
 watch(price, (newPrice) => {
-    if (newPrice && pool.value) {
+    if (newPrice) {
+        console.log("newPrice received:", newPrice)
         calcAndSetOpposingInput(
             fullAmounts[getInputLabel(lastChangedAmount.value)],
             lastChangedAmount.value,
@@ -518,6 +525,37 @@ const settings = ref()
 //SETTINGS--------------
 
 const poolRefreshInterval = ref(null)
+const poolIsRemaining = ref(false)
+
+function startPoolRefresh(poolRemaining = false) {
+    const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
+
+    if (poolRefreshInterval.value !== null) {
+        stopPoolRefresh(poolRefreshInterval.value)
+    }
+
+    poolIsRemaining.value = poolRemaining
+    poolRefreshInterval.value = setInterval(() => {
+        console.log("L o O p", poolRefreshInterval.value, randomTimeout)
+        refreshPool()
+        stopPoolRefresh(poolRefreshInterval.value)
+        startPoolRefresh(poolRemaining)
+    }, randomTimeout)
+}
+
+function stopPoolRefresh(intervalId = null) {
+    console.log("clear loop", poolRefreshInterval.value)
+    poolIsRemaining.value = false
+
+    if (intervalId) {
+        clearInterval(intervalId)
+    } else {
+        clearInterval(poolRefreshInterval.value)
+    }
+
+    poolRefreshInterval.value = null
+}
+
 const remover = router.beforeEach((to, from) => {
     if (to.name !== "swap") {
         console.log("EXITING SWAP")
@@ -526,19 +564,6 @@ const remover = router.beforeEach((to, from) => {
     }
 })
 
-function startPoolRefresh() {
-    // const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
-
-    poolRefreshInterval.value = setInterval(() => {
-        refreshPool()
-    }, 2000)
-}
-
-function stopPoolRefresh() {
-    console.log("clear loop")
-    clearInterval(poolRefreshInterval.value)
-}
-
 watch(
     Tokens,
     async (tokens, oldTokens) => {
@@ -546,11 +571,15 @@ watch(
 
         //getting balance
         const oldTokensAddresses = oldTokens?.map((oldTkn) => oldTkn?.address)
-        const areNewOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
-        console.log("areNewTokensOldReversered:", areNewOldReversered)
+        const areNewTokensOldReversered = tokens?.every((tkn) => oldTokensAddresses?.includes(tkn?.address))
+        console.log("areNewTokensOldReversered:", areNewTokensOldReversered)
         const selectIndex = selectTokenIndex.value
-        if (!areNewOldReversered && tokens[selectIndex]) {
-            getBothBalances(selectIndex, false)
+        if (!areNewTokensOldReversered) {
+            if (tokens[selectIndex]) {
+                getBothBalances(selectIndex, false)
+            }
+            poolError.value = null
+            pool.value = null
         }
 
         // setting full amount
@@ -567,13 +596,13 @@ watch(
         // }
 
         // fetching pool
-        stopPoolRefresh()
+        stopPoolRefresh(poolRefreshInterval.value)
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(lastChangedAmountIndex))
-            console.log("watch(Tokens) - pool.value: ", pool.value?.name)
             await refreshPool()
-            startPoolRefresh()
+
             if (pool.value) {
+                startPoolRefresh(true)
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(lastChangedAmountIndex)],
                     lastChangedAmountIndex,
@@ -581,6 +610,8 @@ watch(
                     BigInt(pool.value.quote_reserves),
                     BigInt(pool.value.price)
                 )
+            } else {
+                startPoolRefresh()
             }
         }
     },

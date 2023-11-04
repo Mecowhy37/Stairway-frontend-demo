@@ -17,25 +17,23 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
     } = await useAsyncData(
         "pool",
         () => {
-            if (isSupportedChain(connectedChainId.value)) {
+            const bothThere = Tokens.value.every((el) => el !== null)
+            if (isSupportedChain(connectedChainId.value) && bothThere) {
                 //make separete useAsyncData for this
                 // if (route.name === "remove-address") {
                 //     console.log("usePools - fetchingPool() - on", route.name)
                 //     return $fetch(getUrl(`/chain/${connectedChainId.value}/pool/${route.params.address}`))
                 // }
-                const bothThere = Tokens.value.every((el) => el !== null)
-                if (bothThere) {
-                    // console.log("usePools - fetchingPool() - on", route.name)
-                    return $fetch(
-                        getUrl(
-                            `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
-                                Tokens.value[tkEnum.QUOTE].address
-                            }`
-                        )
+                // console.log("usePools - fetchingPool() - on", route.name)
+                return $fetch(
+                    getUrl(
+                        `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
+                            Tokens.value[tkEnum.QUOTE].address
+                        }`
                     )
-                } else {
-                    return null
-                }
+                )
+            } else {
+                return null
             }
         },
         {

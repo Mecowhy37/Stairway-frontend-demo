@@ -173,6 +173,14 @@ const props = defineProps({
         p:last-of-type {
             white-space: nowrap;
         }
+        .ping-cirle {
+            width: 3px;
+            height: 3px;
+            border-radius: 1.5px;
+            background-color: var(--primary);
+            margin-top: 3px;
+            margin-left: 5px;
+        }
     }
 
     .pooled {
