@@ -131,10 +131,10 @@ const injected = injectedModule({
     function updatePositionsWithNewSingle(newPosition: Object) {
         let positionToUpdate = positions.value.find(pos => pos.pool.pool_index === newPosition.pool.pool_index)
         if (!positionToUpdate) {
-            console.log("pushing to positions", newPosition.pool.pool_index)
+            // console.log("pushing to positions", newPosition.pool.pool_index)
             positions.value.push(newPosition)
         } else {
-            console.log('updating positions with pool:', newPosition.pool.pool_index)
+            // console.log('updating positions with pool:', newPosition.pool.pool_index)
             const indexToUpate = positions.value.indexOf(positionToUpdate)
             positions.value[indexToUpate] = newPosition
         }
