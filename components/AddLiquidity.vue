@@ -222,6 +222,13 @@
                     </p>
                 </div>
             </div>
+            <div
+                v-else-if="ownedPosition === false && SinglePositionPending && !SinglePositionError"
+                class="placeholder placeholder--in-widget"
+            >
+                <p>placeholder</p>
+                <p>text</p>
+            </div>
             <div class="buttons">
                 <Btn
                     v-if="!stepStore.connectedWallet"
@@ -368,7 +375,7 @@ const {
             }
             return newSinglePosition
         },
-        watch: [pool],
+        watch: [() => pool.value?.pool_index],
     }
 )
 
@@ -574,10 +581,10 @@ function startPoolRefresh(poolRemaining = false) {
     }
 
     poolIsRemaining.value = poolRemaining
-    poolRefreshInterval = setInterval(() => {
-        console.log("L o O p", poolRefreshInterval, randomTimeout)
-        refreshPool()
-        RefreshSinglePosition()
+    poolRefreshInterval = setInterval(async () => {
+        console.log("L o O p", poolRefreshInterval, randomTimeout / 1000 + "s")
+        await refreshPool()
+        await RefreshSinglePosition()
 
         startPoolRefresh(poolRemaining)
     }, randomTimeout)
@@ -650,6 +657,8 @@ watch(
                     BigInt(pool.value.quote_reserves),
                     BigInt(pool.value.price)
                 )
+            } else {
+                startPoolRefresh()
             }
         }
     },

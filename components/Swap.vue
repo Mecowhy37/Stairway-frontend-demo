@@ -524,9 +524,9 @@ function startPoolRefresh(poolRemaining = false) {
     }
 
     poolIsRemaining.value = poolRemaining
-    poolRefreshInterval = setInterval(() => {
-        console.log("L o O p", poolRefreshInterval, randomTimeout)
-        refreshPool()
+    poolRefreshInterval = setInterval(async () => {
+        console.log("L o O p", poolRefreshInterval, randomTimeout / 1000 + "s")
+        await refreshPool()
 
         startPoolRefresh(poolRemaining)
     }, randomTimeout)

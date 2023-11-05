@@ -119,7 +119,7 @@
                 />
             </div>
             <div
-                v-if="pool && ownedPosition"
+                v-if="ownedPosition"
                 class="pooled"
             >
                 <div class="pooled__item row align-center">
@@ -167,7 +167,7 @@
                 </div>
             </div>
             <div
-                v-else-if="ownedPosition === false && SinglePositionPending"
+                v-else-if="ownedPosition === false && SinglePositionPending && !SinglePositionError"
                 class="placeholder placeholder--in-widget"
             >
                 <p>placeholder</p>
@@ -176,7 +176,7 @@
             <div
                 v-if="
                     (connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError) ||
-                    (SinglePositionError && !SinglePositionPending)
+                    SinglePositionError
                 "
                 class="infos contents"
             >
@@ -194,7 +194,7 @@
                     <p>You dont have any liquidity at this position.</p>
                 </div>
                 <div
-                    v-if="SinglePositionError && !SinglePositionPending"
+                    v-if="SinglePositionError"
                     class="info row"
                 >
                     <div>
@@ -436,9 +436,9 @@ function startPositionRefresh(poolRemaining = false) {
     }
 
     poolIsRemaining.value = poolRemaining
-    positionRefreshInterval = setInterval(() => {
-        console.log("L o O p", positionRefreshInterval, randomTimeout)
-        RefreshSinglePosition()
+    positionRefreshInterval = setInterval(async () => {
+        console.log("L o O p", positionRefreshInterval, randomTimeout / 1000 + "s")
+        await RefreshSinglePosition()
 
         startPositionRefresh(poolRemaining)
     }, randomTimeout)
