@@ -365,7 +365,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 const tx = await router.buy(
                     tokenPathAddresses,
                     amountBase.toString(),
-                    (maxPrice - 1000000000000n).toString(),
+                    maxPrice.toString(),
                     getAddress(account),
                     "0xe3a2fb3cC3A8F9ca2987cb193931544Aa72951d6",
                     deadlineStamp
