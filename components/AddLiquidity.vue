@@ -490,7 +490,6 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
             navigateTo({ path: "/liquidity" })
         }, 1000)
     } else {
-        // loop every x seconds
         refreshPool()
         RefreshSinglePosition()
         getBothBalances(false, false)
@@ -564,7 +563,47 @@ function openTokenSelectModal(index) {
 const settingsAdd = ref()
 //SETTINGS--------------
 
-let intervalId = null
+let poolRefreshInterval = null
+const poolIsRemaining = ref(false)
+
+function startPoolRefresh(poolRemaining = false) {
+    const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
+
+    if (poolRefreshInterval !== null) {
+        stopPoolRefresh(poolRefreshInterval)
+    }
+
+    poolIsRemaining.value = poolRemaining
+    poolRefreshInterval = setInterval(() => {
+        console.log("L o O p", poolRefreshInterval, randomTimeout)
+        refreshPool()
+        RefreshSinglePosition()
+
+        startPoolRefresh(poolRemaining)
+    }, randomTimeout)
+}
+
+function stopPoolRefresh(intervalId = null) {
+    console.log("clear loop", poolRefreshInterval)
+    poolIsRemaining.value = false
+
+    if (intervalId) {
+        clearInterval(intervalId)
+    } else {
+        clearInterval(poolRefreshInterval)
+    }
+
+    poolRefreshInterval = null
+}
+
+const remover = router.beforeEach((to, from) => {
+    if (to.name !== "add-liquidity") {
+        console.log("EXITING ADD")
+        stopPoolRefresh()
+        remover()
+    }
+})
+
 watch(
     Tokens,
     async (tokens, oldTokens) => {
@@ -596,12 +635,14 @@ watch(
         //     )
         // }
 
-        // fetching pool
+        stopPoolRefresh(poolRefreshInterval)
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(newAmountIndex))
             await refreshPool()
+            RefreshSinglePosition()
 
             if (pool.value) {
+                startPoolRefresh(true)
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(newAmountIndex)],
                     newAmountIndex,

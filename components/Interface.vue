@@ -48,8 +48,10 @@ const {
     },
     {
         transform: (chainsdata) => {
-            chainsdata = chainsdata.filter((chain) => chain.chain_id === 80001)
-            chainsdata.forEach((chain) => initOptions.value.push(transformChainToInitOptions(chain)))
+            if (chainsdata) {
+                chainsdata = chainsdata.filter((chain) => chain.chain_id === 80001)
+                chainsdata.forEach((chain) => initOptions.value.push(transformChainToInitOptions(chain)))
+            }
             //stepStore
             chains.value = chainsdata
             return chainsdata

@@ -295,6 +295,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     const failCause = decodeCustomError(error.data)
                     console.log("failed to redeem liquidity: ", failCause)
                     notify(notifHolder, "error", failCause)
+                    // reject("Failed to redeem liquidity " + failCause)
                     return
                 }
                 notify(notifHolder, "error")
@@ -364,7 +365,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 const tx = await router.buy(
                     tokenPathAddresses,
                     amountBase.toString(),
-                    maxPrice.toString(),
+                    (maxPrice - 1000000000000n).toString(),
                     getAddress(account),
                     "0xe3a2fb3cC3A8F9ca2987cb193931544Aa72951d6",
                     deadlineStamp
@@ -392,6 +393,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     const failCause = decodeCustomError(error.data)
                     console.log("Failed to swap:", failCause)
                     notify(notifHolder, "error", failCause)
+                    reject("Failed to swap " + failCause)
                     return
                 }
                 notify(notifHolder, "error")

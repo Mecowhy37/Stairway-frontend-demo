@@ -512,36 +512,37 @@ function openTokenSelectModal(index) {
 const settings = ref()
 //SETTINGS--------------
 
-const poolRefreshInterval = ref(null)
+let poolRefreshInterval = null
 const poolIsRemaining = ref(false)
 
+//would be nice if this was a promise so that it cannot be called over again
 function startPoolRefresh(poolRemaining = false) {
     const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
 
-    if (poolRefreshInterval.value !== null) {
-        stopPoolRefresh(poolRefreshInterval.value)
+    if (poolRefreshInterval !== null) {
+        stopPoolRefresh(poolRefreshInterval)
     }
 
     poolIsRemaining.value = poolRemaining
-    poolRefreshInterval.value = setInterval(() => {
-        console.log("L o O p", poolRefreshInterval.value, randomTimeout)
+    poolRefreshInterval = setInterval(() => {
+        console.log("L o O p", poolRefreshInterval, randomTimeout)
         refreshPool()
-        stopPoolRefresh(poolRefreshInterval.value)
+
         startPoolRefresh(poolRemaining)
     }, randomTimeout)
 }
 
 function stopPoolRefresh(intervalId = null) {
-    console.log("clear loop", poolRefreshInterval.value)
+    console.log("clear loop", poolRefreshInterval)
     poolIsRemaining.value = false
 
     if (intervalId) {
         clearInterval(intervalId)
     } else {
-        clearInterval(poolRefreshInterval.value)
+        clearInterval(poolRefreshInterval)
     }
 
-    poolRefreshInterval.value = null
+    poolRefreshInterval = null
 }
 
 const remover = router.beforeEach((to, from) => {
@@ -586,7 +587,7 @@ watch(
         // }
 
         // fetching pool
-        stopPoolRefresh(poolRefreshInterval.value)
+        stopPoolRefresh(poolRefreshInterval)
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(lastChangedAmountIndex))
             await refreshPool()

@@ -420,6 +420,50 @@ const pool = computed(() => {
 //SETTINGS--------------
 const settingsRedeem = ref(null)
 //SETTINGS--------------
+
+const router = useRouter()
+
+let positionRefreshInterval = null
+const poolIsRemaining = ref(false)
+
+startPositionRefresh()
+//would be nice if this was a promise so that it cannot be called over again
+function startPositionRefresh(poolRemaining = false) {
+    const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
+
+    if (positionRefreshInterval !== null) {
+        stopPositionRefresh(positionRefreshInterval)
+    }
+
+    poolIsRemaining.value = poolRemaining
+    positionRefreshInterval = setInterval(() => {
+        console.log("L o O p", positionRefreshInterval, randomTimeout)
+        RefreshSinglePosition()
+
+        startPositionRefresh(poolRemaining)
+    }, randomTimeout)
+}
+
+function stopPositionRefresh(intervalId = null) {
+    console.log("clear loop", positionRefreshInterval)
+    poolIsRemaining.value = false
+
+    if (intervalId) {
+        clearInterval(intervalId)
+    } else {
+        clearInterval(positionRefreshInterval)
+    }
+
+    positionRefreshInterval = null
+}
+
+const remover = router.beforeEach((to, from) => {
+    if (to.name !== "remove") {
+        console.log("EXITING REMOVE")
+        stopPositionRefresh()
+        remover()
+    }
+})
 </script>
 
 <style lang="scss" scoped>
