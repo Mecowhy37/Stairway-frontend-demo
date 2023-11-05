@@ -144,7 +144,7 @@
                                 <Icon
                                     v-else
                                     name="warning"
-                                    style="color: var(--error-color); margin: 0"
+                                    style="color: var(--error-color); margin: 0; padding: -1px"
                                     :size="36"
                                 />
                             </template>
@@ -154,7 +154,7 @@
                         <div
                             v-for="chain in chains"
                             class="list-item list-item--padded-xs row align-center"
-                            @click="setChain(chain.chain_id)"
+                            @click="setTheChain(chain.chain_id)"
                         >
                             <img
                                 class="token-icon token-icon--sm"
@@ -181,6 +181,8 @@ import { storeToRefs } from "pinia"
 import { isSupportedChain } from "~/helpers/index"
 
 const stepStore = useStepStore()
+const { setTheChain } = stepStore
+
 const {
     connectedAccount,
     getTruncatedWalletAddress,
@@ -194,14 +196,6 @@ const {
 
 function revertTheme() {
     stepStore.isDark = !stepStore.isDark
-}
-
-function setChain(id) {
-    if (connectedAccount.value) {
-        stepStore.setChain({ chainId: id })
-    } else {
-        noWalletChain.value = id
-    }
 }
 
 const connectedChainFullObj = computed(() => {

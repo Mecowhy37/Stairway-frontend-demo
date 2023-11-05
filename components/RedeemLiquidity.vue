@@ -118,6 +118,62 @@
                     @input="removeSelected()"
                 />
             </div>
+
+            <div
+                v-if="
+                    (connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError) ||
+                    SinglePositionError ||
+                    !isSupportedChain(connectedChainId)
+                "
+                class="infos contents"
+            >
+                <div
+                    v-if="connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError"
+                    class="info row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>You dont have any liquidity at this position.</p>
+                </div>
+                <div
+                    v-if="SinglePositionError"
+                    class="info row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>Pool with ID: {{ route.params.address }} doesnt exist</p>
+                </div>
+                <div
+                    v-if="!isSupportedChain(connectedChainId)"
+                    class="info info--warn row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>
+                        You're on unsupported network, please change to
+                        <span
+                            @click="setTheChain(80001)"
+                            class="text-highlight--underlined"
+                            >Polygon Mumbai</span
+                        >.
+                    </p>
+                </div>
+            </div>
             <div
                 v-if="ownedPosition"
                 class="pooled"
@@ -173,40 +229,6 @@
                 <p>placeholder</p>
                 <p>text</p>
             </div>
-            <div
-                v-if="
-                    (connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError) ||
-                    SinglePositionError
-                "
-                class="infos contents"
-            >
-                <div
-                    v-if="connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError"
-                    class="info row"
-                >
-                    <div>
-                        <Icon
-                            class="icon"
-                            name="warning"
-                            :size="25"
-                        />
-                    </div>
-                    <p>You dont have any liquidity at this position.</p>
-                </div>
-                <div
-                    v-if="SinglePositionError"
-                    class="info row"
-                >
-                    <div>
-                        <Icon
-                            class="icon"
-                            name="warning"
-                            :size="25"
-                        />
-                    </div>
-                    <p>Pool with ID: {{ route.params.address }} doesnt exist</p>
-                </div>
-            </div>
             <div class="buttons">
                 <Btn
                     v-if="!stepStore.connectedWallet"
@@ -218,11 +240,12 @@
                     Connect wallet
                 </Btn>
                 <Btn
-                    v-else-if="isSupportedChain(connectedChainId)"
                     is="h4"
                     wide
                     bulky
-                    :disabled="!ownedPosition || removingDisabled || redeemPercent == 0"
+                    :disabled="
+                        !ownedPosition || removingDisabled || redeemPercent == 0 || !isSupportedChain(connectedChainId)
+                    "
                     @click="redeemLiquidityCall()"
                 >
                     Remove Liquidity
@@ -262,7 +285,6 @@ const route = useRoute()
 const { redeemLiquidity } = await usePools(routerAddress, [], connectedAccount, connectedChainId, route)
 // ROUTES ----------------
 
-const removingDisabled = ref(false)
 function redeemLiquidityCall() {
     if (ownedPosition.value) {
         widgetLocker(true)
@@ -294,6 +316,8 @@ function redeemLiquidityCall() {
         )
     }
 }
+
+const removingDisabled = ref(false)
 
 function widgetLocker(lock) {
     removingDisabled.value = lock

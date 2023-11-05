@@ -35,11 +35,10 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <div class="tips">
-                <!-- <FaucetTrigger
-                    :closing-callback="() => getBothBalances(false, false)"
-                    :connected-chain-id="connectedChainId"
-                ></FaucetTrigger> -->
+            <div
+                class="tips"
+                v-if="connectedChainId === 80001"
+            >
                 <FaucetTriggerII :callback="() => getBothBalances(false, false)"></FaucetTriggerII>
             </div>
             <div class="windows">
@@ -51,7 +50,7 @@
                         <div class="window__upper">
                             <Btn
                                 @click="openTokenSelectModal(x)"
-                                :disabled="swappingDisabled"
+                                :disabled="isWidgetLocked"
                                 opaque
                                 selectable
                                 custom
@@ -73,14 +72,14 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :disabled="swappingDisabled"
+                                :disabled="isWidgetLocked"
                                 @input="amountInputHandler($event, x)"
                                 :value="userAmounts[amountsLabelOrder[x]]"
                             />
                         </div>
                         <div
                             class="window__lower row flex-end align-center"
-                            @click="!swappingDisabled && fillInBalance(Balances[x], x)"
+                            @click="!isWidgetLocked && fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Balances[x] === 0n }"
                         >
                             <p class="caption">
@@ -101,6 +100,7 @@
                             plain
                             active
                             @click="switchOrder()"
+                            :disabled="isWidgetLocked"
                         >
                             <template #icon>
                                 <Icon
@@ -116,7 +116,8 @@
                 v-if="
                     (bothTokensThere && pool && BigInt(pool.depth) < fullAmounts.base) ||
                     insufficientBalanceIndexes.includes(tkEnum.QUOTE) ||
-                    poolError
+                    poolError ||
+                    !isSupportedChain(connectedChainId)
                 "
                 class="infos"
             >
@@ -137,6 +138,26 @@
                             @click="addRedirect"
                             class="text-highlight--underlined"
                             >here</span
+                        >.
+                    </p>
+                </div>
+                <div
+                    v-if="!isSupportedChain(connectedChainId)"
+                    class="info info--warn row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>
+                        You're on unsupported network, please change to
+                        <span
+                            @click="setTheChain(80001)"
+                            class="text-highlight--underlined"
+                            >Polygon Mumbai</span
                         >.
                     </p>
                 </div>
@@ -165,23 +186,6 @@
                         />
                     </div>
                     <p>
-                        <!-- There's currently
-                        {{ roundFloor(formatUnits(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
-                        {{ Tokens[tkEnum.BASE].symbol }}
-                        available for
-                        {{
-                            roundFloor(
-                                formatUnits(calcQuote(BigInt(pool.depth), BigInt(price)), Tokens[tkEnum.QUOTE].decimals)
-                            )
-                        }}
-                        {{ Tokens[tkEnum.QUOTE].symbol }}. You might still receive up to a desired amount at a fixed
-                        price visible below. <br />
-                        <span
-                            class="text-highlight--underlined"
-                            @click="fillInDepth(pool.depth)"
-                            >Adjust my swap</span
-                        > -->
-
                         Currently, only
                         {{ roundFloor(formatUnits(pool.depth, Tokens[tkEnum.BASE].decimals)) }}
                         {{ Tokens[tkEnum.BASE].symbol }}
@@ -193,9 +197,6 @@
                             @click="fillInDepth(pool.depth)"
                             >Adjust my swap</span
                         >
-
-                        <!-- {{ roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals)) }} -->
-                        <!-- {{ Tokens[tkEnum.QUOTE].symbol }} / {{ Tokens[tkEnum.BASE].symbol }} -->
                     </p>
                 </div>
             </div>
@@ -215,7 +216,7 @@
                     is="h4"
                     wide
                     bulky
-                    :disabled="!canSwap || swappingDisabled || insufficientBalanceIndexes.includes(tkEnum.QUOTE)"
+                    :disabled="!canSwap || isWidgetLocked || insufficientBalanceIndexes.includes(tkEnum.QUOTE)"
                 >
                     Swap
                 </Btn>
@@ -249,7 +250,7 @@
                 </div>
             </div>
             <div
-                v-else-if="price && poolPending && !poolIsRemaining"
+                v-else-if="price && bothTokensThere && poolPending && !poolIsRemaining && !poolError"
                 class="sum-up grey-text caption"
             >
                 <p>
@@ -310,6 +311,7 @@ import { widgetTypeObj, tkEnum, roundCeiling, roundFloor, isSupportedChain, getU
 import { useWidget } from "~/helpers/useWidget"
 
 const stepStore = useStepStore()
+const { setTheChain } = stepStore
 
 const { featuredTokens, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 
@@ -322,7 +324,7 @@ const route = useRoute()
 const { Tokens, bothTokensThere, selectTokenIndex, setToken, reverseTokens } = useTokens()
 // TOKENS ------------------
 
-useWidget(featuredTokens, Tokens, connectedChainId, router, route)
+const { isWidgetLocked, widgetLocker } = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
 
 // BALANCES ----------------
 const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBalances(
@@ -333,25 +335,28 @@ const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBala
 // BALANCES ----------------
 
 // POOL -----------------
-const { pool, refreshPool, poolPending, poolError, poolStatus, price, depth, swap } = await usePools(
+const { pool, refreshPool, poolPending, poolError, price, depth, swap } = await usePools(
     routerAddress,
     Tokens,
     connectedAccount,
     connectedChainId,
     route
 )
-watch(price, (newPrice) => {
-    if (newPrice) {
-        console.log("newPrice:", newPrice)
-        calcAndSetOpposingInput(
-            fullAmounts[getInputLabel(lastChangedAmount.value)],
-            lastChangedAmount.value,
-            BigInt(pool.value.base_reserves),
-            BigInt(pool.value.quote_reserves),
-            BigInt(pool.value.price)
-        )
+watch(
+    () => [price.value, pool.value],
+    ([newPrice, newPool]) => {
+        if (newPrice && newPool) {
+            console.log("newPrice:", newPrice)
+            calcAndSetOpposingInput(
+                fullAmounts[getInputLabel(lastChangedAmount.value)],
+                lastChangedAmount.value,
+                BigInt(pool.value.base_reserves),
+                BigInt(pool.value.quote_reserves),
+                BigInt(pool.value.price)
+            )
+        }
     }
-})
+)
 // POOL -----------------
 
 // WIDGET ------------------
@@ -381,11 +386,6 @@ function callSwap() {
         stepStore.notify,
         widgetLocker
     )
-}
-
-const swappingDisabled = ref(false)
-function widgetLocker(lock) {
-    swappingDisabled.value = lock
 }
 
 function swapFailedHandler(error) {
@@ -469,6 +469,7 @@ function addRedirect() {
         },
     })
 }
+
 // WIDGET ------------------
 
 // AMOUNTS -----------------
@@ -489,7 +490,7 @@ const {
     calcQuote,
     resetInputAmounts,
     bothAmountsIn,
-} = useAmounts(Tokens, pool, widgetTypeObj.swap)
+} = useAmounts(Tokens, pool, widgetTypeObj.swap, poolPending)
 
 function Round(amt) {
     let amount = Number(amt)

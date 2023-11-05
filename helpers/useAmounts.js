@@ -1,7 +1,7 @@
 import { parseUnits, formatUnits } from "ethers"
 import { roundCeiling, roundFloor, widgetTypeObj, tkEnum, precision } from "~/helpers/index"
 
-export function useAmounts(Tokens, pool, widgetType) {
+export function useAmounts(Tokens, pool, widgetType, poolPending) {
     const userAmounts = reactive({
         quote: "",
         base: "",
@@ -9,6 +9,19 @@ export function useAmounts(Tokens, pool, widgetType) {
     const fullAmounts = reactive({
         quote: 0n,
         base: 0n,
+    })
+
+    watchEffect(() => {
+        if (Tokens.value[tkEnum.QUOTE] === null) {
+            userAmounts.quote = ""
+            fullAmounts.quote = 0n
+        }
+    })
+    watchEffect(() => {
+        if (Tokens.value[tkEnum.BASE] === null) {
+            userAmounts.base = ""
+            fullAmounts.base = 0n
+        }
     })
 
     const fullAmountsMap = computed(() => {
@@ -60,7 +73,18 @@ export function useAmounts(Tokens, pool, widgetType) {
         const fullAmount = parseUnits(amount, decimals)
         setFullAmount(fullAmount, inputIndex)
 
-        if (pool.value) {
+        if (fullAmount === 0n) {
+            calcAndSetOpposingInput(
+                fullAmount,
+                inputIndex,
+                BigInt(pool.value.base_reserves),
+                BigInt(pool.value.quote_reserves),
+                BigInt(pool.value.price)
+            )
+            return
+        }
+
+        if (pool.value && !poolPending.value) {
             calcAndSetOpposingInput(
                 fullAmount,
                 inputIndex,

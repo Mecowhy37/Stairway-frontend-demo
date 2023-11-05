@@ -60,6 +60,15 @@ const injected = injectedModule({
             return parseInt(connectedChain.value.id, 16)
         }
     })
+
+    function setTheChain(id) {
+        if (connectedAccount.value) {
+            setChain({ chainId: id })
+        } else {
+            noWalletChain.value = id
+        }
+    }
+    
     // CHAINS ----------------
 
     const onboardInit = ref([{
@@ -110,7 +119,7 @@ const injected = injectedModule({
     // TOKENS ---------------
     const featuredTokens = ref(null)
     // TOKENS ---------------
-    
+   
     
     // POSITIONS ----------------
     const positions = ref([]) 
@@ -118,8 +127,8 @@ const injected = injectedModule({
     const positionsStatus = ref(null)
     const positionsPending = ref(null)
 
-    async function getSinglePostion(poolIndex: Number) {
-        if (isSupportedChain(connectedChainId.value) && connectedAccount.value) {
+    async function getSinglePostion(poolIndex: Number | null) {
+        if (isSupportedChain(connectedChainId.value) && connectedAccount.value && poolIndex) {
             console.log("getting position with id", poolIndex)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
         } else {
@@ -178,7 +187,7 @@ const injected = injectedModule({
         addresses,
         
         chains,
-        setChain,
+        setTheChain,
         connectedChainId,
         noWalletChain,
         connectedChain,

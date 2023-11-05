@@ -1,8 +1,22 @@
 import { isAddress } from "ethers"
-import { tkEnum, getOutsiderToken } from "~/helpers/index"
+import { tkEnum, getOutsiderToken, isSupportedChain } from "~/helpers/index"
 
 export function useWidget(featuredTokens, Tokens, chainId, router, route) {
-    let waiting = ref(false)
+    const isWidgetLocked = ref(false)
+
+    function widgetLocker(lock) {
+        isWidgetLocked.value = lock
+    }
+
+    watch(
+        chainId,
+        (newChain) => {
+            widgetLocker(!isSupportedChain(newChain))
+        },
+        {
+            immediate: true,
+        }
+    )
 
     function findTokenByAddress(featuredList, address) {
         const token = featuredList.find((el) => el.address === address)
@@ -15,6 +29,16 @@ export function useWidget(featuredTokens, Tokens, chainId, router, route) {
         // }
         return token ? token : null
     }
+    // watchEffect(() => {
+    //     if (route.query.tk1) {
+    //         console.log("Tokens.value[tkEnum.QUOTE]")
+    //         Tokens.value[tkEnum.QUOTE] = findTokenByAddress(featuredTokens.value, route.query.tk1)
+    //     }
+    //     if (route.query.tk2) {
+    //         console.log("Tokens.value[tkEnum.BASE]")
+    //         Tokens.value[tkEnum.BASE] = findTokenByAddress(featuredTokens.value, route.query.tk2)
+    //     }
+    // })
     watch(
         featuredTokens,
         (newFeatured) => {
@@ -51,4 +75,8 @@ export function useWidget(featuredTokens, Tokens, chainId, router, route) {
         }
         // }
     )
+    return {
+        isWidgetLocked,
+        widgetLocker,
+    }
 }

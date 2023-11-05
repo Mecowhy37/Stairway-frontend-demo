@@ -94,6 +94,12 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         }
     )
 
+    watchEffect(() => {
+        getBothBalances(Tokens.value.indexOf(Tokens.value[tkEnum.QUOTE]), false)
+    })
+    watchEffect(() => {
+        getBothBalances(Tokens.value.indexOf(Tokens.value[tkEnum.BASE]), false)
+    })
     watch(
         Tokens,
         (newTokens, oldValues) => {

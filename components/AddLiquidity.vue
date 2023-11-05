@@ -53,7 +53,7 @@
                         <div class="window__upper">
                             <Btn
                                 @click="openTokenSelectModal(x)"
-                                :disabled="addingDisabled"
+                                :disabled="isWidgetLocked"
                                 opaque
                                 selectable
                                 custom
@@ -75,14 +75,14 @@
                                 spellcheck="false"
                                 autocomplete="off"
                                 autocorrect="off"
-                                :disabled="addingDisabled"
+                                :disabled="isWidgetLocked"
                                 @input="amountInputHandler($event, x)"
                                 :value="userAmounts[amountsLabelOrder[x]]"
                             />
                         </div>
                         <div
                             class="window__lower row flex-end align-center"
-                            @click="!addingDisabled && fillInBalance(Balances[x], x)"
+                            @click="!isWidgetLocked && fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Number(Balances[x]) === 0 }"
                         >
                             <p class="caption">
@@ -106,7 +106,12 @@
                 </div>
             </div>
             <div
-                v-if="(insufficientBalanceIndexes.length > 0 && connectedAccount) || poolError || hasDaoToken"
+                v-if="
+                    (insufficientBalanceIndexes.length > 0 && connectedAccount) ||
+                    poolError ||
+                    hasDaoToken ||
+                    !isSupportedChain(connectedChainId)
+                "
                 class="infos"
             >
                 <div
@@ -121,6 +126,26 @@
                         />
                     </div>
                     <p>Pool not found. Be aware you are setting a initial ratio of the pool.</p>
+                </div>
+                <div
+                    v-if="!isSupportedChain(connectedChainId)"
+                    class="info info--warn row"
+                >
+                    <div>
+                        <Icon
+                            class="icon"
+                            name="warning"
+                            :size="25"
+                        />
+                    </div>
+                    <p>
+                        You're on unsupported network, please change to
+                        <span
+                            @click="setTheChain(80001)"
+                            class="text-highlight--underlined"
+                            >Polygon Mumbai</span
+                        >.
+                    </p>
                 </div>
                 <div
                     v-if="hasDaoToken"
@@ -246,7 +271,7 @@
                     wide
                     bulky
                     :disabled="
-                        !bothAmountsIn || !bothTokensThere || addingDisabled || insufficientBalanceIndexes.length > 0
+                        !bothAmountsIn || !bothTokensThere || isWidgetLocked || insufficientBalanceIndexes.length > 0
                     "
                 >
                     Add liquidity
@@ -303,14 +328,14 @@ import { useBalances } from "~/helpers/useBalances"
 import { useAmounts } from "~/helpers/useAmounts"
 import { useTokens } from "~/helpers/useTokens"
 import { usePools } from "~/helpers/usePools"
-import { basicRound, tkEnum, widgetTypeObj } from "~/helpers/index"
+import { basicRound, tkEnum, widgetTypeObj, isSupportedChain } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
 const stepStore = useStepStore()
 
 const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
-const { getSinglePostion, updatePositionsWithNewSingle } = stepStore
+const { getSinglePostion, updatePositionsWithNewSingle, setTheChain } = stepStore
 
 // ROUTES ----------------
 const router = useRouter()
@@ -321,7 +346,7 @@ const route = useRoute()
 const { Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
 // TOKENS ---------------
 
-useWidget(featuredTokens, Tokens, connectedChainId, router, route)
+const { isWidgetLocked, widgetLocker } = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
 
 // BALANCES -------------
 const { Balances, getBothBalances, reverseBalances, formatedBalances } = useBalances(
@@ -332,7 +357,7 @@ const { Balances, getBothBalances, reverseBalances, formatedBalances } = useBala
 // BALANCES -------------
 
 // POOL -----------------
-const { pool, refreshPool, addLiquidity, poolError, poolRatio } = await usePools(
+const { pool, refreshPool, addLiquidity, poolError, poolRatio, poolPending } = await usePools(
     routerAddress,
     Tokens,
     connectedAccount,
@@ -375,7 +400,7 @@ const {
             }
             return newSinglePosition
         },
-        watch: [() => pool.value?.pool_index],
+        watch: [() => pool.value?.pool_index, connectedChainId],
     }
 )
 
@@ -406,7 +431,6 @@ const hasDaoToken = computed(() => {
 
 // not neccessarily block the interface, just indicate - block until signed
 function callAddLiquidity() {
-    // addingDisabled.value = true
     widgetLocker(true)
 
     addLiquidity(
@@ -424,10 +448,6 @@ function callAddLiquidity() {
         //isUserCall
         true
     )
-}
-const addingDisabled = ref(false)
-function widgetLocker(lock) {
-    addingDisabled.value = lock
 }
 
 function addLiquidityFailedHandler(error) {
@@ -545,7 +565,7 @@ const {
     calcAndSetOpposingInput,
     resetInputAmounts,
     bothAmountsIn,
-} = useAmounts(Tokens, pool, widgetTypeObj.add)
+} = useAmounts(Tokens, pool, widgetTypeObj.add, poolPending)
 
 function Round(amt) {
     // Round function trimms down unncessary digits and adds < mark when unsignificant

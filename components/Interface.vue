@@ -171,6 +171,28 @@ watch(
         immediate: true,
     }
 )
+
+const { data: isSanctioned } = await useAsyncData(
+    "sanction",
+    () => {
+        if (connectedChainId.value && connectedAccount.value) {
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/sanctioned`))
+        }
+    },
+    {
+        default: null,
+        lazy: true,
+        immediate: true,
+        watch: [connectedAccount, connectedChainId],
+        transform: (newSactioned) => {
+            if (newSactioned === true) {
+                navigateTo("https://google.com", {
+                    external: true,
+                })
+            }
+        },
+    }
+)
 stepStore.refreshPositions = RefreshPositions
 // SCREEN SIZE ------------------
 const { width } = useWindowSize()
@@ -432,6 +454,9 @@ svg {
     }
     &--all-rounded {
         border-radius: inherit;
+    }
+    &--separate {
+        margin-bottom: 5px;
     }
     &--opaque {
         color: var(--text-color-reverse-opaque);
