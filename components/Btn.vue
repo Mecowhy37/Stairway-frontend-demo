@@ -107,6 +107,7 @@ $horiz-padd: 1.3rem; */
     border-radius: var(--inner-wdg-radius);
     border: 1px solid transparent;
     padding: $vert-padd $horiz-padd;
+    color: var(--text-color);
     white-space: nowrap;
     background-color: var(--primary);
     box-shadow: var(--button-box-shadow);
