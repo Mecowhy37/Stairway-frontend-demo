@@ -36,7 +36,7 @@
                             ><p>Liquidity</p></NuxtLink
                         >
                         <NuxtLink
-                            to=""
+                            to="https://vote.stairway.fi/"
                             @click="toggleDropdown()"
                             class="link list-item list-item--padded-sm"
                             ><p>Governance</p></NuxtLink
@@ -107,15 +107,15 @@
                             </template>
                         </Btn>
                     </template>
-                    <template #dropdown>
+                    <template #dropdown="{ toggleDropdown }">
                         <p
-                            @click="copyAddress()"
+                            @click="copyAddress(toggleDropdown)"
                             class="list-item list-item--padded-xs list-item--all-rounded list-item--separate"
                         >
                             Copy address
                         </p>
                         <p
-                            @click="viewInExplorer()"
+                            @click="viewInExplorer(toggleDropdown)"
                             class="list-item list-item--padded-xs list-item--all-rounded list-item--separate"
                         >
                             View in explorer
@@ -204,10 +204,12 @@ const {
 //     stepStore.isDark = !stepStore.isDark
 // }
 
-function copyAddress() {
+function copyAddress(toggler) {
     navigator.clipboard.writeText(stepStore.connectedAccount)
+    toggler()
 }
-function viewInExplorer() {
+function viewInExplorer(toggler) {
+    toggler()
     navigateTo(`https://mumbai.polygonscan.com/address/${stepStore.connectedAccount}`, {
         external: true,
         open: {

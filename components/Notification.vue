@@ -79,11 +79,11 @@
                 >
                     Successfully {{ successData.action }}
                     <!-- quote -->
-                    {{ successData.quote.amount }} {{ successData.quote.token.symbol }}
+                    {{ roundFloor(successData.quote.amount) }} {{ successData.quote.token.symbol }}
                     <!---->
                     {{ successData.action === "swapped" ? "for" : "and" }}
                     <!-- base -->
-                    {{ successData.base.amount }} {{ successData.base.token.symbol }}
+                    {{ roundFloor(successData.base.amount) }} {{ successData.base.token.symbol }}
                 </p>
                 <p
                     v-else
@@ -138,6 +138,7 @@
 
 <script setup>
 import { formatUnits } from "ethers"
+import { roundFloor } from "~/helpers/index"
 
 const notificationContents = {
     approve: {

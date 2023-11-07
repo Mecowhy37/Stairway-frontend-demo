@@ -37,7 +37,7 @@
         <template #widget-content>
             <div
                 class="tips"
-                v-if="connectedChainId === 80001"
+                v-if="connectedChainId === 80001 && connectedAccount"
             >
                 <FaucetTriggerII :callback="() => getBothBalances(false, false)"></FaucetTriggerII>
             </div>

@@ -35,7 +35,7 @@
         </template>
         <template #widget-content>
             <div
-                v-if="connectedChainId === 80001"
+                v-if="connectedChainId === 80001 && connectedAccount"
                 class="tips"
             >
                 <!-- <FaucetTrigger

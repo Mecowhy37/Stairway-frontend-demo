@@ -112,10 +112,6 @@ export function useAmounts(Tokens, pool, widgetType, poolPending) {
             }
         }
         console.log("- - - - - - - - - - - - - - - - -")
-        // console.log("stringAmount:", stringAmount)
-        // if (stringAmount < "0.00001" && stringAmount !== "0") {
-        //     stringAmount = "<0.00001"
-        // }
         stringAmount = stringAmount === "0" ? "" : stringAmount
         setUserAmount(stringAmount, inputIndex)
         return stringAmount
