@@ -248,7 +248,7 @@
                 </div>
             </div>
             <div
-                v-else-if="ownedPosition === false && SinglePositionPending && !SinglePositionError"
+                v-else-if="ownedPosition === false && SinglePositionPending && !SinglePositionError && !pool"
                 class="placeholder placeholder--in-widget"
             >
                 <p>placeholder</p>
