@@ -103,14 +103,14 @@
                                             class="list-item"
                                             :class="isMobile ? 'list-item--padded-sm' : 'list-item--padded'"
                                         >
-                                            Add liquidity
+                                            Add Liquidity
                                         </p>
                                         <p
                                             @click="removeRedirect(position.pool)"
                                             class="list-item"
                                             :class="isMobile ? 'list-item--padded-sm' : 'list-item--padded'"
                                         >
-                                            Remove liquidity
+                                            Remove Liquidity
                                         </p>
                                     </template>
                                 </Dropdown>

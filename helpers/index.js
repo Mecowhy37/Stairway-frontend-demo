@@ -29,10 +29,18 @@ export function basicRound(amt) {
 }
 
 export function roundCeiling(stringAmount) {
-    return parseFloat(parseFloat(stringAmount).toPrecision(5)).toString()
+    if (stringAmount < "0.00001" && stringAmount > "0.0") {
+        return "<0.00001"
+    } else {
+        return parseFloat(parseFloat(stringAmount).toPrecision(5)).toString()
+    }
 }
 export function roundFloor(stringAmount) {
-    return parseFloat(toFixedFloor(stringAmount, 4)).toString()
+    if (stringAmount < "0.00001" && stringAmount > "0.0") {
+        return "<0.00001"
+    } else {
+        return parseFloat(toFixedFloor(stringAmount, 5)).toString()
+    }
 }
 export function toFixedFloor(stringAmount, fixed) {
     let re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?")

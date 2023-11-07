@@ -29,16 +29,7 @@ export function useWidget(featuredTokens, Tokens, chainId, router, route) {
         // }
         return token ? token : null
     }
-    // watchEffect(() => {
-    //     if (route.query.tk1) {
-    //         console.log("Tokens.value[tkEnum.QUOTE]")
-    //         Tokens.value[tkEnum.QUOTE] = findTokenByAddress(featuredTokens.value, route.query.tk1)
-    //     }
-    //     if (route.query.tk2) {
-    //         console.log("Tokens.value[tkEnum.BASE]")
-    //         Tokens.value[tkEnum.BASE] = findTokenByAddress(featuredTokens.value, route.query.tk2)
-    //     }
-    // })
+
     watch(
         featuredTokens,
         (newFeatured) => {

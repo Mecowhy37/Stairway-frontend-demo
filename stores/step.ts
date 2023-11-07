@@ -132,10 +132,8 @@ const injected = injectedModule({
             console.log("getting position with id", poolIndex)
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
         } else {
-            null
+            return null
         }
-        // console.log('position:', position)
-        // return position;
     }
     function updatePositionsWithNewSingle(newPosition: Object) {
         let positionToUpdate = positions.value.find(pos => pos.pool.pool_index === newPosition.pool.pool_index)

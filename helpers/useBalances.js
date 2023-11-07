@@ -26,7 +26,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         })
     })
 
-    async function getTokenBalance(tokenIndex, clearOld) {
+    async function getTokenBalance(tokenIndex, clearOld, isCalledOver = false) {
         const stateKey = Object.keys(balanceState)[tokenIndex]
 
         if (!connectedAccount.value || !isSupportedChain(connectedChainId.value)) {
@@ -39,6 +39,11 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         if (token === null) {
             console.log(stateKey, "token === null")
             balanceState[stateKey] = 0n
+            setTimeout(() => {
+                if (!isCalledOver) {
+                    getTokenBalance(tokenIndex, clearOld, true)
+                }
+            }, 2000)
             return
         }
         if (clearOld) {

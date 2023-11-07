@@ -1,7 +1,7 @@
 <template>
     <!-- <div class="row"> -->
     <Widget>
-        <template #widget-title>Add liquidity</template>
+        <template #widget-title>Add Liquidity</template>
         <template #right-icon>
             <Dropdown
                 :settings-ref="settingsAdd"
@@ -213,7 +213,7 @@
                 </div>
             </div>
             <div
-                v-if="ownedPosition"
+                v-if="ownedPosition && isSupportedChain(connectedChainId)"
                 class="pooled"
             >
                 <div
@@ -274,7 +274,7 @@
                         !bothAmountsIn || !bothTokensThere || isWidgetLocked || insufficientBalanceIndexes.length > 0
                     "
                 >
-                    Add liquidity
+                    Add Liquidity
                 </Btn>
                 <!-- <Btn
                         @click="refresh()"

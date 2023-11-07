@@ -108,10 +108,16 @@
                         </Btn>
                     </template>
                     <template #dropdown>
-                        <p class="list-item list-item--padded-xs list-item--all-rounded list-item--separate">
+                        <p
+                            @click="copyAddress()"
+                            class="list-item list-item--padded-xs list-item--all-rounded list-item--separate"
+                        >
                             Copy address
                         </p>
-                        <p class="list-item list-item--padded-xs list-item--all-rounded list-item--separate">
+                        <p
+                            @click="viewInExplorer()"
+                            class="list-item list-item--padded-xs list-item--all-rounded list-item--separate"
+                        >
                             View in explorer
                         </p>
                         <Btn
@@ -194,8 +200,20 @@ const {
     connectedChainId,
 } = storeToRefs(stepStore)
 
-function revertTheme() {
-    stepStore.isDark = !stepStore.isDark
+// function revertTheme() {
+//     stepStore.isDark = !stepStore.isDark
+// }
+
+function copyAddress() {
+    navigator.clipboard.writeText(stepStore.connectedAccount)
+}
+function viewInExplorer() {
+    navigateTo(`https://mumbai.polygonscan.com/address/${stepStore.connectedAccount}`, {
+        external: true,
+        open: {
+            target: "_blank",
+        },
+    })
 }
 
 const connectedChainFullObj = computed(() => {

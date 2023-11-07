@@ -1,6 +1,6 @@
 <template>
     <Widget>
-        <template #widget-title>Remove liquidity</template>
+        <template #widget-title>Remove Liquidity</template>
         <template #right-icon>
             <Dropdown
                 :settings-ref="settingsRedeem"
@@ -175,7 +175,7 @@
                 </div>
             </div>
             <div
-                v-if="ownedPosition"
+                v-if="ownedPosition && isSupportedChain(connectedChainId)"
                 class="pooled"
             >
                 <div class="pooled__item row align-center">
@@ -264,7 +264,7 @@ import { basicRound, isSupportedChain, errorABI } from "~/helpers/index"
 
 const stepStore = useStepStore()
 const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
-const { getSinglePostion, updatePositionsWithNewSingle } = stepStore
+const { getSinglePostion, updatePositionsWithNewSingle, setTheChain } = stepStore
 
 const redeemPercent = ref(100)
 
@@ -322,6 +322,16 @@ const removingDisabled = ref(false)
 function widgetLocker(lock) {
     removingDisabled.value = lock
 }
+
+watch(
+    connectedChainId,
+    (newChain) => {
+        widgetLocker(!isSupportedChain(newChain))
+    },
+    {
+        immediate: true,
+    }
+)
 
 function redeemLiquidityFailedHandler(error) {
     console.log("redeemLiquidityFailedHandler()", error)
