@@ -441,12 +441,6 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         })
     }
 
-    //     you're on AN unsupported network
-    // show the price while adding (first?) liquidity
-    // Philip Hilm10:33
-    // Fixed price per fBTC: right-justified 26866 USD
-    // Volume available at this price: right-justified 0.0003 BTC
-
     async function checkForTransactionStatus(txHash, provider) {
         return new Promise((resolve, reject) => {
             provider
