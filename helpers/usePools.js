@@ -380,13 +380,13 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     tokenBase: path[path.length - 1],
                 }
 
-                waitForLiquidityEvent(tx.hash, deadlineStamp)
+                await waitForLiquidityEvent(tx, deadlineStamp, provider)
                     .then((lqEvent) => {
                         eventReceivedHandler(lqEvent, originalCall, notifHolder)
                     })
                     .catch((error) => {
-                        reject(error)
-                        console.log("reject(error):", error)
+                        notify(notifHolder, "error", error)
+                        reject("Failed to swap " + error)
                     })
             } catch (error) {
                 if (error.data) {
@@ -404,16 +404,22 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         })
     }
 
-    function waitForLiquidityEvent(txHash, deadline) {
+    function waitForLiquidityEvent(tx, deadline, provider) {
         return new Promise(async (resolve, reject) => {
             // ASYNC LOOP WAITING FOR EVENT
             const eventPingLoop = async () => {
                 console.log("eventPingLoop()")
                 // API QUERY
-                const lqEvent = await $fetch(getUrl(`/chain/${connectedChainId.value}/events/${txHash}/liquidity`))
+                const lqEvent = await $fetch(getUrl(`/chain/${connectedChainId.value}/events/${tx.hash}/liquidity`))
+
+                try {
+                    await checkForTransactionStatus(tx.hash, provider)
+                } catch (error) {
+                    reject(error)
+                    return
+                }
 
                 if (lqEvent) {
-                    //event found
                     console.log("lqEvent:", lqEvent)
                     resolve(lqEvent)
                 } else {
@@ -425,12 +431,42 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                         // Call the loop again
                         eventPingLoop()
                     } else {
-                        reject(new Error("Deadline exceeded"))
+                        reject("Deadline exceeded")
+                        // return
                     }
                 }
             }
 
             eventPingLoop()
+        })
+    }
+
+    //     you're on AN unsupported network
+    // show the price while adding (first?) liquidity
+    // Philip Hilm10:33
+    // Fixed price per fBTC: right-justified 26866 USD
+    // Volume available at this price: right-justified 0.0003 BTC
+
+    async function checkForTransactionStatus(txHash, provider) {
+        return new Promise((resolve, reject) => {
+            provider
+                .getTransactionReceipt(txHash)
+                .then((receipt) => {
+                    if (receipt) {
+                        console.log("receipt.status:", receipt.status)
+                        if (receipt.status === 0) {
+                            reject("Receipt status 0")
+                            return
+                        }
+                    } else {
+                        console.log("Transaction not mined yet")
+                    }
+                    resolve()
+                })
+                .catch((error) => {
+                    console.error("error in checkForTransactionStatus", error)
+                    reject("error in checkForTransactionStatus" + error)
+                })
         })
     }
 

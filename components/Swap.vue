@@ -398,6 +398,12 @@ function swapFailedHandler(error) {
 function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     console.log("eventReceivedHandler()")
 
+    if (lqEvent === null) {
+        stepStore.notify(notifHolder, "success", false)
+        refresh()
+        return
+    }
+
     const eventDict = {
         QUOTE: "amount_in",
         BASE: "amount_out",
