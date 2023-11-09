@@ -171,12 +171,15 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 }
                 // await tx.wait(1)
 
-                waitForLiquidityEvent(tx.hash, deadlineStamp)
+                waitForLiquidityEvent(tx, deadlineStamp, provider)
                     .then((lqEvent) => {
                         resolve()
                         eventReceivedHandler(lqEvent, originalCall, notifHolder)
                     })
-                    .catch((error) => reject(error))
+                    .catch((error) => {
+                        notify(notifHolder, "error", error)
+                        reject("Failed to add liquidity " + error)
+                    })
             } catch (error) {
                 if (error.data) {
                     const failCause = decodeCustomError(error.data)
@@ -284,12 +287,15 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 //     notify(notifHolder, "success")
                 //     callback()
                 // })
-                waitForLiquidityEvent(tx.hash, deadlineStamp)
+                waitForLiquidityEvent(tx, deadlineStamp, provider)
                     .then((lqEvent) => {
                         resolve()
                         eventReceivedHandler(lqEvent, originalCall, notifHolder)
                     })
-                    .catch((error) => reject(error))
+                    .catch((error) => {
+                        notify(notifHolder, "error", error)
+                        reject("Failed to redeem liquidity " + error)
+                    })
             } catch (error) {
                 if (error.data) {
                     const failCause = decodeCustomError(error.data)
@@ -380,7 +386,7 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     tokenBase: path[path.length - 1],
                 }
 
-                await waitForLiquidityEvent(tx, deadlineStamp, provider)
+                waitForLiquidityEvent(tx, deadlineStamp, provider)
                     .then((lqEvent) => {
                         eventReceivedHandler(lqEvent, originalCall, notifHolder)
                     })

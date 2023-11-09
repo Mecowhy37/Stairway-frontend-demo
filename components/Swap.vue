@@ -191,7 +191,7 @@
                         {{ Tokens[tkEnum.BASE].symbol }}
                         is available at this fixed price. You'll pay solely for what you receive. Availability may
                         change in real-time.
-                        <br />
+                        <!-- <br /> -->
                         <span
                             class="text-highlight--underlined"
                             @click="fillInDepth(pool.depth)"
