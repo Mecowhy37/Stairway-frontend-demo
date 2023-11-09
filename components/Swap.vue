@@ -250,19 +250,19 @@
                 v-else-if="price && bothTokensThere && poolPending && !poolIsRemaining && !poolError"
                 class="sum-up grey-text caption"
             >
-                <p>
-                    1 {{ Tokens[tkEnum.BASE].symbol }} = ...
-                    {{ Tokens[tkEnum.QUOTE].symbol }}
-                </p>
                 <div class="row space-between">
-                    <p>
-                        Volume available at this price ( ...
-                        {{ Tokens[tkEnum.QUOTE].symbol }})
-                    </p>
-                    <p>
-                        ...
-                        {{ Tokens[tkEnum.BASE].symbol }}
-                    </p>
+                    <div class="row">
+                        <p>Fixed price per {{ Tokens[tkEnum.BASE].symbol }}</p>
+                        <div
+                            v-if="poolPending"
+                            class="ping-cirle"
+                        ></div>
+                    </div>
+                    <p>... {{ Tokens[tkEnum.QUOTE].symbol }}</p>
+                </div>
+                <div class="row space-between">
+                    <p>Volume available at this price</p>
+                    <p>... {{ Tokens[tkEnum.BASE].symbol }}</p>
                 </div>
             </div>
         </template>
