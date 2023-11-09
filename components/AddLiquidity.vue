@@ -139,7 +139,7 @@
                         />
                     </div>
                     <p>
-                        You're on unsupported network, please change to
+                        You're on an unsupported network, please change to
                         <span
                             @click="setTheChain(80001)"
                             class="text-highlight--underlined"

@@ -153,7 +153,7 @@
                         />
                     </div>
                     <p>
-                        You're on unsupported network, please change to
+                        You're on an unsupported network, please change to
                         <span
                             @click="setTheChain(80001)"
                             class="text-highlight--underlined"
@@ -225,24 +225,21 @@
                 v-if="price && bothTokensThere && poolIsRemaining"
                 class="sum-up grey-text caption"
             >
-                <div class="row">
+                <div class="row space-between">
+                    <div class="row">
+                        <p>Fixed price per {{ Tokens[tkEnum.BASE].symbol }}</p>
+                        <div
+                            v-if="poolPending"
+                            class="ping-cirle"
+                        ></div>
+                    </div>
                     <p>
-                        1 {{ Tokens[tkEnum.BASE].symbol }} =
                         {{ roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals)) }}
                         {{ Tokens[tkEnum.QUOTE].symbol }}
                     </p>
-                    <div
-                        v-if="poolPending"
-                        class="ping-cirle"
-                    ></div>
                 </div>
                 <div class="row space-between">
-                    <p>
-                        Volume available at this price ({{
-                            roundCeiling(formatUnits(price, Tokens[tkEnum.QUOTE].decimals))
-                        }}
-                        {{ Tokens[tkEnum.QUOTE].symbol }})
-                    </p>
+                    <p>Volume available at this price</p>
                     <p>
                         {{ roundFloor(formatUnits(depth, Tokens[tkEnum.BASE].decimals)) }}
                         {{ Tokens[tkEnum.BASE].symbol }}
