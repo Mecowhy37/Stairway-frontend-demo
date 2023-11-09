@@ -119,7 +119,7 @@
                     poolError ||
                     !isSupportedChain(connectedChainId)
                 "
-                class="infos"
+                class="infos caption"
             >
                 <div
                     v-if="poolError"

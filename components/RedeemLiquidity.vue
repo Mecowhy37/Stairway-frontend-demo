@@ -125,7 +125,7 @@
                     SinglePositionError ||
                     !isSupportedChain(connectedChainId)
                 "
-                class="infos contents"
+                class="infos caption"
             >
                 <div
                     v-if="connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError"
