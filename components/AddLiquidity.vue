@@ -276,45 +276,9 @@
                 >
                     Add Liquidity
                 </Btn>
-                <!-- <Btn
-                        @click="refresh()"
-                        wide
-                        bulky
-                        :disabled="!connectedAccount"
-                    >
-                        refresh data
-                    </Btn> -->
             </div>
         </template>
     </Widget>
-    <!-- <Widget no-return>
-            <template #widget-title>temporary display</template>
-            <template #widget-content>
-                <div class="contents temp-display">
-                    <div>
-                        <h4>token A</h4>
-                        <p><span class="grey-text">symbol: </span> {{ tokenA?.symbol }}</p>
-                        <p><span class="grey-text">user amount: </span> {{ userAmounts.quote }}</p>
-                        <p><span class="grey-text">full amount: </span> {{ fullAmounts.quote }}</p>
-                        <p>
-                            <span class="grey-text">quote_reserves (its off - reversed): </span>
-                            {{ pool && formatUnits(pool.quote_reserves, pool.quote_token.decimals) }}
-                        </p>
-                    </div>
-                    <div>
-                        <h4>token B</h4>
-                        <p><span class="grey-text">symbol: </span> {{ tokenB?.symbol }}</p>
-                        <p><span class="grey-text">user amount: </span> {{ userAmounts.base }}</p>
-                        <p><span class="grey-text">full amount: </span> {{ fullAmounts.base }}</p>
-                        <p>
-                            <span class="grey-text">base_reserves (its off - reversed): </span>
-                            {{ pool && formatUnits(pool.base_reserves, pool.base_token.decimals) }}
-                        </p>
-                    </div>
-                </div>
-            </template>
-        </Widget> -->
-    <!-- </div> -->
 </template>
 
 <script setup>
@@ -365,18 +329,21 @@ const { pool, refreshPool, addLiquidity, poolError, poolRatio, poolPending } = a
     route
 )
 
-watch(poolRatio, (newPoolRatio) => {
-    if (newPoolRatio) {
-        console.log("newPoolRatio:", newPoolRatio)
-        calcAndSetOpposingInput(
-            fullAmounts[getInputLabel(lastChangedAmount.value)],
-            lastChangedAmount.value,
-            BigInt(pool.value.base_reserves),
-            BigInt(pool.value.quote_reserves),
-            BigInt(pool.value.price)
-        )
+watch(
+    () => [poolRatio.value, pool.value],
+    (newPoolRatio, newPool) => {
+        if (newPoolRatio && newPool) {
+            console.log("newPoolRatio:", newPoolRatio)
+            calcAndSetOpposingInput(
+                fullAmounts[getInputLabel(lastChangedAmount.value)],
+                lastChangedAmount.value,
+                BigInt(pool.value.base_reserves),
+                BigInt(pool.value.quote_reserves),
+                BigInt(pool.value.price)
+            )
+        }
     }
-})
+)
 // POOL -----------------
 
 // WIDGET ---------------

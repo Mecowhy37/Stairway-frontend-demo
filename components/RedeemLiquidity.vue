@@ -310,9 +310,7 @@ function redeemLiquidityCall() {
             redeemLiquidityFailedHandler,
             eventReceivedHandler,
             stepStore.notify,
-            widgetLocker,
-            //isUserCall
-            true
+            widgetLocker
         )
     }
 }
@@ -389,15 +387,38 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         action: "redeemed",
         quote: {
             token: tokenQuote,
-            amount: quoteAmountRedeemed,
+            amount: quoteAmountRedeemed.toString(),
         },
         base: {
             token: tokenBase,
-            amount: baseAmountRedeemed,
+            amount: baseAmountRedeemed.toString(),
         },
     }
-    const keepNotification = !fullRequiredLpIsRemoved || !isUserCall
-    stepStore.notify(notifHolder, "success", false, successData, keepNotification)
+
+    function sumTwoSuccessObejects(current, previous) {
+        if (previous === null) {
+            return current
+        }
+        const quoteSumAmount = BigInt(current.quote.amount) + BigInt(previous.quote.amount)
+        const baseSumAmount = BigInt(current.base.amount) + BigInt(previous.base.amount)
+        return {
+            action: current.action,
+            quote: {
+                token: current.quote.token,
+                amount: quoteSumAmount.toString(),
+            },
+            base: {
+                token: current.base.token,
+                amount: baseSumAmount.toString(),
+            },
+        }
+    }
+
+    const fullSuccessData = sumTwoSuccessObejects(successData, originalCall.successData)
+    console.log("fullSuccessData:", fullSuccessData)
+
+    const keepNotification = !fullRequiredLpIsRemoved
+    stepStore.notify(notifHolder, "success", false, fullSuccessData, keepNotification)
 
     if (fullRequiredLpIsRemoved) {
         // all lpTokens redeemed
@@ -411,8 +432,11 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
             originalCall.amountQuote = quoteAmountDelta
             originalCall.amountBase = baseAmountDelta
             originalCall.lpAmount = lpAmountDelta
-            originalCall.isUserCall = false
-            redeemLiquidity(...Object.values(originalCall))
+            originalCall.successData = fullSuccessData
+            originalCall.notifId = notifHolder.id
+            setTimeout(() => {
+                redeemLiquidity(...Object.values(originalCall))
+            }, 1000)
         }
     }
 }

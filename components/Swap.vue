@@ -413,11 +413,11 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         action: "swapped",
         quote: {
             token: originalCall.tokenQuote,
-            amount: quoteAmountIn,
+            amount: quoteAmountIn.toString(),
         },
         base: {
             token: originalCall.tokenBase,
-            amount: baseAmounOut,
+            amount: baseAmounOut.toString(),
         },
     }
     console.log("successData:", successData)

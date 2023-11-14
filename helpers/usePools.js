@@ -171,7 +171,6 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     successData,
                     notifId,
                 }
-                // await tx.wait(1)
 
                 waitForLiquidityEvent(tx, deadlineStamp, provider)
                     .then((lqEvent) => {
@@ -211,10 +210,11 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         eventReceivedHandler,
         notify,
         widgetLocker,
-        isUserCall
+        successData = null,
+        notifId = null
     ) {
         return new Promise(async (resolve, reject) => {
-            let notifHolder = { id: null }
+            let notifHolder = { id: notifId }
             const provider = new BrowserProvider(providerArg)
             const signer = await provider.getSigner()
             const router = new Contract(routerAddress.value, RouterABI, signer)
@@ -280,15 +280,10 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     eventReceivedHandler,
                     notify,
                     widgetLocker,
-                    isUserCall,
+                    successData,
+                    notifId,
                 }
 
-                // return await listenForTransactionMine(tx, provider, () => {
-                //     console.log("callback from redeem() ... ")
-
-                //     notify(notifHolder, "success")
-                //     callback()
-                // })
                 waitForLiquidityEvent(tx, deadlineStamp, provider)
                     .then((lqEvent) => {
                         resolve()
