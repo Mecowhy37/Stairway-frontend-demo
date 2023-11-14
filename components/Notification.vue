@@ -32,7 +32,7 @@
                     r="42"
                 ></circle>
             </svg>
-            <TransitionGroup>
+            <Transition>
                 <Icon
                     key="tick"
                     v-show="notifContent.isDone && notifContent.state === 'success'"
@@ -40,6 +40,8 @@
                     name="tick"
                     :size="9"
                 ></Icon>
+            </Transition>
+            <Transition>
                 <Icon
                     key="soloWarrning"
                     v-show="notifContent.isDone && notifContent.state === 'error'"
@@ -47,7 +49,7 @@
                     name="soloWarrning"
                     :size="3"
                 ></Icon>
-            </TransitionGroup>
+            </Transition>
         </div>
         <div class="notif__content">
             <template v-if="notifContent.state === 'approve'">

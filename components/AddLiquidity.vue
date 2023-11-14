@@ -504,17 +504,11 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         },
     }
 
-    console.log("successData:", successData)
-    console.log("previousSuccessData:", originalCall.successData)
     function sumTwoSuccessObejects(current, previous) {
         if (previous === null) {
-            console.log("previous === null: current:", current)
             return current
         }
-        console.log("current.quote.amount:", current.quote.amount)
-        console.log("previous.quote.amount:", previous.quote.amount)
         const quoteSumAmount = BigInt(current.quote.amount) + BigInt(previous.quote.amount)
-        console.log("quoteSumAmount:", quoteSumAmount)
         const baseSumAmount = BigInt(current.base.amount) + BigInt(previous.base.amount)
         return {
             action: current.action,
