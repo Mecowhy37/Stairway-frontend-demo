@@ -188,10 +188,16 @@ const id = computed(() => props.notif.id)
 const textExtras = computed(() => props.notif?.symbol)
 const successData = computed(() => {
     if (props.notif.successData) {
-        const successData = props.notif.successData
-        successData.quote.amount = formatUnits(successData.quote.amount.toString(), successData.quote.token.decimals)
-        successData.base.amount = formatUnits(successData.base.amount.toString(), successData.base.token.decimals)
-        return successData
+        const successDataProp = JSON.parse(JSON.stringify(props.notif.successData))
+        successDataProp.quote.amount = formatUnits(
+            successDataProp.quote.amount.toString(),
+            successDataProp.quote.token.decimals
+        )
+        successDataProp.base.amount = formatUnits(
+            successDataProp.base.amount.toString(),
+            successDataProp.base.token.decimals
+        )
+        return successDataProp
     } else {
         return null
     }
@@ -206,11 +212,11 @@ watch(
                 spinning.value = false
             }, 700)
 
-            // if (!props.notif.keepNotification) {
-            //     setTimeout(() => {
-            //         props.deleteNotif(id.value)
-            //     }, 5000)
-            // }
+            if (!props.notif.keepNotification) {
+                setTimeout(() => {
+                    props.deleteNotif(id.value)
+                }, 5000)
+            }
         } else {
             spinning.value = true
         }

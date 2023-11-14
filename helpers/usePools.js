@@ -86,10 +86,11 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         eventReceivedHandler,
         notify,
         widgetLocker,
-        isUserCall
+        successData = null,
+        notifId = null
     ) {
         return new Promise(async (resolve, reject) => {
-            let notifHolder = { id: null }
+            let notifHolder = { id: notifId }
             const provider = new BrowserProvider(providerArg)
             const signer = await provider.getSigner()
             const router = new Contract(routerAddress.value, RouterABI, signer)
@@ -167,7 +168,8 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                     eventReceivedHandler,
                     notify,
                     widgetLocker,
-                    isUserCall,
+                    successData,
+                    notifId,
                 }
                 // await tx.wait(1)
 

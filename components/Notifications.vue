@@ -1,7 +1,7 @@
 <template>
     <div class="modal">
         <div class="notify-wrapper">
-            <!-- <Btn @click="notify(null, 'approve')">Notify</Btn> -->
+            <!-- <Btn @click="notify(null, 'approve', 'try')">Notify</Btn> -->
             <Notification
                 v-for="notif in notifications"
                 :key="notif.id"

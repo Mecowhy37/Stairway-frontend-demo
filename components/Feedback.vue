@@ -3,7 +3,7 @@
         <NuxtLink
             target="_blank"
             class="feedback__button"
-            to="https://discord.com/channels/1022397568837234718/1022397569499930653"
+            to="https://discord.gg/fGfFDM3GUj"
         >
             <Btn
                 grey

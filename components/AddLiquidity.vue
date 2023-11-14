@@ -444,9 +444,7 @@ function callAddLiquidity() {
         addLiquidityFailedHandler,
         eventReceivedHandler,
         stepStore.notify,
-        widgetLocker,
-        //isUserCall
-        true
+        widgetLocker
     )
 }
 
@@ -466,7 +464,6 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         amountQuote: originQuoteAmount,
         amountBase: originBaseAmount,
         slippage,
-        isUserCall,
     } = originalCall
 
     let eventQuoteToken
@@ -499,20 +496,46 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         action: "added",
         quote: {
             token: tokenQuote,
-            amount: quoteAmountAdded,
+            amount: quoteAmountAdded.toString(),
         },
         base: {
             token: tokenBase,
-            amount: baseAmountAdded,
+            amount: baseAmountAdded.toString(),
         },
     }
-    const keepNotification = !tranasactionWithinSlippage || !isUserCall
-    stepStore.notify(notifHolder, "success", false, successData, keepNotification)
+
+    console.log("successData:", successData)
+    console.log("previousSuccessData:", originalCall.successData)
+    function sumTwoSuccessObejects(current, previous) {
+        if (previous === null) {
+            console.log("previous === null: current:", current)
+            return current
+        }
+        console.log("current.quote.amount:", current.quote.amount)
+        console.log("previous.quote.amount:", previous.quote.amount)
+        const quoteSumAmount = BigInt(current.quote.amount) + BigInt(previous.quote.amount)
+        console.log("quoteSumAmount:", quoteSumAmount)
+        const baseSumAmount = BigInt(current.base.amount) + BigInt(previous.base.amount)
+        return {
+            action: current.action,
+            quote: {
+                token: current.quote.token,
+                amount: quoteSumAmount.toString(),
+            },
+            base: {
+                token: current.base.token,
+                amount: baseSumAmount.toString(),
+            },
+        }
+    }
+
+    const fullSuccessData = sumTwoSuccessObejects(successData, originalCall.successData)
+    console.log("fullSuccessData:", fullSuccessData)
+
+    const keepNotification = !tranasactionWithinSlippage
+    stepStore.notify(notifHolder, "success", false, fullSuccessData, keepNotification)
 
     if (tranasactionWithinSlippage) {
-        // change this name to be more specific
-        // resetInputAmounts(tkEnum.QUOTE)
-        // resetInputAmounts(tkEnum.BASE)
         setTimeout(() => {
             navigateTo({ path: "/liquidity" })
         }, 1000)
@@ -522,8 +545,11 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         getBothBalances(false, false)
         originalCall.amountQuote = quoteAmountDelta
         originalCall.amountBase = baseAmountDelta
-        originalCall.isUserCall = false
-        addLiquidity(...Object.values(originalCall))
+        originalCall.successData = fullSuccessData
+        originalCall.notifId = notifHolder.id
+        setTimeout(() => {
+            addLiquidity(...Object.values(originalCall))
+        }, 1000)
     }
 }
 
