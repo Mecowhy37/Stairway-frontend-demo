@@ -345,7 +345,6 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         amountQuote: originQuoteAmount,
         amountBase: originBaseAmount,
         lpAmount: originLpAmount,
-        isUserCall,
     } = originalCall
 
     let eventQuoteToken
