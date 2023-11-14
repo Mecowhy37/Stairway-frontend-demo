@@ -1,5 +1,4 @@
 <template>
-    <!-- <div class="row"> -->
     <Widget>
         <template #widget-title>Add Liquidity</template>
         <template #right-icon>
