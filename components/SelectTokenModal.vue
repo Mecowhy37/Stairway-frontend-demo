@@ -54,7 +54,7 @@
             >
                 <div
                     v-for="token in displayList"
-                    @click="!isFaucet ? setToken(token) : getTokens(token.address)"
+                    @click.self="!isFaucet ? setToken(token) : getTokens(token.address)"
                     class="list-item list-item--padded list-item--bottom-border row align-center"
                     :class="{
                         'list-item--opaque': ABTokensAddresses.includes(token.address),
@@ -64,15 +64,35 @@
                         class="token-icon token-icon--sm"
                         :src="token.logo_uri"
                     />
-                    <p>
+                    <p class="token-name">
                         {{ token.name }}
                     </p>
                     <Icon
-                        v-if="ABTokensAddresses.indexOf(token.address) === selectedTokenIndex"
+                        v-if="!isFaucet && ABTokensAddresses.indexOf(token.address) === selectedTokenIndex"
                         class="tick-icon"
                         name="tick"
                         :size="9"
                     ></Icon>
+                    <Icon
+                        v-if="copied === token.address"
+                        name="tick"
+                        class="copy-tick"
+                        :size="9"
+                    />
+                    <Btn
+                        v-else
+                        @click.self.prevent="copyAddress(token.address)"
+                        class="copy-btn"
+                        circle
+                        transparent
+                    >
+                        <template #icon>
+                            <Icon
+                                name="copy"
+                                :size="15"
+                            />
+                        </template>
+                    </Btn>
                 </div>
             </div>
         </div>
@@ -171,8 +191,18 @@ function setToken(token) {
     tokenSetCallback.value.call(this, token)
 }
 
-function oppositeTokenIndex(tokenIndex) {
-    return 1 - tokenIndex
+const copied = ref(null)
+let intervalId = null
+function copyAddress(address) {
+    navigator.clipboard.writeText(address)
+    copied.value = address
+
+    if (intervalId) {
+        clearInterval(intervalId)
+    }
+    intervalId = setTimeout(() => {
+        copied.value = null
+    }, 1000)
 }
 
 const tokenListRef = ref()
@@ -280,10 +310,25 @@ async function getTokens(tokenAddress) {
             overflow: auto;
             .list-item {
                 padding: 16px 8px;
+                * {
+                    pointer-events: none;
+                }
+            }
+            .token-name {
+                margin-right: auto;
             }
             .tick-icon {
-                margin-left: auto;
-                margin-right: 8px;
+                margin-right: 12px;
+            }
+            .copy-btn {
+                flex-grow: 0;
+                color: var(--text-color-reverse);
+                pointer-events: all;
+            }
+            .copy-tick {
+                margin-right: 7px;
+                margin-left: 5px;
+                color: var(--text-color-reverse);
             }
             &::-webkit-scrollbar {
                 width: 3px;

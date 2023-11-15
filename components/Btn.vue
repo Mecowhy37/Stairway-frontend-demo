@@ -30,6 +30,7 @@
         ]"
     >
         <component
+            v-if="slots.default"
             :is="props.is"
             class="slot"
             id="default-slot"
