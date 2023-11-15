@@ -266,7 +266,6 @@ watch(
 .wrapper {
     position: relative;
     margin: 0 auto;
-    /* overflow-y: hidden   ; */
     @media (min-width: 1536px) {
         max-width: 1536px;
     }
