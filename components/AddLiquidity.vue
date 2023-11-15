@@ -124,7 +124,15 @@
                             :size="25"
                         />
                     </div>
-                    <p>Pool not found. Be aware you are setting a initial ratio of the pool.</p>
+                    <p>
+                        Pool not found. Be aware you are setting a initial price of the pool{{
+                            settingPoolPrice
+                                ? ` to 1 ${Tokens[tkEnum.QUOTE].symbol} = ${settingPoolPrice} ${
+                                      Tokens[tkEnum.BASE].symbol
+                                  }.`
+                                : "."
+                        }}
+                    </p>
                 </div>
                 <div
                     v-if="!isSupportedChain(connectedChainId)"
@@ -291,7 +299,15 @@ import { useBalances } from "~/helpers/useBalances"
 import { useAmounts } from "~/helpers/useAmounts"
 import { useTokens } from "~/helpers/useTokens"
 import { usePools } from "~/helpers/usePools"
-import { basicRound, tkEnum, widgetTypeObj, isSupportedChain } from "~/helpers/index"
+import {
+    basicRound,
+    roundCeiling,
+    roundFloor,
+    tkEnum,
+    widgetTypeObj,
+    isSupportedChain,
+    precision,
+} from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
@@ -330,7 +346,7 @@ const { pool, refreshPool, addLiquidity, poolError, poolRatio, poolPending } = a
 
 watch(
     () => [poolRatio.value, pool.value],
-    (newPoolRatio, newPool) => {
+    ([newPoolRatio, newPool]) => {
         if (newPoolRatio && newPool) {
             console.log("newPoolRatio:", newPoolRatio)
             calcAndSetOpposingInput(
@@ -372,6 +388,14 @@ const {
 
 const ownedPosition = computed(() => {
     return findPositionByTokenAddresses(Tokens.value[tkEnum.QUOTE]?.address, Tokens.value[tkEnum.BASE]?.address)
+})
+
+const settingPoolPrice = computed(() => {
+    if (!bothTokensThere.value || !bothAmountsIn.value) {
+        return null
+    }
+    // return roundCeiling((Number(fullAmounts.base) / Number(fullAmounts.quote)).toString())
+    return roundFloor((parseInt(fullAmounts.base) / parseInt(fullAmounts.quote)).toString())
 })
 
 function findPositionByTokenAddresses(thisTokenAddress, thatTokenAddress) {
@@ -553,15 +577,6 @@ const {
     bothAmountsIn,
 } = useAmounts(Tokens, pool, widgetTypeObj.add, poolPending)
 
-function Round(amt) {
-    // Round function trimms down unncessary digits and adds < mark when unsignificant
-    let amount = Number(amt)
-    if (amount === 0) {
-        return ""
-    }
-    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-    return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
-}
 // AMOUNTS --------------
 
 //MODAL STUFF----------

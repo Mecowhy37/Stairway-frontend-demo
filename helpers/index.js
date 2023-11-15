@@ -36,7 +36,8 @@ export function roundCeiling(stringAmount) {
     }
 }
 export function roundFloor(stringAmount) {
-    if (stringAmount < "0.00001" && stringAmount > "0.0") {
+    console.log("stringAmount:", stringAmount)
+    if ((stringAmount < "0.00001" && stringAmount > "0.0") || stringAmount.includes("e-")) {
         return "<0.00001"
     } else {
         return parseFloat(toFixedFloor(stringAmount, 5)).toString()

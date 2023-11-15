@@ -73,14 +73,9 @@ export function useAmounts(Tokens, pool, widgetType, poolPending) {
         const fullAmount = parseUnits(amount, decimals)
         setFullAmount(fullAmount, inputIndex)
 
-        if (fullAmount === 0n) {
-            calcAndSetOpposingInput(
-                fullAmount,
-                inputIndex,
-                BigInt(pool.value.base_reserves),
-                BigInt(pool.value.quote_reserves),
-                BigInt(pool.value.price)
-            )
+        if (fullAmount === 0n && pool.value) {
+            setFullAmount(0n, oppositeInput(inputIndex))
+            setFromFullToUserAmount(0n, 18, oppositeInput(inputIndex))
             return
         }
 
