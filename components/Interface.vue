@@ -465,6 +465,8 @@ svg {
     }
     .tick-icon {
         color: var(--primary);
+        margin-left: auto;
+        margin-right: 6px;
     }
     p {
         margin-left: 6px;

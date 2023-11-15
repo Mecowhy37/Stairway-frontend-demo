@@ -69,8 +69,8 @@
                     </p>
                     <Icon
                         v-if="!isFaucet && ABTokensAddresses.indexOf(token.address) === selectedTokenIndex"
-                        class="tick-icon"
                         name="tick"
+                        class="tick-icon"
                         :size="9"
                     ></Icon>
                     <Icon
@@ -321,14 +321,13 @@ async function getTokens(tokenAddress) {
                 margin-right: 12px;
             }
             .copy-btn {
-                flex-grow: 0;
                 color: var(--text-color-reverse);
                 pointer-events: all;
             }
             .copy-tick {
+                color: var(--text-color-reverse);
                 margin-right: 7px;
                 margin-left: 5px;
-                color: var(--text-color-reverse);
             }
             &::-webkit-scrollbar {
                 width: 3px;
