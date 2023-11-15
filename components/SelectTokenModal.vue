@@ -132,7 +132,17 @@ const filteredTokenList = computed(() => {
 
         return filteredList
     } else {
-        return featuredTokens.value
+        // if (!isFaucet) {
+        //     return featuredTokens.value
+        // } else {
+        return featuredTokens.value.filter((tkn) => {
+            const excludedSymbols = ["STR", "WMATIC", "WETH"]
+            if (excludedSymbols.includes(tkn.symbol)) {
+                return
+            }
+            return tkn
+        })
+        // }
     }
 })
 
@@ -251,19 +261,7 @@ async function getTokens(tokenAddress) {
             throw new Error(error)
         })
 }
-// FAUCET FUNCTIONALITY --------------
-
-// const filteredTokenList = computed(
-//     () =>
-//         tokenList.value.filter(
-//             (el) =>
-//                 // el.chainId === 31337 &&
-//                 el.chainId === parseInt(stepStore.connectedChain.id, 16)
-//             // !ABTokens.value?.find((tkn) => tkn?.address === el.address)
-//             // (el) => el.chainId === 31337 && !ABTokens.value.includes(el)
-//         )
-//     // () => tokenList.value.filter((el) => el.chainId === 31337)
-// )
+// FAUCET FUNCTIONALITY --------------}
 </script>
 
 <style lang="scss">
