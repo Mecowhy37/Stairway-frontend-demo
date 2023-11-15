@@ -119,9 +119,17 @@ const search = ref("")
 
 const filteredTokenList = computed(() => {
     const searchInput = search.value
-    if (searchInput) {
-        const searchTerm = searchInput.toLowerCase() // Convert search term to lowercase for case-insensitive comparison
-        const filteredList = featuredTokens.value.filter((token) => {
+    // if (searchInput) {
+    const searchTerm = searchInput.toLowerCase() // Convert search term to lowercase for case-insensitive comparison
+    const filteredList = featuredTokens.value
+        .filter((tkn) => {
+            const exludedSymbols = ["STR", "WMATIC", "WETH"]
+            if (exludedSymbols.includes(tkn.symbol)) {
+                return
+            }
+            return tkn
+        })
+        .filter((token) => {
             const { name, symbol, address } = token
             return (
                 name.toLowerCase().includes(searchTerm) ||
@@ -130,20 +138,8 @@ const filteredTokenList = computed(() => {
             )
         })
 
-        return filteredList
-    } else {
-        // if (!isFaucet) {
-        //     return featuredTokens.value
-        // } else {
-        return featuredTokens.value.filter((tkn) => {
-            const excludedSymbols = ["STR", "WMATIC", "WETH"]
-            if (excludedSymbols.includes(tkn.symbol)) {
-                return
-            }
-            return tkn
-        })
-        // }
-    }
+    return filteredList
+    // }
 })
 
 const {
