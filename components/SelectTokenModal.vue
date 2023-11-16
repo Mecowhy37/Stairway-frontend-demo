@@ -151,12 +151,12 @@ const {
 } = useAsyncData(
     "displayList",
     () => {
-        if (filteredTokenList.value.length === 0 && isAddress(search.value)) {
-            console.log("fetch toknen")
-            return getOutsiderToken(connectedChainId.value, search.value)
-        } else {
-            return filteredTokenList.value
-        }
+        // if (filteredTokenList.value.length === 0 && isAddress(search.value)) {
+        //     console.log("fetch toknen")
+        //     return getOutsiderToken(connectedChainId.value, search.value)
+        // } else {
+        return filteredTokenList.value
+        // }
     },
     {
         transform: (data) => {

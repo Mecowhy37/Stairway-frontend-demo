@@ -32,7 +32,7 @@ export function useWidget(featuredTokens, Tokens, chainId, router, route) {
 
     watch(
         featuredTokens,
-        (newFeatured) => {
+        async (newFeatured) => {
             // if (newFeatured && newFeatured.length > 0) {
             if (route.query.tk1) {
                 console.log("Tokens.value[tkEnum.QUOTE]")
