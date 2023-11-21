@@ -324,7 +324,11 @@ const route = useRoute()
 // ROUTES ----------------s
 
 // TOKENS ---------------
-const { Tokens, bothTokensThere, setToken, selectTokenIndex, hasDaoToken } = useTokens(FeaturedTokensData, route)
+const { Tokens, bothTokensThere, setToken, selectTokenIndex, hasDaoToken } = useTokens(
+    FeaturedTokensData,
+    connectedChainId,
+    route
+)
 // TOKENS ---------------
 
 const { isWidgetLocked, widgetLocker } = useWidget(FeaturedTokensData, Tokens, connectedChainId, router, route)

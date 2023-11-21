@@ -1,7 +1,7 @@
 import { isAddress } from "ethers"
 import { tkEnum, getOutsiderToken, isSupportedChain } from "~/helpers/index"
 
-export function useTokens(FeaturedTokensData, route) {
+export function useTokens(FeaturedTokensData, connectedChainId, route) {
     const tokenA = ref(null)
     const tokenB = ref(null)
 
@@ -50,7 +50,7 @@ export function useTokens(FeaturedTokensData, route) {
     async function findTokenByAddress(featuredList, address) {
         const token = featuredList.find((el) => el.address === address)
         if (!token && isAddress(address)) {
-            const outsideToken = await getOutsiderToken(chainId.value, address)
+            const outsideToken = await getOutsiderToken(connectedChainId.value, address)
 
             console.log("outsideToken:", outsideToken)
             return outsideToken.name && outsideToken.symbol ? outsideToken : null
