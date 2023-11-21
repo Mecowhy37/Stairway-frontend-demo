@@ -313,8 +313,10 @@ import { useWidget } from "~/helpers/useWidget"
 
 const stepStore = useStepStore()
 
-const { featuredTokens, positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
+const { positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
 const { getSinglePostion, updatePositionsWithNewSingle, setTheChain } = stepStore
+
+const { FeaturedTokensData } = inject("FeaturedTokensAsyncData")
 
 // ROUTES ----------------
 const router = useRouter()
@@ -322,10 +324,10 @@ const route = useRoute()
 // ROUTES ----------------s
 
 // TOKENS ---------------
-const { Tokens, bothTokensThere, setToken, selectTokenIndex } = useTokens()
+const { Tokens, bothTokensThere, setToken, selectTokenIndex, hasDaoToken } = useTokens(FeaturedTokensData, route)
 // TOKENS ---------------
 
-const { isWidgetLocked, widgetLocker } = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
+const { isWidgetLocked, widgetLocker } = useWidget(FeaturedTokensData, Tokens, connectedChainId, router, route)
 
 // BALANCES -------------
 const { Balances, getBothBalances, reverseBalances, formatedBalances } = useBalances(
@@ -414,10 +416,6 @@ function findPositionByTokenAddresses(thisTokenAddress, thatTokenAddress) {
     }
     return matchedPosition
 }
-
-const hasDaoToken = computed(() => {
-    return Tokens.value.some((el) => el?.is_governance)
-})
 
 // not neccessarily block the interface, just indicate - block until signed
 function callAddLiquidity() {
@@ -582,7 +580,7 @@ const {
 //MODAL STUFF----------
 const toggleSelectTokenModal = inject("selectTokenModal")
 function openTokenSelectModal(index) {
-    toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg, reverseBalances), index)
+    toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg), index)
     selectTokenIndex.value = index
 }
 //MODAL STUFF----------

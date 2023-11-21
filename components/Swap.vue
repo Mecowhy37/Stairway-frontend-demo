@@ -310,7 +310,8 @@ import { useWidget } from "~/helpers/useWidget"
 const stepStore = useStepStore()
 const { setTheChain } = stepStore
 
-const { featuredTokens, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
+const { connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
+const { FeaturedTokensData } = inject("FeaturedTokensAsyncData")
 
 // ROUTES ----------------
 const router = useRouter()
@@ -318,10 +319,10 @@ const route = useRoute()
 // ROUTES ----------------
 
 // TOKENS ------------------
-const { Tokens, bothTokensThere, selectTokenIndex, setToken, reverseTokens } = useTokens()
+const { Tokens, bothTokensThere, selectTokenIndex, setToken, reverseTokens } = useTokens(FeaturedTokensData, route)
 // TOKENS ------------------
 
-const { isWidgetLocked, widgetLocker } = useWidget(featuredTokens, Tokens, connectedChainId, router, route)
+const { isWidgetLocked, widgetLocker } = useWidget(FeaturedTokensData, Tokens, connectedChainId, router, route)
 
 // BALANCES ----------------
 const { Balances, formatedBalances, getBothBalances, reverseBalances } = useBalances(
@@ -510,6 +511,7 @@ function openTokenSelectModal(index) {
     toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg), index)
     selectTokenIndex.value = index
 }
+
 // MODAL STUFF -------------
 
 //SETTINGS--------------

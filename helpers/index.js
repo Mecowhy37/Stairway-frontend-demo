@@ -53,6 +53,7 @@ export function isSupportedChain(id) {
 }
 
 export function getOutsiderToken(chainId, tkAddress) {
+    console.log("fetching outsider:", tkAddress)
     return $fetch(getUrl(`/chain/${chainId}/tokens/${tkAddress}`))
 }
 

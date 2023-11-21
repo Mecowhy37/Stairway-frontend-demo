@@ -115,10 +115,6 @@ const injected = injectedModule({
         const end = toTruncate.splice(-4).join("")
         return start + "..." + end
     })
-
-    // TOKENS ---------------
-    const featuredTokens = ref(null)
-    // TOKENS ---------------
    
     
     // POSITIONS ----------------
@@ -173,8 +169,6 @@ const injected = injectedModule({
         isDark,
         isMobile,
         
-        featuredTokens,
-        
         positions,
         refreshPositions,
         positionsStatus,
@@ -202,7 +196,6 @@ const injected = injectedModule({
         getTruncatedWalletAddress,
     }
 })
-// featuredTokens,
 
 // logic of a wallet
 //

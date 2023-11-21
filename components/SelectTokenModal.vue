@@ -31,7 +31,10 @@
                     </Btn>
                 </template>
             </TopBar>
-            <div class="search">
+            <div
+                v-if="!isFaucet"
+                class="search"
+            >
                 <div class="search__input-wrap layer-wdg-box row">
                     <!-- placeholder="Search name or address" -->
                     <input
@@ -53,46 +56,114 @@
                 ref="tokenListRef"
             >
                 <div
-                    v-for="token in displayList"
-                    @click.self="!isFaucet ? setToken(token) : getTokens(token.address)"
-                    class="list-item list-item--padded list-item--bottom-border row align-center"
-                    :class="{
-                        'list-item--opaque': ABTokensAddresses.includes(token.address),
-                    }"
+                    v-if="!FeaturedTokensPending && !OutsiderTokenPending"
+                    class="contents"
                 >
-                    <img
-                        class="token-icon token-icon--sm"
-                        :src="token.logo_uri"
-                    />
-                    <p class="token-name">
-                        {{ token.name }}
-                    </p>
-                    <Icon
-                        v-if="!isFaucet && ABTokensAddresses.indexOf(token.address) === selectedTokenIndex"
-                        name="tick"
-                        class="tick-icon"
-                        :size="9"
-                    ></Icon>
-                    <Icon
-                        v-if="copied === token.address"
-                        name="tick"
-                        class="copy-tick"
-                        :size="9"
-                    />
-                    <Btn
-                        v-else
-                        @click.self.prevent="copyAddress(token.address)"
-                        class="copy-btn"
-                        circle
-                        transparent
+                    <div
+                        v-if="filteredTokenList.length > 0"
+                        class="contents"
                     >
-                        <template #icon>
-                            <Icon
-                                name="copy"
-                                :size="15"
+                        <div
+                            v-for="token in filteredTokenList"
+                            @click.self="!isFaucet ? setToken(token) : getTokens(token.address)"
+                            class="list-item list-item--padded list-item--bottom-border row align-center"
+                            :class="{
+                                'list-item--opaque': ABTokensAddresses.includes(token.address),
+                            }"
+                        >
+                            <img
+                                class="token-icon token-icon--sm"
+                                :src="token.logo_uri"
                             />
-                        </template>
-                    </Btn>
+                            <p class="token-name">
+                                {{ token.name }}
+                            </p>
+                            <Icon
+                                v-if="!isFaucet && ABTokensAddresses.indexOf(token.address) === selectedTokenIndex"
+                                name="tick"
+                                class="tick-icon"
+                                :size="9"
+                            ></Icon>
+                            <Icon
+                                v-if="copied === token.address"
+                                name="tick"
+                                class="copy-tick"
+                                :size="9"
+                            />
+                            <Btn
+                                v-else
+                                @click.self.prevent="copyAddress(token.address)"
+                                class="copy-btn"
+                                circle
+                                transparent
+                            >
+                                <template #icon>
+                                    <Icon
+                                        name="copy"
+                                        :size="15"
+                                    />
+                                </template>
+                            </Btn>
+                        </div>
+                    </div>
+                    <div
+                        v-else-if="OutsiderToken"
+                        class="contents"
+                    >
+                        <div
+                            @click.self="setToken(OutsiderToken)"
+                            class="list-item list-item--padded list-item--bottom-border row align-center"
+                            :class="{
+                                'list-item--opaque': ABTokensAddresses.includes(OutsiderToken.address),
+                            }"
+                        >
+                            <img
+                                class="token-icon token-icon--sm"
+                                :src="OutsiderToken.logo_uri"
+                            />
+                            <p class="token-name">
+                                {{ OutsiderToken.name }}
+                            </p>
+                            <Icon
+                                v-if="ABTokensAddresses.indexOf(OutsiderToken.address) === selectedTokenIndex"
+                                name="tick"
+                                class="tick-icon"
+                                :size="9"
+                            ></Icon>
+                            <Icon
+                                v-if="copied === OutsiderToken.address"
+                                name="tick"
+                                class="copy-tick"
+                                :size="9"
+                            />
+                            <Btn
+                                v-else
+                                @click.self.prevent="copyAddress(OutsiderToken.address)"
+                                class="copy-btn"
+                                circle
+                                transparent
+                            >
+                                <template #icon>
+                                    <Icon
+                                        name="copy"
+                                        :size="15"
+                                    />
+                                </template>
+                            </Btn>
+                        </div>
+                    </div>
+                    <div
+                        v-else
+                        class="token-list--empty row center grey-text"
+                    >
+                        <p>Token{{ FeaturedTokensData.length === 0 ? "s" : "" }} not found</p>
+                    </div>
+                </div>
+                <div
+                    v-else
+                    class="token-list--empty row center grey-text"
+                >
+                    <p>Loading token{{ FeaturedTokensPending ? "s" : "" }}...</p>
                 </div>
             </div>
         </div>
@@ -102,12 +173,13 @@
 <script setup>
 import { BrowserProvider, id, isAddress } from "ethers"
 import { listenForTransactionMine, getUrl, getOutsiderToken } from "~/helpers/index"
+import { inject } from "vue"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, connectedChainId } = storeToRefs(stepStore)
+const { connectedChainId } = storeToRefs(stepStore)
 
 const showModal = ref(false)
 const tokenSetCallback = ref()
@@ -117,11 +189,11 @@ const isFaucet = ref(false)
 
 const search = ref("")
 
+const { FeaturedTokensData, FeaturedTokensPending } = inject("FeaturedTokensAsyncData")
 const filteredTokenList = computed(() => {
     const searchInput = search.value
-    // if (searchInput) {
     const searchTerm = searchInput.toLowerCase() // Convert search term to lowercase for case-insensitive comparison
-    const filteredList = featuredTokens.value
+    const filteredList = FeaturedTokensData.value
         .filter((tkn) => {
             const exludedSymbols = ["STR", "WMATIC", "WETH"]
             if (exludedSymbols.includes(tkn.symbol)) {
@@ -139,37 +211,31 @@ const filteredTokenList = computed(() => {
         })
 
     return filteredList
-    // }
 })
 
 const {
-    data: displayList,
-    error: displayListError,
-    status: displayListStatus,
-    pending: displayListPending,
-    refresh: refreshDisplayList,
+    data: OutsiderToken,
+    error: OutsiderTokenError,
+    status: OutsiderTokenStatus,
+    pending: OutsiderTokenPending,
+    refresh: refreshOutsiderToken,
 } = useAsyncData(
-    "displayList",
+    "OutsiderToken",
     () => {
-        // if (filteredTokenList.value.length === 0 && isAddress(search.value)) {
-        //     console.log("fetch toknen")
-        //     return getOutsiderToken(connectedChainId.value, search.value)
-        // } else {
-        return filteredTokenList.value
-        // }
+        if (filteredTokenList.value.length === 0 && isAddress(search.value)) {
+            return getOutsiderToken(connectedChainId.value, search.value)
+        } else {
+            return null
+        }
     },
     {
+        default: () => null,
         transform: (data) => {
-            if (!data.length && data.length !== 0) {
-                return data.symbol && data.name ? [data] : null
-            }
-            return data
+            return data?.symbol && data?.name ? data : null
         },
-        watch: [search, connectedChainId, featuredTokens],
+        watch: [search, connectedChainId],
     }
 )
-
-// const searchIsAddress = computed(() => )
 
 function toggleModal(tokens, callback, index, faucet = false) {
     showModal.value = !showModal.value
@@ -301,7 +367,13 @@ async function getTokens(tokenAddress) {
             }
         }
         .token-list {
+            height: 100%;
             overflow: auto;
+            &--empty {
+                height: 100%;
+                align-items: center;
+                padding-bottom: 15%;
+            }
             .list-item {
                 padding: 16px 8px;
                 * {

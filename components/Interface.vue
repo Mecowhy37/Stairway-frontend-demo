@@ -10,6 +10,12 @@
 
         <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
+            <!-- <div
+                v-if="asyncSelectTokenModal"
+                class="contents"
+            >
+                <LazySelectTokenModal v-if="asyncSelectTokenModal"></LazySelectTokenModal>
+            </div> -->
             <Faucet ref="newTokenModal"></Faucet>
             <Notifications></Notifications>
             <Feedback></Feedback>
@@ -27,8 +33,7 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { featuredTokens, addresses, connectedWallet, chains, positions, connectedChainId, connectedAccount } =
-    storeToRefs(stepStore)
+const { addresses, connectedWallet, chains, positions, connectedChainId, connectedAccount } = storeToRefs(stepStore)
 
 import { isSupportedChain, getUrl } from "~/helpers/index"
 
@@ -71,11 +76,11 @@ function transformChainToInitOptions(chainObject) {
 }
 
 const {
-    data: TokensData,
-    pending: TokensPending,
-    refresh: refreshTokens,
-    error: TokensError,
-    status: TokensStatus,
+    data: FeaturedTokensData,
+    pending: FeaturedTokensPending,
+    refresh: refreshFeaturedTokens,
+    error: FeaturedTokensError,
+    status: FeaturedTokensStatus,
 } = await useAsyncData(
     "tokens",
     () => {
@@ -87,20 +92,14 @@ const {
         }
     },
     {
+        default: () => [],
         watch: [connectedChainId],
     }
 )
-watch(
-    TokensData,
-    (newTokens) => {
-        if (newTokens) {
-            featuredTokens.value = newTokens
-        }
-    },
-    {
-        immediate: true,
-    }
-)
+provide("FeaturedTokensAsyncData", {
+    FeaturedTokensData,
+    FeaturedTokensPending,
+})
 
 const {
     data: AddressesData,
@@ -163,6 +162,8 @@ watch(
     ([newPositions, newStatus, newPending]) => {
         if (newPositions) {
             stepStore.positions = newPositions
+        } else {
+            stepStore.positions = []
         }
         stepStore.positionsStatus = newStatus
         stepStore.positionsPending = newPending
@@ -212,6 +213,20 @@ watch(
 // SCREEN SIZE ------------------
 
 // MODAL STUFF ------------------
+// const toggleModal = inject("selectTokenModalRef")
+// const asyncSelectTokenModal = ref(null)
+
+// // Load the asynchronous component using defineAsyncComponent
+// const AsyncSelectComponent = defineAsyncComponent(() => import("./SelectTokenModal.vue"))
+
+// // Assign the component to the ref once it's loaded
+// asyncSelectTokenModal.value = AsyncSelectComponent
+
+// function toggleSelectTokenModal(...args) {
+//     console.log("asyncSelectTokenModal.value:", asyncSelectTokenModal.value)
+//     if (asyncSelectTokenModal.value) {
+//         asyncSelectTokenModal.value.toggleModal(...args)
+// }
 const selectTokenModal = ref(null)
 function toggleSelectTokenModal(...args) {
     selectTokenModal.value.toggleModal(...args)
@@ -242,24 +257,6 @@ watch(
         immediate: true,
     }
 )
-
-// const {
-//     data: EventsData,
-//     pending: EventsPending,
-//     refresh: refreshEvents,
-//     error: EventsError,
-//     status: EventsStatus,
-// } = await useAsyncData(
-//     "events",
-//     () => {
-//         console.log("fetching Events for user:", connectedAccount.value)
-//         return $fetch(getUrl(`/chain/${connectedChainId.value}/events/${connectedAccount.value}/swap`))
-//     },
-//     {
-//         watch: [connectedChainId, connectedAccount],
-//     }
-// )
-// provide("refreshEvents", refreshEvents)
 </script>
 
 <style lang="scss">
@@ -528,6 +525,9 @@ svg {
     display: flex;
     &.space-between {
         justify-content: space-between;
+    }
+    &.space-around {
+        justify-content: space-around;
     }
     &.flex-end {
         justify-content: flex-end;

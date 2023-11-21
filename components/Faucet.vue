@@ -91,9 +91,7 @@ import { BrowserProvider, id } from "ethers"
 import { listenForTransactionMine } from "~/helpers/index"
 
 import { useStepStore } from "@/stores/step"
-import { storeToRefs } from "pinia"
 const stepStore = useStepStore()
-const { featuredTokens } = storeToRefs(stepStore)
 
 const tokenSymbol = ref("")
 const copied = ref(false)
@@ -126,11 +124,12 @@ async function getTokens() {
         })
     })
 }
+const { FeaturedTokensData } = inject("FeaturedTokensAsyncData")
 const selectedToken = computed(() => {
-    if (!featuredTokens.value) {
+    if (!FeaturedTokensData.value) {
         return null
     }
-    return featuredTokens.value.find((el) => el.symbol.toUpperCase() === tokenSymbol.value)
+    return FeaturedTokensData.value.find((el) => el.symbol.toUpperCase() === tokenSymbol.value)
 })
 const selectedAddress = computed(() => {
     return selectedToken.value?.address
