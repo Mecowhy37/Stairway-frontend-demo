@@ -4,7 +4,7 @@
             <TopBar
                 v-if="!noBar"
                 :compact="props.compactBar"
-                :no-return="props.noReturn"
+                :router-direction="props.routerDirection"
             >
                 <template #widget-title>
                     <slot name="widget-title"></slot>
@@ -23,7 +23,7 @@
 <script setup>
 const props = defineProps({
     compactBar: Boolean,
-    noReturn: Boolean,
+    routerDirection: String,
     noBar: Boolean,
 })
 </script>

@@ -4,8 +4,8 @@
         :class="[{ compact: props.compact, 'thin-line': props.thinLine }]"
     >
         <Btn
-            v-if="!noReturn"
-            @click="routerBack"
+            v-if="props.routerDirection"
+            @click="routerNavigation"
             transparent
             circle
             class="back-btn"
@@ -19,11 +19,10 @@
                 ></Icon>
             </template>
         </Btn>
-        <!-- </NuxtLink> -->
         <component
             :is="props.is"
             class="widget-title"
-            :class="{ 'widget-title--margin': !props.noReturn }"
+            :class="{ 'widget-title--margin': props.routerDirection }"
         >
             <slot name="widget-title"></slot>
         </component>
@@ -35,7 +34,7 @@
 
 <script setup>
 const props = defineProps({
-    noReturn: Boolean,
+    routerDirection: String,
     compact: Boolean,
     thinLine: Boolean,
     is: {
@@ -44,8 +43,12 @@ const props = defineProps({
     },
 })
 const router = useRouter()
-function routerBack() {
-    router.back()
+function routerNavigation() {
+    if (props.routerDirection === "back") {
+        router.back()
+    } else {
+        navigateTo(props.routerDirection)
+    }
 }
 </script>
 

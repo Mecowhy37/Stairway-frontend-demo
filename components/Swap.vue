@@ -1,6 +1,5 @@
 <template>
-    <!-- <div class="row"> -->
-    <Widget no-return>
+    <Widget>
         <template #widget-title>Swap</template>
         <template #right-icon>
             <Dropdown
@@ -275,29 +274,6 @@
             </div>
         </template>
     </Widget>
-    <!-- <Widget no-return>
-            <template #widget-title>temporary display</template>
-            <template #widget-content>
-                <div class="contents temp-display">
-                    <div>
-                        <h4>token A</h4>
-                        <p><span class="grey-text">symbol: </span> {{ tokenA?.symbol }}</p>
-                        <p><span class="grey-text">user amount: </span> {{ userAmounts.quote }}</p>
-                        <p><span class="grey-text">full amount: </span> {{ fullAmounts.quote }}</p>
-                    </div>
-                    <div>
-                        <h4>token B</h4>
-                        <p><span class="grey-text">symbol: </span> {{ tokenB?.symbol }}</p>
-                        <p><span class="grey-text">user amount: </span> {{ userAmounts.base }}</p>
-                        <p><span class="grey-text">full amount: </span> {{ fullAmounts.base }}</p>
-                    </div>
-                    <div>
-                        <p><span class="grey-text">price: </span> {{ pool?.price }}</p>
-                    </div>
-                </div>
-            </template>
-        </Widget> -->
-    <!-- </div> -->
 </template>
 
 <script setup>

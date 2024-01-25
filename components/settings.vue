@@ -1,7 +1,6 @@
 <template>
     <div class="settings">
         <TopBar
-            no-return
             compact
             thin-line
             is="h4"

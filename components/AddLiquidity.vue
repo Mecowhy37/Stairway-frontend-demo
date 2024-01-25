@@ -1,5 +1,5 @@
 <template>
-    <Widget>
+    <Widget router-direction="/liquidity">
         <template #widget-title>Add Liquidity</template>
         <template #right-icon>
             <Dropdown

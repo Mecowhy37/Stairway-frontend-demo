@@ -1,5 +1,5 @@
 <template>
-    <Widget>
+    <Widget router-direction="/liquidity">
         <template #widget-title>Remove Liquidity</template>
         <template #right-icon>
             <Dropdown
@@ -34,18 +34,18 @@
         </template>
         <template #widget-content>
             <div
-                v-if="pool"
+                v-if="ownedPosition"
                 class="icons-tokens row align-center"
             >
                 <img
                     class="token-icon"
-                    :src="pool.base_token.logo_uri"
+                    :src="ownedPosition.pool.base_token.logo_uri"
                 />
                 <img
                     class="token-icon"
-                    :src="pool.quote_token.logo_uri"
+                    :src="ownedPosition.pool.quote_token.logo_uri"
                 />
-                <p>{{ pool.base_token.symbol }} / {{ pool.quote_token.symbol }}</p>
+                <p>{{ ownedPosition.pool.base_token.symbol }} / {{ ownedPosition.pool.quote_token.symbol }}</p>
             </div>
             <div
                 v-else
@@ -121,14 +121,13 @@
 
             <div
                 v-if="
-                    (connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError) ||
-                    SinglePositionError ||
+                    (connectedAccount && ownedPosition === false && SinglePositionError) ||
                     !isSupportedChain(connectedChainId)
                 "
                 class="infos caption"
             >
                 <div
-                    v-if="connectedAccount && ownedPosition === false && !SinglePositionPending && !SinglePositionError"
+                    v-if="connectedAccount && ownedPosition === false && SinglePositionError"
                     class="info row"
                 >
                     <div>
@@ -140,7 +139,7 @@
                     </div>
                     <p>You dont have any liquidity at this position.</p>
                 </div>
-                <div
+                <!-- <div
                     v-if="SinglePositionError"
                     class="info row"
                 >
@@ -152,7 +151,7 @@
                         />
                     </div>
                     <p>Pool with ID: {{ route.params.address }} doesnt exist</p>
-                </div>
+                </div> -->
                 <div
                     v-if="!isSupportedChain(connectedChainId)"
                     class="info info--warn row"
@@ -223,7 +222,7 @@
                 </div>
             </div>
             <div
-                v-else-if="ownedPosition === false && SinglePositionPending && !SinglePositionError"
+                v-else-if="connectedAccount && ownedPosition === false && !SinglePositionError"
                 class="placeholder placeholder--in-widget"
             >
                 <p>placeholder</p>
@@ -231,7 +230,7 @@
             </div>
             <div class="buttons">
                 <Btn
-                    v-if="!stepStore.connectedWallet"
+                    v-if="!connectedAccount"
                     is="h4"
                     wide
                     bulky
@@ -240,6 +239,7 @@
                     Connect wallet
                 </Btn>
                 <Btn
+                    v-else
                     is="h4"
                     wide
                     bulky
@@ -466,9 +466,9 @@ const {
 )
 
 const ownedPosition = computed(() => {
-    if (!PositionsData.value) {
-        return null
-    }
+    // if (!PositionsData.value) {
+    //     return null
+    // }
     const matchedPosition = PositionsData.value.find((el) => el.pool.pool_index == route.params.address)
     if (!matchedPosition) {
         return false

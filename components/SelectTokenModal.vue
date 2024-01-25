@@ -6,7 +6,6 @@
     >
         <div class="modal__window base-box">
             <TopBar
-                no-return
                 compact
                 thin-line
                 is="h4"
