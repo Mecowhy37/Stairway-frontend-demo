@@ -148,24 +148,6 @@ const props = defineProps({
         display: flex;
         flex-direction: column;
         gap: 12px;
-        .info {
-            padding: 10px;
-            border-radius: var(--inner-wdg-radius);
-            align-items: center;
-            background-color: var(--info-bg-opaque);
-            .icon {
-                color: var(--info-bg);
-            }
-            p {
-                margin-left: 10px;
-            }
-            &--warn {
-                background-color: var(--error-color-opaque);
-                .icon {
-                    color: var(--error-color);
-                }
-            }
-        }
     }
 
     .sum-up {

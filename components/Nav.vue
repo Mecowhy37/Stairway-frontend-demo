@@ -115,7 +115,7 @@
                             Copy address
                         </p>
                         <p
-                            @click="viewInExplorer(toggleDropdown)"
+                            @click="viewAddressInExplorer(toggleDropdown)"
                             class="list-item list-item--padded-xs list-item--all-rounded list-item--separate"
                         >
                             View in explorer
@@ -143,9 +143,9 @@
                         >
                             <template #icon>
                                 <img
-                                    v-if="isSupportedChain(connectedChainId)"
+                                    v-if="isSupportedChain(connectedChainId) && ChainsData.length > 0"
                                     class="token-icon"
-                                    :src="connectedChainFullObj.logo_url"
+                                    :src="connectedChainFullObj?.logo_url"
                                 />
                                 <Icon
                                     v-else
@@ -158,21 +158,32 @@
                     </template>
                     <template #dropdown>
                         <div
-                            v-for="chain in chains"
-                            class="list-item list-item--padded-xs row align-center"
-                            @click="setTheChain(chain.chain_id)"
+                            v-if="ChainsData.length > 0"
+                            class="contents"
                         >
-                            <img
-                                class="token-icon token-icon--sm"
-                                :src="chain.logo_url"
-                            />
-                            <p>{{ chain.chain_name }}</p>
-                            <Icon
-                                v-if="chain.chain_id === connectedChainId"
-                                class="tick-icon"
-                                name="tick"
-                                :size="9"
-                            ></Icon>
+                            <div
+                                v-for="chain in ChainsData"
+                                class="list-item list-item--padded-xs row align-center"
+                                @click="setTheChain(chain.chain_id)"
+                            >
+                                <img
+                                    class="token-icon token-icon--sm"
+                                    :src="chain.logo_url"
+                                />
+                                <p>{{ chain.chain_name }}</p>
+                                <Icon
+                                    v-if="chain.chain_id === connectedChainId"
+                                    class="tick-icon"
+                                    name="tick"
+                                    :size="9"
+                                ></Icon>
+                            </div>
+                        </div>
+                        <div
+                            v-else
+                            class="list-item list-item--padded-xs row align-center"
+                        >
+                            <p>no chains found</p>
                         </div>
                     </template>
                 </Dropdown>
@@ -187,28 +198,21 @@ import { storeToRefs } from "pinia"
 import { isSupportedChain } from "~/helpers/index"
 
 const stepStore = useStepStore()
+
+const { getTruncatedWalletAddress, landingPageUrl, isMobile, connectedChain, noWalletChain, connectedChainId } =
+    storeToRefs(stepStore)
+
 const { setTheChain } = stepStore
 
-const {
-    connectedAccount,
-    getTruncatedWalletAddress,
-    landingPageUrl,
-    isMobile,
-    chains,
-    connectedChain,
-    noWalletChain,
-    connectedChainId,
-} = storeToRefs(stepStore)
-
-// function revertTheme() {
-//     stepStore.isDark = !stepStore.isDark
-// }
+const { ChainsData } = inject("ChainsAsyncData")
 
 function copyAddress(toggler) {
     navigator.clipboard.writeText(stepStore.connectedAccount)
     toggler()
 }
-function viewInExplorer(toggler) {
+
+// redirects user to polyscan
+function viewAddressInExplorer(toggler) {
     toggler()
     navigateTo(`https://mumbai.polygonscan.com/address/${stepStore.connectedAccount}`, {
         external: true,
@@ -218,12 +222,13 @@ function viewInExplorer(toggler) {
     })
 }
 
+// returns a chain object, either connected to or default AKA noWalletChain
 const connectedChainFullObj = computed(() => {
-    if (chains.value) {
+    if (ChainsData.value) {
         if (connectedChain.value) {
-            return chains.value.find((el) => el.chain_id === connectedChainId.value)
+            return ChainsData.value.find((el) => el.chain_id === connectedChainId.value)
         } else {
-            return chains.value.find((el) => el.chain_id === noWalletChain.value)
+            return ChainsData.value.find((el) => el.chain_id === noWalletChain.value)
         }
     }
 })

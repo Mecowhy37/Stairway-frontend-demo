@@ -4,7 +4,7 @@
             <div class="positions__top row">
                 <h1 class="scale">Liquidity</h1>
                 <NuxtLink
-                    v-if="connectedAccount && positions.length > 0"
+                    v-if="connectedAccount && PositionsData?.length > 0"
                     to="/add-liquidity"
                     class="link"
                 >
@@ -24,11 +24,14 @@
                 </NuxtLink>
             </div>
 
-            <h3 class="positions__length">
-                Your liquidity pools <span>{{ positions.length }}</span>
+            <h3
+                class="positions__length"
+                :class="{ hide: PositionsError }"
+            >
+                Your liquidity pools <span>{{ PositionsData?.length ? PositionsData.length : 0 }}</span>
             </h3>
             <div
-                v-if="positionsPending && !positions.length > 0"
+                v-if="PositionsPending && !PositionsData?.length > 0"
                 class="positions__list"
             >
                 <div
@@ -49,11 +52,11 @@
             </div>
 
             <div
-                v-else-if="connectedAccount && positions.length > 0"
+                v-else-if="connectedAccount && PositionsData?.length > 0"
                 class="positions__list"
             >
                 <div
-                    v-for="(position, i) in positions"
+                    v-for="(position, i) in PositionsData"
                     class="pool"
                     :key="position.pool.pool_index"
                 >
@@ -143,7 +146,7 @@
             </div>
 
             <div
-                v-else
+                v-else-if="!PositionsError"
                 class="positions__list"
             >
                 <div class="empty">
@@ -177,6 +180,30 @@
                     </Btn>
                 </div>
             </div>
+            <div
+                v-else
+                class="positions__list"
+            >
+                <div class="empty">
+                    <div class="info row">
+                        <div>
+                            <Icon
+                                class="icon"
+                                name="warning"
+                                :size="25"
+                            />
+                        </div>
+                        <p>
+                            There was an error while getting positions.
+                            <span
+                                @click="RefreshPositions"
+                                class="text-highlight--underlined"
+                                >retry</span
+                            >
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -190,7 +217,8 @@ import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { positions, positionsPending, connectedAccount, isMobile } = storeToRefs(stepStore)
+const { connectedAccount, isMobile } = storeToRefs(stepStore)
+const { PositionsData, PositionsPending, PositionsError, RefreshPositions } = inject("PositionsAsyncData")
 
 const openedIndex = ref(null)
 
@@ -301,14 +329,13 @@ function removeRedirect(pool) {
             }
         }
         .empty {
-            width: min-content;
             height: 100%;
             display: flex;
             margin: 0 auto;
             flex-direction: column;
             justify-content: center;
-            white-space: nowrap;
-            p {
+            /* white-space: nowrap; */
+            > p {
                 margin-bottom: 21px;
             }
         }

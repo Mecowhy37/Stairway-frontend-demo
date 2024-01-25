@@ -10,13 +10,6 @@
 
         <div class="page-slot--modals">
             <SelectTokenModal ref="selectTokenModal"></SelectTokenModal>
-            <!-- <div
-                v-if="asyncSelectTokenModal"
-                class="contents"
-            >
-                <LazySelectTokenModal v-if="asyncSelectTokenModal"></LazySelectTokenModal>
-            </div> -->
-            <Faucet ref="newTokenModal"></Faucet>
             <Notifications></Notifications>
             <Feedback></Feedback>
         </div>
@@ -26,20 +19,22 @@
 <script setup>
 import { useWindowSize } from "@vueuse/core"
 import { provide } from "vue"
-
-import { useWeb3Onboard } from "~/helpers/useWeb3Onboard"
+import { isSupportedChain, getUrl } from "~/helpers/index"
+// import { useWeb3Onboard } from "~/helpers/useWeb3Onboard"
 
 import { useStepStore } from "@/stores/step"
 import { storeToRefs } from "pinia"
 
 const stepStore = useStepStore()
-const { addresses, connectedWallet, chains, positions, connectedChainId, connectedAccount } = storeToRefs(stepStore)
-
-import { isSupportedChain, getUrl } from "~/helpers/index"
+const { connectedChainId, connectedAccount } = storeToRefs(stepStore)
 
 const route = useRoute()
 
+// CHAINS -------------------
+
+// init Options will be used for asyncronous web3Onbaord initialization
 const initOptions = ref([])
+
 const {
     data: ChainsData,
     pending: ChainsPending,
@@ -52,17 +47,19 @@ const {
         return $fetch(getUrl(`/chain`))
     },
     {
+        default: () => [],
         transform: (chainsdata) => {
+            // temporary filter to only include mumbai as only network
             if (chainsdata) {
                 chainsdata = chainsdata.filter((chain) => chain.chain_id === 80001)
-                chainsdata.forEach((chain) => initOptions.value.push(transformChainToInitOptions(chain)))
+                // chainsdata.forEach((chain) => initOptions.value.push(transformChainToInitOptions(chain)))
             }
-            //stepStore
-            chains.value = chainsdata
             return chainsdata
         },
     }
 )
+
+// will be used at some point, this only serves it's purpose for polygon networks
 function transformChainToInitOptions(chainObject) {
     const result = {
         id: chainObject.chain_id,
@@ -75,10 +72,55 @@ function transformChainToInitOptions(chainObject) {
     return result
 }
 
+// shares variables to child components tree
+provide("ChainsAsyncData", {
+    ChainsData,
+})
+
+// CHAINS -------------------
+
+// ADDRESSES ----------------
+const {
+    data: AddressesData,
+    pending: AddressesPending,
+    refresh: RefreshAddresses,
+    error: AddressesError,
+    status: AddressesStatus,
+} = await useAsyncData(
+    "addresses",
+    () => {
+        if (isSupportedChain(connectedChainId.value)) {
+            console.log("Fetching addresses on chain:", connectedChainId.value)
+            return $fetch(getUrl(`/chain/${connectedChainId.value}/addresses/local`))
+        }
+    },
+    {
+        lazy: true,
+        server: false,
+        watch: [connectedChainId],
+    }
+)
+
+// computed serving as quick access to DEX's address
+const routerAddress = computed(() => {
+    if (AddressesData.value === null) {
+        return null
+    }
+    return AddressesData.value.DEX
+})
+
+// shares variables to child components tree
+provide("AddressesAsyncData", {
+    AddressesData,
+    routerAddress,
+})
+// ADDRESSES ----------------
+
+// TOKENS -------------------
 const {
     data: FeaturedTokensData,
     pending: FeaturedTokensPending,
-    refresh: refreshFeaturedTokens,
+    refresh: RefreshFeaturedTokens,
     error: FeaturedTokensError,
     status: FeaturedTokensStatus,
 } = await useAsyncData(
@@ -92,52 +134,31 @@ const {
         }
     },
     {
+        server: false,
+        lazy: true,
         default: () => [],
         watch: [connectedChainId],
     }
 )
+
+// shares variables to child components tree
 provide("FeaturedTokensAsyncData", {
     FeaturedTokensData,
     FeaturedTokensPending,
 })
+// TOKENS -------------------
 
-const {
-    data: AddressesData,
-    pending: AddressesPending,
-    refresh: refreshAddresses,
-    error: AddressesError,
-    status: AddressesStatus,
-} = await useAsyncData(
-    "addresses",
-    () => {
-        if (isSupportedChain(connectedChainId.value)) {
-            console.log("Fetching addresses on chain:", connectedChainId.value)
-            return $fetch(getUrl(`/chain/${connectedChainId.value}/addresses/local`))
-        }
-    },
-    {
-        watch: [connectedChainId],
-    }
-)
-watch(
-    AddressesData,
-    (newVal) => {
-        if (newVal) {
-            addresses.value = newVal
-        }
-    },
-    {
-        immediate: true,
-    }
-)
+// POSITIONS ----------------
 
+// this async data wrapper gets All user's positions and its only exectured on /liqiuidity page
+// and gets exposed to other components like add and remove liquidity
 const {
     data: PositionsData,
     pending: PositionsPending,
     refresh: RefreshPositions,
     error: PositionsError,
     status: PositionsStatus,
-} = await useAsyncData(
+} = useAsyncData(
     "positions",
     () => {
         if (route.name === "liquidity") {
@@ -147,41 +168,66 @@ const {
             } else {
                 return []
             }
+        } else {
+            return [...PositionsData.value]
         }
     },
     {
-        default: () => [...positions.value],
+        default: () => [],
         lazy: true,
-        server: false,
+        server: true,
         watch: [connectedChainId, connectedAccount, () => route.name],
     }
 )
 
-watch(
-    () => [PositionsData.value, PositionsStatus.value, PositionsPending.value],
-    ([newPositions, newStatus, newPending]) => {
-        if (newPositions) {
-            stepStore.positions = newPositions
-        } else {
-            stepStore.positions = []
-        }
-        stepStore.positionsStatus = newStatus
-        stepStore.positionsPending = newPending
-    },
-    {
-        immediate: true,
+// get just one users position and is used in add and remove liquidity
+async function getSinglePostion(poolIndex) {
+    if (isSupportedChain(connectedChainId.value) && connectedAccount.value && poolIndex) {
+        console.log("getting position with id", poolIndex)
+        return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
+    } else {
+        return null
     }
-)
+}
 
-const { data: isSanctioned } = await useAsyncData(
+// updatePositionInPositions updates specific position or adds it to the list
+function updatePositionInPositions(newPosition) {
+    let positionToUpdate = PositionsData.value.find((pos) => pos.pool.pool_index === newPosition.pool.pool_index)
+    if (!positionToUpdate) {
+        // adds to the list
+        PositionsData.value.push(newPosition)
+        return
+    }
+
+    // updates already existing
+    const indexToUpate = PositionsData.value.indexOf(positionToUpdate)
+    PositionsData.value[indexToUpate] = newPosition
+}
+
+provide("PositionsAsyncData", {
+    PositionsData,
+    PositionsPending,
+    RefreshPositions,
+    PositionsError,
+    PositionsStatus,
+    getSinglePostion,
+    updatePositionInPositions,
+})
+// POSITIONS ----------------
+
+// checking whether wallet is sanctioned and redirecting it to google
+const { data: isSanctioned } = useAsyncData(
     "sanction",
     () => {
         if (connectedChainId.value && connectedAccount.value) {
             return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/sanctioned`))
+        } else {
+            return []
         }
     },
     {
         default: null,
+        server: false,
         lazy: true,
         immediate: true,
         watch: [connectedAccount, connectedChainId],
@@ -194,7 +240,17 @@ const { data: isSanctioned } = await useAsyncData(
         },
     }
 )
-stepStore.refreshPositions = RefreshPositions
+
+// MODAL STUFF ------------------
+
+// this ref links to a component
+const selectTokenModal = ref(null)
+function toggleSelectTokenModal(...args) {
+    selectTokenModal.value.toggleModal(...args)
+}
+provide("SelectTokenModal", toggleSelectTokenModal)
+// MODAL STUFF ------------------
+
 // SCREEN SIZE ------------------
 const { width } = useWindowSize()
 watch(
@@ -211,52 +267,6 @@ watch(
     }
 )
 // SCREEN SIZE ------------------
-
-// MODAL STUFF ------------------
-// const toggleModal = inject("selectTokenModalRef")
-// const asyncSelectTokenModal = ref(null)
-
-// // Load the asynchronous component using defineAsyncComponent
-// const AsyncSelectComponent = defineAsyncComponent(() => import("./SelectTokenModal.vue"))
-
-// // Assign the component to the ref once it's loaded
-// asyncSelectTokenModal.value = AsyncSelectComponent
-
-// function toggleSelectTokenModal(...args) {
-//     console.log("asyncSelectTokenModal.value:", asyncSelectTokenModal.value)
-//     if (asyncSelectTokenModal.value) {
-//         asyncSelectTokenModal.value.toggleModal(...args)
-// }
-const selectTokenModal = ref(null)
-function toggleSelectTokenModal(...args) {
-    selectTokenModal.value.toggleModal(...args)
-}
-provide("selectTokenModal", toggleSelectTokenModal)
-
-const newTokenModal = ref(null)
-function toggleNewTokenModal() {
-    newTokenModal.value.toggleModal()
-}
-const isNewTokenModalOpen = computed(() => {
-    if (newTokenModal.value === null) {
-        return null
-    }
-    return newTokenModal.value?.showModal
-})
-provide("newTokenModal", { toggleNewTokenModal, isNewTokenModalOpen })
-// MODAL STUFF ------------------
-
-watch(
-    connectedWallet,
-    (newAcc) => {
-        if (!newAcc) {
-            positions.value = []
-        }
-    },
-    {
-        immediate: true,
-    }
-)
 </script>
 
 <style lang="scss">
@@ -469,6 +479,25 @@ svg {
         margin-left: 6px;
     }
 }
+
+.info {
+    padding: 10px;
+    border-radius: var(--inner-wdg-radius);
+    align-items: center;
+    background-color: var(--info-bg-opaque);
+    .icon {
+        color: var(--info-bg);
+    }
+    p {
+        margin-left: 10px;
+    }
+    &--warn {
+        background-color: var(--error-color-opaque);
+        .icon {
+            color: var(--error-color);
+        }
+    }
+}
 .caption {
     &,
     & * {
@@ -547,6 +576,9 @@ svg {
 
 .contents {
     display: contents;
+}
+.hide {
+    visibility: hidden;
 }
 
 input {

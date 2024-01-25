@@ -30,14 +30,14 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         const stateKey = Object.keys(balanceState)[tokenIndex]
 
         if (!connectedAccount.value || !isSupportedChain(connectedChainId.value)) {
-            console.log("invald chain or no wallet")
+            // console.log("invald chain or no wallet")
             balanceState[stateKey] = 0n
             return
         }
 
         const token = Tokens.value[tokenIndex]
         if (token === null) {
-            console.log(stateKey, "token === null")
+            // console.log(stateKey, "token === null")
             balanceState[stateKey] = 0n
             setTimeout(() => {
                 if (!isCalledOver) {
@@ -54,23 +54,23 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/balance/${token.address}`)
         )
         if (balance.value) {
-            console.log("got", stateKey, "balance", balance.value)
+            // console.log("got", stateKey, "balance", balance.value)
             balanceState[stateKey] = BigInt(balance.value)
             return
         }
         if (error.value) {
-            console.error("failed to fetch", stateKey, "balance", error.value)
+            // console.error("failed to fetch", stateKey, "balance", error.value)
             balanceState[stateKey] = 0n
             return
         }
-        console.log("nothing returned")
+        // console.log("nothing returned")
         balanceState[stateKey] = 0n
         return
     }
 
     async function getBothBalances(tokenIndex = false, clearOld = true) {
-        console.log("- - - - - - - - - - -")
-        console.log("getBothBalances(), tokenIndex", tokenIndex)
+        // console.log("- - - - - - - - - - -")
+        // console.log("getBothBalances(), tokenIndex", tokenIndex)
 
         if (tokenIndex === false || tokenIndex === tkEnum.QUOTE) {
             getTokenBalance(tkEnum.QUOTE, clearOld)
@@ -79,8 +79,21 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             getTokenBalance(tkEnum.BASE, clearOld)
         }
     }
+
+    function findNewIndexes(oldTokens, newTokens) {
+        const oldSet = new Set(oldTokens)
+        const newIndexes = []
+
+        newTokens.forEach((token, index) => {
+            if (token !== null && !oldSet.has(token)) {
+                newIndexes.push(index)
+            }
+        })
+
+        return newIndexes
+    }
+
     function reverseBalances() {
-        console.log("useBalances: reverseBalances()")
         Balances.value = Balances.value.reverse()
     }
 
@@ -90,7 +103,7 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             if (wallet && isSupportedChain(chain)) {
                 getBothBalances(false, false)
             } else {
-                console.log("reset balances")
+                // console.log("reset balances")
                 Balances.value = [0n, 0n]
             }
         },
@@ -108,11 +121,11 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
     watch(
         Tokens,
         (newTokens, oldValues) => {
-            // console.log("newTokens:", newTokens)
+            // // console.log("newTokens:", newTokens)
             const oldTokens = oldValues ? oldValues : [null, null]
 
             const newIndexes = findNewIndexes(oldTokens, newTokens)
-            // console.log("newIndexes:", newIndexes)
+            // // console.log("newIndexes:", newIndexes)
             newIndexes.forEach((index) => {
                 getBothBalances(index, true)
             })
@@ -121,19 +134,6 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             immediate: true,
         }
     )
-
-    function findNewIndexes(oldTokens, newTokens) {
-        const oldSet = new Set(oldTokens)
-        const newIndexes = []
-
-        newTokens.forEach((token, index) => {
-            if (token !== null && !oldSet.has(token)) {
-                newIndexes.push(index)
-            }
-        })
-
-        return newIndexes
-    }
 
     return { Balances, formatedBalances, getTokenBalance, getBothBalances, reverseBalances }
 }

@@ -50,7 +50,7 @@ const injected = injectedModule({
 
     // CHAINS ----------------
     const chains = ref(null)
-        const noWalletChain = ref(80001)
+    const noWalletChain = ref(80001)
     
     const connectedChainId = computed(() => {
         if (!connectedChain.value && noWalletChain.value) {
@@ -115,49 +115,14 @@ const injected = injectedModule({
         const end = toTruncate.splice(-4).join("")
         return start + "..." + end
     })
-   
-    
-    // POSITIONS ----------------
-    const positions = ref([]) 
-    const refreshPositions = null
-    const positionsStatus = ref(null)
-    const positionsPending = ref(null)
-
-    async function getSinglePostion(poolIndex: Number | null) {
-        if (isSupportedChain(connectedChainId.value) && connectedAccount.value && poolIndex) {
-            console.log("getting position with id", poolIndex)
-            return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
-        } else {
-            return null
-        }
-    }
-    function updatePositionsWithNewSingle(newPosition: Object) {
-        let positionToUpdate = positions.value.find(pos => pos.pool.pool_index === newPosition.pool.pool_index)
-        if (!positionToUpdate) {
-            // console.log("pushing to positions", newPosition.pool.pool_index)
-            positions.value.push(newPosition)
-        } else {
-            // console.log('updating positions with pool:', newPosition.pool.pool_index)
-            const indexToUpate = positions.value.indexOf(positionToUpdate)
-            positions.value[indexToUpate] = newPosition
-        }
-    }
-    // POSITIONS ----------------
-    
-    // ADDRESSES ----------------
-    const addresses = ref(null)
-    
-    const routerAddress = computed(() => {
-        if (addresses.value === null) {
-            return null
-        }
-        return addresses.value.DEX
-    })
-    // ADDRESSES ----------------
 
     // NOTIFICATIONS ---------
     const notify = null
     // NOTIFICATIONS ---------
+
+    // BALANCES --------------
+    const allBalances = ref({})
+    // BALANCES --------------
 
 
     return {
@@ -165,18 +130,8 @@ const injected = injectedModule({
 
         landingPageUrl,
 
-        routerAddress,
         isDark,
         isMobile,
-        
-        positions,
-        refreshPositions,
-        positionsStatus,
-        positionsPending,
-        getSinglePostion,
-        updatePositionsWithNewSingle,
-        
-        addresses,
         
         chains,
         setTheChain,
@@ -190,31 +145,11 @@ const injected = injectedModule({
         disconnectConnectedWallet,
         alreadyConnectedWallets,
 
+        allBalances,
+
         notify,
 
         connectedAccount,
         getTruncatedWalletAddress,
     }
 })
-
-// logic of a wallet
-//
-//  user lands on a client:
-//    A. Hasn't metamask installed
-//    B. Has metamask installed
-//        -B1. Doesn't have a conncected wallet
-//        -B2. Have account(s) connected
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//

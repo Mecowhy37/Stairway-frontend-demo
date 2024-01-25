@@ -7,7 +7,7 @@
                 no-padding
                 solid
             >
-                <template #dropdown-activator="{ on }">
+                <template #dropdown-activator>
                     <Btn
                         circle
                         transparent
@@ -34,14 +34,10 @@
         </template>
         <template #widget-content>
             <div
-                v-if="connectedChainId === 80001 && connectedAccount"
+                v-if="isTestNet(connectedChainId) && connectedAccount"
                 class="tips"
             >
-                <!-- <FaucetTrigger
-                    :closing-callback="() => getBothBalances(false, false)"
-                    :connected-chain-id="connectedChainId"
-                ></FaucetTrigger> -->
-                <FaucetTriggerII :callback="() => getBothBalances(false, false)"></FaucetTriggerII>
+                <FaucetTrigger :callback="() => getBothBalances(false, false)"></FaucetTrigger>
             </div>
             <div class="windows">
                 <div
@@ -67,7 +63,7 @@
                             </Btn>
                             <input
                                 :class="{
-                                    error: insufficientBalanceIndexes.includes(x) && connectedAccount,
+                                    error: insufficientBalanceIndexes.includes(x),
                                 }"
                                 type="text"
                                 placeholder="0"
@@ -106,9 +102,9 @@
             </div>
             <div
                 v-if="
-                    (insufficientBalanceIndexes.length > 0 && connectedAccount) ||
+                    insufficientBalanceIndexes.length > 0 ||
                     poolError ||
-                    hasDaoToken ||
+                    hasDaoTokenPicked ||
                     !isSupportedChain(connectedChainId)
                 "
                 class="infos caption"
@@ -155,7 +151,7 @@
                     </p>
                 </div>
                 <div
-                    v-if="hasDaoToken"
+                    v-if="hasDaoTokenPicked"
                     class="info row"
                 >
                     <div>
@@ -171,7 +167,7 @@
                     </p>
                 </div>
                 <div
-                    v-if="insufficientBalanceIndexes.length > 0 && connectedAccount"
+                    v-if="insufficientBalanceIndexes.length > 0"
                     class="info info--warn row"
                 >
                     <div>
@@ -255,7 +251,7 @@
                 </div>
             </div>
             <div
-                v-else-if="ownedPosition === false && SinglePositionPending && !SinglePositionError && !pool"
+                v-else-if="ownedPosition === false && SinglePositionPending && !SinglePositionError && pool"
                 class="placeholder placeholder--in-widget"
             >
                 <p>placeholder</p>
@@ -299,39 +295,31 @@ import { useBalances } from "~/helpers/useBalances"
 import { useAmounts } from "~/helpers/useAmounts"
 import { useTokens } from "~/helpers/useTokens"
 import { usePools } from "~/helpers/usePools"
-import {
-    basicRound,
-    roundCeiling,
-    roundFloor,
-    tkEnum,
-    widgetTypeObj,
-    isSupportedChain,
-    precision,
-} from "~/helpers/index"
+import { basicRound, roundFloor, tkEnum, widgetTypeObj, isSupportedChain, isTestNet } from "~/helpers/index"
 
 import { useWidget } from "~/helpers/useWidget"
 
 const stepStore = useStepStore()
 
-const { positions, connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
-const { getSinglePostion, updatePositionsWithNewSingle, setTheChain } = stepStore
+const { connectedAccount, connectedChainId } = storeToRefs(stepStore)
+const { setTheChain } = stepStore
 
+const { routerAddress } = inject("AddressesAsyncData")
+const { PositionsData, getSinglePostion, updatePositionInPositions } = inject("PositionsAsyncData")
 const { FeaturedTokensData } = inject("FeaturedTokensAsyncData")
 
 // ROUTES ----------------
 const router = useRouter()
 const route = useRoute()
-// ROUTES ----------------s
+// ROUTES ----------------
 
 // TOKENS ---------------
-const { Tokens, bothTokensThere, setToken, selectTokenIndex, hasDaoToken } = useTokens(
+const { Tokens, bothTokensThere, setToken, selectTokenIndex, hasDaoTokenPicked } = useTokens(
     FeaturedTokensData,
     connectedChainId,
     route
 )
 // TOKENS ---------------
-
-const { isWidgetLocked, widgetLocker } = useWidget(FeaturedTokensData, Tokens, connectedChainId, router, route)
 
 // BALANCES -------------
 const { Balances, getBothBalances, reverseBalances, formatedBalances } = useBalances(
@@ -350,6 +338,7 @@ const { pool, refreshPool, addLiquidity, poolError, poolRatio, poolPending } = a
     route
 )
 
+// calulates the opposite input to the one that has been set previously
 watch(
     () => [poolRatio.value, pool.value],
     ([newPoolRatio, newPool]) => {
@@ -368,6 +357,9 @@ watch(
 // POOL -----------------
 
 // WIDGET ---------------
+const { isWidgetLocked, widgetLocker } = useWidget(FeaturedTokensData, Tokens, connectedChainId, router, route)
+
+// this async data is binded to global positions state and is resposible for signle active position
 const {
     pending: SinglePositionPending,
     refresh: RefreshSinglePosition,
@@ -384,7 +376,7 @@ const {
         server: false,
         transform: (newSinglePosition) => {
             if (newSinglePosition) {
-                updatePositionsWithNewSingle(newSinglePosition)
+                updatePositionInPositions(newSinglePosition)
             }
             return newSinglePosition
         },
@@ -392,39 +384,23 @@ const {
     }
 )
 
+// returns a position if user has liquidity in it
 const ownedPosition = computed(() => {
     return findPositionByTokenAddresses(Tokens.value[tkEnum.QUOTE]?.address, Tokens.value[tkEnum.BASE]?.address)
 })
 
+// shows user a aproximate price that a pool will be set to with user specified ratio
 const settingPoolPrice = computed(() => {
     if (!bothTokensThere.value || !bothAmountsIn.value) {
         return null
     }
-    // return roundCeiling((Number(fullAmounts.base) / Number(fullAmounts.quote)).toString())
     return roundFloor((parseInt(fullAmounts.base) / parseInt(fullAmounts.quote)).toString())
 })
 
-function findPositionByTokenAddresses(thisTokenAddress, thatTokenAddress) {
-    if (!positions.value || [thisTokenAddress, thatTokenAddress].some((el) => el === null)) {
-        return null
-    }
-    const matchedPosition = positions.value.find((position) => {
-        const positionTokens = [position.pool.quote_token.address, position.pool.base_token.address]
-        const widgetTokens = [thisTokenAddress, thatTokenAddress]
-        if (positionTokens.every((el) => widgetTokens.includes(el))) {
-            return position
-        }
-    })
-    if (!matchedPosition) {
-        return false
-    }
-    return matchedPosition
-}
-
-// not neccessarily block the interface, just indicate - block until signed
 function callAddLiquidity() {
     widgetLocker(true)
 
+    // TODO: addLiquidity should be moved to this file instead of usePools.js
     addLiquidity(
         ...Tokens.value,
         fullAmounts.quote,
@@ -434,7 +410,7 @@ function callAddLiquidity() {
         stepStore.connectedAccount,
         stepStore.connectedWallet.provider,
         addLiquidityFailedHandler,
-        eventReceivedHandler,
+        liquidityAddedEventHandler,
         stepStore.notify,
         widgetLocker
     )
@@ -447,8 +423,8 @@ function addLiquidityFailedHandler(error) {
     refreshPool()
 }
 
-function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
-    console.log("eventReceivedHandler()")
+function liquidityAddedEventHandler(lqEvent, originalCall, notifHolder) {
+    console.log("liquidityAddedEventHandler()")
 
     const {
         tokenQuote,
@@ -460,6 +436,8 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
 
     let eventQuoteToken
     let eventBaseToken
+
+    // checks for the order of tokens in the event to match the correct amounts
     if (getAddress(tokenQuote.address) === getAddress(lqEvent.this_token)) {
         eventQuoteToken = "this_amount"
         eventBaseToken = "that_amount"
@@ -496,6 +474,7 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         },
     }
 
+    // when a successData comes in from previous trasaction it sums them up
     function sumTwoSuccessObejects(current, previous) {
         if (previous === null) {
             return current
@@ -522,23 +501,49 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
     stepStore.notify(notifHolder, "success", false, fullSuccessData, keepNotification)
 
     if (tranasactionWithinSlippage) {
+        // this executes when transation finishes
         setTimeout(() => {
             navigateTo({ path: "/liquidity" })
         }, 1000)
     } else {
+        // this is executed when transaction is not fully complete
         refreshPool()
         RefreshSinglePosition()
         getBothBalances(false, false)
+
+        // this modifies original properties to left over amount to be passed over again
         originalCall.amountQuote = quoteAmountDelta
         originalCall.amountBase = baseAmountDelta
         originalCall.successData = fullSuccessData
         originalCall.notifId = notifHolder.id
+
+        // timeout is here for sake of a gap between multiple trasactions
         setTimeout(() => {
             addLiquidity(...Object.values(originalCall))
         }, 1000)
     }
 }
 
+//finds position based on currently picked tokens
+function findPositionByTokenAddresses(thisTokenAddress, thatTokenAddress) {
+    if (!PositionsData.value || [thisTokenAddress, thatTokenAddress].some((el) => el === null)) {
+        return null
+    }
+    const matchedPosition = PositionsData.value.find((position) => {
+        const positionTokens = [position.pool.quote_token.address, position.pool.base_token.address]
+        const widgetTokens = [thisTokenAddress, thatTokenAddress]
+        // if tokens picked in the widget are matching position tokens
+        if (positionTokens.every((el) => widgetTokens.includes(el))) {
+            return position
+        }
+    })
+    if (!matchedPosition) {
+        return false
+    }
+    return matchedPosition
+}
+
+// user click action to set the amount to current max balance
 function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
         const formatedAmount = formatUnits(amount, Tokens.value[inputIndex].decimals)
@@ -548,18 +553,6 @@ function fillInBalance(amount, inputIndex) {
         setFromUserToFullAmount(formatedAmount, Tokens.value[inputIndex].decimals, inputIndex)
     }
 }
-const insufficientBalanceIndexes = computed(() => {
-    let balanceIndexes = []
-    Tokens.value.forEach((token, idx) => {
-        if (!token || Balances.value[idx] === "") {
-            return
-        }
-        if (Balances.value[idx] < fullAmountsMap.value[idx]) {
-            balanceIndexes.push(idx)
-        }
-    })
-    return balanceIndexes
-})
 // WIDGET ---------------
 
 // AMOUNTS --------------
@@ -579,10 +572,26 @@ const {
     bothAmountsIn,
 } = useAmounts(Tokens, pool, widgetTypeObj.add, poolPending)
 
+// shows at which index the balanace in insufficient
+const insufficientBalanceIndexes = computed(() => {
+    let tooSmallBalanceIndexes = []
+    if (connectedAccount.value) {
+        Tokens.value.forEach((token, idx) => {
+            if (!token || Balances.value[idx] === "") {
+                return
+            }
+            if (Balances.value[idx] < fullAmountsMap.value[idx]) {
+                tooSmallBalanceIndexes.push(idx)
+            }
+        })
+    }
+    return tooSmallBalanceIndexes
+})
+
 // AMOUNTS --------------
 
 //MODAL STUFF----------
-const toggleSelectTokenModal = inject("selectTokenModal")
+const toggleSelectTokenModal = inject("SelectTokenModal")
 function openTokenSelectModal(index) {
     toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg), index)
     selectTokenIndex.value = index
@@ -590,22 +599,26 @@ function openTokenSelectModal(index) {
 //MODAL STUFF----------
 
 //SETTINGS--------------
+
+// reference to setting component
 const settingsAdd = ref()
 //SETTINGS--------------
 
-let poolRefreshInterval = null
+// POOL REFRESH LOOP ---------
+const poolRefreshInterval = ref(null)
 const poolIsRemaining = ref(false)
 
+// TODO: would be nice if this was a promise so that it cannot be called over again
 function startPoolRefresh(poolRemaining = false) {
     const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
 
-    if (poolRefreshInterval !== null) {
-        stopPoolRefresh(poolRefreshInterval)
+    if (poolRefreshInterval.value !== null) {
+        stopPoolRefresh(poolRefreshInterval.value)
     }
 
     poolIsRemaining.value = poolRemaining
-    poolRefreshInterval = setInterval(async () => {
-        console.log("L o O p", poolRefreshInterval, randomTimeout / 1000 + "s")
+    poolRefreshInterval.value = setInterval(async () => {
+        console.log("L o O p", poolRefreshInterval.value, randomTimeout / 1000 + "s")
         await refreshPool()
         await RefreshSinglePosition()
 
@@ -614,25 +627,26 @@ function startPoolRefresh(poolRemaining = false) {
 }
 
 function stopPoolRefresh(intervalId = null) {
-    console.log("clear loop", poolRefreshInterval)
+    console.log("clear loop", poolRefreshInterval.value)
     poolIsRemaining.value = false
 
     if (intervalId) {
         clearInterval(intervalId)
     } else {
-        clearInterval(poolRefreshInterval)
+        clearInterval(poolRefreshInterval.value)
     }
 
-    poolRefreshInterval = null
+    poolRefreshInterval.value = null
 }
 
-const remover = router.beforeEach((to, from) => {
+const stopNavigationObserver = router.beforeEach((to, from) => {
     if (to.name !== "add-liquidity") {
         console.log("EXITING ADD")
         stopPoolRefresh()
-        remover()
+        stopNavigationObserver()
     }
 })
+// POOL REFRESH LOOP ---------
 
 watch(
     Tokens,

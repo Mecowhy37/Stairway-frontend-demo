@@ -79,7 +79,7 @@ export function useTokens(FeaturedTokensData, connectedChainId, route) {
             immediate: true,
         }
     )
-    const hasDaoToken = computed(() => {
+    const hasDaoTokenPicked = computed(() => {
         return Tokens.value.some((el) => el?.is_governance)
     })
 
@@ -89,6 +89,6 @@ export function useTokens(FeaturedTokensData, connectedChainId, route) {
         setToken,
         selectTokenIndex,
         reverseTokens,
-        hasDaoToken,
+        hasDaoTokenPicked,
     }
 }

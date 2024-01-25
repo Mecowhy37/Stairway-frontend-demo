@@ -39,7 +39,7 @@
                 class="tips"
                 v-if="connectedChainId === 80001 && connectedAccount"
             >
-                <FaucetTriggerII :callback="() => getBothBalances(false, false)"></FaucetTriggerII>
+                <FaucetTrigger :callback="() => getBothBalances(false, false)"></FaucetTrigger>
             </div>
             <div class="windows">
                 <div
@@ -82,6 +82,14 @@
                             @click="!isWidgetLocked && fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Balances[x] === 0n }"
                         >
+                            <Balance
+                                :key="x"
+                                :token="Tokens[x]"
+                                :wallet="connectedAccount"
+                                :chainId="connectedChainId"
+                                :allBalances="allBalances"
+                                :index="x"
+                            ></Balance>
                             <p class="caption">
                                 {{ formatedBalances[x] }}
                             </p>
@@ -135,7 +143,7 @@
                     <p>
                         Pool not found. You can create it
                         <span
-                            @click="addRedirect"
+                            @click="redirectToAddLiquidity"
                             class="text-highlight--underlined"
                             >here</span
                         >.
@@ -310,7 +318,9 @@ import { useWidget } from "~/helpers/useWidget"
 const stepStore = useStepStore()
 const { setTheChain } = stepStore
 
-const { connectedAccount, connectedChainId, routerAddress } = storeToRefs(stepStore)
+const { connectedAccount, connectedChainId, allBalances } = storeToRefs(stepStore)
+
+const { routerAddress } = inject("AddressesAsyncData")
 const { FeaturedTokensData } = inject("FeaturedTokensAsyncData")
 
 // ROUTES ----------------
@@ -344,6 +354,8 @@ const { pool, refreshPool, poolPending, poolError, price, depth, swap } = await 
     connectedChainId,
     route
 )
+
+// calulates the opposite input to the one that has been set previously
 watch(
     () => [price.value, pool.value],
     ([newPrice, newPool]) => {
@@ -362,6 +374,8 @@ watch(
 // POOL -----------------
 
 // WIDGET ------------------
+
+// is swap action enabled
 const canSwap = computed(() => {
     return pool.value && bothAmountsIn.value
 })
@@ -375,6 +389,7 @@ function switchOrder() {
 function callSwap() {
     widgetLocker(true)
 
+    // TODO: swap() should be moved to this file
     swap(
         pool.value.path,
         fullAmounts.quote,
@@ -397,10 +412,11 @@ function swapFailedHandler(error) {
     refreshPool()
 }
 
-function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
+function eventReceivedHandler(liquidityEvent, originalCall, notifHolder) {
     console.log("eventReceivedHandler()")
 
-    if (lqEvent === null) {
+    // TODO: might have to be removed - useless check?
+    if (liquidityEvent === null) {
         stepStore.notify(notifHolder, "success", false)
         refresh()
         return
@@ -411,8 +427,8 @@ function eventReceivedHandler(lqEvent, originalCall, notifHolder) {
         BASE: "amount_out",
     }
 
-    const quoteAmountIn = BigInt(lqEvent[eventDict.QUOTE])
-    const baseAmounOut = BigInt(lqEvent[eventDict.BASE])
+    const quoteAmountIn = BigInt(liquidityEvent[eventDict.QUOTE])
+    const baseAmounOut = BigInt(liquidityEvent[eventDict.BASE])
 
     const successData = {
         action: "swapped",
@@ -441,6 +457,7 @@ function fillInBalance(amount, inputIndex) {
     if (Tokens.value[inputIndex] && Number(Balances.value[inputIndex]) !== 0) {
         const formatedAmount = formatUnits(amount, Tokens.value[inputIndex].decimals)
         console.log("fillInBalance(amount, inputIndex)", formatedAmount, inputIndex)
+        // updates last chaned amount index
         lastChangedAmount.value = inputIndex
         setUserAmount(formatedAmount, inputIndex)
         setFromUserToFullAmount(formatedAmount, Tokens.value[inputIndex].decimals, inputIndex)
@@ -454,21 +471,7 @@ function fillInDepth(depth) {
     setFromUserToFullAmount(formatedDepth, Tokens.value[tkEnum.BASE].decimals, tkEnum.BASE)
 }
 
-const insufficientBalanceIndexes = computed(() => {
-    let balanceIndexes = []
-    if (connectedAccount.value) {
-        Tokens.value.forEach((token, idx) => {
-            if (!token || Balances.value[idx] === "") {
-                return
-            }
-            if (Balances.value[idx] < fullAmountsMap.value[idx]) {
-                balanceIndexes.push(idx)
-            }
-        })
-    }
-    return balanceIndexes
-})
-function addRedirect() {
+function redirectToAddLiquidity() {
     router.push({
         path: "/add-liquidity",
         query: {
@@ -493,49 +496,56 @@ const {
     amountInputHandler,
     setUserAmount,
     setFromUserToFullAmount,
-    setFromFullToUserAmount,
     calcAndSetOpposingInput,
-    calcQuote,
     resetInputAmounts,
     bothAmountsIn,
 } = useAmounts(Tokens, pool, widgetTypeObj.swap, poolPending)
 
-function Round(amt) {
-    let amount = Number(amt)
-    amount = amount >= 1 ? amount.toFixed(2) : amount.toPrecision(2)
-    if (amount == 0) {
-        return ""
+// shows at which index the balanace in insufficient
+const insufficientBalanceIndexes = computed(() => {
+    let tooSmallBalanceIndexes = []
+    if (connectedAccount.value) {
+        Tokens.value.forEach((token, idx) => {
+            if (!token || Balances.value[idx] === "") {
+                return
+            }
+            if (Balances.value[idx] < fullAmountsMap.value[idx]) {
+                tooSmallBalanceIndexes.push(idx)
+            }
+        })
     }
-    return Number(amount) < 0.00001 ? "<0.00001" : String(parseFloat(amount))
-}
+    return tooSmallBalanceIndexes
+})
+// AMOUNTS -----------------
 
 // MODAL STUFF -------------
-const toggleSelectTokenModal = inject("selectTokenModal")
+const toggleSelectTokenModal = inject("SelectTokenModal")
 function openTokenSelectModal(index) {
     toggleSelectTokenModal(Tokens.value, (arg) => setToken(arg), index)
     selectTokenIndex.value = index
 }
-
 // MODAL STUFF -------------
 
 //SETTINGS--------------
 const settings = ref()
 //SETTINGS--------------
 
-let poolRefreshInterval = null
+// POOL REFRESH LOOP ---------
+const poolRefreshInterval = ref(null)
 const poolIsRemaining = ref(false)
 
-//would be nice if this was a promise so that it cannot be called over again
+// TODO: would be nice if this was a promise so that it cannot be called over again
 function startPoolRefresh(poolRemaining = false) {
+    // poolRemaining is a var that controls whether keep pool data showned or revert to loading state or other
     const randomTimeout = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
 
-    if (poolRefreshInterval !== null) {
-        stopPoolRefresh(poolRefreshInterval)
+    if (poolRefreshInterval.value !== null) {
+        stopPoolRefresh(poolRefreshInterval.value)
     }
 
     poolIsRemaining.value = poolRemaining
-    poolRefreshInterval = setInterval(async () => {
-        // console.log("L o O p", poolRefreshInterval, randomTimeout / 1000 + "s")
+    poolRefreshInterval.value = setInterval(async () => {
+        // console.log("L o O p", poolRefreshInterval.value, randomTimeout / 1000 + "s")
         await refreshPool()
 
         startPoolRefresh(poolRemaining)
@@ -549,19 +559,20 @@ function stopPoolRefresh(intervalId = null) {
     if (intervalId) {
         clearInterval(intervalId)
     } else {
-        clearInterval(poolRefreshInterval)
+        clearInterval(poolRefreshInterval.value)
     }
 
-    poolRefreshInterval = null
+    poolRefreshInterval.value = null
 }
 
-const remover = router.beforeEach((to, from) => {
+const stopNavigationObserver = router.beforeEach((to, from) => {
     if (to.name !== "swap") {
         console.log("EXITING SWAP")
         stopPoolRefresh()
-        remover()
+        stopNavigationObserver()
     }
 })
+// POOL REFRESH LOOP ---------
 
 watch(
     Tokens,

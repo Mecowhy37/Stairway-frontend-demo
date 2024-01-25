@@ -263,8 +263,12 @@ import { usePools } from "~/helpers/usePools"
 import { basicRound, isSupportedChain, errorABI } from "~/helpers/index"
 
 const stepStore = useStepStore()
-const { routerAddress, connectedAccount, positions, connectedChainId } = storeToRefs(stepStore)
-const { getSinglePostion, updatePositionsWithNewSingle, setTheChain } = stepStore
+const { connectedAccount, connectedChainId } = storeToRefs(stepStore)
+const { setTheChain } = stepStore
+
+const { routerAddress } = inject("AddressesAsyncData")
+
+const { PositionsData, getSinglePostion, updatePositionInPositions } = inject("PositionsAsyncData")
 
 const redeemPercent = ref(100)
 
@@ -454,7 +458,7 @@ const {
         server: false,
         transform: (newSinglePosition) => {
             if (newSinglePosition) {
-                updatePositionsWithNewSingle(newSinglePosition)
+                updatePositionInPositions(newSinglePosition)
             }
             return newSinglePosition
         },
@@ -462,10 +466,10 @@ const {
 )
 
 const ownedPosition = computed(() => {
-    if (!positions.value) {
+    if (!PositionsData.value) {
         return null
     }
-    const matchedPosition = positions.value.find((el) => el.pool.pool_index == route.params.address)
+    const matchedPosition = PositionsData.value.find((el) => el.pool.pool_index == route.params.address)
     if (!matchedPosition) {
         return false
     }

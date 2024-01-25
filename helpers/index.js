@@ -52,6 +52,10 @@ export function isSupportedChain(id) {
     return id === 31337 || id === 80001 || id === 137
 }
 
+export function isTestNet(id) {
+    return id === 80001
+}
+
 export function getOutsiderToken(chainId, tkAddress) {
     console.log("fetching outsider:", tkAddress)
     return $fetch(getUrl(`/chain/${chainId}/tokens/${tkAddress}`))

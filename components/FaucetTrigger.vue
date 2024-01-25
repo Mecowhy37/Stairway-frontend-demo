@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-const toggleSelectTokenModal = inject("selectTokenModal")
+const toggleSelectTokenModal = inject("SelectTokenModal")
 
 const props = defineProps({
     callback: Function,

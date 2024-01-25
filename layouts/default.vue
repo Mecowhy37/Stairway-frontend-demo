@@ -1,26 +1,26 @@
 <template>
-    <div class="background">
-        <Transition>
-            <div
-                class="background__image"
-                :class="{ show: interfaceReady }"
-            ></div>
-        </Transition>
-    </div>
+    <div class="contents">
+        <div class="background">
+            <Transition>
+                <div class="background__image show"></div>
+                <!-- :class="{ show: interfaceReady }" -->
+            </Transition>
+        </div>
 
-    <Suspense
-        timeout="0"
-        @resolve="handleResolve"
-    >
+        <!-- <Suspense
+            timeout="0"
+            @resolve="handleResolve"
+            > -->
         <Interface>
             <slot />
         </Interface>
-        <template #fallback>
-            <div class="loading">
-                <p>Loading interface . . .</p>
-            </div>
-        </template>
-    </Suspense>
+        <!-- <template #fallback>
+                <div class="loading">
+                    <p>Loading interface . . .</p>
+                </div>
+            </template>
+        </Suspense> -->
+    </div>
 </template>
 
 <script setup>
