@@ -28,6 +28,8 @@ import { storeToRefs } from "pinia"
 const stepStore = useStepStore()
 const { connectedChainId, connectedAccount } = storeToRefs(stepStore)
 
+import { dummyTokens, dummyChains } from "~/helpers/DummyData"
+
 const route = useRoute()
 
 // CHAINS -------------------
@@ -44,18 +46,11 @@ const {
 } = await useAsyncData(
     "chains",
     () => {
-        return $fetch(getUrl(`/chain`))
+        // return $fetch(getUrl(`/chain`))
+        return dummyChains
     },
     {
         default: () => [],
-        transform: (chainsdata) => {
-            // temporary filter to only include mumbai as only network
-            if (chainsdata) {
-                chainsdata = chainsdata.filter((chain) => chain.chain_id === 80001)
-                // chainsdata.forEach((chain) => initOptions.value.push(transformChainToInitOptions(chain)))
-            }
-            return chainsdata
-        },
     }
 )
 
@@ -90,8 +85,9 @@ const {
     "addresses",
     () => {
         if (isSupportedChain(connectedChainId.value)) {
-            console.log("Fetching addresses on chain:", connectedChainId.value)
-            return $fetch(getUrl(`/chain/${connectedChainId.value}/addresses/local`))
+            // console.log("Fetching addresses on chain:", connectedChainId.value)
+            // return $fetch(getUrl(`/chain/${connectedChainId.value}/addresses/local`))
+            return null
         }
     },
     {
@@ -127,8 +123,9 @@ const {
     "tokens",
     () => {
         if (isSupportedChain(connectedChainId.value)) {
-            console.log("fetching tokens on chain:", connectedChainId.value)
-            return $fetch(getUrl(`/chain/${connectedChainId.value}/tokens/featured`))
+            // console.log("fetching tokens on chain:", connectedChainId.value)
+            // return $fetch(getUrl(`/chain/${connectedChainId.value}/tokens/featured`))
+            return dummyTokens
         } else {
             return []
         }

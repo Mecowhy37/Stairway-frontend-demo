@@ -27,6 +27,8 @@ export function useTokens(FeaturedTokensData, connectedChainId, route) {
             if (sameTokenIndex !== -1 && sameTokenIndex !== selectTokenIndex.value) {
                 reverseTokens()
                 return
+            } else if (sameTokenIndex === selectTokenIndex.value) {
+                token = null
             }
         }
         Tokens.value = Tokens.value.map((el, index) => (index === selectTokenIndex.value ? token : el))

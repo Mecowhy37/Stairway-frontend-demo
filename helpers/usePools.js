@@ -26,13 +26,14 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         () => {
             const bothThere = Tokens.value.every((el) => el !== null)
             if (isSupportedChain(connectedChainId.value) && bothThere) {
-                return $fetch(
-                    getUrl(
-                        `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
-                            Tokens.value[tkEnum.QUOTE].address
-                        }`
-                    )
-                )
+                // return $fetch(
+                //     getUrl(
+                //         `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
+                //             Tokens.value[tkEnum.QUOTE].address
+                //         }`
+                //     )
+                // )
+                return null
             } else {
                 return null
             }

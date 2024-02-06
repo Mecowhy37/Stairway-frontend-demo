@@ -35,12 +35,6 @@
                             class="link list-item list-item--padded-sm"
                             ><p>Liquidity</p></NuxtLink
                         >
-                        <NuxtLink
-                            to="https://vote.stairway.fi/"
-                            @click="toggleDropdown()"
-                            class="link list-item list-item--padded-sm"
-                            ><p>Governance</p></NuxtLink
-                        >
                     </template>
                 </Dropdown>
                 <NuxtLink :to="landingPageUrl">
@@ -61,11 +55,6 @@
                         to="/liquidity"
                         class="link link--underlined"
                         ><p>Liquidity</p></NuxtLink
-                    >
-                    <NuxtLink
-                        to="https://vote.stairway.fi/"
-                        class="link link--underlined"
-                        ><p>Governance</p></NuxtLink
                     >
                 </div>
                 <Btn

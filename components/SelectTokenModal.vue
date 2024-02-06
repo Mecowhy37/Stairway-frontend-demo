@@ -193,13 +193,13 @@ const filteredTokenList = computed(() => {
     const searchInput = search.value
     const searchTerm = searchInput.toLowerCase() // Convert search term to lowercase for case-insensitive comparison
     const filteredList = FeaturedTokensData.value
-        .filter((tkn) => {
-            const exludedSymbols = ["STR", "WMATIC", "WETH"]
-            if (exludedSymbols.includes(tkn.symbol)) {
-                return
-            }
-            return tkn
-        })
+        // .filter((tkn) => {
+        //     const exludedSymbols = ["STR", "WMATIC", "WETH"]
+        //     if (exludedSymbols.includes(tkn.symbol)) {
+        //         return
+        //     }
+        //     return tkn
+        // })
         .filter((token) => {
             const { name, symbol, address } = token
             return (

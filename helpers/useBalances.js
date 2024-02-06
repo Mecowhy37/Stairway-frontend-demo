@@ -1,5 +1,6 @@
 import { formatUnits } from "ethers"
 import { isSupportedChain, tkEnum, getUrl, roundFloor } from "~/helpers/index"
+import { Contract, parseUnits } from "ethers"
 
 export function useBalances(Tokens, connectedAccount, connectedChainId) {
     const balanceState = reactive({
@@ -37,7 +38,6 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
 
         const token = Tokens.value[tokenIndex]
         if (token === null) {
-            // console.log(stateKey, "token === null")
             balanceState[stateKey] = 0n
             setTimeout(() => {
                 if (!isCalledOver) {
@@ -50,21 +50,22 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
             balanceState[stateKey] = 0n
         }
 
-        const { data: balance, error } = await useFetch(
-            getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/balance/${token.address}`)
-        )
-        if (balance.value) {
-            // console.log("got", stateKey, "balance", balance.value)
-            balanceState[stateKey] = BigInt(balance.value)
-            return
-        }
-        if (error.value) {
-            // console.error("failed to fetch", stateKey, "balance", error.value)
-            balanceState[stateKey] = 0n
-            return
-        }
+        // const { data: balance, error } = await useFetch(
+        //     getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/balance/${token.address}`)
+        // )
+
+        // if (balance.value) {
+        //     // console.log("got", stateKey, "balance", balance.value)
+        //     balanceState[stateKey] = BigInt(balance.value)
+        //     return
+        // }
+        // if (error.value) {
+        //     // console.error("failed to fetch", stateKey, "balance", error.value)
+        //     balanceState[stateKey] = 0n
+        //     return
+        // }
         // console.log("nothing returned")
-        balanceState[stateKey] = 0n
+        balanceState[stateKey] = 235899125000000000000n
         return
     }
 

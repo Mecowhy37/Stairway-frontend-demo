@@ -544,7 +544,7 @@ function stopPoolRefresh(intervalId = null) {
 const stopNavigationObserver = router.beforeEach((to, from) => {
     if (to.name !== "swap") {
         console.log("EXITING SWAP")
-        stopPoolRefresh()
+        // stopPoolRefresh()
         stopNavigationObserver()
     }
 })
@@ -571,17 +571,7 @@ watch(
         }
 
         // setting full amount
-        const newTokenIndex = selectTokenIndex.value
         const lastChangedAmountIndex = lastChangedAmount.value
-        // console.log("watch(Tokens) - new token:", getInputLabel(newTokenIndex))
-        // console.log("watch(Tokens) - last changed amount:", getInputLabel(lastChangedAmountIndex))
-        // if (newTokenIndex === lastChangedAmountIndex && Tokens.value[newTokenIndex]) {
-        //     setFromUserToFullAmount(
-        //         userAmounts[amountsLabelOrder.value[lastChangedAmountIndex]],
-        //         Tokens.value[newTokenIndex].decimals,
-        //         lastChangedAmountIndex
-        //     )
-        // }
 
         // fetching pool
         stopPoolRefresh(poolRefreshInterval)
@@ -590,7 +580,7 @@ watch(
             await refreshPool()
 
             if (pool.value) {
-                startPoolRefresh(true)
+                // startPoolRefresh(true)
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(lastChangedAmountIndex)],
                     lastChangedAmountIndex,
@@ -599,7 +589,7 @@ watch(
                     BigInt(pool.value.price)
                 )
             } else {
-                startPoolRefresh()
+                // startPoolRefresh()
             }
         }
     },

@@ -12,7 +12,6 @@
             },
         ]"
     >
-        <!-- @click.self="complete" -->
         <div
             class="notif__icon"
             :class="{ 'notif__icon--done': notifContent.isDone }"
@@ -52,54 +51,10 @@
             </Transition>
         </div>
         <div class="notif__content">
-            <template v-if="notifContent.state === 'approve'">
-                <h4>{{ notifContent.header + " " + textExtras }}</h4>
-                <p class="caption">
-                    {{ notifContent.paragraph }}
-                </p>
-            </template>
-            <template v-else-if="notifContent.state === 'error'">
-                <h4>{{ notifContent.header }}</h4>
-                <p
-                    v-if="textExtras"
-                    class="caption"
-                >
-                    Error code: {{ textExtras }}
-                </p>
-                <p
-                    v-else
-                    class="caption"
-                >
-                    {{ notifContent.paragraph }}
-                </p>
-            </template>
-            <template v-else-if="notifContent.state === 'success'">
-                <h4>{{ notifContent.header }}</h4>
-                <p
-                    v-if="successData"
-                    class="caption"
-                >
-                    Successfully {{ successData.action }}
-                    <!-- quote -->
-                    {{ roundFloor(successData.quote.amount) }} {{ successData.quote.token.symbol }}
-                    <!---->
-                    {{ successData.action === "swapped" ? "for" : "and" }}
-                    <!-- base -->
-                    {{ roundFloor(successData.base.amount) }} {{ successData.base.token.symbol }}
-                </p>
-                <p
-                    v-else
-                    class="caption"
-                >
-                    {{ notifContent.paragraph }}
-                </p>
-            </template>
-            <template v-else>
-                <h4>{{ notifContent.header }}</h4>
-                <p class="caption">
-                    {{ notifContent.paragraph }}
-                </p>
-            </template>
+            <h4>{{ notifContent.header }}</h4>
+            <p class="caption">
+                {{ notifContent.paragraph }}
+            </p>
             <!-- <TransitionGroup mode="out-in">
                 <div
                     class="notif__content__transition"
@@ -145,8 +100,8 @@ import { roundFloor } from "~/helpers/index"
 const notificationContents = {
     approve: {
         state: "approve",
-        header: "Approve spending",
-        paragraph: "Please approve spending funds",
+        header: "Click to change state",
+        paragraph: "You'll go through transaction stages",
         isDone: false,
     },
     sign: {
@@ -187,38 +142,25 @@ const props = defineProps({
 const notifContent = computed(() => notificationContents[props.notif.state])
 
 const id = computed(() => props.notif.id)
-const textExtras = computed(() => props.notif?.symbol)
-const successData = computed(() => {
-    if (props.notif.successData) {
-        const successDataProp = JSON.parse(JSON.stringify(props.notif.successData))
-        successDataProp.quote.amount = formatUnits(
-            successDataProp.quote.amount.toString(),
-            successDataProp.quote.token.decimals
-        )
-        successDataProp.base.amount = formatUnits(
-            successDataProp.base.amount.toString(),
-            successDataProp.base.token.decimals
-        )
-        return successDataProp
-    } else {
-        return null
-    }
-})
 
 const spinning = ref(true)
+let timeoutId = null
 watch(
     () => notifContent.value.isDone,
     (isDone) => {
+        if (timeoutId) {
+            clearTimeout(timeoutId)
+        }
         if (isDone) {
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 spinning.value = false
             }, 700)
 
-            if (!props.notif.keepNotification) {
-                setTimeout(() => {
-                    props.deleteNotif(id.value)
-                }, 5000)
-            }
+            // if (!props.notif.keepNotification) {
+            //     setTimeout(() => {
+            //         props.deleteNotif(id.value)
+            //     }, 5000)
+            // }
         } else {
             spinning.value = true
         }

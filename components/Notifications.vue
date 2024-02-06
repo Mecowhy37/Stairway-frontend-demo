@@ -1,12 +1,19 @@
 <template>
     <div class="modal">
         <div class="notify-wrapper">
-            <!-- <Btn @click="notify(null, 'approve', 'try')">Notify</Btn> -->
+            <div
+                v-if="notifications.length < 1"
+                class="empty-notif"
+                @click="notify({ id: null }, 'approve')"
+            >
+                Show a notification.
+            </div>
             <Notification
                 v-for="notif in notifications"
                 :key="notif.id"
                 :notif="notif"
                 :delete-notif="deleteNotif"
+                @click="toggleNotifState(notif)"
             ></Notification>
         </div>
     </div>
@@ -19,7 +26,8 @@ import { useStepStore } from "@/stores/step"
 const stepStore = useStepStore()
 
 const notifications = ref([])
-const allStates = ["approve", "sign", "confirming", "pending", "success", "error"]
+const allStates = ["approve", "sign", "pending", "success", "pending", "error"]
+let stateTicker = 0
 
 function notify(notifyHolder, state, symbol = false, successData = false, keepNotification = false) {
     if (!allStates.includes(state)) {
@@ -34,6 +42,18 @@ function notify(notifyHolder, state, symbol = false, successData = false, keepNo
     }
 }
 stepStore.notify = notify
+
+function toggleNotifState(notif) {
+    const lengthOfAllStates = allStates.length
+    if (stateTicker === lengthOfAllStates - 1) {
+        stateTicker = 0
+    } else {
+        stateTicker++
+    }
+    console.log("stateTicker:", stateTicker)
+    const newNotifState = allStates[stateTicker]
+    updateNotification(notif, newNotifState, false, null, false)
+}
 
 function createNotif(state, symbol, successData, keepNotification) {
     const newNotif = {
@@ -87,5 +107,22 @@ function deleteNotif(id) {
     @media (max-width: $width) {
         width: 100%;
     }
+}
+.empty-notif {
+    $vert-padd: 31px;
+    $horiz-padd: 16px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--semi-wdg-radius);
+    border: 1.5px dashed var(--text-color-reverse);
+    /* border: 2px dashed var(--text-grey); */
+    padding: $vert-padd $horiz-padd;
+    color: var(--text-color-reverse);
+    white-space: nowrap;
+    background-color: transparent;
+    box-shadow: var(--button-box-shadow);
+    cursor: pointer;
 }
 </style>

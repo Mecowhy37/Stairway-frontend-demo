@@ -54,6 +54,7 @@ html {
     $size: 16px;
     /* font-size: calc($size * ((100vw - 300px) / (1600 - 300))); */
     font-size: $size;
+    user-select: none;
 }
 .background {
     position: fixed;
