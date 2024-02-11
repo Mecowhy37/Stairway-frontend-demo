@@ -70,10 +70,11 @@
                                 'list-item--opaque': ABTokensAddresses.includes(token.address),
                             }"
                         >
-                            <img
+                            <!-- <img
                                 class="token-icon token-icon--sm"
                                 :src="token.logo_uri"
-                            />
+                            /> -->
+                            <AccountIcon :account="token.address" />
                             <p class="token-name">
                                 {{ token.name }}
                             </p>

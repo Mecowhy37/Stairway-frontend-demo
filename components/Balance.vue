@@ -32,7 +32,8 @@ const { data: balance, pending: balancePending } = await useAsyncData(
             return null
         }
         console.log("fetching balance")
-        return $fetch(getUrl(`/chain/${props.chainId}/user/${props.wallet}/balance/${props.token.address}`))
+        return
+        // return $fetch(getUrl(`/chain/${props.chainId}/user/${props.wallet}/balance/${props.token.address}`))
     },
     {
         watch: [() => props.token, () => props.wallet, () => props.chainId],

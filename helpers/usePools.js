@@ -8,6 +8,8 @@ import {
     precision,
 } from "~/helpers/index"
 
+import { dummyPools } from "~/helpers/DummyData"
+
 import router from "@/ABIs/IDEX.json"
 const RouterABI = router.abi
 
@@ -22,9 +24,12 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         pending: poolPending,
         refresh: refreshPool,
     } = await useAsyncData(
-        "pool",
-        () => {
+        "pool" + Tokens.value[tkEnum.BASE],
+        async () => {
             const bothThere = Tokens.value.every((el) => el !== null)
+            if (Tokens.value[tkEnum.BASE].address === Tokens.value[tkEnum.QUOTE].address) {
+                return
+            }
             if (isSupportedChain(connectedChainId.value) && bothThere) {
                 // return $fetch(
                 //     getUrl(
@@ -33,7 +38,14 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 //         }`
                 //     )
                 // )
-                return null
+                const pool = await poolObtainer()
+                const returnPool = { ...pool }
+                if (Tokens.value[tkEnum.QUOTE].symbol === "WMATIC") {
+                    returnPool.price = "4017000000000000000"
+                    // returnPool.price = "186563184260000000"
+                }
+
+                return returnPool
             } else {
                 return null
             }
@@ -45,6 +57,16 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
             default: () => null,
         }
     )
+
+    async function poolObtainer() {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject("pool failed")
+                return
+                resolve(dummyPools)
+            }, 1000)
+        })
+    }
 
     const poolRatio = computed(() => {
         if (!pool.value) {

@@ -81,14 +81,14 @@
                             @click="!isWidgetLocked && fillInBalance(Balances[x], x)"
                             :class="{ disabled: !Tokens[x] || Balances[x] === 0n }"
                         >
-                            <Balance
+                            <!-- <Balance
                                 :key="x"
                                 :token="Tokens[x]"
                                 :wallet="connectedAccount"
                                 :chainId="connectedChainId"
                                 :allBalances="allBalances"
                                 :index="x"
-                            ></Balance>
+                            ></Balance> -->
                             <p class="caption">
                                 {{ formatedBalances[x] }}
                             </p>
@@ -229,7 +229,7 @@
                 </Btn>
             </div>
             <div
-                v-if="price && bothTokensThere && poolIsRemaining"
+                v-if="price && bothTokensThere && !poolPending"
                 class="sum-up grey-text caption"
             >
                 <div class="row space-between">
@@ -254,7 +254,7 @@
                 </div>
             </div>
             <div
-                v-else-if="price && bothTokensThere && poolPending && !poolIsRemaining && !poolError"
+                v-else-if="price && bothTokensThere && poolPending && !poolError"
                 class="sum-up grey-text caption"
             >
                 <div class="row space-between">
@@ -524,7 +524,7 @@ function startPoolRefresh(poolRemaining = false) {
         // console.log("L o O p", poolRefreshInterval.value, randomTimeout / 1000 + "s")
         await refreshPool()
 
-        startPoolRefresh(poolRemaining)
+        // startPoolRefresh(poolRemaining)
     }, randomTimeout)
 }
 
@@ -566,15 +566,13 @@ watch(
             }
             poolError.value = null
             pool.value = null
-        } else {
-            reverseBalances()
         }
 
         // setting full amount
         const lastChangedAmountIndex = lastChangedAmount.value
 
         // fetching pool
-        stopPoolRefresh(poolRefreshInterval)
+        // stopPoolRefresh(poolRefreshInterval)
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(lastChangedAmountIndex))
             await refreshPool()

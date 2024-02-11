@@ -51,12 +51,12 @@ export function useTokens(FeaturedTokensData, connectedChainId, route) {
 
     async function findTokenByAddress(featuredList, address) {
         const token = featuredList.find((el) => el.address === address)
-        if (!token && isAddress(address)) {
-            const outsideToken = await getOutsiderToken(connectedChainId.value, address)
+        // if (!token && isAddress(address)) {
+        //     const outsideToken = await getOutsiderToken(connectedChainId.value, address)
 
-            console.log("outsideToken:", outsideToken)
-            return outsideToken.name && outsideToken.symbol ? outsideToken : null
-        }
+        //     console.log("outsideToken:", outsideToken)
+        //     return outsideToken.name && outsideToken.symbol ? outsideToken : null
+        // }
         return token ? token : null
     }
 

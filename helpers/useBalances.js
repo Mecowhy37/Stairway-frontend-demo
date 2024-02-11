@@ -1,6 +1,5 @@
 import { formatUnits } from "ethers"
 import { isSupportedChain, tkEnum, getUrl, roundFloor } from "~/helpers/index"
-import { Contract, parseUnits } from "ethers"
 
 export function useBalances(Tokens, connectedAccount, connectedChainId) {
     const balanceState = reactive({
@@ -30,29 +29,24 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
     async function getTokenBalance(tokenIndex, clearOld, isCalledOver = false) {
         const stateKey = Object.keys(balanceState)[tokenIndex]
 
-        if (!connectedAccount.value || !isSupportedChain(connectedChainId.value)) {
-            // console.log("invald chain or no wallet")
-            balanceState[stateKey] = 0n
-            return
-        }
+        // if (!connectedAccount.value || !isSupportedChain(connectedChainId.value)) {
+        //     balanceState[stateKey] = 0n
+        //     return
+        // }
 
         const token = Tokens.value[tokenIndex]
         if (token === null) {
-            balanceState[stateKey] = 0n
-            setTimeout(() => {
-                if (!isCalledOver) {
-                    getTokenBalance(tokenIndex, clearOld, true)
-                }
-            }, 2000)
+            // balanceState[stateKey] = 0n
+            // setTimeout(() => {
+            //     if (!isCalledOver) {
+            //         getTokenBalance(tokenIndex, clearOld, true)
+            //     }
+            // }, 2000)
             return
         }
         if (clearOld) {
             balanceState[stateKey] = 0n
         }
-
-        // const { data: balance, error } = await useFetch(
-        //     getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/balance/${token.address}`)
-        // )
 
         // if (balance.value) {
         //     // console.log("got", stateKey, "balance", balance.value)
@@ -65,7 +59,11 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         //     return
         // }
         // console.log("nothing returned")
-        balanceState[stateKey] = 235899125000000000000n
+
+        balanceState[stateKey] =
+            token.address === "0x9c3c9283d3e44854697cd22d3faa240cfb032889"
+                ? 235899125000000000000n
+                : 78923643000000000000n
         return
     }
 
