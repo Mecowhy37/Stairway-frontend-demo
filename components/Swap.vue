@@ -34,12 +34,12 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <div
+            <!-- <div
                 class="tips"
                 v-if="connectedChainId === 80001 && connectedAccount"
             >
                 <FaucetTrigger :callback="() => getBothBalances(false, false)"></FaucetTrigger>
-            </div>
+            </div> -->
             <div class="windows">
                 <div
                     class="contents"

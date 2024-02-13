@@ -33,12 +33,6 @@
             </Dropdown>
         </template>
         <template #widget-content>
-            <div
-                v-if="isTestNet(connectedChainId)"
-                class="tips"
-            >
-                <FaucetTrigger :callback="() => getBothBalances(false, false)"></FaucetTrigger>
-            </div>
             <div class="windows">
                 <div
                     class="contents"
