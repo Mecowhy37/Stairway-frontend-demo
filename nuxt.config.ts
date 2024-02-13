@@ -4,6 +4,14 @@ export default defineNuxtConfig({
   modules: [
       "@pinia/nuxt",
   ],
+  typescript: {
+    tsConfig: {
+      target: "es2020",
+      compilerOptions: {
+        target: "es2020"
+    }
+    }
+  }
 })
     
     
