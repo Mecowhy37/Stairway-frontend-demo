@@ -1,11 +1,10 @@
 import type { Ref } from "vue"
-import { getUrl, isSupportedChain } from "~/helpers/index"
+import { ref } from "vue"
 import { defineStore } from "pinia"
 import { init, useOnboard } from "@web3-onboard/vue"
 import injectedModule, { ProviderLabel } from "@web3-onboard/injected-wallets"
 
 import ledgerModule from '@web3-onboard/ledger'
-// import walletConnectModule from '@web3-onboard/walletconnect'
 import gnosisModule from '@web3-onboard/gnosis'
 
 const ledger = ledgerModule({
