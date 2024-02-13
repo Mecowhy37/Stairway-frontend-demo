@@ -2,8 +2,5 @@
     "extends": "./.nuxt/tsconfig.json",
     "vueCompilerOptions": {
         "allowJs": true
-    },
-    "compilerOptions": {
-        "target": "es2020"
     }
 }
