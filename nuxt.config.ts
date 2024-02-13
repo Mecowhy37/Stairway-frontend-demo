@@ -1,17 +1,9 @@
 // https://v3.nuxtjs.org/api/confsiguration/nuxt.config
 export default defineNuxtConfig({
-  ssr: false,
-  // nitro: {
-  //   prerender: {
-  //     crawlLinks: true
-  //   }
-  // },
+  ssr: true,
   modules: [
       "@pinia/nuxt",
   ],
-  build: {
-    standalone: true,
-  },
 })
     
     
