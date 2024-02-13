@@ -93,7 +93,7 @@ const injected = injectedModule({
             },
         },
         connect: {
-            autoConnectLastWallet: true,
+            // autoConnectLastWallet: true,
         },   
     })
     const { wallets, connectWallet, connectedChain, setChain, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets } = useOnboard()
