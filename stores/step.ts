@@ -1,12 +1,9 @@
-import type { Ref } from "vue"
-import { getUrl, isSupportedChain } from "~/helpers/index"
 import { defineStore } from "pinia"
 import { init, useOnboard } from "@web3-onboard/vue"
 import injectedModule, { ProviderLabel } from "@web3-onboard/injected-wallets"
 
 import ledgerModule from '@web3-onboard/ledger'
 // import walletConnectModule from '@web3-onboard/walletconnect'
-import gnosisModule from '@web3-onboard/gnosis'
 
 const ledger = ledgerModule({
   projectId: 'Stairway',
@@ -20,10 +17,6 @@ const ledger = ledgerModule({
 // })
 const regex = new RegExp("^https://app\\.stairway\\.fi/.*$");
 const localhostRegex = new RegExp("^http://localhost:3000/.*$");
-const gnosis = gnosisModule()
-// const gnosis = gnosisModule({
-//     whitelistedDomains: [regex, localhostRegex]
-// })
 declare global {
     interface Window {
         ethereum?: any
@@ -88,8 +81,7 @@ const injected = injectedModule({
 
     // all onboard logic needs to be moved out to default layout
     const onboard = init({
-        wallets: [injected, ledger, gnosis],
-        // wallets: [injected, ledger, walletConnect, gnosis],
+        wallets: [injected, ledger],
         chains: onboardInit.value,
         accountCenter: {
             desktop: {
