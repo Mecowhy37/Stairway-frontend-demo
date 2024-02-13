@@ -94,7 +94,6 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
 
         return newIndexes
     }
-
     function reverseBalances() {
         Balances.value = Balances.value.reverse()
     }
