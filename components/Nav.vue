@@ -146,34 +146,32 @@
                         </Btn>
                     </template>
                     <template #dropdown>
+                        <!-- <div v-if="ChainsData.length > 0"> -->
+                        <!-- class="contents" -->
                         <div
-                            v-if="ChainsData.length > 0"
-                            class="contents"
+                            v-for="chain in ChainsData"
+                            class="list-item list-item--padded-xs row align-center"
+                            @click="setTheChain(chain.chain_id)"
                         >
-                            <div
-                                v-for="chain in ChainsData"
-                                class="list-item list-item--padded-xs row align-center"
-                                @click="setTheChain(chain.chain_id)"
-                            >
-                                <img
-                                    class="token-icon token-icon--sm"
-                                    :src="chain.logo_url"
-                                />
-                                <p>{{ chain.chain_name }}</p>
-                                <Icon
-                                    v-if="chain.chain_id === connectedChainId"
-                                    class="tick-icon"
-                                    name="tick"
-                                    :size="9"
-                                ></Icon>
-                            </div>
+                            <img
+                                class="token-icon token-icon--sm"
+                                :src="chain.logo_url"
+                            />
+                            <p>{{ chain.chain_name }}</p>
+                            <Icon
+                                v-if="chain.chain_id === connectedChainId"
+                                class="tick-icon"
+                                name="tick"
+                                :size="9"
+                            ></Icon>
                         </div>
-                        <div
+                        <!-- </div> -->
+                        <!-- <div
                             v-else
                             class="list-item list-item--padded-xs row align-center"
                         >
                             <p>no chains found</p>
-                        </div>
+                        </div> -->
                     </template>
                 </Dropdown>
             </div>
