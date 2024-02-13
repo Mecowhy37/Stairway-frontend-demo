@@ -2,11 +2,6 @@ import { init, useOnboard } from "@web3-onboard/vue"
 
 import injectedModule, { ProviderLabel } from "@web3-onboard/injected-wallets"
 import ledgerModule from "@web3-onboard/ledger"
-// import walletConnectModule from '@web3-onboard/walletconnect'
-import gnosisModule from "@web3-onboard/gnosis"
-const gnosis = gnosisModule()
-// const gnosis = gnosisModule({
-//     whitelistedDomains: [regex, localhostRegex]
 // })
 
 // const walletConnect = walletConnectModule({
@@ -27,8 +22,7 @@ export async function useWeb3Onboard(initOptions) {
     })
 
     init({
-        wallets: [injected, ledger, gnosis],
-        // wallets: [injected, ledger, walletConnect, gnosis],
+        wallets: [injected, ledger],
         chains: initOptions.value,
         accountCenter: {
             desktop: {

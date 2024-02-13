@@ -1,10 +1,10 @@
 export default defineNuxtConfig({
-  ssr: false,
+  ssr: true,
   modules: [
       "@pinia/nuxt",
   ],
   build: {
-    standalone: true,
+    target: 'esnext',
   },
 })
     
