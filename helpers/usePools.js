@@ -28,9 +28,9 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         async () => {
             const bothThere = Tokens.value.every((el) => el !== null)
             if (isSupportedChain(connectedChainId.value) && bothThere) {
-                if (Tokens.value[tkEnum.BASE].address === Tokens.value[tkEnum.QUOTE].address) {
-                    return
-                }
+                // if (Tokens.value[tkEnum.BASE].address === Tokens.value[tkEnum.QUOTE].address) {
+                //     return
+                // }
                 // return $fetch(
                 //     getUrl(
                 //         `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
@@ -62,11 +62,9 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         }
     )
 
-    async function poolObtainer() {
+    function poolObtainer() {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                // reject("pool failed")
-                // return
                 resolve(dummyPools)
             }, 1000)
         })

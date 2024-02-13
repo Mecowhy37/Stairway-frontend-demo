@@ -557,9 +557,27 @@ const stopNavigationObserver = router.beforeEach((to, from) => {
 })
 // POOL REFRESH LOOP ---------
 
+async function waitForPoolToRefresh() {
+    const lastChangedAmountIndex = lastChangedAmount.value
+
+    await refreshPool()
+    if (pool.value) {
+        startPoolRefresh(true)
+        calcAndSetOpposingInput(
+            fullAmounts[getInputLabel(lastChangedAmountIndex)],
+            lastChangedAmountIndex,
+            BigInt(pool.value.base_reserves),
+            BigInt(pool.value.quote_reserves),
+            BigInt(pool.value.price)
+        )
+    } else {
+        startPoolRefresh()
+    }
+}
+
 watch(
-    Tokens,
-    async (tokens, oldTokens) => {
+    () => Tokens.value,
+    (tokens, oldTokens) => {
         console.log("- - - - - - - - - - - - - - -\nwatch(Tokens)")
 
         //getting balance
@@ -579,23 +597,10 @@ watch(
         const lastChangedAmountIndex = lastChangedAmount.value
 
         // fetching pool
-        stopPoolRefresh(poolRefreshInterval)
+        stopPoolRefresh(poolRefreshInterval.value)
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(lastChangedAmountIndex))
-            await refreshPool()
-
-            if (pool.value) {
-                startPoolRefresh(true)
-                calcAndSetOpposingInput(
-                    fullAmounts[getInputLabel(lastChangedAmountIndex)],
-                    lastChangedAmountIndex,
-                    BigInt(pool.value.base_reserves),
-                    BigInt(pool.value.quote_reserves),
-                    BigInt(pool.value.price)
-                )
-            } else {
-                startPoolRefresh()
-            }
+            waitForPoolToRefresh()
         }
     },
     {
