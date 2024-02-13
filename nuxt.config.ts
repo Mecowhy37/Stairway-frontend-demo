@@ -3,8 +3,12 @@ export default defineNuxtConfig({
   modules: [
       "@pinia/nuxt",
   ],
-  build: {
-    target: 'esnext',
+  nitro: {
+    esbuild: {
+      options: {
+        target: 'esnext',
+      },
+    },
   },
 })
     

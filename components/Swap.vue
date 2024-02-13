@@ -559,7 +559,7 @@ const stopNavigationObserver = router.beforeEach((to, from) => {
 
 watch(
     Tokens,
-    async (tokens, oldTokens) => {
+    (tokens, oldTokens) => {
         console.log("- - - - - - - - - - - - - - -\nwatch(Tokens)")
 
         //getting balance
@@ -582,7 +582,7 @@ watch(
         stopPoolRefresh(poolRefreshInterval)
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(lastChangedAmountIndex))
-            await refreshPool()
+            // await refreshPool()
 
             if (pool.value) {
                 startPoolRefresh(true)
