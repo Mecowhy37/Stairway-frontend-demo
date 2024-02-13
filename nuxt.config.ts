@@ -4,6 +4,9 @@ export default defineNuxtConfig({
   modules: [
       "@pinia/nuxt",
   ],
+  build: {
+    target: 'esnext',
+  },
 })
     
     
