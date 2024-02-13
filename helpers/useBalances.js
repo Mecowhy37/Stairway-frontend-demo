@@ -18,7 +18,8 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
     const formatedBalances = computed(() => {
         return Balances.value.map((bal, idx) => {
             const token = Tokens.value[idx]
-            if (!token || !connectedAccount.value) {
+            // if (!token || !connectedAccount.value) {
+            if (!token) {
                 return ""
             } else {
                 return roundFloor(formatUnits(bal, token.decimals))
@@ -60,11 +61,13 @@ export function useBalances(Tokens, connectedAccount, connectedChainId) {
         // }
         // console.log("nothing returned")
 
-        balanceState[stateKey] =
-            token.address === "0x9c3c9283d3e44854697cd22d3faa240cfb032889"
-                ? 235899125000000000000n
-                : 78923643000000000000n
-        return
+        if (token.symbol === "Green Cash") {
+            balanceState[stateKey] = 235899125000000000000n
+        } else if (token.symbol === "Silver Change") {
+            balanceState[stateKey] = 78923643000000000000n
+        } else {
+            balanceState[stateKey] = 37502770000000000000000n
+        }
     }
 
     async function getBothBalances(tokenIndex = false, clearOld = true) {

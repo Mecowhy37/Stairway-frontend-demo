@@ -28,7 +28,7 @@ import { storeToRefs } from "pinia"
 const stepStore = useStepStore()
 const { connectedChainId, connectedAccount } = storeToRefs(stepStore)
 
-import { dummyTokens, dummyChains } from "~/helpers/DummyData"
+import { dummyTokens, dummyChains, dummyPositions } from "~/helpers/DummyData"
 
 const route = useRoute()
 
@@ -157,11 +157,13 @@ const {
     status: PositionsStatus,
 } = useAsyncData(
     "positions",
-    () => {
+    async () => {
         if (route.name === "liquidity") {
-            if (connectedAccount.value && isSupportedChain(connectedChainId.value)) {
+            if (isSupportedChain(connectedChainId.value)) {
                 console.log("fetching positions on chain:", connectedChainId.value)
-                return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+                // return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions`))
+                const position = await positionObtainer(true)
+                return position
             } else {
                 return []
             }
@@ -179,12 +181,25 @@ const {
 
 // get just one users position and is used in add and remove liquidity
 async function getSinglePostion(poolIndex) {
-    if (isSupportedChain(connectedChainId.value) && connectedAccount.value && poolIndex) {
+    if (isSupportedChain(connectedChainId.value) && poolIndex) {
         console.log("getting position with id", poolIndex)
-        return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
+        // return $fetch(getUrl(`/chain/${connectedChainId.value}/user/${connectedAccount.value}/positions/${poolIndex}`))
+
+        const position = await positionObtainer(false)
+        return position
     } else {
         return null
     }
+}
+
+async function positionObtainer(returnArray) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // reject("pool failed")
+            // return
+            resolve(returnArray ? dummyPositions : dummyPositions[0])
+        }, 1800)
+    })
 }
 
 // updatePositionInPositions updates specific position or adds it to the list

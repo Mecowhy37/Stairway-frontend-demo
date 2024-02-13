@@ -34,7 +34,7 @@
         </template>
         <template #widget-content>
             <div
-                v-if="isTestNet(connectedChainId) && connectedAccount"
+                v-if="isTestNet(connectedChainId)"
                 class="tips"
             >
                 <FaucetTrigger :callback="() => getBothBalances(false, false)"></FaucetTrigger>
@@ -223,9 +223,9 @@
                     v-for="(x, index) in new Array(2)"
                     class="pooled__item row align-center"
                 >
-                    <img
-                        class="token-icon token-icon--sm"
-                        :src="Tokens[index].logo_uri"
+                    <AccountIcon
+                        :account="Tokens[index].address"
+                        size="21"
                     />
                     <p class="pooled__item__symbol grey-text">Pooled {{ Tokens[index].symbol }}:</p>
                     <p
@@ -259,16 +259,6 @@
             </div>
             <div class="buttons">
                 <Btn
-                    v-if="!stepStore.connectedWallet"
-                    is="h4"
-                    wide
-                    bulky
-                    @click="stepStore.connectWallet()"
-                >
-                    Connect wallet
-                </Btn>
-                <Btn
-                    v-else
                     @click="callAddLiquidity()"
                     is="h4"
                     wide
@@ -398,6 +388,24 @@ const settingPoolPrice = computed(() => {
 })
 
 function callAddLiquidity() {
+    const successData = {
+        action: "added",
+        quote: {
+            token: Tokens.value[tkEnum.QUOTE],
+            amount: fullAmountsMap.value[tkEnum.QUOTE].toString(),
+        },
+        base: {
+            token: Tokens.value[tkEnum.BASE],
+            amount: fullAmountsMap.value[tkEnum.BASE].toString(),
+        },
+    }
+    let notifHolder = { id: null }
+    stepStore.notify(notifHolder, "success", false, successData)
+
+    resetInputAmounts(tkEnum.QUOTE)
+    resetInputAmounts(tkEnum.BASE)
+    return
+
     widgetLocker(true)
 
     // TODO: addLiquidity should be moved to this file instead of usePools.js

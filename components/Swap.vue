@@ -209,16 +209,6 @@
             </div>
             <div class="buttons">
                 <Btn
-                    v-if="!stepStore.connectedWallet"
-                    is="h4"
-                    wide
-                    bulky
-                    @click="stepStore.connectWallet()"
-                >
-                    Connect wallet
-                </Btn>
-                <Btn
-                    v-else
                     @click="callSwap"
                     is="h4"
                     wide
@@ -229,12 +219,12 @@
                 </Btn>
             </div>
             <div
-                v-if="price && bothTokensThere && !poolPending"
+                v-if="price && bothTokensThere && poolIsRemaining"
                 class="sum-up grey-text caption"
             >
                 <div class="row space-between">
                     <div class="row">
-                        <p>Fixed price per {{ Tokens[tkEnum.BASE].symbol }}</p>
+                        <p>Fixed price per 1 {{ Tokens[tkEnum.BASE].symbol }}</p>
                         <div
                             v-if="poolPending"
                             class="ping-cirle"
@@ -254,12 +244,12 @@
                 </div>
             </div>
             <div
-                v-else-if="price && bothTokensThere && poolPending && !poolError"
+                v-else-if="price && bothTokensThere && poolPending && !poolIsRemaining && !poolError"
                 class="sum-up grey-text caption"
             >
                 <div class="row space-between">
                     <div class="row">
-                        <p>Fixed price per {{ Tokens[tkEnum.BASE].symbol }}</p>
+                        <p>Fixed price per 1 {{ Tokens[tkEnum.BASE].symbol }}</p>
                         <div
                             v-if="poolPending"
                             class="ping-cirle"
@@ -363,6 +353,23 @@ function switchOrder() {
 }
 
 function callSwap() {
+    const successData = {
+        action: "swapped",
+        quote: {
+            token: Tokens.value[tkEnum.QUOTE],
+            amount: fullAmountsMap.value[tkEnum.QUOTE].toString(),
+        },
+        base: {
+            token: Tokens.value[tkEnum.BASE],
+            amount: fullAmountsMap.value[tkEnum.BASE].toString(),
+        },
+    }
+    let notifHolder = { id: null }
+    stepStore.notify(notifHolder, "success", false, successData)
+
+    resetInputAmounts(tkEnum.QUOTE)
+    resetInputAmounts(tkEnum.BASE)
+    return
     widgetLocker(true)
 
     // TODO: swap() should be moved to this file
@@ -524,7 +531,7 @@ function startPoolRefresh(poolRemaining = false) {
         // console.log("L o O p", poolRefreshInterval.value, randomTimeout / 1000 + "s")
         await refreshPool()
 
-        // startPoolRefresh(poolRemaining)
+        startPoolRefresh(poolRemaining)
     }, randomTimeout)
 }
 
@@ -544,7 +551,7 @@ function stopPoolRefresh(intervalId = null) {
 const stopNavigationObserver = router.beforeEach((to, from) => {
     if (to.name !== "swap") {
         console.log("EXITING SWAP")
-        // stopPoolRefresh()
+        stopPoolRefresh()
         stopNavigationObserver()
     }
 })
@@ -572,13 +579,13 @@ watch(
         const lastChangedAmountIndex = lastChangedAmount.value
 
         // fetching pool
-        // stopPoolRefresh(poolRefreshInterval)
+        stopPoolRefresh(poolRefreshInterval)
         if (bothTokensThere.value) {
             resetInputAmounts(oppositeInput(lastChangedAmountIndex))
             await refreshPool()
 
             if (pool.value) {
-                // startPoolRefresh(true)
+                startPoolRefresh(true)
                 calcAndSetOpposingInput(
                     fullAmounts[getInputLabel(lastChangedAmountIndex)],
                     lastChangedAmountIndex,
@@ -587,7 +594,7 @@ watch(
                     BigInt(pool.value.price)
                 )
             } else {
-                // startPoolRefresh()
+                startPoolRefresh()
             }
         }
     },

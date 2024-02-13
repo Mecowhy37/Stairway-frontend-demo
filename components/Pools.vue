@@ -4,7 +4,7 @@
             <div class="positions__top row">
                 <h1 class="scale">Liquidity</h1>
                 <NuxtLink
-                    v-if="connectedAccount && PositionsData?.length > 0"
+                    v-if="PositionsData?.length > 0"
                     to="/add-liquidity"
                     class="link"
                 >
@@ -52,7 +52,7 @@
             </div>
 
             <div
-                v-else-if="connectedAccount && PositionsData?.length > 0"
+                v-else-if="PositionsData?.length > 0 && !PositionsError"
                 class="positions__list"
             >
                 <div
@@ -63,13 +63,15 @@
                     <div>
                         <div class="pool__heading row">
                             <div class="icons-wrapper row">
-                                <img
+                                <AccountIcon
+                                    size="36"
                                     class="token-icon"
-                                    :src="position.pool.base_token.logo_uri"
+                                    :account="position.pool.base_token.address"
                                 />
-                                <img
+                                <AccountIcon
+                                    size="36"
                                     class="token-icon"
-                                    :src="position.pool.quote_token.logo_uri"
+                                    :account="position.pool.quote_token.address"
                                 />
                             </div>
                             <p>{{ position.pool.base_token.symbol }} / {{ position.pool.quote_token.symbol }}</p>
@@ -145,41 +147,6 @@
                 </div>
             </div>
 
-            <div
-                v-else-if="!PositionsError"
-                class="positions__list"
-            >
-                <div class="empty">
-                    <p>Your active liquidity will be listed here</p>
-                    <NuxtLink
-                        v-if="connectedAccount"
-                        class="link"
-                        to="/add-liquidity"
-                    >
-                        <Btn
-                            is="h4"
-                            reverse
-                            wide
-                        >
-                            Add Liquidity
-                            <template #icon>
-                                <Icon
-                                    name="plus"
-                                    :size="16"
-                                />
-                            </template>
-                        </Btn>
-                    </NuxtLink>
-                    <Btn
-                        v-else
-                        is="h4"
-                        bulky
-                        @click="stepStore.connectWallet()"
-                    >
-                        Connect wallet
-                    </Btn>
-                </div>
-            </div>
             <div
                 v-else
                 class="positions__list"
@@ -292,7 +259,7 @@ function removeRedirect(pool) {
 
                 .token-icon {
                     &:last-of-type {
-                        margin-left: -7px;
+                        margin-left: -14px;
                     }
                 }
                 .manage-btn {

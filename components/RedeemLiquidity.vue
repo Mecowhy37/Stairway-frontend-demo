@@ -37,13 +37,15 @@
                 v-if="ownedPosition"
                 class="icons-tokens row align-center"
             >
-                <img
+                <AccountIcon
                     class="token-icon"
-                    :src="ownedPosition.pool.base_token.logo_uri"
+                    size="36"
+                    :account="ownedPosition.pool.base_token.address"
                 />
-                <img
+                <AccountIcon
                     class="token-icon"
-                    :src="ownedPosition.pool.quote_token.logo_uri"
+                    size="36"
+                    :account="ownedPosition.pool.quote_token.address"
                 />
                 <p>{{ ownedPosition.pool.base_token.symbol }} / {{ ownedPosition.pool.quote_token.symbol }}</p>
             </div>
@@ -178,9 +180,10 @@
                 class="pooled"
             >
                 <div class="pooled__item row align-center">
-                    <img
+                    <AccountIcon
+                        :account="pool.base_token.address"
+                        size="21"
                         class="token-icon token-icon--sm"
-                        :src="pool.base_token.logo_uri"
                     />
                     <p class="pooled__item__symbol grey-text">Pooled {{ pool.base_token.symbol }}:</p>
                     <p class="pooled__item__amount">
@@ -198,9 +201,10 @@
                     </p>
                 </div>
                 <div class="pooled__item row align-center">
-                    <img
+                    <AccountIcon
+                        :account="pool.quote_token.address"
+                        size="21"
                         class="token-icon token-icon--sm"
-                        :src="pool.quote_token.logo_uri"
                     />
                     <p class="pooled__item__symbol grey-text">Pooled {{ pool.quote_token.symbol }}:</p>
                     <p class="pooled__item__amount">
@@ -230,16 +234,6 @@
             </div>
             <div class="buttons">
                 <Btn
-                    v-if="!connectedAccount"
-                    is="h4"
-                    wide
-                    bulky
-                    @click="stepStore.connectWallet()"
-                >
-                    Connect wallet
-                </Btn>
-                <Btn
-                    v-else
                     is="h4"
                     wide
                     bulky
@@ -281,6 +275,13 @@ function setRedeemProc(event, proc) {
 const progressPercent = computed(() => {
     return redeemPercent.value + "%"
 })
+
+const toRedeemAmount = computed((amount, decimals) => {
+    if (ownedPosition.value === false) {
+        return 0
+    }
+    return basicRound((Number(formatUnits(amount, decimals)) * redeemPercent.value) / 100)
+})
 function removeSelected() {
     options.value.childNodes.forEach((el) => el.classList.remove("selected"))
 }
@@ -291,6 +292,28 @@ const { redeemLiquidity } = await usePools(routerAddress, [], connectedAccount, 
 
 function redeemLiquidityCall() {
     if (ownedPosition.value) {
+        const successData = {
+            action: "redeemed",
+            base: {
+                token: pool.value.quote_token,
+                amount: (
+                    (BigInt(ownedPosition.value.quote_amount) * BigInt(redeemPercent.value)) /
+                    BigInt(100)
+                ).toString(),
+            },
+            quote: {
+                token: pool.value.base_token,
+                amount: (
+                    (BigInt(ownedPosition.value.base_amount) * BigInt(redeemPercent.value)) /
+                    BigInt(100)
+                ).toString(),
+            },
+        }
+        let notifHolder = { id: null }
+        stepStore.notify(notifHolder, "success", false, successData)
+
+        return
+
         widgetLocker(true)
         // calculate percentages
         const amountQuote = calcPercentage(ownedPosition.value.quote_amount)
@@ -533,7 +556,7 @@ const remover = router.beforeEach((to, from) => {
         margin-left: 12px;
     }
     .token-icon:last-of-type {
-        margin-left: -7px;
+        margin-left: -14px;
     }
 }
 .amount {

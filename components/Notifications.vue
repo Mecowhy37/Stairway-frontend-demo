@@ -45,6 +45,10 @@ stepStore.notify = notify
 
 function toggleNotifState(notif) {
     const lengthOfAllStates = allStates.length
+    if (notifications.value[0]?.successData) {
+        deleteNotif(notifications.value[0].id)
+        return
+    }
     if (stateTicker === lengthOfAllStates - 1) {
         stateTicker = 0
     } else {
@@ -109,14 +113,14 @@ function deleteNotif(id) {
     }
 }
 .empty-notif {
-    $vert-padd: 31px;
-    $horiz-padd: 16px;
+    $vert-padd: 30px;
+    $horiz-padd: 15px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: var(--semi-wdg-radius);
-    border: 1.5px dashed var(--text-color-reverse);
+    border: 2px dashed var(--text-color-reverse);
     /* border: 2px dashed var(--text-grey); */
     padding: $vert-padd $horiz-padd;
     color: var(--text-color-reverse);
@@ -124,5 +128,8 @@ function deleteNotif(id) {
     background-color: transparent;
     box-shadow: var(--button-box-shadow);
     cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 </style>

@@ -52,23 +52,22 @@
         </div>
         <div class="notif__content">
             <h4>{{ notifContent.header }}</h4>
-            <p class="caption">
-                {{ notifContent.paragraph }}
-            </p>
-            <!-- <TransitionGroup mode="out-in">
-                <div
-                    class="notif__content__transition"
-                    :key="notif.header"
-                >
-                    <h4 :key="notif.header">{{ notif.header }}</h4>
-                    <p
-                        :key="notif.paragraph"
-                        class="caption"
-                    >
-                        {{ notif.paragraph }}
-                    </p>
-                </div>
-            </TransitionGroup> -->
+            <template v-if="successData">
+                <p class="caption">
+                    Successfully {{ successData.action }}
+                    <!-- quote -->
+                    {{ roundFloor(successData.quote.amount) }} {{ successData.quote.token.symbol }}
+                    <!---->
+                    {{ successData.action === "swapped" ? "for" : "and" }}
+                    <!-- base -->
+                    {{ roundFloor(successData.base.amount) }} {{ successData.base.token.symbol }}
+                </p>
+            </template>
+            <template v-else>
+                <p class="caption">
+                    {{ notifContent.paragraph }}
+                </p>
+            </template>
         </div>
         <div class="close">
             <Btn
@@ -142,6 +141,22 @@ const props = defineProps({
 const notifContent = computed(() => notificationContents[props.notif.state])
 
 const id = computed(() => props.notif.id)
+const successData = computed(() => {
+    if (props.notif.successData) {
+        const successDataProp = JSON.parse(JSON.stringify(props.notif.successData))
+        successDataProp.quote.amount = formatUnits(
+            successDataProp.quote.amount.toString(),
+            successDataProp.quote.token.decimals
+        )
+        successDataProp.base.amount = formatUnits(
+            successDataProp.base.amount.toString(),
+            successDataProp.base.token.decimals
+        )
+        return successDataProp
+    } else {
+        return null
+    }
+})
 
 const spinning = ref(true)
 let timeoutId = null

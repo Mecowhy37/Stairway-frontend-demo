@@ -24,13 +24,13 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
         pending: poolPending,
         refresh: refreshPool,
     } = await useAsyncData(
-        "pool" + Tokens.value[tkEnum.BASE],
+        "pool",
         async () => {
             const bothThere = Tokens.value.every((el) => el !== null)
-            if (Tokens.value[tkEnum.BASE].address === Tokens.value[tkEnum.QUOTE].address) {
-                return
-            }
             if (isSupportedChain(connectedChainId.value) && bothThere) {
+                if (Tokens.value[tkEnum.BASE].address === Tokens.value[tkEnum.QUOTE].address) {
+                    return
+                }
                 // return $fetch(
                 //     getUrl(
                 //         `/chain/${connectedChainId.value}/pool/${Tokens.value[tkEnum.BASE].address}/${
@@ -38,11 +38,15 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
                 //         }`
                 //     )
                 // )
+
+                if (Tokens.value.some((el) => el.symbol === "Ever Broke")) {
+                    throw new Error("Pool not found")
+                }
                 const pool = await poolObtainer()
+
                 const returnPool = { ...pool }
-                if (Tokens.value[tkEnum.QUOTE].symbol === "WMATIC") {
+                if (Tokens.value[tkEnum.QUOTE].symbol === "Silver Change") {
                     returnPool.price = "4017000000000000000"
-                    // returnPool.price = "186563184260000000"
                 }
 
                 return returnPool
@@ -61,8 +65,8 @@ export async function usePools(routerAddress, Tokens, connectedAccount, connecte
     async function poolObtainer() {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                reject("pool failed")
-                return
+                // reject("pool failed")
+                // return
                 resolve(dummyPools)
             }, 1000)
         })
