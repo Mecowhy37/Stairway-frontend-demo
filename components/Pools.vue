@@ -237,8 +237,8 @@ function removeRedirect(pool) {
     }
 
     &__list {
-        margin: 0 -30px;
-        padding: 0 30px;
+        /* margin: 0 -30px; */
+        /* padding: 0 30px; */
         height: 50vh;
         overflow-y: auto;
         display: flex;

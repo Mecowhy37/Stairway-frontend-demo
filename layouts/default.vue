@@ -59,7 +59,7 @@ html {
 .background {
     position: fixed;
     top: 0;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     z-index: -2;
     background-color: var(--background-color);
