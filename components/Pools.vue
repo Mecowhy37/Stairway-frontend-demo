@@ -254,7 +254,6 @@ function removeRedirect(pool) {
             &__heading {
                 padding: 10px 20px;
                 align-items: center;
-                white-space: nowrap;
                 gap: 1rem;
 
                 .token-icon {
