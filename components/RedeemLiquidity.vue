@@ -563,6 +563,7 @@ const remover = router.beforeEach((to, from) => {
     .percents {
         align-items: center;
         justify-content: space-between;
+        min-width: 320px;
         h1 {
             padding-right: 5px;
             @media (max-width: 447px) {

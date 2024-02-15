@@ -42,7 +42,7 @@ const props = defineProps({
         width: calc(100% - var(--widget-sides) * 2);
     }
     @media (max-width: 354px) {
-        max-width: var(--widget-min-width);
+        width: var(--widget-min-width);
     }
     &__content {
         padding: 20px;
